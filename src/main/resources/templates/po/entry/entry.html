@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="">
+		<div class="col-sm-12">
+			<div class="ibox">
+<form id="data_form"><!-- FORM提交数据用 -->
+				<div class="ibox-title">
+                    <div class="form-inline">
+                        <div class="input-group col-md-3">
+                            <span class="input-group-addon"><span style="color:red">*</span>供应商: </span>
+                            <!--<input type="text" id="vendorShow" class="form-control">-->
+                            <!--<input type="hidden" id="vendorId"  name="vendorId" class="form-control">-->
+                            <select data-placeholder="选择供应商" type="chosen" name="vendorId" id="vendorId" class="form-control chosen-select" tabindex="2" style="width: 300px;">
+                                <option value="">选择供应商</option>
+                            </select>
+
+                            <span class="input-group-btn"> <button type="button" class="btn btn-white" onclick="addHead()">...</button> </span>
+                        </div>
+
+                        <div class="input-group date col-md-2">
+                            <span class="input-group-addon"><span style="color:red">*</span>单据日期: </span>
+                            <input  id="date_1" type="text" name="billDate" class="form-control" autocomplete="off">
+                        </div>
+
+                        <input type="hidden" id="billType" name="billType" th:value="${billType}">
+                        <input type="hidden" id="billNo" name="billNo" class="form-control">
+                        <div class="input-group pull-right">
+                            <span class="input-group-addon" name="billNo">单据编号:</span>
+                        </div>
+                    </div>
+
+				</div>
+
+                <div class="ibox-content util-ibox-content">
+                    <div class="jqGrid_wrapper">
+                        <table id="table_list"></table>
+                    </div>
+
+                    <div id="mask"></div>
+
+                    <div class="m-t-sm">
+                        <textarea name="remark" class="form-control" placeholder="备注..."></textarea>
+                    </div>
+
+                    <div class="row m-t-sm">
+                        <div class=" form-inline">
+                            <div class="form-group col-md-3">
+                                <label class="util-form-label">优惠率：</label>
+                                <input type="number" placeholder="优惠率" name="discountRateTotal" class="form-control">
+                                <span class="">%</span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="util-form-label"><span th:text="(${billType=='CG_ORDER'} ? '付款优惠：' : '退款优惠:')"> </span></label>
+                                <input type="number" placeholder="付款优惠" name="discountAmountTotal" class="form-control">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="util-form-label">优惠后金额：</label>
+                                <input type="number" placeholder="优惠后金额" name="finalAmountTotal" class="form-control" readonly>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="util-form-label"><span th:text="(${billType=='CG_ORDER'} ? '本次付款：' : '本次退款：')"> </span></label>
+                                <input type="number" placeholder="本次付款" name="paymentAmountTotal" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row m-t-sm">
+                        <div class=" form-inline">
+                            <div class="form-group col-md-3">
+                                <label class="util-form-label">结算账户：</label>
+                                <select data-placeholder="结算账户" id="settleAccountTotal" name="settleAccountTotal" class="form-control util-settle-width">
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label class="util-form-label">本次欠款：</label>
+                                <input type="number" placeholder="本次欠款" name="debtAccountTotal" class="form-control" readonly>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="util-form-label">采购费用：</label>
+                                <input type="number" placeholder="采购费用" name="purchaseFeeTotal" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+</form>
+                <div class="ibox-content util-ibox-content row m-n">
+                    <div class="columns pull-right">
+                        <a shiro:hasPermission="po:entry:save" class="btn btn-primary btn-rounded" href="#" onclick="save(1)">保存并新增</a>
+                        <a shiro:hasPermission="po:entry:save" class="btn btn-success btn-rounded" href="#" onclick="save()">保存</a>
+                        <a shiro:hasPermission="po:entry:save" class="btn btn-warning btn-rounded" href="#" onclick="audit(0)">审核</a>
+                        <a shiro:hasPermission="po:entry:save" class="btn btn-info btn-rounded" href="#" onclick="listOrder('/po/order')">历史单据</a>
+                        <a shiro:hasPermission="po:entry:save" class="btn btn-default btn-rounded" href="#" onclick="listLog()">操作日志</a>
+                    </div>
+                </div>
+			</div>
+		</div>
+	</div>
+	<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+		<div>
+			<script type="text/javascript">
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';
+				var s_resetPwd_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="po:entry:edit">
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="po:entry:remove">
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="po:entry:resetPwd">
+			<script type="text/javascript">
+				var s_resetPwd_h = '';
+			</script>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/po/entry/entry.js"></script>
+</body>
+</html>

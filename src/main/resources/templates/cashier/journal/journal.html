@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header">
+</head>
+<body class="gray-bg">
+    <div class="col-sm-12">
+        <div class="ibox-body">
+            <div class="fixed-table-toolbar">
+                <form id="search">
+                    <div class="columns pull-left col-md-2 nopadding">
+                        <input type="text" class="form-control" name="searchText" placeholder="请输入摘要或金额" autocomplete="off">
+                    </div>
+
+                    <div class="input-daterange input-group columns pull-left" style="margin-left: 5px; width: 300px;" id="datepicker">
+                        <span class="input-group-addon tool-span-addon">日期：</span>
+                        <input type="text" class="form-control" name="start" autocomplete="off"/>
+                        <span class="input-group-addon tool-span-addon">-</span>
+                        <input type="text" class="form-control" name="end" autocomplete="off"/>
+                    </div>
+
+                    <div class="input-group columns pull-left tool-pull-left">
+                        <select data-placeholder="请选择" name="account" id="account" class="form-control">
+                            <option value="">请选择账户</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div class="columns pull-left tool-pull-left">
+                    <button class="btn btn-success" onclick="search()">查询</button>
+                </div>
+
+                <div class="columns pull-right">
+                    <button type="button" class="btn  btn-primary" onclick="add()">
+                        <i class="fa fa-plus" aria-hidden="true"></i>添加
+                    </button>
+                    <button type="button" class="btn  btn-primary" onclick="edit()">
+                        <i class="fa fa-check" aria-hidden="true"></i>修改
+                    </button>
+                    <button type="button" class="btn  btn-danger" onclick="remove()">
+                        <i class="fa fa-trash" aria-hidden="true"></i>删除
+                    </button>
+                </div>
+            </div>
+
+            <div class="ibox-content">
+                <div class="jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+    <div>
+        <script type="text/javascript">
+            var s_edit_h = 'hidden';
+            var s_remove_h = 'hidden';
+            var s_resetPwd_h = 'hidden';
+        </script>
+    </div>
+    <div shiro:hasPermission="cashier:journal:edit">
+        <script type="text/javascript">
+            s_edit_h = '';
+        </script>
+    </div>
+    <div shiro:hasPermission="cashier:journal:remove">
+        <script type="text/javascript">
+            var s_remove_h = '';
+        </script>
+    </div>
+    <div shiro:hasPermission="cashier:journal:resetPwd">
+        <script type="text/javascript">
+            var s_resetPwd_h = '';
+        </script>
+    </div>
+<div th:include="include :: footer"></div>
+<script type="text/javascript" src="/js/appjs/cashier/journal/journal.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class=" ">
+        <div class="col-sm-12">
+            <div class="ibox-body">
+                <div class="fixed-table-toolbar">
+                    <form id="search">
+                        <div class="columns pull-left col-md-2 nopadding">
+                            <input type="text" class="form-control" name="searchText" placeholder="请输入操作名称或方法">
+                        </div>
+                    </form>
+
+                    <div class="columns pull-left tool-pull-left">
+                        <button class="btn btn-success" onclick="search()">查询</button>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="jqGrid_wrapper">
+                        <table id="exampleTable" data-mobile-responsive="true">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/sys/online/online.js"></script>
+</body>
+</html>

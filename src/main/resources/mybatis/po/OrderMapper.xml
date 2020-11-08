@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.po.dao.OrderDao">
+
+	<select id="get" resultType="com.bootdo.po.domain.OrderDO">
+		select `id`,`bill_date`,`bill_no`,`bill_type`,`vendor_id`,`vendor_name`,`total_qty`,`entry_amount`,`final_amount`,`payment_amount`,`total_amount`,`discount_amount`,`discount_rate`,`purchase_fee`,`status`,`settle_account`,`biller_id`,`audit_status`,`remark`,`create_time`,`update_time` from po_order where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.po.domain.OrderDO">
+		select `id`,`bill_date`,`bill_no`,`bill_type`,`vendor_id`,`vendor_name`,`total_qty`,`entry_amount`,`final_amount`,`payment_amount`,`total_amount`,`discount_amount`,`discount_rate`,`purchase_fee`,`status`,`settle_account`,`biller_id`,`audit_status`,`remark`,`create_time`,`update_time` from po_order
+        <where>
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="billDate != null and billDate != ''"> and bill_date = #{billDate} </if>
+		  		  <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
+		  		  <if test="billType != null and billType != ''"> and bill_type = #{billType} </if>
+		  		  <if test="vendorId != null and vendorId != ''"> and vendor_id = #{vendorId} </if>
+                  <if test="vendorName != null and vendorName != ''"> and vendor_name = #{vendorName} </if>
+		  		  <if test="totalQty != null and totalQty != ''"> and total_qty = #{totalQty} </if>
+		  		  <if test="entryAmount != null and entryAmount != ''"> and entryAmount = #{entryAmount} </if>
+		  		  <if test="finalAmount != null and finalAmount != ''"> and final_amount = #{finalAmount} </if>
+		  		  <if test="discountAmount != null and discountAmount != ''"> and discount_amount = #{discountAmount} </if>
+		  		  <if test="discountRate != null and discountRate != ''"> and discount_rate = #{discountRate} </if>
+		  		  <if test="purchaseFee != null and purchaseFee != ''"> and purchase_fee = #{purchaseFee} </if>
+		  		  <if test="settleAccount != null and settleAccount != ''"> and settle_account = #{settleAccount} </if>
+		  		  <if test="billerId != null and billerId != ''"> and biller_id = #{billerId} </if>
+		  		  <if test="remark != null and remark != ''"> and remark = #{remark} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+                  <if test="searchText != null and searchText != ''"> and ( bill_no like '%${searchText}%' or  vendor_name like '%${searchText}%' or remark like '%${searchText}%')</if>
+                  <if test="start != null and start != ''"> and bill_date >= #{start} </if>
+                  <if test="end != null and end != ''"> <![CDATA[ and bill_date <= #{end} ]]> </if>
+                  <if test="status != null and status != ''"> and status = #{status} </if>
+                  <if test="audit != null and audit != ''"> and audit_status = #{audit} </if>
+                  <if test="statusNot != null and statusNot.size() > 0"> and status not in
+                      <foreach item="status" collection="statusNot" open="(" separator="," close=")"> #{status} </foreach>
+                  </if>
+                  <if test="ids != null and ids.size() > 0"> and id in
+                      <foreach item="id" collection="ids" open="(" separator="," close=")"> #{id} </foreach>
+                  </if>
+                  <if test="billNos != null and billNos.size() > 0"> and bill_no in
+                      <foreach item="billNo" collection="billNos" open="(" separator="," close=")"> #{billNo} </foreach>
+                  </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by bill_date desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from po_order
+		 <where>
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="billDate != null and billDate != ''"> and bill_date = #{billDate} </if>
+		  		  <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
+		  		  <if test="billType != null and billType != ''"> and bill_type = #{billType} </if>
+		  		  <if test="vendorId != null and vendorId != ''"> and vendor_id = #{vendorId} </if>
+                  <if test="vendorName != null and vendorName != ''"> and vendor_name = #{vendorName} </if>
+		  		  <if test="totalQty != null and totalQty != ''"> and total_qty = #{totalQty} </if>
+		  		  <if test="entryAmount != null and entryAmount != ''"> and entryAmount = #{entryAmount} </if>
+		  		  <if test="finalAmount != null and finalAmount != ''"> and final_amount = #{finalAmount} </if>
+		  		  <if test="discountAmount != null and discountAmount != ''"> and discount_amount = #{discountAmount} </if>
+		  		  <if test="discountRate != null and discountRate != ''"> and discount_rate = #{discountRate} </if>
+		  		  <if test="purchaseFee != null and purchaseFee != ''"> and purchase_fee = #{purchaseFee} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		  <if test="settleAccount != null and settleAccount != ''"> and settle_account = #{settleAccount} </if>
+		  		  <if test="billerId != null and billerId != ''"> and biller_id = #{billerId} </if>
+		  		  <if test="auditStatus != null and auditStatus != ''"> and audit_status = #{auditStatus} </if>
+		  		  <if test="remark != null and remark != ''"> and remark = #{remark} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+                 <if test="searchText != null and searchText != ''"> and ( bill_no like '%${searchText}%' or  vendor_name like '%${searchText}%' or remark like '%${searchText}%')</if>
+                 <if test="start != null and start != ''"> and create_time >= #{start} </if>
+                 <if test="end != null and end != ''"> <![CDATA[ and create_time <= #{end} ]]> </if>
+                 <if test="status != null and status != ''"> and status = #{status} </if>
+                 <if test="audit != null and audit != ''"> and audit_status = #{audit} </if>
+                 <if test="statusNot != null and statusNot.size() > 0"> and status not in
+                     <foreach item="status" collection="statusNot" open="(" separator="," close=")"> #{status} </foreach>
+                 </if>
+                 <if test="ids != null and ids.size() > 0"> and id in
+                     <foreach item="id" collection="ids" open="(" separator="," close=")"> #{id} </foreach>
+                 </if>
+                 <if test="billNos != null and billNos.size() > 0"> and bill_no in
+                     <foreach item="billNo" collection="billNos" open="(" separator="," close=")"> #{billNo} </foreach>
+                 </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.po.domain.OrderDO" useGeneratedKeys="true" keyProperty="id">
+		insert into po_order
+		(
+            `bill_date`,`bill_no`,`bill_type`,`vendor_id`,`vendor_name`,`total_qty`,`entry_amount`,`final_amount`,`payment_amount`,`total_amount`,`discount_amount`,
+            `discount_rate`,`purchase_fee`,`status`,`settle_account`,`biller_id`,`audit_status`,`remark`
+		)
+		values
+		(
+            #{billDate},#{billNo},#{billType},#{vendorId},#{vendorName},#{totalQty},#{entryAmount},#{finalAmount},#{paymentAmount},#{totalAmount},#{discountAmount},
+            #{discountRate},#{purchaseFee},#{status},#{settleAccount},#{billerId},#{auditStatus},#{remark}
+		)
+		ON DUPLICATE KEY UPDATE
+        bill_date= VALUES(bill_date),bill_type= VALUES(bill_type),vendor_id= VALUES(vendor_id),vendor_name= VALUES(vendor_name),total_qty= VALUES(total_qty),entry_amount= VALUES(entry_amount),
+        discount_amount= VALUES(discount_amount),discount_rate= VALUES(discount_rate),purchase_fee= VALUES(purchase_fee),final_amount= VALUES(final_amount),payment_amount= VALUES(payment_amount),
+        total_amount= VALUES(total_amount),status= VALUES(status),settle_account= VALUES(settle_account),biller_id= VALUES(biller_id),audit_status= VALUES(audit_status),remark= VALUES(remark)
+	</insert>
+
+    <insert id="saveOrUpdate" parameterType="java.util.List">
+        insert into po_order
+        (
+            `bill_date`,`bill_no`,`bill_type`,`vendor_id`,`vendor_name`,`total_qty`,`entry_amount`,`final_amount`,`payment_amount`,`total_amount`,`discount_amount`,
+            `discount_rate`,`purchase_fee`,`status`,`settle_account`,`biller_id`,`audit_status`,`remark`
+        ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{billDate},#{billNo},#{billType},#{vendorId},#{vendorName},#{totalQty},#{entryAmount},#{finalAmount},#{paymentAmount},#{totalAmount},#{discountAmount},
+            #{discountRate},#{purchaseFee},#{status},#{settleAccount},#{billerId},#{auditStatus},#{remark}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        bill_date= VALUES(bill_date),bill_type= VALUES(bill_type),vendor_id= VALUES(vendor_id),vendor_name= VALUES(vendor_name),total_qty= VALUES(total_qty),entry_amount= VALUES(entry_amount),
+        discount_amount= VALUES(discount_amount),discount_rate= VALUES(discount_rate),purchase_fee= VALUES(purchase_fee),final_amount= VALUES(final_amount),payment_amount= VALUES(payment_amount),
+        total_amount= VALUES(total_amount),status= VALUES(status),settle_account= VALUES(settle_account),biller_id= VALUES(biller_id),audit_status= VALUES(audit_status),remark= VALUES(remark)
+    </insert>
+
+	<update id="update">
+		update po_order 
+		<set>
+			<if test="billDate != null">`bill_date` = #{billDate}, </if>
+			<if test="billNo != null">`bill_no` = #{billNo}, </if>
+			<if test="billType != null">`bill_type` = #{billType}, </if>
+			<if test="vendorId != null">`vendor_id` = #{vendorId}, </if>
+            <if test="vendorName != null">`vendor_name` = #{vendorName}, </if>
+			<if test="totalQty != null">`total_qty` = #{totalQty}, </if>
+			<if test="entryAmount != null">`entryAmount` = #{entryAmount}, </if>
+			<if test="finalAmount != null">`final_amount` = #{finalAmount}, </if>
+            <if test="paymentAmount != null">`payment_amount` = #{paymentAmount}, </if>
+			<if test="discountAmount != null">`discount_amount` = #{discountAmount}, </if>
+			<if test="discountRate != null">`discount_rate` = #{discountRate}, </if>
+			<if test="purchaseFee != null">`purchase_fee` = #{purchaseFee}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="settleAccount != null">`settle_account` = #{settleAccount}, </if>
+			<if test="billerId != null">`biller_id` = #{billerId}, </if>
+			<if test="auditStatus != null">`audit_status` = #{auditStatus}, </if>
+			<if test="remark != null">`remark` = #{remark}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}</if>
+		</set>
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <if test="cId != null and cId != ''">and id = #{cId}</if>
+            <if test="cBillNo != null and cBillNo != ''">and bill_no =#{cBillNo}</if>
+        </trim>
+	</update>
+
+    <update id="audit">
+        update po_order
+        <set>
+            <if test="auditStatus != null">`audit_status` = #{auditStatus}, </if>
+            <if test="auditId != null">`audit_id` = #{auditId}, </if>
+            <if test="auditName != null">`audit_name` = #{auditName} </if>
+        </set>
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <if test="billNo != null"> and bill_no = #{billNo} </if>
+            <if test="auditStatus != null"> and audit_status != #{auditStatus} </if>
+            <if test="ids != null and ids.size() > 0">  and id in
+                <foreach item="id" collection="ids" open="(" separator="," close=")"> #{id} </foreach>
+            </if>
+            <if test="billNos != null and billNos.size() > 0"> and bill_no in
+                <foreach item="billNo" collection="billNos" open="(" separator="," close=")"> #{billNo} </foreach>
+            </if>
+        </trim>
+    </update>
+
+	<delete id="remove">
+		delete from po_order where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from po_order where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+    <delete id="delete">
+        delete from po_order
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="billDate != null and billDate != ''">and bill_date= #{billDate}</if>
+            <if test="billNo != null and billNo != ''">and bill_no =#{billNo}</if>
+            <if test="billType != null and billType != ''">and bill_type= #{billType}</if>
+            <if test="vendorId != null and vendorId != ''">and vendor_id= #{vendorId}</if>
+            <if test="vendorName != null and vendorName != ''">and vendor_name = #{vendorName}</if>
+            <if test="status != null and status != ''">and status =#{status}</if>
+            <if test="settleAccount != null and settleAccount != ''">andsettle_account = #{settleAccount}</if>
+            <if test="billerId != null and billerId != ''">and biller_id= #{billerId}</if>
+            <if test="auditStatus != null and auditStatus != ''">andaudit_status = #{auditStatus}</if>
+            <if test="status != null and status != ''">and status =#{status}</if>
+            <if test="audit != null and audit != ''">andaudit_status = #{audit}</if>
+            <if test="billNos != null and billNos.size() > 0"> and bill_no in
+                <foreach collection="billNos" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </trim>
+    </delete>
+
+</mapper>

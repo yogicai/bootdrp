@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+
+    <div class="ibox-title">
+        <div class="columns form-inline">
+            <input id="searchText" type="text" class="form-control m-l" style="width:250px" placeholder="请输入商品编号或名称" autocomplete="off">
+            <button type="button" class="btn btn-primary" onclick="reLoad()">查询</button>
+            <div class="columns pull-right">
+                <a class="btn btn-success btn-rounded" href="#" onclick="add()">选中</a>
+                <a class="btn btn-warning btn-rounded" href="#" onclick="addAndClose()">选中并关闭</a>
+                <a class="btn btn-info btn-rounded" href="#" onclick="cancel()">关闭</a>
+                <a class="btn btn-default btn-rounded" href="#" onclick="addProduct()">新增商品</a>
+            </div>
+        </div>
+    </div>
+    <div class="ibox-content">
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="ibox-body">
+                    <div id="jstree"></div>
+                </div>
+            </div>
+            <div class="col-sm-10">
+                <div class="ibox-body jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/po/entry/add.js">
+	</script>
+</body>
+</html>

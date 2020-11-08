@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="css/bootstrap.min.css?v=3.3.6" th:href="@{${bootstrapCssUrl}?: '/css/bootstrap.min.css?v=3.3.6'}" rel="stylesheet">
+    <link href="css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+<!--    <link href="css/animate.css" rel="stylesheet">-->
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="css/utils.css?v=4.1.0" rel="stylesheet">
+</head>
+
+<body class="gray-bg">
+<div class="wrapper util-wrapper-content">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="panel-stat3 no-radius btn-danger">
+                <div>
+                    <h1 class="no-margins" id="qtyTotalWH">0</h1>
+                    <small>库存总量</small>
+                </div>
+                <div class="m-t-sm">
+                    <h1 class="m-n" id="totalAmountWH">0</h1>
+                    <small class="m-t-none">库存成本</small>
+                </div>
+                <div class="stat-icon"><i class="fa fa-3x fa-cubes"></i></div>
+                <div class="refresh-button" onclick="searchPBalance()"><i class="fa fa-refresh"></i></div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="panel-stat3 no-radius btn-info">
+                <div>
+                    <h1 class="m-n" id="totalAmountSEM">0</h1>
+                    <small>本月销售总额</small>
+                </div>
+                <div class="m-t-sm">
+                    <h1 class="m-n" id="profitSEM">0</h1>
+                    <small class="m-t-none">本月销售毛利</small>
+                </div>
+                <div class="stat-icon"><i class="fa fa-3x fa-dollar"></i></div>
+                <div class="refresh-button" onclick="searchPSeTotal('MONTH')"><i class="fa fa-refresh"></i></div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="panel-stat3 no-radius btn-warning">
+                <div>
+                    <h1 class="m-n" id="debtAmountSE">0</h1>
+                    <small>客户欠款</small>
+                </div>
+                <div class="m-t-sm">
+                    <h1 class="m-n" id="debtVAmountSE">0</h1>
+                    <small class="m-t-none">供应商欠款</small>
+                </div>
+                <div class="stat-icon"><i class="fa fa-3x fa-cny"></i></div>
+                <div class="refresh-button" onclick="searchPDebtTotal()"><i class="fa fa-refresh"></i></div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="panel-stat3 no-radius btn-fine">
+                <div>
+                    <h1 class="m-n" id="profitAmountT">0</h1>
+                    <small>营业利润</small>
+                </div>
+                <div class="m-t-sm">
+                    <h1 class="m-n" id="cashFlowAmountT">0</h1>
+                    <small class="m-t-none">营业净现金流</small>
+                </div>
+                <div class="stat-icon"><i class="fa fa-3x fa-eur"></i></div>
+                <div class="refresh-button" onclick="searchPCashTotal()"><i class="fa fa-refresh"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="util-ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="echarts" id="bill-bar-chart"></div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="echarts" id="bill-pie-chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="util-ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="echarts" id="cash-bar-chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 全局js -->
+<script src="js/jquery.min.js?v=2.1.4" th:src="@{${jqueryUrl}?: 'js/jquery.min.js?v=2.1.4'}"></script>
+<script src="js/bootstrap.min.js?v=3.3.6" th:src="@{${bootstrapUrl}?: 'js/bootstrap.min.js?v=3.3.6'}"></script>
+<script src="js/plugins/jquery-ui/jquery-ui.min.js?v=1.10.4" th:src="@{${jqueryUIUrl}?: 'js/plugins/jquery-ui/jquery-ui.min.js?v=1.10.4'}"></script>
+<script src="js/plugins/animate/jquery.animateNumber.min.js"></script>
+
+<!-- ECharts -->
+<script src="js/plugins/echarts/echarts-4.0.4.min.js" th:src="@{${echartsUrl}?: 'js/plugins/echarts/echarts-4.0.4.min.js'}"></script>
+<!-- 自定义js -->
+<script src="js/content.js?v=1.0.0"></script>
+<script src="js/main.js?v=1.0.0"></script>
+
+</body>
+
+</html>

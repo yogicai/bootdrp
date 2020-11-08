@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header">
+</head>
+<body class="gray-bg">
+		<div class="col-sm-12">
+            <div class="ibox-body">
+                <div class="fixed-table-toolbar">
+                    <form id="search">
+                        <div class="columns pull-left col-md-2 nopadding">
+                            <input type="text" class="form-control" name="searchText" placeholder="请输入单据号或供应商或备注" autocomplete="off">
+                        </div>
+
+                        <div class="input-daterange input-group columns pull-left" style="margin-left: 5px; width: 300px;" id="datepicker">
+                            <span class="input-group-addon tool-span-addon">日期：</span>
+                            <input type="text" class="form-control" name="start" autocomplete="off"/>
+                            <span class="input-group-addon tool-span-addon">-</span>
+                            <input type="text" class="form-control" name="end" autocomplete="off"/>
+                        </div>
+
+                        <div class="input-group columns pull-left tool-pull-left">
+                            <select data-placeholder="选择类别" name="billType" id="billType" class="form-control">
+                                <option value="">单据类型</option>
+                                <option value="CG_ORDER">采购单</option>
+                                <option value="TH_ORDER">退货单</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group columns pull-left tool-pull-left">
+                            <select data-placeholder="选择类别" name="status" id="status" class="form-control">
+                                <option value="">付款状态</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group columns pull-left tool-pull-left">
+                            <select data-placeholder="选择类别" name="audit" id="audit" class="form-control">
+                                <option value="">审核状态</option>
+                            </select>
+                        </div>
+                    </form>
+
+                    <div class="columns pull-left tool-pull-left">
+                        <button class="btn btn-success" onclick="search()">查询</button>
+                    </div>
+
+                    <div class="columns pull-right">
+                        <button shiro:hasPermission="po:order:add" type="button" class="btn  btn-primary" onclick="add('/po/entry?billType=CG_ORDER')" href="/po/entry">
+                            <i class="fa fa-plus" aria-hidden="true"></i>添加采购
+                        </button>
+                        <button shiro:hasPermission="po:order:add" type="button" class="btn  btn-primary" onclick="add('/po/entry?billType=TH_ORDER')" href="/po/entry">
+                            <i class="fa fa-plus" aria-hidden="true"></i>添加退货
+                        </button>
+                        <button shiro:hasPermission="po:order:audit" type="button" class="btn  btn-primary" onclick="audit(0)">
+                            <i class="fa fa-check" aria-hidden="true"></i>审核
+                        </button>
+                        <button shiro:hasPermission="po:order:audit" type="button" class="btn  btn-primary" onclick="audit(1)">
+                            <i class="fa fa-reply" aria-hidden="true"></i>反审核
+                        </button>
+                        <button shiro:hasPermission="po:order:batchRemove" type="button" class="btn  btn-danger" onclick="remove()">
+                            <i class="fa fa-trash" aria-hidden="true"></i>删除
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="jqGrid_wrapper">
+                        <table id="table_list"></table>
+                        <div id="pager_list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+		<div>
+			<script type="text/javascript">
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';
+				var s_resetPwd_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="po:order:edit">
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="po:order:remove">
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="po:order:resetPwd">
+			<script type="text/javascript">
+				var s_resetPwd_h = '';
+			</script>
+		</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/po/order/order.js"></script>
+</body>
+</html>

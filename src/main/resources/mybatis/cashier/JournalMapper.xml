@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.cashier.dao.JournalDao">
+
+	<select id="get" resultType="com.bootdo.cashier.domain.JournalDO">
+		select `id`,`date`,`digest`,`debit`,`credit`,`balance`,`account`,`remark`,`create_time`,`update_time` from cashier_journal where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.cashier.domain.JournalDO">
+		select `id`,`date`,`digest`,`debit`,`credit`,`balance`,`account`,`remark`,`create_time`,`update_time` from cashier_journal
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="date != null and date != ''"> and date = #{date} </if>
+		  		  <if test="digest != null and digest != ''"> and digest = #{digest} </if>
+		  		  <if test="debit != null and debit != ''"> and debit = #{debit} </if>
+		  		  <if test="credit != null and credit != ''"> and credit = #{credit} </if>
+		  		  <if test="balance != null and balance != ''"> and balance = #{balance} </if>
+                  <if test="account != null and account != ''"> and account = #{account} </if>
+		  		  <if test="remark != null and remark != ''"> and remark = #{remark} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+                  <if test="start != null and start != ''"> and date >= #{start} </if>
+                  <if test="end != null and end != ''"> <![CDATA[ and date <= #{end} ]]> </if>
+                  <if test="searchText != null and searchText != ''"> and ( digest like '%${searchText}%' or debit like '%${searchText}%' or credit like '%${searchText}%')</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+
+	<insert id="save" parameterType="com.bootdo.cashier.domain.JournalDO" useGeneratedKeys="true" keyProperty="id">
+		insert into cashier_journal
+		(
+			`date`,`digest`,`debit`,`credit`,`balance`,`account`,`remark`
+		)
+		values
+		(
+			#{date}, #{digest}, #{debit}, #{credit}, #{balance},#{account},#{remark}
+		)
+		ON DUPLICATE KEY UPDATE
+        date= VALUES(date),digest= VALUES(digest),debit= VALUES(debit),credit= VALUES(credit),balance= VALUES(balance),account= VALUES(account),remark= VALUES(remark)
+	</insert>
+
+    <update id="update" parameterType="com.bootdo.cashier.domain.JournalDO">
+        update cashier_journal
+        <set>
+            <if test="date != null">`date` = #{date}, </if>
+            <if test="digest != null">`digest` = #{digest}, </if>
+            <if test="debit != null">`debit` = #{debit}, </if>
+            <if test="credit != null">`credit` = #{credit}, </if>
+            <if test="balance != null">`balance` = #{balance}, </if>
+            <if test="account != null">`account` = #{account}, </if>
+            <if test="remark != null">`remark` = #{remark} </if>
+        </set>
+        where id = #{id}
+    </update>
+
+	<delete id="remove">
+		delete from cashier_journal where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from cashier_journal where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class=" ">
+		<div class="col-sm-12">
+            <div class="ibox-body">
+                <div class="fixed-table-toolbar">
+                    <form id="search">
+                        <div class="columns pull-left col-md-2 nopadding">
+                            <input type="text" class="form-control" name="searchText" placeholder="请输入供应商编号或名称" autocomplete="off">
+                        </div>
+
+                        <div class="input-daterange input-group columns pull-left" style="margin-left: 5px; width: 300px;" id="datepicker">
+                            <span class="input-group-addon tool-span-addon">日期：</span>
+                            <input type="text" class="form-control" name="start" autocomplete="off"/>
+                            <span class="input-group-addon tool-span-addon">-</span>
+                            <input type="text" class="form-control" name="end" autocomplete="off" />
+                        </div>
+
+                        <div class="input-group columns pull-left tool-pull-left">
+                            <select data-placeholder="选择类别" name="type" id="type" class="form-control">
+                                <option value="">供应商类别</option>
+                            </select>
+                        </div>
+                    </form>
+
+                    <div class="columns pull-left tool-pull-left">
+                        <button class="btn btn-success" onclick="search()">查询</button>
+                    </div>
+
+                    <div class="columns pull-right">
+                        <button shiro:hasPermission="data:vendor:add" type="button" class="btn  btn-primary" onclick="add()">
+                            <i class="fa fa-plus" aria-hidden="true"></i>添加
+                        </button>
+                        <button shiro:hasPermission="data:vendor:remove" type="button" class="btn  btn-danger" onclick="batchRemove()">
+                            <i class="fa fa-trash" aria-hidden="true"></i>删除
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="jqGrid_wrapper">
+                        <table id="exampleTable" data-mobile-responsive="true">
+                        </table>
+                    </div>
+                </div>
+			</div>
+	</div>
+	<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+		<div>
+			<script type="text/javascript">
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';
+				var s_resetPwd_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="data:vendor:edit">
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="data:vendor:remove">
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="data:vendor:resetPwd">
+			<script type="text/javascript">
+				var s_resetPwd_h = '';
+			</script>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/data/vendor/vendor.js"></script>
+</body>
+</html>

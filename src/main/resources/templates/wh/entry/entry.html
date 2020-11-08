@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+
+<div class="">
+    <div class="col-sm-12">
+        <div class="ibox">
+            <form id="data_form"><!-- FORM提交数据用 -->
+                <div class="ibox-title">
+                    <div class="form-inline">
+                        <div class="input-group col-md-2">
+                            <span class="input-group-addon">客户:</span>
+                            <select data-placeholder="选择客户" type="chosen" name="debtorId" id="debtorId" class="form-control chosen-select" tabindex="2" style="width: 200px;">
+                                <option value="">请选择</option>
+                            </select>
+                            <span class="input-group-btn"> <button type="button" class="btn btn-white" onclick="addHead()">...</button> </span>
+                        </div>
+
+                        <div class="input-group col-md-2">
+                            <span class="input-group-addon"><span style="color:red">*</span>业务类型:</span>
+                            <select data-placeholder="业务类型" type="chosen" name="serviceType" id="serviceType" class="form-control chosen-select" tabindex="2" style="width: 200px;">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group date col-md-2">
+                            <span class="input-group-addon"><span style="color:red">*</span>单据日期: </span>
+                            <input  id="date_1" type="text" name="billDate" class="form-control" autocomplete="off">
+                        </div>
+
+                        <input type="hidden" id="billType" name="billType" th:value="${billType}">
+                        <input type="hidden" id="billNo" name="billNo" class="form-control">
+                        <div class="input-group pull-right">
+                            <span class="input-group-addon" name="billNo">单据编号:</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ibox-content util-ibox-content">
+                    <div class="jqGrid_wrapper">
+                        <table id="table_list"></table>
+                    </div>
+
+                    <div id="mask"></div>
+
+                    <div class="m-t-sm">
+                        <textarea name="remark" class="form-control" placeholder="备注..."></textarea>
+                    </div>
+
+                </div>
+            </form>
+            <div class="ibox-content util-ibox-content row m-n">
+                <div class="columns pull-right">
+                    <a shiro:hasPermission="rp:entry:add" class="btn btn-primary btn-rounded" href="#" onclick="save(1)">保存并新增</a>
+                    <a shiro:hasPermission="rp:entry:add" class="btn btn-success btn-rounded" href="#" onclick="save()">保存</a>
+                    <a shiro:hasPermission="rp:entry:add" class="btn btn-warning btn-rounded" href="#" onclick="audit(0)">审核</a>
+                    <a shiro:hasPermission="rp:entry:add" class="btn btn-info btn-rounded" href="#" onclick="listOrder()">历史单据</a>
+                    <a shiro:hasPermission="rp:entry:add" class="btn btn-default btn-rounded" href="#" onclick="listLog()">操作日志</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div>
+    <script type="text/javascript">
+        var s_edit_h = 'hidden';
+        var s_remove_h = 'hidden';
+        var s_resetPwd_h = 'hidden';
+    </script>
+</div>
+<div shiro:hasPermission="rp:entry:edit">
+    <script type="text/javascript">
+        s_edit_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="rp:entry:remove">
+    <script type="text/javascript">
+        var s_remove_h = '';
+    </script>
+</div>
+<div shiro:hasPermission="rp:entry:resetPwd">
+    <script type="text/javascript">
+        var s_resetPwd_h = '';
+    </script>
+</div>
+</div>
+<div th:include="include :: footer"></div>
+<script type="text/javascript" src="/js/appjs/wh/entry/entry.js"></script>
+</body>
+</html>

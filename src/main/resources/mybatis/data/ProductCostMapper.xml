@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.data.dao.ProductCostDao">
+
+	<select id="get" resultType="com.bootdo.data.domain.ProductCostDO">
+		select `id`,`product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.data.domain.ProductCostDO">
+		select `id`,`product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="productNo != null and productNo != ''"> and product_no = #{productNo} </if>
+                  <if test="entryPrice != null and entryPrice != ''"> and entry_price = #{entryPrice} </if>
+		  		  <if test="costPrice != null and costPrice != ''"> and cost_price = #{costPrice} </if>
+		  		  <if test="costDate != null and costDate != ''"> and cost_date = #{costDate} </if>
+		  		  <if test="costType != null and costType != ''"> and cost_type = #{costType} </if>
+                  <if test="relateNo != null and relateNo != ''"> and relate_no = #{relateNo} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+    <select id="listLate" resultType="com.bootdo.data.domain.ProductCostDO">
+        select `id`,`product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <if test="productNo != null and productNo != ''"> and product_no = #{productNo} </if>
+            <if test="costDate != null and costDate != ''"> and cost_date = #{costDate} </if>
+            <if test="costType != null and costType != ''"> and cost_type = #{costType} </if>
+            <if test="relateNo != null and relateNo != ''"> and relate_no = #{relateNo} </if>
+            <if test="latest != null and latest == true"> and id IN (SELECT MAX(b.id) AS cost_date FROM data_product_cost b GROUP BY b.`product_no`) </if>
+            <if test="productNos != null and productNos.size() > 0"> and product_no in
+                <foreach item="pNo" collection="productNos" open="(" separator="," close=")"> #{pNo} </foreach>
+            </if>
+        </trim>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+    </select>
+
+ 	<select id="count" resultType="int">
+		select count(*) from data_product_cost
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="productNo != null and productNo != ''"> and product_no = #{productNo} </if>
+                  <if test="entryPrice != null and entryPrice != ''"> and entry_price = #{entryPrice} </if>
+		  		  <if test="costPrice != null and costPrice != ''"> and cost_price = #{costPrice} </if>
+		  		  <if test="costDate != null and costDate != ''"> and cost_date = #{costDate} </if>
+		  		  <if test="costType != null and costType != ''"> and cost_type = #{costType} </if>
+                  <if test="relateNo != null and relateNo != ''"> and relate_no = #{relateNo} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.data.domain.ProductCostDO" useGeneratedKeys="true" keyProperty="id">
+		insert into data_product_cost
+		(
+          `product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`
+		)
+		values
+		(
+          #{productNo},#{entryPrice},#{costPrice},#{costQty},#{costBalance},#{costAmount},#{costDate},#{costType},#{relateNo},#{remark}
+		)
+	</insert>
+
+    <insert id ="saveBatch" parameterType="java.util.List" >
+        insert into data_product_cost
+        (
+          `product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`
+        )
+        values
+        <foreach collection ="list" item="item" index= "index" separator =",">
+        (
+          #{item.productNo},#{item.entryPrice},#{item.costPrice},#{item.costQty},#{item.costBalance},#{item.costAmount},#{item.costDate},#{item.costType},#{item.relateNo},#{item.remark}
+        )
+        </foreach >
+    </insert>
+
+	<update id="update" parameterType="com.bootdo.data.domain.ProductCostDO">
+		update data_product_cost 
+		<set>
+			<if test="productNo != null">`product_no` = #{productNo}, </if>
+            <if test="entryPrice != null">`entry_price` = #{entryPrice}, </if>
+			<if test="costPrice != null">`cost_price` = #{costPrice}, </if>
+            <if test="costQty != null">`cost_qty` = #{costQty}, </if>
+            <if test="costBalance != null">`cost_balance` = #{costBalance}, </if>
+            <if test="costAmount != null">`cost_amount` = #{costAmount}, </if>
+			<if test="costDate != null">`cost_date` = #{costDate}, </if>
+			<if test="costType != null">`cost_type` = #{costType}, </if>
+            <if test="relateNo != null"> `relate_no` = #{relateNo}, </if>
+            <if test="remark != null"> `remark` = #{remark}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from data_product_cost where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from data_product_cost where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

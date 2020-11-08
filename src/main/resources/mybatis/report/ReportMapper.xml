@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.report.dao.ReportDao">
+
+    <select id="sReconC" resultType="java.util.HashMap">
+        SELECT a.`consumer_id` AS instituteId, a.`consumer_name` AS instituteName,
+              CONCAT(DATE_FORMAT(MIN(a.`bill_date`),"%Y-%m-%d"), ' - ', DATE_FORMAT(MAX(a.`bill_date`),"%Y-%m-%d")) AS billRegion,
+              SUM(a.`total_amount`) AS totalAmount, SUM(a.`payment_amount`) AS paymentAmount, SUM(a.`total_amount`) - SUM(a.`payment_amount`) AS debtAmount FROM se_order a
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <if test="instituteId != null and instituteId != ''"> and consumer_id = #{instituteId} </if>
+            <if test="start != null and start != ''"> and bill_date >= #{start} </if>
+            <if test="end != null and end != ''"> <![CDATA[ and bill_date <= #{end} ]]> </if>
+            and audit_status = 'YES'
+        </trim>
+        GROUP BY consumer_id <if test="showDebt != null and showDebt == 0">  HAVING debtAmount > 0 </if>
+        ORDER BY debtAmount DESC
+    </select>
+
+    <select id="sReconV" resultType="java.util.HashMap">
+        SELECT a.`vendor_id` AS instituteId, a.`vendor_name` AS instituteName,
+              CONCAT(DATE_FORMAT(MIN(a.`bill_date`),"%Y-%m-%d"), ' - ', DATE_FORMAT(MAX(a.`bill_date`),"%Y-%m-%d")) AS billRegion,
+              SUM(a.`total_amount`) AS totalAmount, SUM(a.`payment_amount`) AS paymentAmount, SUM(a.`total_amount`) - SUM(a.`payment_amount`) AS debtAmount FROM po_order a
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <if test="instituteId != null and instituteId != ''"> and vendor_id = #{instituteId} </if>
+            <if test="start != null and start != ''"> and bill_date >= #{start} </if>
+            <if test="end != null and end != ''"> <![CDATA[ and bill_date <= #{end} ]]> </if>
+            and audit_status = 'YES'
+        </trim>
+        GROUP BY vendor_id <if test="showDebt != null and showDebt == 0">  HAVING debtAmount > 0 </if>
+        ORDER BY debtAmount DESC
+    </select>
+
+    <select id="mainTabCustomer" resultType="java.util.HashMap">
+        SELECT a.`consumer_id` as no, a.`consumer_name` as name, SUM(a.`total_amount`) AS amount1, SUM(a.`total_amount` - a.`payment_amount`) AS amount2 FROM `se_order` a
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <if test="start != null and start != ''"> and a.bill_date >= #{start} </if>
+            <if test="end != null and end != ''"> <![CDATA[ and a.bill_date <= #{end} ]]> </if>
+            and a.audit_status = 'YES'
+        </trim>
+        GROUP BY a.`consumer_id`
+    </select>
+
+    <select id="mainTabProduct" resultType="java.util.HashMap">
+        SELECT b.`entry_id` AS no, b.`entry_name` AS name, SUM(b.`total_qty`) AS amount1, SUM(b.`total_amount`) AS amount2
+        FROM `se_order` a LEFT JOIN `se_order_entry` b ON a.`bill_no`=b.`bill_no`
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <if test="start != null and start != ''"> and a.bill_date >= #{start} </if>
+            <if test="end != null and end != ''"> <![CDATA[ and a.bill_date <= #{end} ]]> </if>
+            and a.audit_status = 'YES'
+        </trim>
+        GROUP BY b.`entry_id`
+    </select>
+
+    <select id="saleProduct" resultType="java.util.HashMap">
+        SELECT a.`entry_id` as entryId, a.`entry_name` as entryName, a.`entry_unit` as entryUnit, SUM(a.`total_qty`) AS totalQty, AVG(a.`entry_price`) AS entryPrice,
+            SUM(a.`cost_amount`) AS costAmount, SUM(a.`entry_amount`) AS entryAmount, COUNT(0) AS billCount, (SUM(a.`entry_amount`) - SUM(a.`cost_amount`)) as billProfit,
+            DATE_FORMAT(MIN(b.`bill_date`), '%Y-%m-%d') startDate, DATE_FORMAT(MAX(b.`bill_date`), '%Y-%m-%d') endDate
+        FROM `se_order_entry` a LEFT JOIN `se_order` b ON a.`bill_no`=b.`bill_no`
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <if test="start != null and start != ''"> and b.bill_date >= #{start} </if>
+            <if test="end != null and end != ''"> <![CDATA[ and b.bill_date <= #{end} ]]> </if>
+            and b.audit_status = 'YES'
+        </trim>
+        GROUP BY a.`entry_id` ORDER BY SUM(a.`entry_amount`) DESC
+    </select>
+
+</mapper>

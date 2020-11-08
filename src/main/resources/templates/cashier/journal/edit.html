@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+						<input id="id" name="id" th:value="${journal.id}"  type="hidden">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">日期：</label>
+                                <div class="col-sm-8">
+                                    <input id="date_1" name="date" type="datetime" class="form-control" th:value="${#dates.format(journal.date, 'yyyy-MM-dd')}" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">摘要：</label>
+                                <div class="col-sm-8">
+                                    <textarea id="digest" name="digest" class="form-control" th:text="${journal.digest}"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">帐户：</label>
+                                <div class="col-sm-8">
+                                    <select data-placeholder="选择类别" name="account" id="account" th:value="${journal.account}" class="form-control chosen-select" tabindex="2" style="width: 100%">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">收入：</label>
+                                <div class="col-sm-8">
+                                    <input id="debit" name="debit" class="form-control" th:value="${journal.debit}" type="number" value="0">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">支出：</label>
+                                <div class="col-sm-8">
+                                    <input id="credit" name="credit" class="form-control" th:value="${journal.credit}" type="number" value="0">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">备注：</label>
+                                <div class="col-sm-8">
+                                    <textarea id="remark" name="remark" class="form-control" th:text="${journal.remark}" ></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button type="submit" class="btn btn-primary">提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/cashier/journal/edit.js">
+	</script>
+</body>
+</html>

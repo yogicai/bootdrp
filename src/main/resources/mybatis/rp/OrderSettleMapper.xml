@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.rp.dao.RPOrderSettleDao">
+
+	<select id="get" resultType="com.bootdo.rp.domain.RPOrderSettleDO">
+		select `id`,`bill_no`,`settle_account`,`settle_name`,`payment_amount`,`remark`,`create_time`,`update_time` from rp_order_settle where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.rp.domain.RPOrderSettleDO">
+		select `id`,`bill_no`,`settle_account`,`settle_name`,`payment_amount`,`remark`,`create_time`,`update_time` from rp_order_settle
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
+		  		  <if test="settleAccount != null and settleAccount != ''"> and settle_account = #{settleAccount} </if>
+                  <if test="settleName != null and settleName != ''"> and settle_name = #{settleName} </if>
+		  		  <if test="paymentAmount != null and paymentAmount != ''"> and payment_amount = #{paymentAmount} </if>
+		  		  <if test="remark != null and remark != ''"> and remark = #{remark} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+                  <if test="billNos != null and billNos.size()>0"> and bill_no in
+                      <foreach collection="billNos" index="index" item="item" open="(" separator="," close=")">
+                          #{item}
+                      </foreach>
+                  </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from rp_order_settle
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
+		  		  <if test="settleAccount != null and settleAccount != ''"> and settle_account = #{settleAccount} </if>
+                  <if test="settleName != null and settleName != ''"> and settle_name = #{settleName} </if>
+		  		  <if test="paymentAmount != null and paymentAmount != ''"> and payment_amount = #{paymentAmount} </if>
+		  		  <if test="remark != null and remark != ''"> and remark = #{remark} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.rp.domain.RPOrderSettleDO" useGeneratedKeys="true" keyProperty="id">
+		insert into rp_order_settle
+		(
+            `bill_no`,`settle_account`,`settle_name`,``payment_amount`,`remark`
+		)
+		values
+		(
+			#{billNo},#{settleAccount},#{settleName},#{paymentAmount},#{remark}
+		)
+		ON DUPLICATE KEY UPDATE
+        settle_account= VALUES(settle_account),settle_name= VALUES(settle_name),payment_amount= VALUES(payment_amount),remark= VALUES(remark)
+	</insert>
+
+
+    <insert id ="saveBatch" parameterType="java.util.List" >
+        insert into rp_order_settle
+        (
+            `bill_no`,`settle_account`,`settle_name`,`payment_amount`,`remark`
+        )
+        values
+        <foreach collection ="list" item="item" index= "index" separator =",">
+            (
+            #{item.billNo},#{item.settleAccount},#{item.settleName},#{item.paymentAmount},#{item.remark}
+            )
+        </foreach >
+    </insert>
+
+
+	<update id="update" parameterType="com.bootdo.rp.domain.RPOrderSettleDO">
+		update rp_order_settle 
+		<set>
+			<if test="billNo != null">`bill_no` = #{billNo}, </if>
+			<if test="settleAccount != null">`settle_account` = #{settleAccount}, </if>
+            <if test="settleName != null">`settle_name` = #{settleName}, </if>
+			<if test="paymentAmount != null">`payment_amount` = #{paymentAmount}, </if>
+			<if test="remark != null">`remark` = #{remark} </if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from rp_order_settle where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from rp_order_settle where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+    <delete id="delete">
+        delete from rp_order_settle
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <if test="id != null and id != ''"> and id = #{id} </if>
+            <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
+            <if test="settleAccount != null and settleAccount != ''"> and settle_account = #{settleAccount} </if>
+            <if test="billNos != null and billNos.size() > 0"> and bill_no in
+                <foreach collection="billNos" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </trim>
+    </delete>
+
+</mapper>

@@ -1,0 +1,148 @@
+/*
+ * 自定义CSS
+*/
+.tool-span-addon {
+    background-color: transparent;
+    border: 0px solid #E5E6E7;
+    border-radius: 1px;
+    color: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    padding: 5px 2px 5px 2px;
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.tool-pull-left {
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+.util-ibox {
+    clear: both;
+    margin-bottom: 10px;
+    margin-top: 0;
+    padding: 0;
+}
+
+.util-ibox-content {
+    padding: 10px 20px 10px 15px;
+}
+
+.util-form-label {
+    display: inline-block;
+    width: 80px;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.util-hr-line {
+    border-top: 1px solid #e7eaec;
+    color: #ffffff;
+    background-color: #ffffff;
+    height: 1px;
+    margin: 10px 0;
+}
+
+.util-line {
+    overflow: hidden;
+    zoom: 1;
+    height: 1px;
+    font-size: 0;
+    line-height: 0;
+    margin: 2px -2px;
+    background: #e2e2e2;
+    position: relative;
+}
+
+.util-settle-width {
+    width: 185px !important;
+}
+
+.util-has-audit {
+    width: 150px;
+    height: 74px;
+    background: url(../img/util/audit.png) 0 0 no-repeat;
+    position: absolute;
+    right: 70px;
+    bottom: 200px;
+}
+
+.util-m-main {
+    margin-left: -50px;
+}
+
+.util-p-l-none {
+    padding-left: 0px;
+}
+
+.util-p-r-none {
+    padding-right: 0px;
+}
+
+/* 修改jqGrid表头居中对齐 */
+th.ui-th-ltr {
+    text-align: center;
+}
+
+/* main页面 */
+#content-main {
+    height: calc(100% - 120px) !important; /* 主窗口任务栏高度 */
+    overflow: hidden;
+}
+
+.util-wrapper-content {
+    padding: 10px 20px;
+}
+
+.panel-stat3 {
+    position: relative;
+    overflow: hidden;
+    padding: 18px 20px;
+    margin-bottom: 10px;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+.no-radius {
+    border-radius: 0 !important;
+}
+.btn-fine {
+    background-color: #87b87f;
+    border-color: #87b87f;
+}
+.btn-fine:hover {
+    background-color: #629b58;
+    border-color: #87b87f;
+}
+.panel-stat3 .stat-icon {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    font-size: 30px;
+    opacity: 0.3;
+}
+.panel-stat3 .refresh-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transition: all 0.2s ease;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -ms-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    color: rgba(0, 0, 0, 0.3);
+}
+.panel-stat3 .refresh-button:hover {
+    color: #fff;
+    transition: all 0.2s ease;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -ms-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+}
