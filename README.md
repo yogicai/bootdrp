@@ -3,7 +3,7 @@
 ## 平台简介
 
 在[BootDo](https://github.com/lcg0124/bootdo)基础上，增加了进销存管理（DRP）模块。
-![image](https://github.com/yogicai/bootdrp/blob/master/bootdo/bootdrp.png)
+![image](https://github.com/yogicai/bootdrp/blob/master/bootdrp.png)
 
 ## 内置功能
 
