@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.bootdo</groupId>
-    <artifactId>bootdo</artifactId>
+    <artifactId>bootdrp</artifactId>
     <version>1.5.0</version>
     <packaging>jar</packaging>
 
-    <name>bootdo</name>
+    <name>bootdrp</name>
     <description>Demo project for Spring Boot</description>
 
     <parent>
@@ -205,6 +205,13 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>swagger-bootstrap-ui</artifactId>
             <version>1.9.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.16</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- xss过滤组件 -->

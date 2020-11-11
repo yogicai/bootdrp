@@ -24,7 +24,7 @@ import java.util.Map;
 @RequestMapping("/report")
 public class WHReportController extends BaseController{
 	@Autowired
-	private WHReportService reportService;
+	private WHReportService whReportService;
 
     /**
      * 库存余量查询-左侧菜单
@@ -43,7 +43,7 @@ public class WHReportController extends BaseController{
     @RequiresPermissions("wh:report:pBalance")
     R pBalance(@RequestBody Map<String, Object> params, Model model) {
         params.put("status", 1);
-        WHPBalanceResult result = reportService.pBalance(params);
+        WHPBalanceResult result = whReportService.pBalance(params);
         return R.ok().put("result", result);
     }
 
@@ -55,7 +55,7 @@ public class WHReportController extends BaseController{
     @RequiresPermissions("wh:report:pBalance")
     R pBalanceTotal(@RequestBody Map<String, Object> params, Model model) {
         params.put("status", 1);
-        WHPBalanceTotalResult result = reportService.pBalanceTotal(params);
+        WHPBalanceTotalResult result = whReportService.pBalanceTotal(params);
         return R.ok().put("result", result);
     }
 }

@@ -3,7 +3,7 @@
 
 <mapper namespace="com.bootdo.report.dao.ReportDao">
 
-    <select id="sReconC" resultType="java.util.HashMap">
+    <select id="sReconC" resultType="java.util.Map">
         SELECT a.`consumer_id` AS instituteId, a.`consumer_name` AS instituteName,
               CONCAT(DATE_FORMAT(MIN(a.`bill_date`),"%Y-%m-%d"), ' - ', DATE_FORMAT(MAX(a.`bill_date`),"%Y-%m-%d")) AS billRegion,
               SUM(a.`total_amount`) AS totalAmount, SUM(a.`payment_amount`) AS paymentAmount, SUM(a.`total_amount`) - SUM(a.`payment_amount`) AS debtAmount FROM se_order a
@@ -17,7 +17,7 @@
         ORDER BY debtAmount DESC
     </select>
 
-    <select id="sReconV" resultType="java.util.HashMap">
+    <select id="sReconV" resultType="java.util.Map">
         SELECT a.`vendor_id` AS instituteId, a.`vendor_name` AS instituteName,
               CONCAT(DATE_FORMAT(MIN(a.`bill_date`),"%Y-%m-%d"), ' - ', DATE_FORMAT(MAX(a.`bill_date`),"%Y-%m-%d")) AS billRegion,
               SUM(a.`total_amount`) AS totalAmount, SUM(a.`payment_amount`) AS paymentAmount, SUM(a.`total_amount`) - SUM(a.`payment_amount`) AS debtAmount FROM po_order a
@@ -31,7 +31,7 @@
         ORDER BY debtAmount DESC
     </select>
 
-    <select id="mainTabCustomer" resultType="java.util.HashMap">
+    <select id="mainTabCustomer" resultType="java.util.Map">
         SELECT a.`consumer_id` as no, a.`consumer_name` as name, SUM(a.`total_amount`) AS amount1, SUM(a.`total_amount` - a.`payment_amount`) AS amount2 FROM `se_order` a
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             <if test="start != null and start != ''"> and a.bill_date >= #{start} </if>
@@ -41,7 +41,7 @@
         GROUP BY a.`consumer_id`
     </select>
 
-    <select id="mainTabProduct" resultType="java.util.HashMap">
+    <select id="mainTabProduct" resultType="java.util.Map">
         SELECT b.`entry_id` AS no, b.`entry_name` AS name, SUM(b.`total_qty`) AS amount1, SUM(b.`total_amount`) AS amount2
         FROM `se_order` a LEFT JOIN `se_order_entry` b ON a.`bill_no`=b.`bill_no`
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
@@ -52,7 +52,7 @@
         GROUP BY b.`entry_id`
     </select>
 
-    <select id="saleProduct" resultType="java.util.HashMap">
+    <select id="saleProduct" resultType="java.util.Map">
         SELECT a.`entry_id` as entryId, a.`entry_name` as entryName, a.`entry_unit` as entryUnit, SUM(a.`total_qty`) AS totalQty, AVG(a.`entry_price`) AS entryPrice,
             SUM(a.`cost_amount`) AS costAmount, SUM(a.`entry_amount`) AS entryAmount, COUNT(0) AS billCount, (SUM(a.`entry_amount`) - SUM(a.`cost_amount`)) as billProfit,
             DATE_FORMAT(MIN(b.`bill_date`), '%Y-%m-%d') startDate, DATE_FORMAT(MAX(b.`bill_date`), '%Y-%m-%d') endDate

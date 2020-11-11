@@ -12,30 +12,44 @@ import com.bootdo.report.controller.response.SEDebtTotalResult;
 import com.bootdo.report.controller.response.echart.EChartOption;
 import com.bootdo.report.controller.response.echart.PieData;
 import com.bootdo.report.dao.SEReportDao;
+import com.bootdo.report.enums.BillStatType;
+import com.bootdo.report.enums.EChartSeriesType;
 import com.bootdo.se.dao.SEOrderDao;
 import com.bootdo.se.domain.SEOrderDO;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.map.MultiKeyMap;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
+import java.util.stream.IntStream;
 
-
+/**
+ * @author caiyz
+ * @since 2020-11-10 14:48
+ */
 @Service
 public class SEReportService {
-    @Autowired
+    @Resource
     private SEOrderDao seOrderDao;
-    @Autowired
+    @Resource
     private OrderDao orderDao;
-    @Autowired
-    private SEReportDao reportDao;
+    @Resource
+    private SEReportDao seReportDao;
 
-    private final int topCount = 9; //饼图展示前十名
-    private final String topName = "其他"; //饼图展示前十名
+    /** 饼图展示前十名 */
+    private final int topCount = 9;
+    /** 饼图展示前十名 */
+    private final String topName = "其他";
+    /** 12月份 */
+    private final List<String> month_series = Lists.newArrayList("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月");
 
 
     public SEBillTotalResult pBalanceTotal(Map<String, Object> params) {
@@ -65,7 +79,7 @@ public class SEReportService {
         EChartOption option = new EChartOption(1, 2, 3);
         String type = MapUtils.getString(params, "type", Constant.Q_MONTH);
         params.put("billDate", DateUtils.getDayStartStr(type));
-        List<Map<String, Object>> seList = reportDao.pBillTrend(params);
+        List<Map<String, Object>> seList = seReportDao.pBillTrend(params);
 
         option.getxAxis().get(0).getData().addAll(DateUtils.getDaySerial(type));
 
@@ -106,7 +120,7 @@ public class SEReportService {
         EChartOption option = new EChartOption(0, 0, 2);
         String type = MapUtils.getString(params, "type", Constant.Q_MONTH);
         params.put("billDate", DateUtils.getDayStartStr(type));
-        List<Map<String, Object>> seList = reportDao.pBillTrendPie(params);
+        List<Map<String, Object>> seList = seReportDao.pBillTrendPie(params);
 
         int count = 1;
         BigDecimal profitAmountOther = BigDecimal.ZERO, totalAmountOther = BigDecimal.ZERO;
@@ -129,7 +143,7 @@ public class SEReportService {
     }
 
     public R pCashTotal(Map<String, Object> params) {
-        List<Map<String, Object>>  list = reportDao.pCashTrend(params);
+        List<Map<String, Object>>  list = seReportDao.pCashTrend(params);
         if (CollectionUtils.isNotEmpty(list)) {
             return R.ok(ImmutableMap.of("profitAmountT",MapUtils.getBigDecimal(list.get(0), "profitAmount"), "cashFlowAmountT",MapUtils.getBigDecimal(list.get(0), "cashFlowAmount")));
         }
@@ -140,7 +154,7 @@ public class SEReportService {
         EChartOption option = new EChartOption(1, 2, 3);
         String type = MapUtils.getString(params, "type", Constant.Q_MONTH);
         params.put("billDate", DateUtils.getDayStartStr(type));
-        List<Map<String, Object>> seList = reportDao.pCashTrend(params);
+        List<Map<String, Object>> seList = seReportDao.pCashTrend(params);
 
         option.getxAxis().get(0).getData().addAll(DateUtils.getDaySerial(type));
 
@@ -163,6 +177,48 @@ public class SEReportService {
         }
         option.getyAxis().get(0).setMax(NumberUtils.roundIntervalCeil(maxYAxis, 4, 5));
         option.getyAxis().get(0).setInterval(NumberUtils.roundInterval(maxYAxis, 4));
+        return option;
+    }
+
+    public EChartOption pHisPBillTrend(Map<String, Object> params) {
+
+        //图表数据类型
+        BillStatType type = BillStatType.valueOf(MapUtils.getString(params, "type"));
+        //销售单历史数据
+        List<Map<String, Object>> seList = seReportDao.pHisPBillTrend(params);
+
+        TreeSet yearSet = new TreeSet();
+        MultiKeyMap<String, Map> multiKeyMap = new MultiKeyMap();
+        seList.stream().forEach(m -> {
+            multiKeyMap.put(MapUtils.getString(m, "otime"), MapUtils.getString(m, "time"), m);
+            yearSet.add(MapUtils.getString(m, "otime"));
+        });
+
+        //图表数据
+        EChartOption option = new EChartOption(1, 1, yearSet.size());
+        //图表数据Series
+        List<String> yearList = new ArrayList<>(yearSet);
+        IntStream.rangeClosed(0, yearList.size() -1).forEach(i -> {
+            IntStream.rangeClosed(1, 12).forEach(m -> {
+                String year = yearList.get(i);
+                double value = MapUtils.getDoubleValue(multiKeyMap.get(year, String.valueOf(m)), type.column());
+                option.getSeries().get(i).getData().add(value);
+            });
+
+            option.getSeries().get(i).setType(EChartSeriesType.LINE.value());
+            option.getSeries().get(i).setName(yearList.get(i) + "年");
+            option.getLegend().getData().add(yearList.get(i) + "年");
+        });
+
+
+        option.getTitle().setText(type.text());
+        option.getxAxis().get(0).getData().addAll(month_series);
+        //销售单Series最大值
+        double maxYAxis = option.getSeries().stream().flatMap(s -> s.getData().stream()).mapToDouble(s -> Double.valueOf(s.toString())).max().getAsDouble();
+        //设置图表Y轴坐标
+        option.getyAxis().get(0).setMax(NumberUtils.roundIntervalCeil(BigDecimal.valueOf(maxYAxis), 4, 5));
+        option.getyAxis().get(0).setInterval(NumberUtils.roundInterval(BigDecimal.valueOf(maxYAxis), 4));
+
         return option;
     }
 }

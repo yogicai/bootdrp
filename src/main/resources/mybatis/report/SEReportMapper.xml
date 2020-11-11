@@ -3,7 +3,23 @@
 
 <mapper namespace="com.bootdo.report.dao.SEReportDao">
 
-    <select id="pBillTrend" resultType="java.util.HashMap">
+    <select id="pHisPBillTrend" resultType="java.util.Map">
+        SELECT
+            DATE_FORMAT(so.`bill_date`, '%Y') AS otime, DATE_FORMAT(so.`bill_date`, '%c') AS time,
+            COUNT(0) AS count, SUM(so.`total_amount`) AS totalAmount, SUM(so.`payment_amount`) AS paymentAmount, SUM(so.`cost_amount`) as costAmount,
+            SUM(so.`total_amount`) - SUM(so.`payment_amount`) AS debtAmount,
+            SUM(so.`total_amount`) - SUM(so.`cost_amount`) AS profitAmount
+        FROM
+            se_order so
+        where
+            so.`audit_status`='YES'
+        GROUP BY
+            DATE_FORMAT(so.`bill_date`, '%Y%m')
+        order by
+            DATE_FORMAT(so.`bill_date`, '%Y%m')
+    </select>
+
+    <select id="pBillTrend" resultType="java.util.Map">
         SELECT
             <choose>
                 <when test="type != null and type.trim == 'DAY'"> DATE_FORMAT(so.`bill_date`, '%Y%m%d') AS otime, DATE_FORMAT(so.`bill_date`, '%d') AS time, </when>
@@ -24,7 +40,7 @@
         </choose>
     </select>
 
- 	<select id="pBillTrendPie" resultType="java.util.HashMap">
+ 	<select id="pBillTrendPie" resultType="java.util.Map">
         SELECT dp.`type`, dc.`name`, COUNT(DISTINCT so.`bill_no`) as count, ROUND(SUM( (se.`entry_price` - se.`cost_price`) * se.`total_qty`), 2) AS profitAmount, SUM(se.`total_amount`) as totalAmount FROM se_order so LEFT JOIN se_order_entry se ON so.`bill_no`=se.`bill_no` LEFT JOIN data_product dp ON se.`entry_id`=dp.`no` LEFT JOIN data_category dc ON dp.`type` =dc.`category_id`
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             so.`audit_status`='YES'
@@ -33,7 +49,7 @@
         GROUP BY dp.`type` ORDER BY totalAmount DESC
 	</select>
 
-    <select id="pCashTrend" resultType="java.util.HashMap">
+    <select id="pCashTrend" resultType="java.util.Map">
         SELECT
         <choose>
             <when test="type != null and type.trim == 'DAY'"> DATE_FORMAT(spo.`bill_date`, '%Y%m%d') AS otime, DATE_FORMAT(spo.`bill_date`, '%d') AS time, </when>

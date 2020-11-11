@@ -11,8 +11,8 @@ import com.bootdo.report.controller.response.SEDebtTotalResult;
 import com.bootdo.report.controller.response.echart.EChartOption;
 import com.bootdo.report.service.SEReportService;
 import com.google.common.collect.ImmutableMap;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -31,9 +32,10 @@ import java.util.Map;
  
 @Controller
 @RequestMapping("/report")
-public class SEReportController extends BaseController{
-	@Autowired
-	private SEReportService reportService;
+@Api(value = "首页-销售单报表")
+public class SEReportController extends BaseController {
+	@Resource
+	private SEReportService seReportService;
 
     /**
      * 销售总额 + 销售毛利(首页统计图)
@@ -43,10 +45,12 @@ public class SEReportController extends BaseController{
     @RequiresPermissions("wh:report:pBalance")
     R pSeTotal(@RequestBody Map<String, Object> params, Model model) {
         SEBillTotalResult result = new SEBillTotalResult();
-        int days = MapUtils.getIntValue(params, "days"); //过去多少天
-        String type = MapUtils.getString(params, "type"); //WEEK MONTH
+        int days = MapUtils.getIntValue(params, "days");
+        //过去多少天
+        String type = MapUtils.getString(params, "type");
+        //WEEK MONTH
         Map<String, Object> param = StringUtil.isEmpty(type) ? ImmutableMap.of("billDateStart", DateUtils.getStartStr(-days),"audit", AuditStatus.YES.name()) : ImmutableMap.of("billDateStart", DateUtils.getStartStr(type),"audit", AuditStatus.YES.name());
-        result = reportService.pBalanceTotal(param);
+        result = seReportService.pBalanceTotal(param);
         return R.ok().put("result", result);
     }
 
@@ -57,7 +61,7 @@ public class SEReportController extends BaseController{
     @RequestMapping(value = "/pDebtTotal", method = RequestMethod.POST)
     @RequiresPermissions("wh:report:pBalance")
     R pDebtTotal(@RequestBody Map<String, Object> params, Model model) {
-        SEDebtTotalResult result = reportService.pDebtTotal(ImmutableMap.of("audit", AuditStatus.YES.name()));
+        SEDebtTotalResult result = seReportService.pDebtTotal(ImmutableMap.of("audit", AuditStatus.YES.name()));
         return R.ok().put("result", result);
     }
 
@@ -68,7 +72,7 @@ public class SEReportController extends BaseController{
     @RequestMapping(value = "/pBillTrend", method = RequestMethod.POST)
     @RequiresPermissions("wh:report:pBalance")
     R pSEBillTrend(@RequestBody Map<String, Object> params, Model model) {
-        EChartOption option = reportService.pBillTrend(params);
+        EChartOption option = seReportService.pBillTrend(params);
         return R.ok().put("result", option);
     }
 
@@ -79,7 +83,7 @@ public class SEReportController extends BaseController{
     @RequestMapping(value = "/pBillTrendPie", method = RequestMethod.POST)
     @RequiresPermissions("wh:report:pBalance")
     R pSEBillTrendPie(@RequestBody Map<String, Object> params, Model model) {
-        EChartOption option = reportService.pBillTrendPie(params);
+        EChartOption option = seReportService.pBillTrendPie(params);
         return R.ok().put("result", option);
     }
 
@@ -90,7 +94,7 @@ public class SEReportController extends BaseController{
     @RequestMapping(value = "/pCashTotal", method = RequestMethod.POST)
     @RequiresPermissions("wh:report:pBalance")
     R pCashTotal(@RequestBody Map<String, Object> params, Model model) {
-        return reportService.pCashTotal(ImmutableMap.of("audit", AuditStatus.YES.name(), "billDate", DateUtils.getYearBegin()));
+        return seReportService.pCashTotal(ImmutableMap.of("audit", AuditStatus.YES.name(), "billDate", DateUtils.getYearBegin()));
     }
 
     /**
@@ -100,7 +104,18 @@ public class SEReportController extends BaseController{
     @RequestMapping(value = "/pCashTrend", method = RequestMethod.POST)
     @RequiresPermissions("wh:report:pBalance")
     R pCashTrend(@RequestBody Map<String, Object> params, Model model) {
-        EChartOption option = reportService.pCashTrend(params);
+        EChartOption option = seReportService.pCashTrend(params);
+        return R.ok().put("result", option);
+    }
+
+    /**
+     * 历史订单趋势图 订单金额 订单数 毛利润 欠款 (首页趋势图)
+     */
+    @ResponseBody
+    @RequestMapping(value = "/pHisPCashTrend", method = RequestMethod.POST)
+    @RequiresPermissions("wh:report:pBalance")
+    R pHisPBillTrend(@RequestBody Map<String, Object> params, Model model) {
+        EChartOption option = seReportService.pHisPBillTrend(params);
         return R.ok().put("result", option);
     }
 }

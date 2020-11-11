@@ -18,25 +18,28 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 
-
+/**
+ * @author caiyz
+ * @since 2020-11-10 14:48
+ */
 @Service
 public class WHReportService {
-	@Autowired
+	@Resource
 	private WHReportDao whReportDao;
-    @Autowired
+    @Resource
     private ProductCostDao productCostDao;
 
     private final Set<String> poBillSet = Sets.newHashSet(BillType.CG_ORDER.name(), BillType.WH_RK_ORDER.name());
     private final Set<String> seBillSet = Sets.newHashSet(BillType.TH_ORDER.name(), BillType.WH_CK_ORDER.name());
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public WHPBalanceResult pBalance(Map<String, Object> params){
         List<Map<String, Object>> list = whReportDao.pBalance(params);
         TreeMap<String, List<Map<String, Object>>> listMap = Maps.newTreeMap();
@@ -49,8 +52,9 @@ public class WHReportService {
             String key = MapUtils.getString(map, "no");
             if (!listMap.containsKey(key)) {
                 listMap.put(key, Lists.newArrayList());
-                if (!StringUtil.isEmpty(MapUtils.getString(map, "stock_no")))
+                if (!StringUtil.isEmpty(MapUtils.getString(map, "stock_no"))) {
                     stockMap.put(MapUtils.getString(map, "stock_no"), MapUtils.getString(map, "stock_name"));
+                }
             }
             listMap.get(key).add(map);
         }
@@ -61,12 +65,15 @@ public class WHReportService {
             costDOMap.put(costDO.getProductNo(), costDO);
         }
         //处理商品信息及总库存信息
-        boolean showSto = MapUtils.getIntValue(params, "showSto", 1) == 0; //是否查询零库存商品（0:是，其他:否）
+        //是否查询零库存商品（0:是，其他:否）
+        boolean showSto = MapUtils.getIntValue(params, "showSto", 1) == 0;
         for (Map.Entry<String, List<Map<String, Object>>> entry : listMap.entrySet()) {
             WHProductInfo productInfo = convertProductInfo(entry.getValue(), costDOMap);
-            if (showSto && BigDecimal.ZERO.compareTo(productInfo.getInventory()) >= 0) { //零库存商品
+            if (showSto && BigDecimal.ZERO.compareTo(productInfo.getInventory()) >= 0) {
+                //零库存商品
                 result.getProductInfoList().add(productInfo);
-            } else if (!showSto) { //全部商品
+            } else if (!showSto) {
+                //全部商品
                 result.getProductInfoList().add(productInfo);
             }
         }
@@ -86,11 +93,17 @@ public class WHReportService {
 
     private WHProductInfo convertProductInfo(List<Map<String, Object>> mapList, Map<String, ProductCostDO> costDOMap) {
         WHProductInfo productInfo = new WHProductInfo();
-        if (CollectionUtils.isEmpty(mapList)) return productInfo;
-        BigDecimal qtyTotal = BigDecimal.ZERO; //历史商品数量
-        BigDecimal inventoryTotal = BigDecimal.ZERO; //商品库存
-        BigDecimal entryAmountTotal = BigDecimal.ZERO; //历史商品金额
-        BigDecimal totalAmountTotal = BigDecimal.ZERO; //历史商品金额 + 历史费用（分录级别）
+        if (CollectionUtils.isEmpty(mapList)) {
+            return productInfo;
+        }
+        BigDecimal qtyTotal = BigDecimal.ZERO;
+        //历史商品数量
+        BigDecimal inventoryTotal = BigDecimal.ZERO;
+        //商品库存
+        BigDecimal entryAmountTotal = BigDecimal.ZERO;
+        //历史商品金额
+        BigDecimal totalAmountTotal = BigDecimal.ZERO;
+        //历史商品金额 + 历史费用（分录级别）
         for (Map<String, Object> map : mapList) {
             inventoryTotal = inventoryTotal.add(defaultStockAmount(map));
             qtyTotal = qtyTotal.add(defaultEntryAmount(map, "total_qty"));

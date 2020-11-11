@@ -9,18 +9,20 @@ import com.bootdo.common.utils.StringUtil;
 import com.bootdo.report.dao.ReportDao;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * @author caiyz
+ * @since 2020-11-10 14:48
+ */
 @Service
 public class ReportService {
-    @Autowired
+    @Resource
     private ReportDao reportDao;
 
 

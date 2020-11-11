@@ -13,6 +13,8 @@ import java.util.Map;
 @Mapper
 public interface SEReportDao {
 
+    List<Map<String, Object>> pHisPBillTrend(Map<String, Object> map);
+
     List<Map<String, Object>> pBillTrend(Map<String, Object> map);
 
     List<Map<String, Object>> pBillTrendPie(Map<String, Object> map);

@@ -11,6 +11,7 @@ import java.util.List;
 */
 public class EChartOption {
 
+    private TitleData title = new TitleData();
     private LegendData legend = new LegendData();
     private List<XAxisData> xAxis = Lists.newArrayList();
     private List<YAxisData> yAxis = Lists.newArrayList();
@@ -29,6 +30,14 @@ public class EChartOption {
         for (int i=0; i<seriesNum; i++) {
             series.add(new SeriesData());
         }
+    }
+
+    public TitleData getTitle() {
+        return title;
+    }
+
+    public void setTitle(TitleData title) {
+        this.title = title;
     }
 
     public LegendData getLegend() {
