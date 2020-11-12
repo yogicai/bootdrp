@@ -2,6 +2,7 @@ package com.bootdo.report.controller.response;
 
 import com.bootdo.wh.controller.response.WHProductInfo;
 import com.google.common.collect.Lists;
+import lombok.Data;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
 * @Author: yogiCai
 * @Date: 2018-02-01 10:43:43
 */
+@Data
 public class WHPBalanceResult {
     /** 库存日期 */
     private String toDate;
@@ -18,19 +20,4 @@ public class WHPBalanceResult {
     /** 商品信息 */
 	private final List<WHProductInfo> productInfoList = Lists.newArrayList();
 
-    public String getToDate() {
-        return toDate;
-    }
-
-    public void setToDate(String toDate) {
-        this.toDate = toDate;
-    }
-
-    public List<String> getStockList() {
-        return stockList;
-    }
-
-    public List<WHProductInfo> getProductInfoList() {
-        return productInfoList;
-    }
 }

@@ -1,9 +1,12 @@
 package com.bootdo.report.controller.response.echart;
 
+import lombok.Data;
+
 /**
 * @Author: yogiCai
 * @Date: 2018-02-01 10:43:43
 */
+@Data
 public class YAxisData {
 
     private String type = "value";
@@ -12,43 +15,4 @@ public class YAxisData {
     private int max = 250;
     private int interval = 50;
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getMin() {
-        return min;
-    }
-
-    public void setMin(int min) {
-        this.min = min;
-    }
-
-    public int getMax() {
-        return max;
-    }
-
-    public void setMax(int max) {
-        this.max = max;
-    }
-
-    public int getInterval() {
-        return interval;
-    }
-
-    public void setInterval(int interval) {
-        this.interval = interval;
-    }
 }
