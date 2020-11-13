@@ -205,7 +205,7 @@ public class SEReportService {
                 option.getSeries().get(i).getData().add(value);
             });
 
-            option.getSeries().get(i).setType(EChartSeriesType.LINE.value());
+            option.getSeries().get(i).setType(EChartSeriesType.BAR.value());
             option.getSeries().get(i).setName(yearList.get(i) + "年");
             option.getLegend().getData().add(yearList.get(i) + "年");
         });

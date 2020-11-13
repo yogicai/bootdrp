@@ -9,7 +9,7 @@ public enum EChartSeriesType {
     /** 曲线 */
     LINE("line"),
     /** 饼图 */
-    PIE("pie");
+    BAR("bar");
 
 
     private final String value;
