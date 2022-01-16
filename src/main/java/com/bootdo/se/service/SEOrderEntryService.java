@@ -120,7 +120,7 @@ public class SEOrderEntryService {
         }
         List<ProductCostDO> productCostDOList = productCostDao.listLate(ImmutableMap.of("productNos", entryNos));
         for (ProductCostDO productCostDO : productCostDOList) {
-            result.put(productCostDO.getProductNo().toString(), productCostDO);
+            result.putIfAbsent(productCostDO.getProductNo(), productCostDO);
         }
         return result;
     }
