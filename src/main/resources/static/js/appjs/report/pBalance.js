@@ -1,12 +1,14 @@
-var prefix = "/report";
-var tableGrid;
-var dataForm;
-var initData = [];
-var colNames = ['商品编号', '商品名称', '条形码',  '单位', '累计入库数', '商品单价', '商品金额', '库存数量', '单位成本', '成本'];
-var colModel = [
+let prefix = "/report";
+let prefixCost = "/data/product";
+let tableGrid;
+let dataForm;
+let initData = [];
+let currentRow = {};
+let colNames = ['商品编号', '商品名称', '条形码',  '单位', '累计入库数', '商品单价', '商品金额', '库存数量', '单位成本', '成本'];
+let colModel = [
     { name:'entryId', index:'entryId', editable:false, width:50 },
     { name:'entryName', index:'entryName', editable:false, sorttype:"text", width:150, frozen: true },
-    { name:'entryBarcode', index:'entryBarcode', editable:false, sorttype:"text", width:150 },
+    { name:'entryBarcode', index:'entryBarcode', editable:false, sorttype:"text", width:60 },
     { name:'entryUnit', index:'entryUnit', editable:false, sorttype:"float", align: "center", width:30, formatter : function (value,row,index){ return utils.formatType(value, "data_unit")} },
     { name:'qtyTotal', index:'qtyTotal', editable:false, width:70, align:"right", sorttype:"float", formatter:"number" },
     { name:'entryPrice', index:'entryPrice', editable:false, width:70, align:"right", sorttype:"float", formatter:"number" },
@@ -15,13 +17,13 @@ var colModel = [
     { name:'costPrice', index:'costPrice', editable:false, width:70, align:"right", sorttype:"float", formatter:"number" },
     { name:'costAmount', index:'costAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }];
 
-var rowTemplate = { name:'totalQty', index:'totalQty', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" };
-var rowTemplateFun = function (columnName) {  return $.extend({}, rowTemplate, {name:columnName}); };
+let rowTemplate = { name:'totalQty', index:'totalQty', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" };
+let rowTemplateFun = function (columnName) {  return $.extend({}, rowTemplate, {name:columnName}); };
 
-var groupHeaders = [{startColumnName: 'qtyTotal', numberOfColumns: 6, titleText: '<em>所有仓库</em>'}];
-var groupHeaderFun = function (columnName, number, titleText) { return {startColumnName: columnName, numberOfColumns: number, titleText: '<em>'+titleText+'</em>'}; };
+let groupHeaders = [{startColumnName: 'qtyTotal', numberOfColumns: 6, titleText: '<em>所有仓库</em>'}];
+let groupHeaderFun = function (columnName, number, titleText) { return {startColumnName: columnName, numberOfColumns: number, titleText: '<em>'+titleText+'</em>'}; };
 
-var gridConfig = {
+let gridConfig = {
         datatype: "local",
         data: initData,
         height: window.innerHeight - 180,
@@ -31,9 +33,16 @@ var gridConfig = {
         footerrow: true,
         colNames: colNames,
         colModel: colModel,
+/*        multiselect: true,
+        beforeSelectRow: function(rowid, e){
+            //单选效果
+            let _rowid = tableGrid.jqGrid("getGridParam", "selrow");
+            tableGrid.jqGrid('resetSelection');
+            return _rowid !== rowid;
+        },*/
         ondblClickRow: function (rowid, iRow, iCol, e) {
-            //TODO
-            layer.msg("商品收发明细表还未开发！");
+            currentRow = tableGrid.jqGrid("getRowData", rowid);
+            searchCost(currentRow);
         }
     };
 
@@ -52,9 +61,9 @@ function load() {
     tableGrid = $("#table_list").jqGrid(gridConfig);
 
     $(window).bind('resize', function () {
-        var width = $('.jqGrid_wrapper').width();
-        $('#table_list').setGridWidth(width);
-        $('#table_list').setGridHeight(window.innerHeight - 180);
+        let width = $('.jqGrid_wrapper').width();
+        tableGrid.setGridWidth(width);
+        tableGrid.setGridHeight(window.innerHeight - 180);
     });
 }
 
@@ -66,11 +75,11 @@ function loadGrid() {
         data: JSON.stringify(dataForm.serializeObject()),
         success: function (r) {
             if (r.code == 0) {
-                var stockList = r.result.stockList;
-                var _colNames = colNames.concat();
-                var _colModel = colModel.concat();
-                var _groupHeaders = groupHeaders.concat();
-                var _addColModelName = [];
+                let stockList = r.result.stockList;
+                let _colNames = colNames.concat();
+                let _colModel = colModel.concat();
+                let _groupHeaders = groupHeaders.concat();
+                let _addColModelName = [];
                 $.each(stockList, function (key, val) {
                     _colNames.push("库存数量");
                     _colModel.push(rowTemplateFun("totalQty".concat(key)));
@@ -82,10 +91,11 @@ function loadGrid() {
                         val["totalQty".concat(keyS)] = valS.totalQty;
                     });
                 });
-                var _gridConfig = $.extend({}, gridConfig, {height: window.innerHeight - 200    , colNames: _colNames, colModel: _colModel, data: r.result.productInfoList});
+                let _gridConfig = $.extend({}, gridConfig, {height: window.innerHeight - 200    , colNames: _colNames, colModel: _colModel, data: r.result.productInfoList});
                 $.jgrid.gridUnload('#table_list');
-                $('#table_list').jqGrid( _gridConfig ).trigger('reloadGrid');
-                $('#table_list').jqGrid('setGroupHeaders', { useColSpanStyle: true, groupHeaders: _groupHeaders });
+                tableGrid = $('#table_list').jqGrid( _gridConfig );
+                tableGrid.trigger("reloadGrid", { fromServer: true });
+                tableGrid.jqGrid('setGroupHeaders', { useColSpanStyle: true, groupHeaders: _groupHeaders });
 
                 collectTotal(_addColModelName);
 
@@ -103,15 +113,30 @@ function search() {
 
 //计算表格合计行数据
 function collectTotal(addColModelName){
-    var recordNum = $("#table_list").jqGrid('getGridParam', 'records');
-    var inventoryTotal=$("#table_list").getCol('inventory',false,'sum');
-    var entryAmountTotal=$("#table_list").getCol('entryAmount',false,'sum');
-    var totalAmountTotal=$("#table_list").getCol('totalAmount',false,'sum');
-    var totalCostTotal=$("#table_list").getCol('costAmount',false,'sum');
-    var totalAmountObj = { entryName: '合计:', entryBarcode:'商品数量：' + recordNum, inventory: inventoryTotal, costAmount: totalCostTotal, entryAmount: entryAmountTotal, totalAmount: totalAmountTotal };
+    let recordNum = $("#table_list").jqGrid('getGridParam', 'records');
+    let inventoryTotal=$("#table_list").getCol('inventory',false,'sum');
+    let entryAmountTotal=$("#table_list").getCol('entryAmount',false,'sum');
+    let totalAmountTotal=$("#table_list").getCol('totalAmount',false,'sum');
+    let totalCostTotal=$("#table_list").getCol('costAmount',false,'sum');
+    let totalAmountObj = { entryName: '合计:', entryBarcode:'商品数量：' + recordNum, inventory: inventoryTotal, costAmount: totalCostTotal, entryAmount: entryAmountTotal, totalAmount: totalAmountTotal };
     $.each(addColModelName, function (key, val){
         totalAmountObj[val] = $("#table_list").getCol(val,false,'sum');
     });
     // 设置表格合计项金额
-    $("#table_list").footerData('set', totalAmountObj);
-};
+    tableGrid.footerData('set', totalAmountObj);
+}
+
+function searchCost(rowData) {
+    layer.open({
+        type : 2,
+        title : '商品成本',
+        maxmin : true,
+        shadeClose : false, // 点击遮罩关闭层
+        area : [ '1300px', '650px' ],
+        content : prefixCost + '/productCostB' // iframe的url
+    });
+}
+
+function getCurrentRow() {
+    return currentRow || {};
+}

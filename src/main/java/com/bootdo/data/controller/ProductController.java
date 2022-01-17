@@ -140,6 +140,15 @@ public class ProductController extends BaseController {
         return "data/product/productCost";
     }
 
+	/**
+	 * 库存全额查询页面-商品成本
+	 */
+	@GetMapping("/productCostB")
+	@RequiresPermissions("data:product:product")
+	String productCostB(){
+		return "data/product/productCostB";
+	}
+
     @ResponseBody
     @GetMapping("/listCost")
     @RequiresPermissions("data:product:product")

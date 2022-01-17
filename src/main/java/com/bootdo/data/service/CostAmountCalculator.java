@@ -235,7 +235,7 @@ public class CostAmountCalculator {
         }
         int count = 1;
         for (OrderEntryDO entryDO : entryDOList) {
-            BigDecimal avgFeeAmount = BigDecimal.ZERO;
+            BigDecimal avgFeeAmount;
             if (count == entryDOList.size()) {
                 avgFeeAmount = NumberUtils.subtract(purchaseFee, avgFeeTotal);
             } else {
@@ -267,7 +267,7 @@ public class CostAmountCalculator {
         List<ProductCostDO> costDOList = productCostDao.listLate(ImmutableMap.of("productNos", entryNoList, "latest", true));
         Map<String, ProductCostDO> costDOMap = Maps.newHashMap();
         for (ProductCostDO productCostDO : costDOList) {
-            costDOMap.put(productCostDO.getProductNo().toString(), productCostDO);
+            costDOMap.putIfAbsent(productCostDO.getProductNo(), productCostDO);
         }
         return costDOMap;
     }

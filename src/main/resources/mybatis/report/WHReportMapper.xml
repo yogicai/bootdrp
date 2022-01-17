@@ -28,6 +28,9 @@
             <if test="products != null"> and aa.no in
                 <foreach collection="products" index="index" item="item" open="(" separator="," close=")"> #{item}</foreach>
             </if>
+            <if test="searchText != null and searchText != ''">
+                and ( aa.no like '%${searchText}%' or aa.name like '%${searchText}%')
+            </if>
         </trim>
         GROUP BY aa.no, bb.bill_type, bb.stock_no
         <choose>

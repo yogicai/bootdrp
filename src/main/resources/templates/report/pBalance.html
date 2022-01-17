@@ -8,8 +8,12 @@
         <div class="ibox-body">
             <div class="fixed-table-toolbar form-inline">
                 <form id="search">
-                    <div class="input-group columns date pull-left">
-                        <input placeholder="请选择库存日期" id="date_1" type="text" name="toDate" class="form-control">
+                    <div class="columns pull-left nopadding">
+                        <input type="text" class="form-control" name="searchText" placeholder="请输入商品编号或名称" autocomplete="off">
+                    </div>
+
+                    <div class="input-group columns date pull-left tool-pull-left" style="margin-left: 5px; width: 120px;">
+                        <input placeholder="库存日期" id="date_1" type="text" name="toDate" class="form-control">
                     </div>
 
                     <div class="input-group columns pull-left tool-pull-left">
