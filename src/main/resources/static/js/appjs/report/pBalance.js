@@ -140,3 +140,16 @@ function searchCost(rowData) {
 function getCurrentRow() {
     return currentRow || {};
 }
+
+function exportExcel() {
+    let queryParam = dataForm.serialize();
+    let url = prefix + "/pBalance/export?" + queryParam //下载地址
+    downLoad(url ,'WHProductInfoResult.xls')
+}
+
+function downLoad(content,fileName){
+    let aEle = document.createElement("a"); // 创建a标签
+    aEle.download = fileName; // 设置下载文件的文件名
+    aEle.href = content; // content为后台返回的下载地址
+    aEle.click(); // 设置点击事件
+}

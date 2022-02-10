@@ -42,12 +42,18 @@ spring:
       dialect: org.hibernate.dialect.MySQL5Dialect
 configure:
     cdn:
-      echarts: https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js
-      bootstrap: https://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js
-      bootstrapCss: https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css
-      jquery: https://cdn.bootcss.com/jquery/2.1.4/jquery.min.js
-      jqueryUI: https://cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js
-      math: https://cdn.bootcss.com/mathjs/4.0.1/math.min.js
+#      echarts: https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js
+#      bootstrap: https://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js
+#      bootstrapCss: https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css
+#      jquery: https://cdn.bootcss.com/jquery/2.1.4/jquery.min.js
+#      jqueryUI: https://cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js
+#      math: https://cdn.bootcss.com/mathjs/4.0.1/math.min.js
+      echarts: /js/plugins/echarts/echarts-4.0.4.min.js
+      bootstrap: /js/bootstrap.min.js?v=3.3.6
+      bootstrapCss: /css/bootstrap.min.css?v=3.3.6
+      jquery: /js/jquery.min.js?v=2.1.4
+      jqueryUI: /js/plugins/jquery-ui/jquery-ui.min.js?v=1.10.4
+      math: /js/plugins/math/math.min.js?v=4.0.1
 web:
   login:
     cmd: cmd /c start http://localhost

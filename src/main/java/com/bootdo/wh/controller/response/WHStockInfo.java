@@ -1,6 +1,9 @@
 package com.bootdo.wh.controller.response;
 
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelIgnore;
+
 import java.math.BigDecimal;
 
 /**
@@ -9,10 +12,13 @@ import java.math.BigDecimal;
 */
 public class WHStockInfo {
 	//仓库编号
+    @ExcelIgnore
 	private String stockNo;
     //仓库名称
+    @Excel(name = "仓库名称", needMerge = true)
     private String stockName;
     //库存数量
+    @Excel(name = "库存数量", needMerge = true)
     private BigDecimal totalQty = BigDecimal.ZERO;
 
 

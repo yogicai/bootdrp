@@ -302,7 +302,7 @@ function add() {
             title : '增加',
             maxmin : true,
             shadeClose : false, // 点击遮罩关闭层
-            area : [ '900px', '550px' ],
+            area : [ '1000px', '600px' ],
             content : prefix + '/add' // iframe的url
         });
     }

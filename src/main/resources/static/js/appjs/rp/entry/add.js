@@ -17,17 +17,19 @@ function load() {
         ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
         colNames: ['源单编号', '业务类型', '单据类型', '单据日期', '单据金额', '已核销金额', '未核销金额', '本次核销金额', '备注'],
         colModel: [
-            { name:'billNo', index:'billNo', editable:false, sorttype:"text", width:200 },
+            { name:'billNo', index:'billNo', editable:false, sorttype:"text", width:150 },
             { name:'billType', index:'billType', editable:false, sorttype:"text", width:80, formatter:function (cellValue){return utils.formatEnum(cellValue, 'BILL_TYPE')} },
             { name:'billType', index:'billType', editable:false, sorttype:"text", width:80 },
-            { name:'billDate', index:'billDate', editable:false, width:90, sorttype:"date", formatter:"date", frozen: true },
+            { name:'billDate', index:'billDate', editable:false, width:100, sorttype:"date", formatter:"date", frozen: true },
             { name:'totalAmount', index:'totalAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
             { name:'paymentAmount', index:'paymentAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
-            { name:'unPaymentAmount', index:'paymentAmount', editable:false, width:80, align:"right", sorttype:"float", hidden:true, formatter:"number" },
+            { name:'unPaymentAmount', index:'unPaymentAmount', editable:false, width:80, align:"right", sorttype:"float", hidden:true, formatter:function (cellValue, option, rowdata){
+                return (rowdata['totalAmount'] - rowdata['paymentAmount']).toFixed(2)
+            } },
             { name:'checkAmount', index:'checkAmount', editable:false, width:80, align:"right", sorttype:"float", hidden:true, formatter:"number" },
             { name:'remark', index:'remark', editable:false, sorttype:"text", width:90 }
         ],
-        height: 300,
+        height: 350,
         autowidth: true,
         shrinkToFit: true,
         multiselect: true,
@@ -35,8 +37,15 @@ function load() {
         rowList: [100],
         pager: "#pager_list",
         viewrecords: true,
+        footerrow: true,
         serializeGridData: function (postdata) {
             return JSON.stringify(postdata);
+        },
+        onSelectRow: function (rowid, e) {
+            selectTotal();
+        },
+        loadComplete: function () {
+            selectTotal();
         }
     });
     // Setup buttons
@@ -88,4 +97,21 @@ function addAndClose() {
 function cancel() {
     var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
     parent.layer.close(index);
+}
+
+//计算表格合计行数据
+function selectTotal() {
+    let totalAmountTotal = 0.0;
+    let paymentAmountTotal = 0.0;
+    let unPaymentAmountTotal = 0.0;
+    let ids = tableGrid.jqGrid('getGridParam', 'selarrrow');
+    $(ids).each(function (index, id){
+        let row = tableGrid.jqGrid('getRowData', id);
+        totalAmountTotal = totalAmountTotal + (row['totalAmount']);
+        paymentAmountTotal = paymentAmountTotal + (row['paymentAmount']);
+        unPaymentAmountTotal = unPaymentAmountTotal + (row['totalAmount'] - row['paymentAmount']);
+    });
+    let totalAmountObj = { billDate: "<span style='color: red; font-size: medium' > 本次核销金额：</span>", totalAmount: unPaymentAmountTotal.toFixed(2) };
+    // 设置表格合计项金额
+    tableGrid.footerData('set', totalAmountObj);
 }

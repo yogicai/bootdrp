@@ -1,10 +1,12 @@
 package com.bootdo.report.controller;
 
 import com.bootdo.common.controller.BaseController;
+import com.bootdo.common.utils.PoiUtil;
 import com.bootdo.common.utils.R;
 import com.bootdo.report.controller.response.WHPBalanceResult;
 import com.bootdo.report.controller.response.WHPBalanceTotalResult;
 import com.bootdo.report.service.WHReportService;
+import com.bootdo.wh.controller.response.WHProductInfo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,6 +47,18 @@ public class WHReportController extends BaseController{
         params.put("status", 1);
         WHPBalanceResult result = whReportService.pBalance(params);
         return R.ok().put("result", result);
+    }
+
+    /**
+     * 库存余量导出
+     */
+    @ResponseBody
+    @RequestMapping(value = "/pBalance/export", method = RequestMethod.GET)
+    @RequiresPermissions("wh:report:pBalance")
+    void pBalanceExport(@RequestParam Map<String, Object> params, Model model) {
+        params.put("status", 1);
+        WHPBalanceResult result = whReportService.pBalance(params);
+        PoiUtil.exportExcelWithStream("WHProductInfoResult.xls", WHProductInfo.class, result.getProductInfoList());
     }
 
     /**
