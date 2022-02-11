@@ -1,8 +1,13 @@
 package com.bootdo.report.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.bootdo.common.controller.BaseController;
+import com.bootdo.common.utils.PoiUtil;
 import com.bootdo.common.utils.R;
+import com.bootdo.report.controller.response.SReconResult;
+import com.bootdo.report.controller.response.WHPBalanceResult;
 import com.bootdo.report.service.ReportService;
+import com.bootdo.wh.controller.response.WHProductInfo;
 import org.apache.commons.collections.MapUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
@@ -10,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,7 +43,7 @@ public class ReportController extends BaseController{
 	}
 
     /**
-     * 客户 供应商 应收就会款统计（statistics reconciliation）
+     * 客户 供应商 应收应付款统计（statistics reconciliation）
      */
     @ResponseBody
     @RequestMapping(value = "/sRecon", method = RequestMethod.POST)
@@ -45,6 +52,17 @@ public class ReportController extends BaseController{
         return reportService.sRecon(params);
     }
 
+    /**
+     * 客户 供应商 应收应付款统计（statistics reconciliation）
+     */
+    @ResponseBody
+    @RequestMapping(value = "/sRecon/export", method = RequestMethod.GET)
+    @RequiresPermissions("report:recon:recon")
+    void sReconVCExport(@RequestParam Map<String, Object> params, Model model) {
+        R r = reportService.sRecon(params);
+        List<SReconResult> result = JSON.parseArray(JSON.toJSONString(r.get("result")), SReconResult.class);
+        PoiUtil.exportExcelWithStream("SReconResult.xls", SReconResult.class, result);
+    }
 
     /**
      * main统计表格

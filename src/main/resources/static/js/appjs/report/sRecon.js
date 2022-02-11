@@ -5,16 +5,30 @@ var dataForm;
 var start;
 var end;
 var initData = [];
-var colNamesC = ['编号', '客户名称', '年度',  '应收金额', '收款金额', '欠款金额'];
-var colNamesV = ['编号', '供应商名称', '年度',  '应付金额', '付款金额', '欠款金额'];
+var colNamesC = ['编号', '客户名称', '年度',  '应收金额', '收款金额', '商品成本', '销售毛利', '欠款金额'];
+var colNamesV = ['编号', '供应商名称', '年度',  '应付金额', '付款金额', '', '', '欠款金额'];
 var colNames = type == 'CUSTOMER' ? colNamesC : colNamesV;
-var colModel = [
+var colModelC = [
     { name:'instituteId', index:'instituteId', editable:false, align: "center", width:30 },
     { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", width:60 },
-    { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center", width:60 },
+    { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center", width:80 },
     { name:'totalAmount', index:'totalAmount', editable:false, sorttype:"float", align: "right", width:80, formatter:"number" },
     { name:'paymentAmount', index:'paymentAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
-    { name:'debtAmount', index:'debtAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }    ];
+    { name:'costAmount', index:'costAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
+    { name:'profitAmount', index:'profitAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
+    { name:'debtAmount', index:'debtAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }
+];
+var colModelV = [
+    { name:'instituteId', index:'instituteId', editable:false, align: "center", width:30 },
+    { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", width:60 },
+    { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center", width:80 },
+    { name:'totalAmount', index:'totalAmount', editable:false, sorttype:"float", align: "right", width:80, formatter:"number" },
+    { name:'paymentAmount', index:'paymentAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
+    { name:'costAmount', index:'costAmount', editable:false, width:80, align:"right", sorttype:"float", hidden:true, formatter:"number" },
+    { name:'profitAmount', index:'profitAmount', editable:false, width:80, align:"right", sorttype:"float", hidden:true, formatter:"number" },
+    { name:'debtAmount', index:'debtAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }
+];
+var colModel = type == 'CUSTOMER' ? colModelC : colModelV;
 
 var gridConfig = {
         datatype: "local",
@@ -91,7 +105,15 @@ function collectTotal(){
     var totalAmountTotal=$("#table_list").getCol('totalAmount',false,'sum');
     var paymentAmountTotal=$("#table_list").getCol('paymentAmount',false,'sum');
     var debtAmountTotal=$("#table_list").getCol('debtAmount',false,'sum');
-    var totalAmountObj = { instituteId: '合计:', instituteName:'数量：' + recordNum, totalAmount: totalAmountTotal, paymentAmount: paymentAmountTotal, debtAmount: debtAmountTotal };
+    var costAmountTotal=$("#table_list").getCol('costAmount',false,'sum');
+    var profitAmountTotal=$("#table_list").getCol('profitAmount',false,'sum');
+    var totalAmountObj = { instituteId: '合计:', instituteName:'数量：' + recordNum, totalAmount: totalAmountTotal, paymentAmount: paymentAmountTotal, debtAmount: debtAmountTotal, costAmount: costAmountTotal, profitAmount: profitAmountTotal };
     // 设置表格合计项金额
     $("#table_list").footerData('set', totalAmountObj);
 };
+
+function exportExcel() {
+    let queryParam = dataForm.serialize();
+    let url = prefix + "/sRecon/export?" + queryParam //下载地址
+    utils.download(url ,'SReconResult.xls')
+}

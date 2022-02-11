@@ -6,7 +6,9 @@
     <select id="sReconC" resultType="java.util.Map">
         SELECT a.`consumer_id` AS instituteId, a.`consumer_name` AS instituteName,
               CONCAT(DATE_FORMAT(MIN(a.`bill_date`),"%Y-%m-%d"), ' - ', DATE_FORMAT(MAX(a.`bill_date`),"%Y-%m-%d")) AS billRegion,
-              SUM(a.`total_amount`) AS totalAmount, SUM(a.`payment_amount`) AS paymentAmount, SUM(a.`total_amount`) - SUM(a.`payment_amount`) AS debtAmount FROM se_order a
+              SUM(a.`total_amount`) AS totalAmount, SUM(a.`payment_amount`) AS paymentAmount, SUM(a.`total_amount`) - SUM(a.`payment_amount`) AS debtAmount,
+              SUM(a.`cost_amount`) AS costAmount, SUM(a.`total_amount`) - SUM(a.`cost_amount`) AS profitAmount
+        FROM se_order a
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             <if test="instituteId != null and instituteId != ''"> and consumer_id = #{instituteId} </if>
             <if test="start != null and start != ''"> and bill_date >= #{start} </if>

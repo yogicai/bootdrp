@@ -4,10 +4,13 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.export.styler.AbstractExcelExportStyler;
+import cn.afterturn.easypoi.excel.export.styler.ExcelExportStylerDefaultImpl;
+import cn.afterturn.easypoi.excel.export.styler.IExcelExportStyler;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.log.Log;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -44,7 +47,7 @@ public class PoiUtil {
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
             response.setContentType("application/octet-stream;charset=UTF-8");
             ServletOutputStream outputStream = response.getOutputStream();
-            Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), pojoClass, data);
+            Workbook workbook = ExcelExportUtil.exportExcel(new InnerExportParams(), pojoClass, data);
             workbook.write(outputStream);
             outputStream.close();
         } catch (IOException e) {
@@ -122,6 +125,47 @@ public class PoiUtil {
             log.error(">>> 导入数据异常：{}", e.getMessage());
         }
         return list;
+    }
+
+
+    /**
+     * 表头自定义
+     */
+    public static class InnerExportParams extends ExportParams {
+
+        public InnerExportParams() {
+            super.setHeight((short) 8);
+            super.setStyle(InnerExcelExportStylerDefaultImpl.class);
+        }
+
+    }
+
+
+    /**
+     * 表头自定义
+     */
+    public static class InnerExcelExportStylerDefaultImpl extends ExcelExportStylerDefaultImpl {
+
+        public InnerExcelExportStylerDefaultImpl(Workbook workbook) {
+            super(workbook);
+        }
+
+        @Override
+        public CellStyle getTitleStyle(short color) {
+            CellStyle titleStyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true); // 字体加粗
+            titleStyle.setFont(font);
+            titleStyle.setAlignment(HorizontalAlignment.CENTER);//居中
+            titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);//垂直居中
+            titleStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());//设置颜色
+            titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            titleStyle.setBorderRight(BorderStyle.DOTTED);//设置右边框
+            titleStyle.setAlignment(HorizontalAlignment.CENTER);
+            titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            titleStyle.setWrapText(true);
+            return titleStyle;
+        }
     }
 
 }
