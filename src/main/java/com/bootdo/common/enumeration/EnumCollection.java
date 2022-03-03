@@ -32,8 +32,9 @@ public class EnumCollection {
     //积分记录来源
     public static final EnumSet<PointSource> POINT_SOURCE = EnumSet.of(PointSource.ORDER, PointSource.RETURN, PointSource.MANUAL);
 
-    //成本类型
-    public static final EnumSet<CostType> COST_TYPE = EnumSet.of(CostType.PO_CG, CostType.PO_TH, CostType.WH_CK, CostType.WH_RK);
+    /** 成本类型 */
+    public static final EnumSet<CostType> COST_TYPE = EnumSet.of(CostType.PO_CG, CostType.PO_TH, CostType.WH_CK, CostType.WH_RK, CostType.MANUAL);
+    public static final EnumSet<CostVersion> COST_VERSION = EnumSet.of(CostVersion.CURRENT);
 
     /**
      * 表格列展示用
@@ -48,6 +49,7 @@ public class EnumCollection {
         setMap.put("POINT_STATUS", POINT_STATUS);
         setMap.put("POINT_SOURCE", POINT_SOURCE);
         setMap.put("COST_TYPE", COST_TYPE);
+        setMap.put("COST_VERSION", COST_VERSION);
         return setMap;
     }
 
@@ -64,6 +66,7 @@ public class EnumCollection {
         setMap.put("POINT_STATUS", convertEnumMap(POINT_STATUS));
         setMap.put("POINT_SOURCE", convertEnumMap(POINT_SOURCE));
         setMap.put("COST_TYPE", convertEnumMap(COST_TYPE));
+        setMap.put("COST_VERSION", convertEnumMap(COST_VERSION));
         return setMap;
     }
 

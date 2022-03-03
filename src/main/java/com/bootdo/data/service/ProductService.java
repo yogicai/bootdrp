@@ -1,8 +1,8 @@
 package com.bootdo.data.service;
 
-import com.bootdo.data.dao.ProductCostDao;
+import com.bootdo.engage.dao.ProductCostDao;
 import com.bootdo.data.dao.ProductDao;
-import com.bootdo.data.domain.ProductCostDO;
+import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.data.domain.ProductDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +15,8 @@ import java.util.Map;
 public class ProductService {
 	@Autowired
 	private ProductDao productDao;
-    @Autowired
-    private ProductCostDao productCostDao;
+	@Autowired
+	private ProductCostDao productCostDao;
 	
 	public ProductDO get(Integer id){
 		return productDao.get(id);
@@ -46,11 +46,11 @@ public class ProductService {
 		return productDao.batchRemove(ids);
 	}
 
-    public List<ProductCostDO> listCost(Map<String, Object> map){
+	public List<ProductCostDO> listCost(Map<String, Object> map){
         return productCostDao.list(map);
     }
 
-    public int countCost(Map<String, Object> map){
-        return productCostDao.count(map);
-    }
+	public int countCost(Map<String, Object> map){
+		return productCostDao.count(map);
+	}
 }

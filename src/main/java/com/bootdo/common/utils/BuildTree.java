@@ -1,5 +1,7 @@
 package com.bootdo.common.utils;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.NumberUtil;
 import com.bootdo.common.domain.AsyncTree;
 import com.bootdo.common.domain.Tree;
 
@@ -108,6 +110,10 @@ public class BuildTree {
 			}
 
 		}
+
+		CollectionUtil.sort(topNodes, Comparator.comparing(tree -> NumberUtils.toInt(tree.getId())));
+		topNodes.stream().forEach(tree -> tree.getChildren().sort(Comparator.comparing(t -> NumberUtils.toInt(t.getId()))));
+
 		return topNodes;
 	}
 

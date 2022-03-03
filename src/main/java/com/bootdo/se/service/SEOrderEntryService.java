@@ -3,10 +3,10 @@ package com.bootdo.se.service;
 
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.data.dao.ConsumerDao;
-import com.bootdo.data.dao.ProductCostDao;
+import com.bootdo.engage.dao.ProductCostDao;
 import com.bootdo.data.dao.ProductDao;
 import com.bootdo.data.domain.ConsumerDO;
-import com.bootdo.data.domain.ProductCostDO;
+import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.data.domain.ProductDO;
 import com.bootdo.data.domain.StockDO;
 import com.bootdo.data.service.StockService;

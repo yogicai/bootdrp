@@ -1,6 +1,6 @@
-package com.bootdo.data.dao;
+package com.bootdo.engage.dao;
 
-import com.bootdo.data.domain.ProductCostDO;
+import com.bootdo.engage.domain.ProductCostDO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -18,13 +18,17 @@ public interface ProductCostDao {
 	
 	List<ProductCostDO> list(Map<String, Object> map);
 
-    List<ProductCostDO> listLate(Map<String, Object> map);
-
 	int count(Map<String, Object> map);
-	
+
+	List<ProductCostDO> listLate(Map<String, Object> map);
+
+	List<ProductCostDO> costList(Map<String, Object> map);
+
+	int costCount(Map<String, Object> map);
+
 	int save(ProductCostDO productCost);
 
-    int saveBatch(List<ProductCostDO> productCostDOList);
+	int saveBatch(List<ProductCostDO> productCostDOList);
 	
 	int update(ProductCostDO productCost);
 	

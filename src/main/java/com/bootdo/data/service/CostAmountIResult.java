@@ -1,6 +1,6 @@
 package com.bootdo.data.service;
 
-import com.bootdo.data.domain.ProductCostDO;
+import com.bootdo.engage.domain.ProductCostDO;
 import com.google.common.collect.Maps;
 import org.springframework.stereotype.Service;
 

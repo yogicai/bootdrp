@@ -6,9 +6,9 @@ import com.bootdo.common.enumeration.BillType;
 import com.bootdo.common.enumeration.CostType;
 import com.bootdo.common.utils.DateUtils;
 import com.bootdo.common.utils.NumberUtils;
-import com.bootdo.data.dao.ProductCostDao;
+import com.bootdo.engage.dao.ProductCostDao;
 import com.bootdo.data.dao.ProductDao;
-import com.bootdo.data.domain.ProductCostDO;
+import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.data.domain.ProductDO;
 import com.bootdo.po.dao.OrderEntryDao;
 import com.bootdo.po.domain.OrderDO;
@@ -34,8 +34,8 @@ import java.util.TreeMap;
 
 @Service
 public class CostAmountCalculator {
-	@Autowired
-	private ProductCostDao productCostDao;
+    @Autowired
+    private ProductCostDao productCostDao;
     @Autowired
     private OrderEntryDao orderEntryDao;
     @Autowired

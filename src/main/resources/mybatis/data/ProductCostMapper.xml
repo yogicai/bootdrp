@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.bootdo.data.dao.ProductCostDao">
+<mapper namespace="com.bootdo.engage.dao.ProductCostDao">
 
-	<select id="get" resultType="com.bootdo.data.domain.ProductCostDO">
+	<select id="get" resultType="com.bootdo.engage.domain.ProductCostDO">
 		select `id`,`product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost where id = #{value}
 	</select>
 
-	<select id="list" resultType="com.bootdo.data.domain.ProductCostDO">
+	<select id="list" resultType="com.bootdo.engage.domain.ProductCostDO">
 		select `id`,`product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
@@ -33,7 +33,7 @@
 		</if>
 	</select>
 
-    <select id="listLate" resultType="com.bootdo.data.domain.ProductCostDO">
+    <select id="listLate" resultType="com.bootdo.engage.domain.ProductCostDO">
         select `id`,`product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             <if test="productNo != null and productNo != ''"> and product_no = #{productNo} </if>
@@ -55,22 +55,72 @@
         </choose>
     </select>
 
- 	<select id="count" resultType="int">
+	<select id="count" resultType="int">
 		select count(*) from data_product_cost
-		 <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="productNo != null and productNo != ''"> and product_no = #{productNo} </if>
-                  <if test="entryPrice != null and entryPrice != ''"> and entry_price = #{entryPrice} </if>
-		  		  <if test="costPrice != null and costPrice != ''"> and cost_price = #{costPrice} </if>
-		  		  <if test="costDate != null and costDate != ''"> and cost_date = #{costDate} </if>
-		  		  <if test="costType != null and costType != ''"> and cost_type = #{costType} </if>
-                  <if test="relateNo != null and relateNo != ''"> and relate_no = #{relateNo} </if>
-		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
-		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
-		  		</where>
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="productNo != null and productNo != ''"> and product_no = #{productNo} </if>
+			<if test="entryPrice != null and entryPrice != ''"> and entry_price = #{entryPrice} </if>
+			<if test="costPrice != null and costPrice != ''"> and cost_price = #{costPrice} </if>
+			<if test="costDate != null and costDate != ''"> and cost_date = #{costDate} </if>
+			<if test="costType != null and costType != ''"> and cost_type = #{costType} </if>
+			<if test="relateNo != null and relateNo != ''"> and relate_no = #{relateNo} </if>
+			<if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+			<if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		</where>
+	</select>
+
+	<select id="costList" resultType="com.bootdo.engage.domain.ProductCostDO">
+		select
+		    a.*, b.name as product_name, b.type as product_type
+		from
+		    data_product_cost a left join data_product b on a.product_no=b.no
+		<where>
+			<if test="id != null and id != ''"> and a.id = #{id} </if>
+			<if test="productNo != null and productNo != ''"> and a.product_no = #{productNo} </if>
+			<if test="entryPrice != null and entryPrice != ''"> and a.entry_price = #{entryPrice} </if>
+			<if test="costPrice != null and costPrice != ''"> and a.cost_price = #{costPrice} </if>
+			<if test="costDate != null and costDate != ''"> and a.cost_date = #{costDate} </if>
+			<if test="costType != null and costType != ''"> and a.cost_type = #{costType} </if>
+			<if test="relateNo != null and relateNo != ''"> and a.relate_no = #{relateNo} </if>
+			<if test="createTime != null and createTime != ''"> and a.create_time = #{createTime} </if>
+			<if test="updateTime != null and updateTime != ''"> and a.update_time = #{updateTime} </if>
+			<if test="version != null and version == 'CURRENT'"> and a.id IN (SELECT MAX(b.id) AS id FROM data_product_cost b GROUP BY b.`product_no`) </if>
+			<if test="searchText != null and searchText != ''"> and ( product_no like '%${searchText}%' or  b.name like '%${searchText}%')</if>
+			<if test="productType != null and productType != ''"> and b.type = #{productType}</if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by a.product_No desc, a.update_time desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="costCount" resultType="int">
+		select count(0) from data_product_cost a left join data_product b on a.product_no=b.no
+		<where>
+			<if test="id != null and id != ''"> and a.id = #{id} </if>
+			<if test="productNo != null and productNo != ''"> and a.product_no = #{productNo} </if>
+			<if test="entryPrice != null and entryPrice != ''"> and a.entry_price = #{entryPrice} </if>
+			<if test="costPrice != null and costPrice != ''"> and a.cost_price = #{costPrice} </if>
+			<if test="costDate != null and costDate != ''"> and a.cost_date = #{costDate} </if>
+			<if test="costType != null and costType != ''"> and a.cost_type = #{costType} </if>
+			<if test="relateNo != null and relateNo != ''"> and a.relate_no = #{relateNo} </if>
+			<if test="createTime != null and createTime != ''"> and a.create_time = #{createTime} </if>
+			<if test="updateTime != null and updateTime != ''"> and a.update_time = #{updateTime} </if>
+			<if test="version != null and version == 'CURRENT'"> and a.id IN (SELECT MAX(b.id) AS id FROM data_product_cost b GROUP BY b.`product_no`) </if>
+			<if test="searchText != null and searchText != ''"> and ( product_no like '%${searchText}%' or  b.name like '%${searchText}%')</if>
+			<if test="productType != null and productType != ''"> and b.type = #{productType}</if>
+		</where>
 	</select>
 	 
-	<insert id="save" parameterType="com.bootdo.data.domain.ProductCostDO" useGeneratedKeys="true" keyProperty="id">
+	<insert id="save" parameterType="com.bootdo.engage.domain.ProductCostDO" useGeneratedKeys="true" keyProperty="id">
 		insert into data_product_cost
 		(
           `product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`
@@ -94,7 +144,7 @@
         </foreach >
     </insert>
 
-	<update id="update" parameterType="com.bootdo.data.domain.ProductCostDO">
+	<update id="update" parameterType="com.bootdo.engage.domain.ProductCostDO">
 		update data_product_cost 
 		<set>
 			<if test="productNo != null">`product_no` = #{productNo}, </if>

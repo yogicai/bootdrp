@@ -8,7 +8,7 @@ import com.bootdo.common.utils.ShiroUtils;
 import com.bootdo.common.utils.StringUtil;
 import com.bootdo.data.domain.AccountDO;
 import com.bootdo.data.domain.ConsumerDO;
-import com.bootdo.data.domain.ProductCostDO;
+import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.data.domain.StockDO;
 import com.bootdo.rp.domain.PointEntryDO;
 import com.bootdo.rp.domain.RPOrderDO;

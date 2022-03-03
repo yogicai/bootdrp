@@ -7,31 +7,29 @@ import com.google.common.collect.ImmutableMap;
  * @Author: yogiCai
  * @Date: 2018-01-21 11:45:46
  */
-public enum CostType implements EnumBean {
+public enum CostVersion implements EnumBean {
 
-    PO_CG("采购单调整"),
-    PO_TH("采购退货单调整"),
-
-    WH_RK("入库单调整"),
-    WH_CK("出库单调整"),
-
-    MANUAL("手工调整"),
+    /** 最新成本 */
+    CURRENT("最新成本"),
     ;
 
     private final String remark;
 
-    private CostType(String remark) {
+    private CostVersion(String remark) {
         this.remark = remark;
     }
 
+    @Override
     public String remark() {
         return this.remark;
     }
 
+    @Override
     public String type() {
         return this.name();
     }
 
+    @Override
     public String toString() {
         return JSON.toJSONString(ImmutableMap.of(name(), remark()));
     }
