@@ -17,19 +17,19 @@ var colModel = [
     { name:'billProfit', index:'billProfit', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }    ];
 
 var gridConfig = {
-        datatype: "local",
-        data: initData,
-        height: window.innerHeight - 170,
-        rowNum:10000,
-        autowidth: true,
-        shrinkToFit: true,
-        footerrow: true,
-        colNames: colNames,
-        colModel: colModel,
-        ondblClickRow: function (rowid, iRow, iCol, e) {
+    datatype: "local",
+    data: initData,
+    height: window.innerHeight - 170,
+    rowNum: 10000,
+    autowidth: true,
+    shrinkToFit: true,
+    footerrow: true,
+    colNames: colNames,
+    colModel: colModel,
+    ondblClickRow: function (rowid, iRow, iCol, e) {
 
-        }
-    };
+    }
+};
 
 $(function() {
     dataForm = $("#search");
@@ -38,7 +38,7 @@ $(function() {
 
 function load() {
 
-    utils.createDatePicker('datepicker');
+    utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
     tableGrid = $("#table_list").jqGrid(gridConfig);

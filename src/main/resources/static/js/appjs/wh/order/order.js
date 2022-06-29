@@ -22,14 +22,18 @@ $(function() {
 
 function load() {
 
-    utils.createDatePicker('datepicker');
+    recordDate = utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
+    recordDateS= recordDate.data("datepicker").pickers[0];
+    recordDateE= recordDate.data("datepicker").pickers[1];
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
+
+    dataForm  = $('#search');
 
     tableGrid = $("#table_list").jqGrid({
         url: prefix + "/list",
         datatype: "json",
-        postData: { "billType": billType},
+        postData: $.extend({}, dataForm.serializeObject(), {'start' : recordDateS.getDate().format('yyyy-MM-dd'), 'end' : recordDateE.getDate().format('yyyy-MM-dd'), "billType": billType}),
         height: window.innerHeight - 180,
         autowidth: true,
         shrinkToFit: true,
@@ -71,8 +75,8 @@ function load() {
     // Add responsive to jqGrid
     $(window).bind('resize', function () {
         var width = $('.jqGrid_wrapper').width();
-        $('#table_list').setGridWidth(width);
-        $('#table_list').setGridHeight(window.innerHeight - 180);
+        tableGrid.setGridWidth(width);
+        tableGrid.setGridHeight(window.innerHeight - 180);
     });
 }
 

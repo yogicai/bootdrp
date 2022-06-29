@@ -1,4 +1,5 @@
 var prefix = "/rp/order";
+var dataForm;
 var tableGrid;
 var colNames_SK = ['单据日期', '编号', '类型', '销货单位', '结算帐户', '收款金额', '分录备注', '收款合计', '本次核销金额', '整单折扣', '收款人', '审核状态', '备注', '修改时间'];
 var colNames_FK = ['单据日期', '编号', '类型', '购货单位', '结算帐户', '付款金额', '分录备注', '付款合计', '本次核销金额', '整单折扣', '付款人', '审核状态', '备注', '修改时间'];
@@ -15,14 +16,18 @@ $(function() {
 
 function load() {
 
-    utils.createDatePicker('datepicker');
+    recordDate = utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
+    recordDateS= recordDate.data("datepicker").pickers[0];
+    recordDateE= recordDate.data("datepicker").pickers[1];
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
+
+    dataForm  = $('#search');
 
     tableGrid = $("#table_list").jqGrid({
         url: prefix + "/list",
         datatype: "json",
-        postData: { "billType": billType},
+        postData: $.extend({}, dataForm.serializeObject(), {'start' : recordDateS.getDate().format('yyyy-MM-dd'), 'end' : recordDateE.getDate().format('yyyy-MM-dd'), "billType": billType}),
         height: window.innerHeight - 180,
         autowidth: true,
         shrinkToFit: true,
@@ -68,8 +73,8 @@ function load() {
     // Add responsive to jqGrid
     $(window).bind('resize', function () {
         var width = $('.jqGrid_wrapper').width();
-        $('#table_list').setGridWidth(width);
-        $('#table_list').setGridHeight(window.innerHeight - 180);
+        tableGrid.setGridWidth(width);
+        tableGrid.setGridHeight(window.innerHeight - 180);
     });
 }
 

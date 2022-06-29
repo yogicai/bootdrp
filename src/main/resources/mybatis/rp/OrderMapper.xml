@@ -3,105 +3,77 @@
 
 <mapper namespace="com.bootdo.rp.dao.RPOrderDao">
 
-	<select id="get" resultType="com.bootdo.rp.domain.RPOrderDO">
-		select `id`,`bill_date`,`bill_no`,`bill_type`,`debtor_id`,`debtor_name`,`check_id`,`check_name`,`debt_amount`,`payment_amount`,`check_amount`,`discount_amount`,`audit_status`,`audit_id`,`audit_name`,`bill_source`,`remark`,`create_time`,`update_time` from rp_order where id = #{value}
-	</select>
-
-	<select id="list" resultType="com.bootdo.rp.domain.RPOrderDO">
-		select `id`,`bill_date`,`bill_no`,`bill_type`,`debtor_id`,`debtor_name`,`check_id`,`check_name`,`debt_amount`,`payment_amount`,`check_amount`,`discount_amount`,`audit_status`,`audit_id`,`audit_name`,`bill_source`,`remark`,`create_time`,`update_time` from rp_order
-        <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="billDate != null and billDate != ''"> and bill_date = #{billDate} </if>
-		  		  <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
-		  		  <if test="billType != null and billType != ''"> and bill_type = #{billType} </if>
-		  		  <if test="debtorId != null and debtorId != ''"> and debtor_id = #{debtorId} </if>
-		  		  <if test="debtorName != null and debtorName != ''"> and debtor_name = #{debtorName} </if>
-		  		  <if test="checkId != null and checkId != ''"> and check_id = #{checkId} </if>
-		  		  <if test="checkName != null and checkName != ''"> and check_name = #{checkName} </if>
-		  		  <if test="debtAmount != null and debtAmount != ''"> and debt_amount = #{debtAmount} </if>
-		  		  <if test="paymentAmount != null and paymentAmount != ''"> and payment_amount = #{paymentAmount} </if>
-		  		  <if test="checkAmount != null and checkAmount != ''"> and check_amount = #{checkAmount} </if>
-		  		  <if test="discountAmount != null and discountAmount != ''"> and discount_amount = #{discountAmount} </if>
-		  		  <if test="auditStatus != null and auditStatus != ''"> and audit_status = #{auditStatus} </if>
-		  		  <if test="auditId != null and auditId != ''"> and audit_id = #{auditId} </if>
-		  		  <if test="auditName != null and auditName != ''"> and audit_name = #{auditName} </if>
-                  <if test="billSource != null and billSource != ''"> and bill_source = #{billSource} </if>
-		  		  <if test="remark != null and remark != ''"> and remark = #{remark} </if>
-		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
-		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
-                  <if test="searchText != null and searchText != ''">
-                      and (
-                            bill_no like '%${searchText}%' or debtor_name like '%${searchText}%' or remark like '%${searchText}%'
-                            or exists (SELECT 1 FROM rp_order_entry b WHERE rp_order.`bill_no`=b.bill_no AND b.src_bill_no = #{searchText})
-                      )
-                  </if>
-                  <if test="start != null and start != ''"> and bill_date >= #{start} </if>
-                  <if test="end != null and end != ''"> <![CDATA[ and bill_date <= #{end} ]]> </if>
-                  <if test="audit != null and audit != ''"> and audit_status = #{audit} </if>
-                  <if test="srcBillNo != null and srcBillNo != ''"> and exists (SELECT 1 FROM rp_order_entry b WHERE rp_order.`bill_no`=b.bill_no AND b.src_bill_no = #{srcBillNo}) </if>
-                  <if test="srcBillNos != null and srcBillNos.size() > 0">
-                      and exists (SELECT 1 FROM rp_order_entry b WHERE rp_order.`bill_no`=b.bill_no AND b.src_bill_no in
-                      <foreach item="sBillNo" collection="srcBillNos" open="(" separator="," close="))"> #{sBillNo} </foreach>
-                  </if>
-                  <if test="statusNot != null and statusNot.size() > 0"> and status not in
-                      <foreach item="status" collection="statusNot" open="(" separator="," close=")"> #{status} </foreach>
-                  </if>
-                  <if test="billNos != null and billNos.size() > 0"> and bill_no in
-                      <foreach item="billNo" collection="billNos" open="(" separator="," close=")"> #{billNo} </foreach>
-                  </if>
-		  		</where>
+    <sql id="whereSql">
+        <where>
+            <if test="id != null and id != ''"> and id = #{id} </if>
+            <if test="billDate != null and billDate != ''"> and bill_date = #{billDate} </if>
+            <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
+            <if test="billType != null and billType != ''"> and bill_type = #{billType} </if>
+            <if test="debtorId != null and debtorId != ''"> and debtor_id = #{debtorId} </if>
+            <if test="debtorName != null and debtorName != ''"> and debtor_name = #{debtorName} </if>
+            <if test="checkId != null and checkId != ''"> and check_id = #{checkId} </if>
+            <if test="checkName != null and checkName != ''"> and check_name = #{checkName} </if>
+            <if test="debtAmount != null and debtAmount != ''"> and debt_amount = #{debtAmount} </if>
+            <if test="paymentAmount != null and paymentAmount != ''"> and payment_amount = #{paymentAmount} </if>
+            <if test="checkAmount != null and checkAmount != ''"> and check_amount = #{checkAmount} </if>
+            <if test="discountAmount != null and discountAmount != ''"> and discount_amount = #{discountAmount} </if>
+            <if test="auditStatus != null and auditStatus != ''"> and audit_status = #{auditStatus} </if>
+            <if test="auditId != null and auditId != ''"> and audit_id = #{auditId} </if>
+            <if test="auditName != null and auditName != ''"> and audit_name = #{auditName} </if>
+            <if test="billSource != null and billSource != ''"> and bill_source = #{billSource} </if>
+            <if test="remark != null and remark != ''"> and remark = #{remark} </if>
+            <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+            <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+            <if test="searchText != null and searchText != ''">
+                and (
+                bill_no like '%${searchText}%' or debtor_name like '%${searchText}%' or remark like '%${searchText}%'
+                or exists (SELECT 1 FROM rp_order_entry b WHERE rp_order.`bill_no`=b.bill_no AND b.src_bill_no = #{searchText})
+                )
+            </if>
+            <if test="start != null and start != ''"> and bill_date >= #{start} </if>
+            <if test="end != null and end != ''"> <![CDATA[ and bill_date <= #{end} ]]> </if>
+            <if test="audit != null and audit != ''"> and audit_status = #{audit} </if>
+            <if test="srcBillNo != null and srcBillNo != ''"> and exists (SELECT 1 FROM rp_order_entry b WHERE rp_order.`bill_no`=b.bill_no AND b.src_bill_no = #{srcBillNo}) </if>
+            <if test="srcBillNos != null and srcBillNos.size() > 0">
+                and exists (SELECT 1 FROM rp_order_entry b WHERE rp_order.`bill_no`=b.bill_no AND b.src_bill_no in
+                <foreach item="sBillNo" collection="srcBillNos" open="(" separator="," close="))"> #{sBillNo} </foreach>
+            </if>
+            <if test="statusNot != null and statusNot.size() > 0"> and status not in
+                <foreach item="status" collection="statusNot" open="(" separator="," close=")"> #{status} </foreach>
+            </if>
+            <if test="billNos != null and billNos.size() > 0"> and bill_no in
+                <foreach item="billNo" collection="billNos" open="(" separator="," close=")"> #{billNo} </foreach>
+            </if>
+        </where>
+    </sql>
+    <sql id="pageSql">
         <choose>
             <when test="sort != null and sort.trim() != ''">
                 order by ${sort} ${order}
             </when>
-			<otherwise>
+            <otherwise>
                 order by bill_date desc
-			</otherwise>
+            </otherwise>
         </choose>
-		<if test="offset != null and limit != null">
-			limit #{offset}, #{limit}
-		</if>
-	</select>
-	
- 	<select id="count" resultType="int">
-		select count(*) from rp_order
-		 <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="billDate != null and billDate != ''"> and bill_date = #{billDate} </if>
-		  		  <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
-		  		  <if test="billType != null and billType != ''"> and bill_type = #{billType} </if>
-		  		  <if test="debtorId != null and debtorId != ''"> and debtor_id = #{debtorId} </if>
-		  		  <if test="debtorName != null and debtorName != ''"> and debtor_name = #{debtorName} </if>
-		  		  <if test="checkId != null and checkId != ''"> and check_id = #{checkId} </if>
-		  		  <if test="checkName != null and checkName != ''"> and check_name = #{checkName} </if>
-		  		  <if test="debtAmount != null and debtAmount != ''"> and debt_amount = #{debtAmount} </if>
-		  		  <if test="paymentAmount != null and paymentAmount != ''"> and payment_amount = #{paymentAmount} </if>
-		  		  <if test="checkAmount != null and checkAmount != ''"> and check_amount = #{checkAmount} </if>
-		  		  <if test="discountAmount != null and discountAmount != ''"> and discount_amount = #{discountAmount} </if>
-		  		  <if test="auditStatus != null and auditStatus != ''"> and audit_status = #{auditStatus} </if>
-		  		  <if test="auditId != null and auditId != ''"> and audit_id = #{auditId} </if>
-		  		  <if test="auditName != null and auditName != ''"> and audit_name = #{auditName} </if>
-                  <if test="billSource != null and billSource != ''"> and bill_source = #{billSource} </if>
-		  		  <if test="remark != null and remark != ''"> and remark = #{remark} </if>
-		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
-		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
-                 <if test="searchText != null and searchText != ''"> and ( bill_no like '%${searchText}%' or  debtor_name like '%${searchText}%' or remark like '%${searchText}%')</if>
-                 <if test="start != null and start != ''"> and create_time >= #{start} </if>
-                 <if test="end != null and end != ''"> <![CDATA[ and create_time <= #{end} ]]> </if>
-                 <if test="audit != null and audit != ''"> and audit_status = #{audit} </if>
-                 <if test="srcBillNo != null and srcBillNo != ''"> and exists (SELECT 1 FROM rp_order_entry b WHERE rp_order.`bill_no`=b.bill_no AND b.src_bill_no = #{srcBillNo}) </if>
-                 <if test="srcBillNos != null and srcBillNos.size() > 0">
-                     and exists (SELECT 1 FROM rp_order_entry b WHERE rp_order.`bill_no`=b.bill_no AND b.src_bill_no in
-                     <foreach item="sBillNo" collection="srcBillNos" open="(" separator="," close="))"> #{sBillNo} </foreach>
-                 </if>
-                 <if test="statusNot != null and statusNot.size() > 0"> and status not in
-                     <foreach item="status" collection="statusNot" open="(" separator="," close=")"> #{status} </foreach>
-                 </if>
-                 <if test="billNos != null and billNos.size() > 0"> and bill_no in
-                     <foreach item="billNo" collection="billNos" open="(" separator="," close=")"> #{billNo} </foreach>
-                 </if>
-		  		</where>
-	</select>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </sql>
+
+    <select id="get" resultType="com.bootdo.rp.domain.RPOrderDO">
+        select `id`,`bill_date`,`bill_no`,`bill_type`,`debtor_id`,`debtor_name`,`check_id`,`check_name`,`debt_amount`,`payment_amount`,`check_amount`,`discount_amount`,`audit_status`,`audit_id`,`audit_name`,`bill_source`,`remark`,`create_time`,`update_time` from rp_order where id = #{value}
+    </select>
+
+    <select id="list" resultType="com.bootdo.rp.domain.RPOrderDO">
+        select `id`,`bill_date`,`bill_no`,`bill_type`,`debtor_id`,`debtor_name`,`check_id`,`check_name`,`debt_amount`,`payment_amount`,`check_amount`,`discount_amount`,`audit_status`,`audit_id`,`audit_name`,`bill_source`,`remark`,`create_time`,`update_time` from rp_order
+        <include refid="whereSql"/>
+        <include refid="pageSql"/>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from rp_order
+        <include refid="whereSql"/>
+    </select>
 
     <select id="countRP" resultType="int">
         SELECT COUNT(0) FROM rp_order a LEFT JOIN rp_order_entry b ON a.`bill_no` = b.`bill_no` LEFT JOIN rp_order_settle c ON a.`bill_no` = c.`bill_no`

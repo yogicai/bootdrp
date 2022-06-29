@@ -2,7 +2,7 @@ package com.bootdo.cashier.service;
 
 import com.bootdo.cashier.dao.JournalDao;
 import com.bootdo.cashier.domain.JournalDO;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Service
 public class JournalService {
-    @Autowired
+    @Resource
 	private JournalDao journalDao;
 	
 	public JournalDO get(Integer id){

@@ -274,6 +274,38 @@
         }
         return val;
     };
+
+/* ========================================================================
+*  multiSelect ajax初始化
+* ======================================================================== */
+    //多选下拉框
+    Utils.prototype.loadMultiSelect = function loadMultiSelect(types, elementIds, options, url){
+        let o = {
+            buttonWidth: '100px',
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            includeResetOption: true,
+        };
+        if (types.length === elementIds.length) {
+            $.ajax({
+                url : url,
+                success : function(result) {
+                    if (result) {
+                        for (let t = 0; t < types.length; t++) {
+                            let option = $.extend(o, options[t]);
+                            let html = "", data = result[types[t]];
+                            if (data) {
+                                Object.values(data).forEach(function(value, index) { html += '<option value="' + value + '">' + value + '</option>'; })
+                                $("#" + elementIds[t]).append(html);
+                                $("#" + elementIds[t]).multiselect(option);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    };
+
 /* ========================================================================
 *  订单金额计算用
 * ======================================================================== */
@@ -385,14 +417,14 @@
     *  bootStrap封装
     * ======================================================================== */
     Utils.prototype.createDatePicker = function createDatePicker(elem, opt, defaultValue) {
-        var _date = $('#'+ elem).datepicker(
+        var _date = $('#' + elem).datepicker(
             $.extend({}, {
-                    language: "zh-CN",
-                    todayBtn: "linked",
-                    autoclose: true,
-                    clearBtn: true,
-                    todayHighlight: true
-                }, opt)
+                language: "zh-CN",
+                todayBtn: "linked",
+                autoclose: true,
+                clearBtn: true,
+                todayHighlight: true
+            }, opt)
         );
         if (defaultValue) {
             _date.datepicker('setDate', defaultValue);
@@ -487,7 +519,7 @@
     // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
     // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
     Date.prototype.format = function (fmt) {
-        var o = {
+        let o = {
             "M+": this.getMonth() + 1, //月份
             "d+": this.getDate(), //日
             "h+": this.getHours(), //小时
@@ -497,9 +529,33 @@
             "S": this.getMilliseconds() //毫秒
         };
         if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-        for (var k in o)
+        for (let k in o)
             if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
         return fmt;
     };
+
+    /**
+     * 获取当前年份的第一天和最后一天
+     * @returns {Date} 例如 2019-01-01
+     */
+    Utils.prototype.getYearFirstDay = function getYearFirstDay() {
+        let firstDay = new Date();
+        firstDay.setDate(1);
+        firstDay.setMonth(0);
+        return firstDay;
+    }
+
+    /**
+     * 金额格式化——显示千位分隔符
+     * @returns {String} 例如 '124.35'
+     */
+    Utils.prototype.priceFormat = function priceFormat(num) {
+        let str =  (num/1).toFixed(2) + ''
+        // 没有小数点时，在末尾补上一个小数点
+        if (str.indexOf('.') === -1) {
+            str += '.'
+        }
+        return str.replace(/(\d)(?=(\d{3})+\.)/g, '$1,').replace(/\.$/, '');
+    }
 
 }(window));

@@ -31,22 +31,23 @@ var colModelV = [
 var colModel = type == 'CUSTOMER' ? colModelC : colModelV;
 
 var gridConfig = {
-        datatype: "local",
-        data: initData,
-        height: window.innerHeight - 170,
-        rowNum:10000,
-        autowidth: true,
-        shrinkToFit: true,
-        footerrow: true,
-        colNames: colNames,
-        colModel: colModel,
-        ondblClickRow: function (rowid, iRow, iCol, e) {
-            var rowData = tableGrid.jqGrid('getRowData', rowid);
-            var postData = {start: start, end: end};  postData[type == 'CUSTOMER' ? 'consumerId' : 'vendorId'] = rowData.instituteId;
-            var postUrl = type == 'CUSTOMER' ? '/se/order' : '/po/order';
-            utils.listDataGrid(postUrl, postData);
-        }
-    };
+    datatype: "local",
+    data: initData,
+    height: window.innerHeight - 170,
+    rowNum: 10000,
+    autowidth: true,
+    shrinkToFit: true,
+    footerrow: true,
+    colNames: colNames,
+    colModel: colModel,
+    ondblClickRow: function (rowid, iRow, iCol, e) {
+        var rowData = tableGrid.jqGrid('getRowData', rowid);
+        var postData = {start: start, end: end};
+        postData[type == 'CUSTOMER' ? 'consumerId' : 'vendorId'] = rowData.instituteId;
+        var postUrl = type == 'CUSTOMER' ? '/se/order' : '/po/order';
+        utils.listDataGrid(postUrl, postData);
+    }
+};
 
 $(function() {
     if (type == 'CUSTOMER') {
@@ -60,7 +61,7 @@ $(function() {
 
 function load() {
 
-    utils.createDatePicker('datepicker');
+    utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
     tableGrid = $("#table_list").jqGrid(gridConfig);

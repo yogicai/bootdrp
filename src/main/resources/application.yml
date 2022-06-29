@@ -1,11 +1,11 @@
 server:
-    # context-path: /myboot 
-    session-timeout: 1800
-    tomcat:
-        max-threads: 1000
-        min-spare-threads: 30
-    port: 80
-    uri-encoding: utf-8
+  # context-path: /myboot
+  session-timeout: 1800
+  tomcat:
+    max-threads: 1000
+    min-spare-threads: 30
+  port: 80
+  uri-encoding: utf-8
 security:
   basic:
     enabled: false
@@ -19,14 +19,14 @@ spring:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
   profiles: 
-    active: pro
+    active: dev
   http:
     multipart:
       max-file-size: 30Mb
       max-request-size: 30Mb
   devtools:
     restart:
-      enabled: true    
+      enabled: false
 mybatis: 
   configuration:
     map-underscore-to-camel-case: true

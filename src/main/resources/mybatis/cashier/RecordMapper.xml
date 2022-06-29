@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bootdo.cashier.dao.RecordDao">
+
+    <sql id="whereSql">
+        <where>
+            <if test="id != null"> and id = #{id} </if>
+            <if test="nick != null and nick != ''"> and nick = #{nick} </if>
+            <if test="account != null and account != ''"> and account = #{account} </if>
+            <if test="type != null and type != ''"> and type = #{type} </if>
+            <if test="tradeTime != null"> and trade_time = #{tradeTime} </if>
+            <if test="tradeClass != null and tradeClass != ''"> and trade_class = #{tradeClass} </if>
+            <if test="targetName != null and targetName != ''"> and target_name = #{targetName} </if>
+            <if test="targetAccount != null and targetAccount != ''"> and target_account = #{targetAccount} </if>
+            <if test="tradeGoods != null and tradeGoods != ''"> and trade_goods = #{tradeGoods} </if>
+            <if test="tradeType != null and tradeType != ''"> and trade_type = #{tradeType} </if>
+            <if test="payAmount != null"> and pay_amount = #{payAmount} </if>
+            <if test="payDirect != null and payDirect != ''"> and pay_direct = #{payDirect} </if>
+            <if test="payStatus != null and payStatus != ''"> and pay_status = #{payStatus} </if>
+            <if test="txnNo != null and txnNo != ''"> and txn_no = #{txnNo} </if>
+            <if test="bizNo != null and bizNo != ''"> and biz_no = #{bizNo} </if>
+            <if test="remark != null and remark != ''"> and remark = #{remark} </if>
+            <if test="source != null and source != ''"> and source = #{source} </if>
+            <if test="updateTime != null"> and update_time = #{updateTime} </if>
+            <if test="start != null and start != ''"> and trade_time >= #{start} </if>
+            <if test="end != null and end != ''"> <![CDATA[ and trade_time <= #{end} ]]> </if>
+            <if test="searchText != null and searchText != ''"> and ( nick like '%${searchText}%' or account like '%${searchText}%' or type like '%${searchText}%' or tradeGoods like '%${tradeGoods}%')</if>
+        </where>
+    </sql>
+    <sql id="pageSql">
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by trade_time desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </sql>
+
+    <!--查询单个-->
+    <select id="get" resultType="com.bootdo.cashier.domain.RecordDO">
+        select id, nick, account, type, trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, source, update_time
+        from cashier_record where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="list" resultType="com.bootdo.cashier.domain.RecordDO">
+        select
+        id, nick, account, type, trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, source, update_time
+        from cashier_record
+        <include refid="whereSql"/>
+        <include refid="pageSql"/>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Integer">
+        select count(1)
+        from cashier_record
+        <include refid="whereSql"/>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectSum" resultType="java.util.Map">
+        select count(1) as totalCount, ifnull(sum(pay_amount), 0) as totalAmount
+        from cashier_record
+        <include refid="whereSql"/>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="save" keyProperty="id" useGeneratedKeys="true">
+        insert into cashier_record(trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, source, nick, account, type)
+        values (#{tradeTime}, #{tradeClass}, #{targetName}, #{targetAccount}, #{tradeGoods}, #{tradeType}, #{payAmount}, #{payDirect}, #{payStatus}, #{txnNo}, #{bizNo}, #{remark}, #{source}, #{nick}, #{account}, #{type})
+    </insert>
+
+    <insert id="saveBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into cashier_record(trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, source, nick, account, type)
+        values
+        <foreach collection="list" item="entity" separator=",">
+            (#{entity.tradeTime}, #{entity.tradeClass}, #{entity.targetName}, #{entity.targetAccount}, #{entity.tradeGoods}, #{entity.tradeType}, #{entity.payAmount}, #{entity.payDirect}, #{entity.payStatus}, #{entity.txnNo}, #{entity.bizNo}, #{entity.remark}, #{entity.source}, #{entity.nick}, #{entity.account}, #{entity.type})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into cashier_record(trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, source, nick, account, type)
+        values
+        <foreach collection="list" item="entity" separator=",">
+            (#{entity.tradeTime}, #{entity.tradeClass}, #{entity.targetName}, #{entity.targetAccount}, #{entity.tradeGoods}, #{entity.tradeType}, #{entity.payAmount}, #{entity.payDirect}, #{entity.payStatus}, #{entity.txnNo}, #{entity.bizNo}, #{entity.remark}, #{entity.source}, #{entity.nick}, #{entity.account}, #{entity.type})
+        </foreach>
+        on duplicate key update
+        trade_time = values(trade_time),
+        trade_class = values(trade_class),
+        target_name = values(target_name),
+        target_account = values(target_account),
+        trade_goods = values(trade_goods),
+        trade_type = values(trade_type),
+        pay_amount = values(pay_amount),
+        pay_direct = values(pay_direct),
+        pay_status = values(pay_status),
+        txn_no = values(txn_no),
+        biz_no = values(biz_no),
+        remark = values(remark),
+        source = values(source),
+        update_time = values(update_time),
+        nick = values(nick),
+        account = values(account),
+        type = values(type)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update cashier_record
+        <set>
+            <if test="tradeTime != null">
+                trade_time = #{tradeTime},
+            </if>
+            <if test="tradeClass != null and tradeClass != ''">
+                trade_class = #{tradeClass},
+            </if>
+            <if test="targetName != null and targetName != ''">
+                target_name = #{targetName},
+            </if>
+            <if test="targetAccount != null and targetAccount != ''">
+                target_account = #{targetAccount},
+            </if>
+            <if test="tradeGoods != null and tradeGoods != ''">
+                trade_goods = #{tradeGoods},
+            </if>
+            <if test="tradeType != null and tradeType != ''">
+                trade_type = #{tradeType},
+            </if>
+            <if test="payAmount != null">
+                pay_amount = #{payAmount},
+            </if>
+            <if test="payDirect != null and payDirect != ''">
+                pay_direct = #{payDirect},
+            </if>
+            <if test="payStatus != null and payStatus != ''">
+                pay_status = #{payStatus},
+            </if>
+            <if test="txnNo != null and txnNo != ''">
+                txn_no = #{txnNo},
+            </if>
+            <if test="bizNo != null and bizNo != ''">
+                biz_no = #{bizNo},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="source != null and source != ''">
+                source = #{source},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="nick != null and nick != ''">
+                nick = #{nick},
+            </if>
+            <if test="account != null and account != ''">
+                account = #{account},
+            </if>
+            <if test="type != null and type != ''">
+                type = #{type},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="remove">
+        delete from cashier_record
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <if test="id != null"> and id = #{id} </if>
+            <if test="nick != null and nick != ''"> and nick = #{nick} </if>
+            <if test="account != null and account != ''"> and account = #{account} </if>
+            <if test="type != null and type != ''"> and type = #{type} </if>
+            <if test="tradeTime != null"> and trade_time = #{tradeTime} </if>
+            <if test="tradeClass != null and tradeClass != ''"> and trade_class = #{tradeClass} </if>
+            <if test="targetName != null and targetName != ''"> and target_name = #{targetName} </if>
+            <if test="targetAccount != null and targetAccount != ''"> and target_account = #{targetAccount} </if>
+            <if test="tradeGoods != null and tradeGoods != ''"> and trade_goods = #{tradeGoods} </if>
+            <if test="tradeType != null and tradeType != ''"> and trade_type = #{tradeType} </if>
+            <if test="payAmount != null"> and pay_amount = #{payAmount} </if>
+            <if test="payDirect != null and payDirect != ''"> and pay_direct = #{payDirect} </if>
+            <if test="payStatus != null and payStatus != ''"> and pay_status = #{payStatus} </if>
+            <if test="txnNo != null and txnNo != ''"> and txn_no = #{txnNo} </if>
+            <if test="bizNo != null and bizNo != ''"> and biz_no = #{bizNo} </if>
+            <if test="remark != null and remark != ''"> and remark = #{remark} </if>
+            <if test="source != null and source != ''"> and source = #{source} </if>
+            <if test="updateTime != null"> and update_time = #{updateTime} </if>
+            <if test="start != null and start != ''"> and trade_time >= #{start} </if>
+            <if test="end != null and end != ''"> <![CDATA[ and trade_time <= #{end} ]]> </if>
+        </trim>
+    </delete>
+
+    <delete id="batchRemove">
+        delete from cashier_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="multiSelect" resultType="com.bootdo.cashier.domain.RecordDO">
+        select distinct cr.type, cr.account, cr.pay_status, cr.pay_direct, cr.trade_class, cr.source
+        from cashier_record cr
+        <include refid="whereSql"/>
+    </select>
+
+</mapper>
+

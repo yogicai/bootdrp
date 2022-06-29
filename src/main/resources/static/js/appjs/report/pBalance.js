@@ -24,27 +24,27 @@ let groupHeaders = [{startColumnName: 'qtyTotal', numberOfColumns: 6, titleText:
 let groupHeaderFun = function (columnName, number, titleText) { return {startColumnName: columnName, numberOfColumns: number, titleText: '<em>'+titleText+'</em>'}; };
 
 let gridConfig = {
-        datatype: "local",
-        data: initData,
-        height: window.innerHeight - 180,
-        rowNum:10000,
-        autowidth: true,
-        shrinkToFit: true,
-        footerrow: true,
-        colNames: colNames,
-        colModel: colModel,
-/*        multiselect: true,
-        beforeSelectRow: function(rowid, e){
-            //单选效果
-            let _rowid = tableGrid.jqGrid("getGridParam", "selrow");
-            tableGrid.jqGrid('resetSelection');
-            return _rowid !== rowid;
-        },*/
-        ondblClickRow: function (rowid, iRow, iCol, e) {
-            currentRow = tableGrid.jqGrid("getRowData", rowid);
-            searchCost(currentRow);
-        }
-    };
+    datatype: "local",
+    data: initData,
+    height: window.innerHeight - 180,
+    rowNum: 10000,
+    autowidth: true,
+    shrinkToFit: true,
+    footerrow: true,
+    colNames: colNames,
+    colModel: colModel,
+    /*        multiselect: true,
+            beforeSelectRow: function(rowid, e){
+                //单选效果
+                let _rowid = tableGrid.jqGrid("getGridParam", "selrow");
+                tableGrid.jqGrid('resetSelection');
+                return _rowid !== rowid;
+            },*/
+    ondblClickRow: function (rowid, iRow, iCol, e) {
+        currentRow = tableGrid.jqGrid("getRowData", rowid);
+        searchCost(currentRow);
+    }
+};
 
 $(function() {
     utils.loadTypes(["data_stock"], ["stock"], [{width:"120px"}]);
@@ -54,8 +54,7 @@ $(function() {
 });
 
 function load() {
-
-    utils.createDatePicker('date_1');
+    utils.createDatePicker('date_1', {}, utils.getYearFirstDay(), new Date());
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
     tableGrid = $("#table_list").jqGrid(gridConfig);

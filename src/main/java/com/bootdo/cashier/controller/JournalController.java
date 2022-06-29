@@ -8,7 +8,7 @@ import com.bootdo.common.utils.MapUtils;
 import com.bootdo.common.utils.R;
 import com.google.common.collect.ImmutableMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +26,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/cashier/journal")
 public class JournalController {
-	@Autowired
+	@Resource
 	private JournalService journalService;
 	
 	@GetMapping()

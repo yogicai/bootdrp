@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <input id="id" name="id" th:value="${record.id}" type="hidden">
+                        <input id="bizNo" name="bizNo" th:value="${record.bizNo}" type="hidden">
+                        <input id="txnNo" name="txnNo" th:value="${record.txnNo}" type="hidden">
+                        <input id="source" name="source" th:value="${record.source}" type="hidden">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">日期：</label>
+                            <div class="col-sm-8">
+                                <input id="tradeTime" name="tradeTime" type="datetime" class="form-control" th:value="${#dates.format(record.tradeTime, 'yyyy-MM-dd hh:mm:dd')}" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">账号：</label>
+                            <div class="col-sm-8">
+                                <input id="account" name="account" class="form-control" th:value="${record.account}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">昵称：</label>
+                            <div class="col-sm-8">
+                                <input id="nick" name="nick" class="form-control" th:value="${record.nick}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">交易渠道：</label>
+                            <div class="col-sm-8">
+                                <input id="type" name="type" class="form-control" th:value="${record.type}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">交易对方：</label>
+                            <div class="col-sm-8">
+                                <input id="targetName" name="targetName" class="form-control" th:value="${record.targetName}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">交易对方账号：</label>
+                            <div class="col-sm-8">
+                                <input id="targetAccount" name="targetAccount" class="form-control" th:value="${record.targetAccount}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">交易商品：</label>
+                            <div class="col-sm-8">
+                                <input id="tradeGoods" name="tradeGoods" class="form-control" th:value="${record.tradeGoods}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">交易分类：</label>
+                            <div class="col-sm-8">
+                                <input id="tradeClass" name="tradeClass" class="form-control" th:value="${record.tradeClass}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">支付方向：</label>
+                            <div class="col-sm-8">
+                                <input id="payDirect" name="payDirect" class="form-control" th:value="${record.payDirect}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">金额(元)：</label>
+                            <div class="col-sm-8">
+                                <input id="payAmount" name="payAmount" class="form-control" th:value="${record.payAmount}" type="number">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">支付方式：</label>
+                            <div class="col-sm-8">
+                                <input id="tradeType" name="tradeType" class="form-control" th:value="${record.tradeType}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">备注：</label>
+                            <div class="col-sm-8">
+                                <textarea id="remark" name="remark" class="form-control" th:text="${record.remark}"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-8 col-sm-offset-3">
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/cashier/record/edit.js">
+</script>
+</body>
+</html>
