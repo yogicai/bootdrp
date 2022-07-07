@@ -44,14 +44,14 @@ function load() {
         colNames: colNames,
         colModel: [
             { name:'billDate', index:'billDate', editable:true, width:80, sorttype:"date", formatter:"date", frozen: true },
-            { name:'billNo', index:'billNo', editable:true, sorttype:"text", width:170, frozen: true },
+            { name:'billNo', index:'billNo', editable:true, sorttype:"text", width:200, frozen: true },
             { name:'billType', index:'billType', editable:true, sorttype:"text", width:80, formatter:function (cellValue){return utils.formatEnum(cellValue, 'BILL_TYPE')} },
             { name:'serviceType', index:'serviceType', editable:true, sorttype:"text", width:80, formatter:function (cellValue){return utils.formatType(cellValue, data_type)} },
             { name:'debtorName', index:'debtorName', editable:true, sorttype:"text", width:90 },
             { name:'totalQty', index:'totalQty', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
             { name:'entryAmount', index:'entryAmount', editable:true, width:100, align:"right", sorttype:"float", formatter:"number" },
             { name:'auditStatus', index:'auditStatus', editable:true, sorttype:"text", width:70, formatter:function (cellValue){return utils.formatEnumS(cellValue, 'AUDIT_STATUS')} },
-            { name:'remark', index:'remark', editable:true, sorttype:"text", width:130 },
+            { name:'remark', index:'remark', editable:true, sorttype:"text", width:140 },
             { name:'updateTime', index:'updateTime', editable:true, width:140 }
         ],
         pager: "#pager_list",
