@@ -23,30 +23,31 @@ function load() {
         postData: $.extend({}, dataForm.serializeObject(), {'start' : recordDateS.getDate().format('yyyy-MM-dd'), 'end' : recordDateE.getDate().format('yyyy-MM-dd')}),
         height: window.innerHeight - 180,
         autowidth: true,
-        shrinkToFit: true,
+        shrinkToFit: false,
+        autoScroll: true,
         multiselect: true,
         rowNum: 20,
         rowList: [20, 50, 100],
         colNames: ['单据日期', '编号', '类型', '类型','供应商', '数量', '商品金额', '优惠率', '优惠金额', '采购费用', '已付金额', '优惠后商品金额', '合计金额', '状态', '审核状态', '结算帐户', '备注', '更新时间'],
         colModel: [
-            { name:'billDate', index:'billDate', editable:true, width:90, sorttype:"date", formatter:"date", frozen: true },
-            { name:'billNo', index:'billNo', editable:true, sorttype:"text", width:200, frozen: true },
-            { name:'billType', index:'billType', editable:true, sorttype:"text", width:80, formatter:function (cellValue){return utils.formatEnum(cellValue, 'BILL_TYPE')} },
+            { name:'billDate', index:'billDate', editable:true, width:80, sorttype:"date", formatter:"date", frozen: true },
+            { name:'billNo', index:'billNo', editable:true, sorttype:"text", width:170, frozen: true },
+            { name:'billType', index:'billType', editable:true, sorttype:"text", width:60, formatter:function (cellValue){return utils.formatEnum(cellValue, 'BILL_TYPE')} },
             { name:'billType', index:'billType', editable:true, sorttype:"text", width:80, hidden:true },
-            { name:'vendorName', index:'vendorName', editable:true, sorttype:"text", width:90 },
+            { name:'vendorName', index:'vendorName', editable:true, sorttype:"text", width:70 },
             { name:'totalQty', index:'totalQty', editable:true, width:60, align:"right", sorttype:"int", formatter:"number" },
             { name:'entryAmount', index:'entryAmount', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
-            { name:'discountRate', index:'discountRate', editable:true, width:70, align:"right", sorttype:"float", formatter:"number" },
-            { name:'discountAmount', index:'discountAmount', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
-            { name:'purchaseFee', index:'purchaseFee', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
+            { name:'discountRate', index:'discountRate', editable:true, width:60, align:"right", sorttype:"float", formatter:"number" },
+            { name:'discountAmount', index:'discountAmount', editable:true, width:70, align:"right", sorttype:"float", formatter:"number" },
+            { name:'purchaseFee', index:'purchaseFee', editable:true, width:70, align:"right", sorttype:"float", formatter:"number" },
             { name:'paymentAmount', index:'paymentAmount', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
             { name:'finalAmount', index:'finalAmount', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
             { name:'totalAmount', index:'totalAmount', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
-            { name:'status', index:'status', editable:true, sorttype:"text", edittype:"select", width:80, formatter:function (cellValue){return utils.formatEnum(cellValue, 'ORDER_CG_STATUS')} },
-            { name:'auditStatus', index:'auditStatus', editable:true, sorttype:"text", width:90, formatter:function (cellValue){return utils.formatEnumS(cellValue, 'AUDIT_STATUS')} },
-            { name:'settleAccount', index:'settleAccount', editable:true, sorttype:"text", width:90, formatter:function (cellValue){return utils.formatCategory(cellValue, 'ACCOUNT_DATA')} },
-            { name:'remark', index:'remark', editable:true, sorttype:"text", width:90 },
-            { name:'updateTime', index:'updateTime', editable:true, width:120 }
+            { name:'status', index:'status', editable:true, sorttype:"text", edittype:"select", width:70, formatter:function (cellValue){return utils.formatEnum(cellValue, 'ORDER_CG_STATUS')} },
+            { name:'auditStatus', index:'auditStatus', editable:true, sorttype:"text", width:70, formatter:function (cellValue){return utils.formatEnumS(cellValue, 'AUDIT_STATUS')} },
+            { name:'settleAccount', index:'settleAccount', editable:true, sorttype:"text", width:70, formatter:function (cellValue){return utils.formatCategory(cellValue, 'ACCOUNT_DATA')} },
+            { name:'remark', index:'remark', editable:true, sorttype:"text", width:80 },
+            { name:'updateTime', index:'updateTime', editable:true, width:140 }
         ],
         pager: "#pager_list",
         viewrecords: true,
@@ -70,8 +71,8 @@ function load() {
     // Add responsive to jqGrid
     $(window).bind('resize', function () {
         var width = $('.jqGrid_wrapper').width();
-        $('#table_list').setGridWidth(width);
-        $('#table_list').setGridHeight(window.innerHeight - 180);
+        tableGrid.setGridWidth(width);
+        tableGrid.setGridHeight(window.innerHeight - 180);
     });
 }
 
@@ -145,25 +146,25 @@ function remove() {
         selectData.push(row.billNo)
     });
 
-	layer.confirm('确定要删除选中的记录？', {
-		btn : [ '确定', '取消' ]
-	}, function() {
-		$.ajax({
-			url : prefix+"/remove",
-			type : "post",
-			data : {
-				'billNos' : selectData
-			},
-			success : function(r) {
-				if (r.code==0) {
-					layer.msg(r.msg);
-					reLoad();
-				}else{
-					layer.msg(r.msg);
-				}
-			}
-		});
-	})
+    layer.confirm('确定要删除选中的记录？', {
+        btn: ['确定', '取消']
+    }, function () {
+        $.ajax({
+            url: prefix + "/remove",
+            type: "post",
+            data: {
+                'billNos': selectData
+            },
+            success: function (r) {
+                if (r.code == 0) {
+                    layer.msg(r.msg);
+                    reLoad();
+                } else {
+                    layer.msg(r.msg);
+                }
+            }
+        });
+    })
 }
 
 function add(dataUrl) {

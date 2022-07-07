@@ -146,3 +146,53 @@ th.ui-th-ltr {
     -ms-transition: all 0.2s ease;
     -o-transition: all 0.2s ease;
 }
+/* chrome滚动条美化一 */
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar {
+    width: 7px;
+    height: 9px;
+}
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.1);
+}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+    width: 6px;
+    height: 6px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.3);
+}
+::-webkit-scrollbar-thumb:hover {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .2);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+::-webkit-scrollbar-thumb:active {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .2);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* chrome滚动条美化二 */
+/*
+::-webkit-scrollbar {
+    width: 7px;
+    height: 9px;
+}
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: rgba(200, 200, 200, .5);
+}
+::-webkit-scrollbar-thumb {
+    border: 3px solid transparent ;
+    box-shadow: inset 0 0 0 10px rgba(245, 245, 245, 1);
+    border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+    box-shadow: inset 0 0 0 10px rgba(250, 250, 250, 1);
+}
+::-webkit-scrollbar-thumb:active {
+    box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 1);
+}*/

@@ -34,11 +34,13 @@ function load() {
         editurl: "clientArray",
         colNames: ['','ID','商品名称', '商品ID',  '单位', '仓库', '数量', '单价', '商品金额', '优惠率', '优惠金额',  '采购费用', '合计金额', '备注', '关联销货单'],
         colModel: [
-            { name: 'act', width:60, fixed:true, sortable:false, resize:false, formatter : function(cellValue, options, rowObject) {
-                var e = '<a class="btn btn-primary btn-xs" href="#" mce_href="#" onclick="addRow(\'' + options.rowId + '\')"><i class="fa  fa-plus"></i></a> ';
-                var d = '<a class="btn btn-warning btn-xs" href="#" mce_href="#" onclick="delRow(\''+ options.rowId + '\')"><i class="fa fa-minus"></i></a> ';
-                return e + d ;
-            }},
+            {
+                name: 'act', width: 60, fixed: true, sortable: false, resize: false, formatter: function (cellValue, options, rowObject) {
+                    var e = '<a class="btn btn-primary btn-xs" href="#" mce_href="#" onclick="addRow(\'' + options.rowId + '\')"><i class="fa  fa-plus"></i></a> ';
+                    var d = '<a class="btn btn-warning btn-xs" href="#" mce_href="#" onclick="delRow(\'' + options.rowId + '\')"><i class="fa fa-minus"></i></a> ';
+                    return e + d;
+                }
+            },
             { name:'id', index:'id', editable:false, hidedlg:true, hidden:true},
             { name:'entryName', index:'entryName', editable:true, edittype:'custom', width:300, editoptions: utils.myElementAndValue() },
             { name:'entryId', index:'entryId', editable:false, width:70 },
