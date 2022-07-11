@@ -2,17 +2,18 @@ package com.bootdo.common.utils;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * 查询参数
- * @Author: yogiCai
+ * @author yogiCai
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class QueryJQ extends LinkedHashMap<String, Object> {
-    private static final long serialVersionUID = 1L;
 
     /** 查询启始行 */
     private int offset;
@@ -25,7 +26,7 @@ public class QueryJQ extends LinkedHashMap<String, Object> {
     /** 查询终止时间 */
     private String end;
 
-    public QueryJQ(Map<String, Object> params) {
+    public QueryJQ(Map<String, Object> params, boolean page) {
         try {
             this.putAll(params);
             this.start = DateUtils.getDayBegin(MapUtils.getString(params, "start"));
@@ -36,11 +37,19 @@ public class QueryJQ extends LinkedHashMap<String, Object> {
 
             this.put("start", start);
             this.put("end", end);
-            this.put("offset", offset);
-            this.put("limit", limit);
+
+            if (page) {
+                this.put("offset", offset);
+                this.put("limit", limit);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public QueryJQ(Map<String, Object> params) {
+        this(params, true);
     }
 }
 

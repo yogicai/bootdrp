@@ -3,6 +3,7 @@ package com.bootdo.wh.controller;
 import com.bootdo.common.annotation.Log;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.utils.PageJQUtils;
+import com.bootdo.common.utils.PoiUtil;
 import com.bootdo.common.utils.QueryJQ;
 import com.bootdo.common.utils.R;
 import com.bootdo.wh.domain.WHOrderDO;
@@ -30,35 +31,48 @@ import java.util.Map;
 public class WHOrderController extends BaseController{
     @Autowired
     private WHOrderValidator orderValidator;
-	@Autowired
-	private WHOrderService orderService;
+    @Autowired
+    private WHOrderService orderService;
 
     /**
      * 左侧菜单单据列表页URL
      */
-	@GetMapping()
-	@RequiresPermissions("wh:order:order")
-	String Order(@RequestParam Map<String, Object> params, Model model){
+    @GetMapping()
+    @RequiresPermissions("wh:order:order")
+    String Order(@RequestParam Map<String, Object> params, Model model) {
         model.addAttribute("billType", MapUtils.getString(params, "billType"));
-	    return "wh/order/order";
-	}
+        return "wh/order/order";
+    }
 
     /**
      * 单据列表页
      */
-	@ResponseBody
-	@GetMapping("/list")
-	@RequiresPermissions("wh:order:order")
-	public PageJQUtils list(@RequestParam Map<String, Object> params){
+    @ResponseBody
+    @GetMapping("/list")
+    @RequiresPermissions("wh:order:order")
+    public PageJQUtils list(@RequestParam Map<String, Object> params) {
         //查询列表数据
         QueryJQ query = new QueryJQ(params);
         List<WHOrderDO> orderList = orderService.list(query);
         int total = orderService.count(query);
         int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
         PageJQUtils pageUtils = new PageJQUtils(orderList, totalPage, query.getPage(), total);
-		return pageUtils;
-	}
-	
+        return pageUtils;
+    }
+
+    /**
+     * 单据列表导出
+     */
+    @ResponseBody
+    @GetMapping("/export")
+    @RequiresPermissions("po:order:order")
+    public void export(@RequestParam Map<String, Object> params) {
+        //查询列表数据
+        QueryJQ query = new QueryJQ(params, false);
+        List<WHOrderDO> orderList = orderService.list(query);
+        PoiUtil.exportExcelWithStream("WHOrderResult.xls", WHOrderDO.class, orderList);
+    }
+
     /**
      * 审核、反审核
      */
@@ -84,5 +98,5 @@ public class WHOrderController extends BaseController{
         orderService.batchRemove(billNos);
         return R.ok();
     }
-	
+
 }

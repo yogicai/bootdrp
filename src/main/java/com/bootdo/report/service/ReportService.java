@@ -26,7 +26,7 @@ public class ReportService {
     private ReportDao reportDao;
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     public R sRecon(Map<String, Object> params){
         String type = MapUtils.getString(params, "type");
         String showDebt = MapUtils.getString(params, "showDebt", "1"); //是否查询有欠款客户（0:是，其他:否）
@@ -43,7 +43,7 @@ public class ReportService {
         return R.ok(ImmutableMap.of("result", data, "billRegion", billRegion, "start", StringUtil.substring(start, 10), "end", StringUtil.substring(end, 10)));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public R mainTab(Map<String, Object> params){
         List<Map<String, Object>> data = Lists.newArrayList();
         String type = MapUtils.getString(params, "type");
@@ -55,7 +55,7 @@ public class ReportService {
         return R.ok(ImmutableMap.of("result", data));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public R saleProduct(Map<String, Object> params){
         List<Map<String, Object>> data = reportDao.saleProduct(params);
         String startDate = "9999-99-99", endDate = "0000-00-00";

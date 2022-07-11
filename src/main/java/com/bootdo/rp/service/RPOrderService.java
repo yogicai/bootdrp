@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,21 +38,21 @@ public class RPOrderService {
     private OrderDao orderDao;
     @Autowired
     private SEOrderDao seOrderDao;
-	@Autowired
-	private RPOrderDao rpOrderDao;
+    @Autowired
+    private RPOrderDao rpOrderDao;
     @Autowired
     private RPOrderEntryDao rpOrderEntryDao;
     @Autowired
     private RPOrderSettleDao rpOrderSettleDao;
 
-    private final Set<String> poBillSet = Sets.newHashSet(BillType.CG_ORDER.name(), BillType.TH_ORDER.name());
-    private final Set<String> seBillSet = Sets.newHashSet(BillType.XS_ORDER.name());
-	
-	public RPOrderDO get(Integer id){
-		return rpOrderDao.get(id);
-	}
-	
-	public List<RPOrderDO> list(Map<String, Object> map){
+    private final EnumSet<BillType> poBillSet = EnumSet.of(BillType.CG_ORDER, BillType.TH_ORDER);
+    private final EnumSet<BillType> seBillSet = EnumSet.of(BillType.XS_ORDER);
+
+    public RPOrderDO get(Integer id) {
+        return rpOrderDao.get(id);
+    }
+
+    public List<RPOrderDO> list(Map<String, Object> map) {
         List<RPOrderDO> rpOrderDOList = rpOrderDao.list(map);
         Set<String> billNoSet = Sets.newHashSet();
         for (RPOrderDO orderDO : rpOrderDOList) {
@@ -72,24 +73,24 @@ public class RPOrderService {
                 }
             }
         }
-		return rpOrderDOList;
-	}
-	
-	public int count(Map<String, Object> map){
+        return rpOrderDOList;
+    }
+
+    public int count(Map<String, Object> map) {
         return rpOrderDao.count(map);
-	}
+    }
 
     /**
      * 收付款财务单审核要更新，源订单的已付金额
      */
-    @Transactional
-    public int audit(Map<String, Object> params){
+    @Transactional(rollbackFor = Exception.class)
+    public int audit(Map<String, Object> params) {
         AuditStatus auditStatus = AuditStatus.fromValue(org.apache.commons.collections.MapUtils.getString(params, "auditStatus"));
         List<RPOrderDO> list = rpOrderDao.list(ImmutableMap.of("billNos", MapUtils.getList(params, "billNos")));
         Set<String> billNoSet = Sets.newHashSet();
         //过滤已审核或未审核的订单
         for (RPOrderDO orderDO : list) {
-            if (!auditStatus.equals(AuditStatus.fromValue(orderDO.getAuditStatus()))) {
+            if (!auditStatus.equals(orderDO.getAuditStatus())) {
                 billNoSet.add(orderDO.getBillNo());
             }
         }
@@ -121,16 +122,16 @@ public class RPOrderService {
                 checkAmount = NumberUtils.add(checkAmount, NumberUtils.mul(entryDO.getCheckAmount(), AuditStatus.YES.equals(auditStatus) ? BigDecimal.ONE : BigDecimal.valueOf(-1)));
             }
             String billNo = entry.getValue().get(0).getSrcBillNo();
-            String billType = entry.getValue().get(0).getSrcBillType();
+            BillType billType = entry.getValue().get(0).getSrcBillType();
             if (checkAmount.compareTo(BigDecimal.ZERO) != 0 && poBillSet.contains(billType)) {
                 BigDecimal totalAmount = orderDOMap.get(billNo).getTotalAmount();
                 BigDecimal paymentAmount = NumberUtils.add(orderDOMap.get(billNo).getPaymentAmount(), checkAmount);
-                OrderStatus status = paymentAmount.compareTo(totalAmount) >= 0 ? OrderStatus.FINISH_PAY : (paymentAmount.compareTo(BigDecimal.ZERO)==0 ? OrderStatus.WAITING_PAY : OrderStatus.PART_PAY);
+                OrderStatus status = paymentAmount.compareTo(totalAmount) >= 0 ? OrderStatus.FINISH_PAY : (paymentAmount.compareTo(BigDecimal.ZERO) == 0 ? OrderStatus.WAITING_PAY : OrderStatus.PART_PAY);
                 orderDao.update(ImmutableMap.of("cBillNo", billNo, "status", status.name(), "paymentAmount", paymentAmount));
             } else if (checkAmount.compareTo(BigDecimal.ZERO) != 0 && seBillSet.contains(billType)) {
                 BigDecimal totalAmount = seOrderDOMap.get(billNo).getTotalAmount();
                 BigDecimal paymentAmount = NumberUtils.add(seOrderDOMap.get(billNo).getPaymentAmount(), checkAmount);
-                OrderStatus status = paymentAmount.compareTo(totalAmount) >= 0 ? OrderStatus.FINISH_PAY : (paymentAmount.compareTo(BigDecimal.ZERO)==0 ? OrderStatus.WAITING_PAY : OrderStatus.PART_PAY);
+                OrderStatus status = paymentAmount.compareTo(totalAmount) >= 0 ? OrderStatus.FINISH_PAY : (paymentAmount.compareTo(BigDecimal.ZERO) == 0 ? OrderStatus.WAITING_PAY : OrderStatus.PART_PAY);
                 seOrderDao.update(ImmutableMap.of("cBillNo", billNo, "status", status.name(), "paymentAmount", paymentAmount));
             }
         }
@@ -138,8 +139,8 @@ public class RPOrderService {
         return rpOrderDao.audit(params);
     }
 
-    @Transactional
-    public int batchRemove(List<String> billNos){
+    @Transactional(rollbackFor = Exception.class)
+    public int batchRemove(List<String> billNos) {
         rpOrderDao.delete(ImmutableMap.of("billNos", billNos));
         rpOrderEntryDao.delete(ImmutableMap.of("billNos", billNos));
         rpOrderSettleDao.delete(ImmutableMap.of("billNos", billNos));

@@ -36,8 +36,8 @@ import java.util.Set;
 public class RPOrderEntryService {
     @Autowired
     private RPOrderDao orderDao;
-	@Autowired
-	private RPOrderEntryDao orderEntryDao;
+    @Autowired
+    private RPOrderEntryDao orderEntryDao;
     @Autowired
     private RPOrderSettleDao orderSettleDao;
     @Autowired
@@ -48,28 +48,28 @@ public class RPOrderEntryService {
     private UserDao userDao;
     @Autowired
     private AccountDao accountDao;
-	
-	public RPOrderEntryDO get(Integer id){
-		return orderEntryDao.get(id);
-	}
-	
-	public List<RPOrderEntryDO> list(Map<String, Object> map){
-		return orderEntryDao.list(map);
-	}
-	
-	public int count(Map<String, Object> map){
-		return orderEntryDao.count(map);
-	}
 
-    @Transactional
-	public RPOrderDO save(RPOrderVO orderVO){
+    public RPOrderEntryDO get(Integer id) {
+        return orderEntryDao.get(id);
+    }
+
+    public List<RPOrderEntryDO> list(Map<String, Object> map) {
+        return orderEntryDao.list(map);
+    }
+
+    public int count(Map<String, Object> map) {
+        return orderEntryDao.count(map);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public RPOrderDO save(RPOrderVO orderVO){
         Set<String> settleSet = Sets.newHashSet();
         for (RPOrderSettleVO orderSettleVO : orderVO.getSettleVOList()) {
             settleSet.add(orderSettleVO.getSettleAccount());
         }
         //收款单取客户信息，付款单取供应商信息
         String detectName = "";
-        if (BillType.CW_SK_ORDER.name().equals(orderVO.getBillType())) {
+        if (BillType.CW_SK_ORDER.equals(orderVO.getBillType())) {
             ConsumerDO consumerDO = consumerDao.get(NumberUtils.toInt(orderVO.getDebtorId()));
             detectName = consumerDO.getName();
         } else {
@@ -92,7 +92,7 @@ public class RPOrderEntryService {
         orderEntryDao.delete(ImmutableMap.of("billNo", orderDO.getBillNo()));
         orderEntryDao.saveBatch(orderEntryDOList);
         return orderDO;
-	}
+    }
 
     public RPOrderVO getOrderVO(Map<String, Object> params) {
         List<RPOrderDO> orderDOList = orderDao.list(params);

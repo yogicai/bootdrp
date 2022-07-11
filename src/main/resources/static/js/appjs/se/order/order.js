@@ -46,7 +46,7 @@ function load() {
             { name:'totalAmount', index:'totalAmount', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
             { name:'status', index:'status', editable:true, sorttype:"text", edittype:"select", width:70, formatter:function (cellValue){return utils.formatEnum(cellValue, 'ORDER_CG_STATUS')} },
             { name:'auditStatus', index:'auditStatus', editable:true, sorttype:"text", width:70, formatter:function (cellValue){return utils.formatEnumS(cellValue, 'AUDIT_STATUS')} },
-            { name:'settleAccount', index:'settleAccount', editable:true, sorttype:"text", width:70, formatter:function (cellValue){return utils.formatCategory(cellValue, 'ACCOUNT_DATA')} },
+            { name:'settleAccount', index:'settleAccount', editable:true, sorttype:"text", width:80, formatter:function (cellValue){return utils.formatCategory(cellValue, 'ACCOUNT_DATA')} },
             { name:'remark', index:'remark', editable:true, sorttype:"text", width:140 },
             { name:'updateTime', index:'updateTime', editable:true, width:140 }
         ],
@@ -202,4 +202,10 @@ function triggerMenu(dataUrl, billNo) {
             return false;
         }
     });
+}
+
+function exportExcel() {
+    let queryParam = dataForm.serialize();
+    let url = prefix + "/export?" + queryParam //下载地址
+    utils.download(url ,'SEOrderResult.xls');
 }

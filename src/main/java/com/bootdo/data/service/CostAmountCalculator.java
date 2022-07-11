@@ -6,10 +6,10 @@ import com.bootdo.common.enumeration.BillType;
 import com.bootdo.common.enumeration.CostType;
 import com.bootdo.common.utils.DateUtils;
 import com.bootdo.common.utils.NumberUtils;
-import com.bootdo.engage.dao.ProductCostDao;
 import com.bootdo.data.dao.ProductDao;
-import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.data.domain.ProductDO;
+import com.bootdo.engage.dao.ProductCostDao;
+import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.po.dao.OrderEntryDao;
 import com.bootdo.po.domain.OrderDO;
 import com.bootdo.po.domain.OrderEntryDO;
@@ -20,15 +20,14 @@ import com.bootdo.wh.domain.WHOrderEntryDO;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 
@@ -46,15 +45,15 @@ public class CostAmountCalculator {
     private ProductDao productDao;
 
 
-    private final Set<String> incBillTypeSet = Sets.newHashSet(BillType.CG_ORDER.name(), BillType.WH_RK_ORDER.name());
-    private final Set<String> desBillTypeSet = Sets.newHashSet(BillType.TH_ORDER.name(), BillType.WH_CK_ORDER.name());
+    private final EnumSet<BillType> incBillTypeSet = EnumSet.of(BillType.CG_ORDER, BillType.WH_RK_ORDER);
+    private final EnumSet<BillType> desBillTypeSet = EnumSet.of(BillType.TH_ORDER, BillType.WH_CK_ORDER);
 
     /**
      * 采购单审核计算成本信息，退货单
      */
     public CostAmountIResult calcPOBillCost(OrderDO orderDO, AuditStatus auditStatus) {
         List<String> entryNoList = Lists.newArrayList();
-        CostType costType = BillType.CG_ORDER.name().equals(orderDO.getBillType()) ? CostType.PO_CG : CostType.PO_TH;
+        CostType costType = BillType.CG_ORDER.equals(orderDO.getBillType()) ? CostType.PO_CG : CostType.PO_TH;
         List<OrderEntryDO>  entryDOList = orderEntryDao.list(ImmutableMap.of("billNo", orderDO.getBillNo()));
         for (OrderEntryDO entry : entryDOList) {
             entryNoList.add(entry.getEntryId());
@@ -85,7 +84,7 @@ public class CostAmountCalculator {
             ProductCostDO productCostDO = new ProductCostDO();
 
             //退货单不影响单位成本，但要重新计算商品总成本及库存数量；没有历史单位成本的商品，单位成本价取采购价
-            if (BillType.TH_ORDER.name().equals(orderDO.getBillType())) {
+            if (BillType.TH_ORDER.equals(orderDO.getBillType())) {
                 BigDecimal costPrice = costDOMap.containsKey(entry.getEntryId()) ? NumberUtils.toBigDecimal(costDOMap.get(entry.getEntryId()).getCostPrice()) : purchaseMap.get(entry.getEntryId());
                 productCostDO.setProductNo(entry.getEntryId());
                 productCostDO.setEntryPrice(entry.getEntryPrice());
@@ -96,7 +95,7 @@ public class CostAmountCalculator {
                 productCostDO.setCostDate(DateUtils.nowDate());
                 productCostDO.setCostType(costType.name());
                 productCostDO.setRelateNo(orderDO.getBillNo());
-                productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.remark(), auditStatus.remark1()));
+                productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.getRemark(), auditStatus.getRemark1()));
 
                 detail.getCostMap().put(entry.getEntryId(), productCostDO);
                 productCostDOList.add(productCostDO);
@@ -118,7 +117,7 @@ public class CostAmountCalculator {
                     productCostDO.setCostDate(DateUtils.nowDate());
                     productCostDO.setCostType(costType.name());
                     productCostDO.setRelateNo(orderDO.getBillNo());
-                    productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.remark(), auditStatus.remark1()));
+                    productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.getRemark(), auditStatus.getRemark1()));
                 } else if (inventory.compareTo(BigDecimal.ZERO) > 0) { //历史库存大于0 && 当前库存大于0则，取当前这一单的数据+ 历史库存成本 计算库存成本、单价成本
                     BigDecimal costPrice = costDOMap.containsKey(entry.getEntryId()) ? NumberUtils.toBigDecimal(costDOMap.get(entry.getEntryId()).getCostPrice()) : BigDecimal.ZERO; //库存单位成本
                     BigDecimal amountFee = NumberUtils.toBigDecimal(entryAmountFee.get(entry.getEntryId())); //本次商品均摊费用 +　本次商品金额
@@ -133,7 +132,7 @@ public class CostAmountCalculator {
                     productCostDO.setCostDate(DateUtils.nowDate());
                     productCostDO.setCostType(costType.name());
                     productCostDO.setRelateNo(orderDO.getBillNo());
-                    productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.remark(), auditStatus.remark1()));
+                    productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.getRemark(), auditStatus.getRemark1()));
                 }
             } else {
                 //当前库存小于等于0则，库存成本、单价成本 都为0（已经没有库存了审核可能是因为采购单维护错误，所以不用上次计算出来的历史成本，用采购价）
@@ -147,7 +146,7 @@ public class CostAmountCalculator {
                     productCostDO.setCostDate(DateUtils.nowDate());
                     productCostDO.setCostType(costType.name());
                     productCostDO.setRelateNo(orderDO.getBillNo());
-                    productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.remark(), auditStatus.remark1()));
+                    productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.getRemark(), auditStatus.getRemark1()));
                 } else if (inventory.compareTo(BigDecimal.ZERO) > 0) { //历史库存大于0 && 当前库存大于0则，取当前这一单的数据+ 历史库存成本 计算库存成本、单价成本
                     BigDecimal costPrice = costDOMap.containsKey(entry.getEntryId()) ? NumberUtils.toBigDecimal(costDOMap.get(entry.getEntryId()).getCostPrice()) : BigDecimal.ZERO; //库存单位成本
                     BigDecimal amountFee = NumberUtils.toBigDecimal(entryAmountFee.get(entry.getEntryId())); //本次商品均摊费用 +　本次商品金额
@@ -162,7 +161,7 @@ public class CostAmountCalculator {
                     productCostDO.setCostDate(DateUtils.nowDate());
                     productCostDO.setCostType(costType.name());
                     productCostDO.setRelateNo(orderDO.getBillNo());
-                    productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.remark(), auditStatus.remark1()));
+                    productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.getRemark(), auditStatus.getRemark1()));
                 }
             }
             detail.getCostMap().put(entry.getEntryId(), productCostDO);
@@ -174,7 +173,7 @@ public class CostAmountCalculator {
 
     public CostAmountIResult calcWHBillCost(WHOrderDO orderDO, AuditStatus auditStatus) {
         List<String> entryNoList = Lists.newArrayList();
-        CostType costType = BillType.WH_RK_ORDER.name().equals(orderDO.getBillType()) ? CostType.WH_RK : CostType.WH_CK;
+        CostType costType = BillType.WH_RK_ORDER.equals(orderDO.getBillType()) ? CostType.WH_RK : CostType.WH_CK;
         List<WHOrderEntryDO>  entryDOList = whOrderEntryDao.list(ImmutableMap.of("billNo", orderDO.getBillNo()));
         for (WHOrderEntryDO entry : entryDOList) {
             entryNoList.add(entry.getEntryId());
@@ -214,7 +213,7 @@ public class CostAmountCalculator {
             productCostDO.setCostDate(DateUtils.nowDate());
             productCostDO.setCostType(costType.name());
             productCostDO.setRelateNo(orderDO.getBillNo());
-            productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.remark(), auditStatus.remark1()));
+            productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.getRemark(), auditStatus.getRemark1()));
 
             detail.getCostMap().put(entry.getEntryId(), productCostDO);
             productCostDOList.add(productCostDO);
@@ -298,7 +297,7 @@ public class CostAmountCalculator {
     }
 
     private BigDecimal defaultStockAmount(Map<String, Object> map) {
-        String billType = MapUtils.getString(map, "bill_type");
+        BillType billType = BillType.fromValue(MapUtils.getString(map, "bill_type"));
         if (incBillTypeSet.contains(billType)) {
             return BigDecimal.valueOf(MapUtils.getIntValue(map, "total_qty"));
         } else {

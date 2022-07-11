@@ -1,312 +1,144 @@
 package com.bootdo.po.domain;
 
-import java.io.Serializable;
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.bootdo.common.enumeration.AuditStatus;
+import com.bootdo.common.enumeration.BillType;
+import com.bootdo.common.enumeration.OrderStatus;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 
-
 /**
  * 购货订单
- * @Author: yogiCai
+ *
+ * @author yogiCai
  * @date 2017-11-28 21:30:03
  */
-public class OrderDO implements Serializable {
-	private static final long serialVersionUID = 1L;
-	
-	//
+@Data
+public class OrderDO {
+
 	private Integer id;
-	//单据日期
-	private Date billDate;
-	//单据编号
-	private String billNo;
-	//单据类型
-	private String billType;
-	//供应商ID
-	private String vendorId;
-    //供应商名称
-    private String vendorName;
-	//数量
-	private BigDecimal totalQty;
-	//商品金额
-	private BigDecimal entryAmount;
-	//优惠金额
-	private BigDecimal discountAmount;
-	//优惠率
-	private BigDecimal discountRate;
-	//采购费用
-	private BigDecimal purchaseFee;
-    //优惠后金额
-    private BigDecimal finalAmount;
-    //合计金额
-    private BigDecimal totalAmount;
-    //已付金额
-    private BigDecimal paymentAmount;
-	//状态
-	private String status;
-	//结算账户
-	private String settleAccount;
-	//制单人
-	private String billerId;
-	//审核状态
-	private String auditStatus;
-	//备注
-	private String remark;
-	//创建时间
-	private Date createTime;
-	//修改时间
-	private Date updateTime;
 
 	/**
-	 * 设置：
+	 * 单据日期
 	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	@Excel(name = "单据日期", exportFormat = "yyyy-MM-dd", width = 15)
+	private Date billDate;
+
 	/**
-	 * 获取：
+	 * 单据编号
 	 */
-	public Integer getId() {
-		return id;
-	}
+	@Excel(name = "单据编号", width = 25)
+	private String billNo;
+
 	/**
-	 * 设置：单据日期
+	 * 单据类型
 	 */
-	public void setBillDate(Date billDate) {
-		this.billDate = billDate;
-	}
+	@Excel(name = "单据类型", enumExportField = "remark")
+	private BillType billType;
+
 	/**
-	 * 获取：单据日期
+	 * 供应商ID
 	 */
-	public Date getBillDate() {
-		return billDate;
-	}
+	@Excel(name = "供应商ID")
+	private String vendorId;
+
 	/**
-	 * 设置：单据编号
+	 * 供应商名称
 	 */
-	public void setBillNo(String billNo) {
-		this.billNo = billNo;
-	}
+	@Excel(name = "供应商名称", width = 15)
+	private String vendorName;
+
 	/**
-	 * 获取：单据编号
+	 * 数量
 	 */
-	public String getBillNo() {
-		return billNo;
-	}
+	@Excel(name = "数量")
+	private BigDecimal totalQty;
+
 	/**
-	 * 设置：单据类型
+	 * 商品金额
 	 */
-	public void setBillType(String billType) {
-		this.billType = billType;
-	}
+	@Excel(name = "商品金额", numFormat = "#,##0.00", width = 15)
+	private BigDecimal entryAmount;
+
 	/**
-	 * 获取：单据类型
+	 * 优惠金额
 	 */
-	public String getBillType() {
-		return billType;
-	}
+	@Excel(name = "优惠金额", numFormat = "#,##0.00", width = 15)
+	private BigDecimal discountAmount;
+
 	/**
-	 * 设置：供应商ID
+	 * 优惠率
 	 */
-	public void setVendorId(String vendorId) {
-		this.vendorId = vendorId;
-	}
+	@Excel(name = "优惠率")
+	private BigDecimal discountRate;
+
 	/**
-	 * 获取：供应商ID
+	 * 采购费用
 	 */
-	public String getVendorId() {
-		return vendorId;
-	}
-    /**
-     * 设置：供应商名称
-     */
-    public String getVendorName() {
-        return vendorName;
-    }
-    /**
-     * 获取：供应商名称
-     */
-    public void setVendorName(String vendorName) {
-        this.vendorName = vendorName;
-    }
-    /**
-	 * 设置：数量
-	 */
-	public void setTotalQty(BigDecimal totalQty) {
-		this.totalQty = totalQty;
-	}
+	@Excel(name = "采购费用", numFormat = "#,##0.00", width = 15)
+	private BigDecimal purchaseFee;
+
 	/**
-	 * 获取：数量
+	 * 优惠后金额
 	 */
-	public BigDecimal getTotalQty() {
-		return totalQty;
-	}
-    /**
-     * 设置：商品金额
-     */
-    public BigDecimal getEntryAmount() {
-        return entryAmount;
-    }
-    /**
-     * 获取：商品金额
-     */
-    public void setEntryAmount(BigDecimal entryAmount) {
-        this.entryAmount = entryAmount;
-    }
+	@Excel(name = "优惠后金额", numFormat = "#,##0.00", width = 15)
+	private BigDecimal finalAmount;
+
 	/**
-	 * 设置：合计金额
+	 * 合计金额
 	 */
-	public void setFinalAmount(BigDecimal entryAmount) {
-		this.finalAmount = entryAmount;
-	}
+	@Excel(name = "合计金额", numFormat = "#,##0.00", width = 15)
+	private BigDecimal totalAmount;
+
 	/**
-	 * 获取：合计金额
+	 * 已付金额
 	 */
-	public BigDecimal getFinalAmount() {
-		return finalAmount;
-	}
-    /**
-     * 设置：已付金额
-     */
-    public BigDecimal getPaymentAmount() {
-        return paymentAmount;
-    }
-    /**
-     * 设置：合计金额
-     */
-    public void setTotalAmount(BigDecimal entryAmount) {
-        this.totalAmount = entryAmount;
-    }
-    /**
-     * 获取：合计金额
-     */
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-    /**
-     * 获取：已付金额
-     */
-    public void setPaymentAmount(BigDecimal paymentAmount) {
-        this.paymentAmount = paymentAmount;
-    }
-    /**
-	 * 设置：优惠金额
-	 */
-	public void setDiscountAmount(BigDecimal discountAmount) {
-		this.discountAmount = discountAmount;
-	}
+	@Excel(name = "已付金额", numFormat = "#,##0.00",  width = 15)
+	private BigDecimal paymentAmount;
+
 	/**
-	 * 获取：优惠金额
+	 * 状态
 	 */
-	public BigDecimal getDiscountAmount() {
-		return discountAmount;
-	}
+	@Excel(name = "状态", enumExportField = "remark", width = 15)
+	private OrderStatus status;
+
 	/**
-	 * 设置：优惠率
+	 * 结算账户
 	 */
-	public void setDiscountRate(BigDecimal discountRate) {
-		this.discountRate = discountRate;
-	}
+	@Excel(name = "结算账户")
+	private String settleAccount;
+
 	/**
-	 * 获取：优惠率
+	 * 制单人
 	 */
-	public BigDecimal getDiscountRate() {
-		return discountRate;
-	}
+	@Excel(name = "制单人")
+	private String billerId;
+
 	/**
-	 * 设置：采购费用
+	 * 审核状态
 	 */
-	public void setPurchaseFee(BigDecimal purchaseFee) {
-		this.purchaseFee = purchaseFee;
-	}
+	@Excel(name = "审核状态", enumExportField = "remark")
+	private AuditStatus auditStatus;
+
 	/**
-	 * 获取：采购费用
+	 * 备注
 	 */
-	public BigDecimal getPurchaseFee() {
-		return purchaseFee;
-	}
+	@Excel(name = "备注")
+	private String remark;
+
 	/**
-	 * 设置：状态
+	 * 创建时间
 	 */
-	public void setStatus(String status) {
-		this.status = status;
-	}
+	@Excel(name = "创建时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+	private Date createTime;
+
 	/**
-	 * 获取：状态
+	 * 修改时间
 	 */
-	public String getStatus() {
-		return status;
-	}
-	/**
-	 * 设置：结算账户
-	 */
-	public void setSettleAccount(String settleAccount) {
-		this.settleAccount = settleAccount;
-	}
-	/**
-	 * 获取：结算账户
-	 */
-	public String getSettleAccount() {
-		return settleAccount;
-	}
-	/**
-	 * 设置：制单人
-	 */
-	public void setBillerId(String billerId) {
-		this.billerId = billerId;
-	}
-	/**
-	 * 获取：制单人
-	 */
-	public String getBillerId() {
-		return billerId;
-	}
-	/**
-	 * 设置：审核状态
-	 */
-	public void setAuditStatus(String auditStatus) {
-		this.auditStatus = auditStatus;
-	}
-	/**
-	 * 获取：审核状态
-	 */
-	public String getAuditStatus() {
-		return auditStatus;
-	}
-	/**
-	 * 设置：备注
-	 */
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-	/**
-	 * 获取：备注
-	 */
-	public String getRemark() {
-		return remark;
-	}
-	/**
-	 * 设置：创建时间
-	 */
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-	/**
-	 * 获取：创建时间
-	 */
-	public Date getCreateTime() {
-		return createTime;
-	}
-	/**
-	 * 设置：修改时间
-	 */
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
-	}
-	/**
-	 * 获取：修改时间
-	 */
-	public Date getUpdateTime() {
-		return updateTime;
-	}
+	@Excel(name = "修改时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+	private Date updateTime;
+
 }

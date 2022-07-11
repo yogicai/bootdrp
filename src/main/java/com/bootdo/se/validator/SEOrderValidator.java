@@ -40,7 +40,7 @@ public class SEOrderValidator {
         }
         if (StringUtil.isEmpty(order.getBillNo())) return;
         List<SEOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNo", order.getBillNo()));
-        if (!CollectionUtils.isEmpty(orderDOList) && AuditStatus.YES.name().equals(orderDOList.get(0).getAuditStatus())) {
+        if (!CollectionUtils.isEmpty(orderDOList) && AuditStatus.YES.equals(orderDOList.get(0).getAuditStatus())) {
             throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "修改"));
         }
     }
@@ -55,7 +55,7 @@ public class SEOrderValidator {
             Set<String> billNoSet = Sets.newHashSet();
             List<RPOrderDO> rpOrderDOList = rpOrderDao.list(ImmutableMap.of("srcBillNos", MapUtils.getList(params, "billNos")));
             for (RPOrderDO rpOrderDO : rpOrderDOList) {
-                if (AuditStatus.YES.name().equals(rpOrderDO.getAuditStatus())) {
+                if (AuditStatus.YES.equals(rpOrderDO.getAuditStatus())) {
                     billNoSet.add(rpOrderDO.getBillNo());
                 }
             }
@@ -69,7 +69,7 @@ public class SEOrderValidator {
         if (CollectionUtils.isEmpty(billNos)) return;
         List<SEOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", billNos));
         for (SEOrderDO orderDO : orderDOList) {
-            if (AuditStatus.YES.name().equals(orderDO.getAuditStatus())) {
+            if (AuditStatus.YES.equals(orderDO.getAuditStatus())) {
                 throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "删除"));
             }
         }

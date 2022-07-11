@@ -48,7 +48,7 @@ public class RPOrderValidator {
         }
         if (StringUtil.isEmpty(order.getBillNo())) return;
         List<RPOrderDO> orderDOList = rpOrderDao.list(ImmutableMap.of("billNo", order.getBillNo()));
-        if (!CollectionUtils.isEmpty(orderDOList) && AuditStatus.YES.name().equals(orderDOList.get(0).getAuditStatus())) {
+        if (!CollectionUtils.isEmpty(orderDOList) && AuditStatus.YES.equals(orderDOList.get(0).getAuditStatus())) {
             throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "修改"));
         }
     }
@@ -72,7 +72,7 @@ public class RPOrderValidator {
             List<SEOrderDO> seOrderDOList = seOrderDao.list(ImmutableMap.of("billNos", srcBillNoSet));
             Set<String> auditBillNoSet = Sets.newHashSet();
             for (SEOrderDO orderDO : seOrderDOList) {
-                if (AuditStatus.NO.name().equals(orderDO.getAuditStatus())) {
+                if (AuditStatus.NO.equals(orderDO.getAuditStatus())) {
                     auditBillNoSet.add(orderDO.getBillNo());
                 }
             }
@@ -83,11 +83,11 @@ public class RPOrderValidator {
             List<OrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", srcBillNoSet));
             Set<String> auditBillNoSet1 = Sets.newHashSet();
             for (OrderDO orderDO : orderDOList) {
-                if (AuditStatus.NO.name().equals(orderDO.getAuditStatus())) {
+                if (AuditStatus.NO.equals(orderDO.getAuditStatus())) {
                     auditBillNoSet1.add(orderDO.getBillNo());
                 }
             }
-            if (auditBillNoSet.size() > 0) {
+            if (auditBillNoSet1.size() > 0) {
                 throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.RP_ORDER_AUDIT, "采购单", JSON.toJSONString(auditBillNoSet1)));
             }
         }
@@ -97,7 +97,7 @@ public class RPOrderValidator {
         if (CollectionUtils.isEmpty(billNos)) return;
         List<RPOrderDO> orderDOList = rpOrderDao.list(ImmutableMap.of("billNos", billNos));
         for (RPOrderDO orderDO : orderDOList) {
-            if (AuditStatus.YES.name().equals(orderDO.getAuditStatus())) {
+            if (AuditStatus.YES.equals(orderDO.getAuditStatus())) {
                 throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "删除"));
             }
         }

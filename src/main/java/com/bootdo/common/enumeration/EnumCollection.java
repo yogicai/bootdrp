@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
-* @Author: yogiCai
-* @Date: 2018-01-21 11:45:46
+* @author yogiCai
+* @date 2018-01-21 11:45:46
 */
 public class EnumCollection {
     //单据类型
@@ -39,18 +39,27 @@ public class EnumCollection {
     /**
      * 表格列展示用
      */
-    public static Map<String, EnumSet> listEnum() {
-        Map<String, EnumSet> setMap = Maps.newHashMap();
-        setMap.put("BILL_TYPE", BILL_TYPE);
-        setMap.put("ORDER_CG_STATUS", ORDER_CG_STATUS);
-        setMap.put("ORDER_XS_STATUS", ORDER_XS_STATUS);
-        setMap.put("CATEGORY_TYPE", CATEGORY_TYPE);
-        setMap.put("AUDIT_STATUS", AUDIT_STATUS);
-        setMap.put("POINT_STATUS", POINT_STATUS);
-        setMap.put("POINT_SOURCE", POINT_SOURCE);
-        setMap.put("COST_TYPE", COST_TYPE);
-        setMap.put("COST_VERSION", COST_VERSION);
+    public static Map<String, List<Map<String, String>>> listEnum() {
+        Map<String, List<Map<String, String>>> setMap = Maps.newHashMap();
+        setMap.put("BILL_TYPE", convertEnumList(BILL_TYPE));
+        setMap.put("ORDER_CG_STATUS", convertEnumList(ORDER_CG_STATUS));
+        setMap.put("ORDER_XS_STATUS", convertEnumList(ORDER_XS_STATUS));
+        setMap.put("CATEGORY_TYPE", convertEnumList(CATEGORY_TYPE));
+        setMap.put("AUDIT_STATUS", convertEnumList(AUDIT_STATUS));
+        setMap.put("POINT_STATUS", convertEnumList(POINT_STATUS));
+        setMap.put("POINT_SOURCE", convertEnumList(POINT_SOURCE));
+        setMap.put("COST_TYPE", convertEnumList(COST_TYPE));
+        setMap.put("COST_VERSION", convertEnumList(COST_VERSION));
         return setMap;
+    }
+
+    private static List<Map<String, String>> convertEnumList(EnumSet<?> enumSet) {
+        List<Map<String, String>> list = Lists.newArrayList();
+        for (Enum e : enumSet) {
+            EnumBean eb = (EnumBean)e;
+            list.add(ImmutableMap.of(eb.name(), eb.getRemark()));
+        }
+        return list;
     }
 
     /**
@@ -74,7 +83,7 @@ public class EnumCollection {
         List<Map<String, String>> list = Lists.newArrayList();
         for (Enum e : enumSet) {
             EnumBean eb = (EnumBean)e;
-            list.add(ImmutableMap.of("name", eb.remark(), "value", eb.name()));
+            list.add(ImmutableMap.of("name", eb.getRemark(), "value", eb.name()));
         }
         return list;
     }

@@ -49,7 +49,7 @@ public class SEOrderEntryService {
     @Autowired
     private ProductCostDao productCostDao;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public SEOrderDO save(SEOrderVO orderVO){
         UserDO userDO = userDao.get(NumberUtils.toLong(orderVO.getBillerId()));
         ConsumerDO consumerDO = consumerDao.get(NumberUtils.toInt(orderVO.getConsumerId()));

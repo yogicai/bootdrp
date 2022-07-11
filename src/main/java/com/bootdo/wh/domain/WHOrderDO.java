@@ -1,9 +1,12 @@
 package com.bootdo.wh.domain;
 
-import java.io.Serializable;
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.bootdo.common.enumeration.AuditStatus;
+import com.bootdo.common.enumeration.BillType;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
-
 
 
 /**
@@ -12,177 +15,105 @@ import java.util.Date;
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
-public class WHOrderDO implements Serializable {
-	private static final long serialVersionUID = 1L;
-	
-	//
-	private Integer id;
-	//单据日期
-	private Date billDate;
-	//单据号
-	private String billNo;
-	//单据类型
-	private String billType;
-    //业务类型
+@Data
+public class WHOrderDO {
+
+    private Integer id;
+
+    /**
+     * 单据日期
+     */
+    @Excel(name = "单据日期", exportFormat = "yyyy-MM-dd", width = 15)
+    private Date billDate;
+
+    /**
+     * 单据号
+     */
+    @Excel(name = "单据号", width = 28)
+    private String billNo;
+
+    /**
+     * 单据类型
+     */
+    @Excel(name = "单据类型", enumExportField = "remark")
+    private BillType billType;
+
+    /**
+     * 业务类型
+     */
+    @Excel(name = "业务类型", dict = "data_wh_ck_rk", width = 12)
     private String serviceType;
-	//关联单位ID
-	private String debtorId;
-	//关联单位名称
-	private String debtorName;
-	//数量
-	private BigDecimal totalQty;
-	//合计金额
-	private BigDecimal entryAmount;
-	//审核状态
-	private String auditStatus;
-	//审核人ID
-	private String auditId;
-	//审核人名称
-	private String auditName;
-	//备注
-	private String remark;
-	//创建人
-	private String operatorId;
-	//创建人名称
-	private String operatorName;
-	//创建时间
-	private Date createTime;
-	//修改时间
-	private Date updateTime;
 
-    public Integer getId() {
-        return id;
-    }
+    /**
+     * 关联单位ID
+     */
+    @Excel(name = "关联单位ID")
+    private String debtorId;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    /**
+     * 关联单位名称
+     */
+    @Excel(name = "关联单位名称")
+    private String debtorName;
 
-    public Date getBillDate() {
-        return billDate;
-    }
+    /**
+     * 数量
+     */
+    @Excel(name = "数量")
+    private BigDecimal totalQty;
 
-    public void setBillDate(Date billDate) {
-        this.billDate = billDate;
-    }
+    /**
+     * 合计金额
+     */
+    @Excel(name = "合计金额", numFormat = "#,##0.00", width = 15)
+    private BigDecimal entryAmount;
 
-    public String getBillNo() {
-        return billNo;
-    }
+    /**
+     * 审核状态
+     */
+    @Excel(name = "审核状态", enumExportField = "remark")
+    private AuditStatus auditStatus;
 
-    public void setBillNo(String billNo) {
-        this.billNo = billNo;
-    }
+    /**
+     * 审核人ID
+     */
+    @Excel(name = "审核人ID")
+    private String auditId;
 
-    public String getBillType() {
-        return billType;
-    }
+    /**
+     * 审核人名称
+     */
+    @Excel(name = "审核人名称")
+    private String auditName;
 
-    public void setBillType(String billType) {
-        this.billType = billType;
-    }
+    /**
+     * 备注
+     */
+    @Excel(name = "备注")
+    private String remark;
 
-    public String getServiceType() {
-        return serviceType;
-    }
+    /**
+     * 创建人
+     */
+    @Excel(name = "创建人")
+    private String operatorId;
 
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
-    }
+    /**
+     * 创建人名称
+     */
+    @Excel(name = "创建人名称")
+    private String operatorName;
 
-    public String getDebtorId() {
-        return debtorId;
-    }
+    /**
+     * 创建时间
+     */
+    @Excel(name = "创建时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+    private Date createTime;
 
-    public void setDebtorId(String debtorId) {
-        this.debtorId = debtorId;
-    }
+    /**
+     * 修改时间
+     */
+    @Excel(name = "修改时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+    private Date updateTime;
 
-    public String getDebtorName() {
-        return debtorName;
-    }
-
-    public void setDebtorName(String debtorName) {
-        this.debtorName = debtorName;
-    }
-
-    public BigDecimal getTotalQty() {
-        return totalQty;
-    }
-
-    public void setTotalQty(BigDecimal totalQty) {
-        this.totalQty = totalQty;
-    }
-
-    public BigDecimal getEntryAmount() {
-        return entryAmount;
-    }
-
-    public void setEntryAmount(BigDecimal entryAmount) {
-        this.entryAmount = entryAmount;
-    }
-
-    public String getAuditStatus() {
-        return auditStatus;
-    }
-
-    public void setAuditStatus(String auditStatus) {
-        this.auditStatus = auditStatus;
-    }
-
-    public String getAuditId() {
-        return auditId;
-    }
-
-    public void setAuditId(String auditId) {
-        this.auditId = auditId;
-    }
-
-    public String getAuditName() {
-        return auditName;
-    }
-
-    public void setAuditName(String auditName) {
-        this.auditName = auditName;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getOperatorId() {
-        return operatorId;
-    }
-
-    public void setOperatorId(String operatorId) {
-        this.operatorId = operatorId;
-    }
-
-    public String getOperatorName() {
-        return operatorName;
-    }
-
-    public void setOperatorName(String operatorName) {
-        this.operatorName = operatorName;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
 }

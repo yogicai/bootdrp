@@ -205,3 +205,9 @@ function triggerMenu(dataUrl, billNo) {
         }
     });
 }
+
+function exportExcel() {
+    let queryParam = dataForm.serialize();
+    let url = prefix + "/export?" + queryParam //下载地址
+    utils.download(url ,'WHOrderResult.xls');
+}

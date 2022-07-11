@@ -1,39 +1,28 @@
 package com.bootdo.common.enumeration;
 
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.ImmutableMap;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
-* @Author: yogiCai
-* @Date: 2018-07-07 01:32:23
+* @author yogiCai
+* @date 2018-07-07 01:32:23
 */
+@AllArgsConstructor
+@Getter
 public enum InstituteType implements EnumBean {
 
+    /** 零售客户  */
     CUSTOMER("零售客户"),
     VENDOR("供应商");
 
     private final String remark;
 
-    private InstituteType(String remark) {
-        this.remark = remark;
-    }
-
-    public String remark() {
-        return this.remark;
-    }
-
-    public String type() {
-        return this.name();
-    }
-
     public static InstituteType fromValue(String name) {
         for (InstituteType value : InstituteType.values()) {
-            if (value.name().equals(name)) return value;
+            if (value.name().equals(name)) {
+                return value;
+            }
         }
         return null;
-    }
-
-    public String toString() {
-        return JSON.toJSONString(ImmutableMap.of(name(), remark()));
     }
 }

@@ -46,7 +46,7 @@ public class OrderEntryService {
     @Autowired
     private StockService stockService;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public OrderDO save(OrderVO orderVO){
         VendorDO vendorDO = vendorDao.get(NumberUtils.toInt(orderVO.getVendorId()));
         Map<String, StockDO> stockDOMap = stockService.listStock(Maps.newHashMap());

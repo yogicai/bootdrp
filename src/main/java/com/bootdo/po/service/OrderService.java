@@ -66,14 +66,14 @@ public class OrderService {
 	}
 	
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
     public int audit(Map<String, Object> params){
         AuditStatus auditStatus = AuditStatus.fromValue(MapUtils.getString(params, "auditStatus"));
         List<OrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", com.bootdo.common.utils.MapUtils.getList(params, "billNos")));
         List<OrderDO> orderDOList1 = Lists.newArrayList();
         //去除已经是审核（未审核）状态的订单
         for (OrderDO orderDO : orderDOList) {
-            if (!auditStatus.name().equals(orderDO.getAuditStatus())) {
+            if (!auditStatus.equals(orderDO.getAuditStatus())) {
                 orderDOList1.add(orderDO);
             }
         }
@@ -134,7 +134,7 @@ public class OrderService {
 		return orderDao.remove(id);
 	}
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
 	public int batchRemove(List<String> billNos){
         orderDao.delete(ImmutableMap.of("billNos", billNos));
         orderEntryDao.delete(ImmutableMap.of("billNos", billNos));

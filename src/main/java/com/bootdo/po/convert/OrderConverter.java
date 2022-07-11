@@ -63,8 +63,8 @@ public class OrderConverter {
 
     public static OrderDO convertOrder(OrderVO orderVO, VendorDO vendorDO) {
         OrderDO orderDO = new OrderDO();
-        orderDO.setBillNo(StringUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoCG(BillType.valueOf(orderVO.getBillType())) : orderVO.getBillNo());
-        orderDO.setBillType(BillType.valueOf(orderVO.getBillType()).name());
+        orderDO.setBillNo(StringUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoCG(orderVO.getBillType()) : orderVO.getBillNo());
+        orderDO.setBillType(orderVO.getBillType());
         orderDO.setBillDate(orderVO.getBillDate());
         orderDO.setVendorId(orderVO.getVendorId());
         orderDO.setVendorName(vendorDO.getName());
@@ -75,10 +75,10 @@ public class OrderConverter {
         orderDO.setFinalAmount(orderVO.getFinalAmountTotal());
         orderDO.setPaymentAmount(orderVO.getPaymentAmountTotal());
         orderDO.setTotalAmount(NumberUtils.add(orderVO.getFinalAmountTotal(), orderVO.getPurchaseFeeTotal()));
-        orderDO.setStatus(BigDecimal.ZERO.equals(orderVO.getPaymentAmountTotal()) ? OrderStatus.WAITING_PAY.name() : (orderVO.getPaymentAmountTotal().equals(orderDO.getTotalAmount()) ? OrderStatus.FINISH_PAY.name(): OrderStatus.PART_PAY.name()));
+        orderDO.setStatus(BigDecimal.ZERO.equals(orderVO.getPaymentAmountTotal()) ? OrderStatus.WAITING_PAY : (orderVO.getPaymentAmountTotal().equals(orderDO.getTotalAmount()) ? OrderStatus.FINISH_PAY: OrderStatus.PART_PAY));
         orderDO.setSettleAccount(orderVO.getSettleAccountTotal());
         orderDO.setBillerId(ShiroUtils.getUser().getUserId().toString());
-        orderDO.setAuditStatus(AuditStatus.NO.name());
+        orderDO.setAuditStatus(AuditStatus.NO);
         orderDO.setRemark(orderVO.getRemark());
         return orderDO;
     }
@@ -110,11 +110,11 @@ public class OrderConverter {
     }
 
     public static  RPOrderDO convertRPOrder(OrderDO orderDO) {
-        BillType billType = BillType.CG_ORDER.name().equals(orderDO.getBillType()) ? BillType.CW_FK_ORDER : BillType.CW_SK_ORDER;
+        BillType billType = BillType.CG_ORDER.equals(orderDO.getBillType()) ? BillType.CW_FK_ORDER : BillType.CW_SK_ORDER;
         RPOrderDO rpOrderDO = new RPOrderDO();
         rpOrderDO.setBillDate(orderDO.getBillDate());
         rpOrderDO.setBillNo(OrderUtils.generateOrderNoCW(billType));
-        rpOrderDO.setBillType(billType.name());
+        rpOrderDO.setBillType(billType);
         rpOrderDO.setDebtorId(orderDO.getVendorId());
         rpOrderDO.setDebtorName(orderDO.getVendorName());
         rpOrderDO.setCheckId(ShiroUtils.getUserId().toString());
@@ -122,8 +122,8 @@ public class OrderConverter {
         rpOrderDO.setPaymentAmount(orderDO.getPaymentAmount());
         rpOrderDO.setCheckAmount(orderDO.getPaymentAmount());
         rpOrderDO.setDiscountAmount(BigDecimal.ZERO);
-        rpOrderDO.setAuditStatus(AuditStatus.YES.name());
-        rpOrderDO.setBillSource(BillSource.SYSTEM.name());
+        rpOrderDO.setAuditStatus(AuditStatus.YES);
+        rpOrderDO.setBillSource(BillSource.SYSTEM);
         rpOrderDO.setRemark(Constant.PO_RP_ORDER_REMARK);
         return rpOrderDO;
     }

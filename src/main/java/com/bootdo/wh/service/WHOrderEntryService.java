@@ -39,7 +39,7 @@ public class WHOrderEntryService {
     @Autowired
     private ProductCostDao productCostDao;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public WHOrderDO save(WHOrderVO orderVO){
         VendorDO vendorDO = vendorDao.get(NumberUtils.toInt(orderVO.getDebtorId()));
         Map<String, StockDO> stockDOMap = stockService.listStock(Maps.newHashMap());

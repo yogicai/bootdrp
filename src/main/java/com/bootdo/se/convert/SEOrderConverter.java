@@ -69,7 +69,7 @@ public class SEOrderConverter {
     public static SEOrderDO convertOrder(SEOrderVO orderVO, UserDO userDO, ConsumerDO consumerDO) {
         SEOrderDO orderDO = new SEOrderDO();
         orderDO.setBillNo(StringUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoXS() : orderVO.getBillNo());
-        orderDO.setBillType(BillType.XS_ORDER.name());
+        orderDO.setBillType(BillType.XS_ORDER);
         orderDO.setBillDate(orderVO.getBillDate());
         orderDO.setConsumerId(orderVO.getConsumerId());
         orderDO.setConsumerName(consumerDO.getName());
@@ -81,11 +81,11 @@ public class SEOrderConverter {
         orderDO.setPaymentAmount(orderVO.getPaymentAmountTotal());
         orderDO.setExpenseFee(orderVO.getExpenseFeeTotal());
         orderDO.setTotalAmount(NumberUtils.add(orderVO.getFinalAmountTotal(), orderVO.getExpenseFeeTotal()));
-        orderDO.setStatus(BigDecimal.ZERO.equals(orderVO.getPaymentAmountTotal()) ? OrderStatus.WAITING_PAY.name() : (orderVO.getPaymentAmountTotal().equals(orderDO.getTotalAmount()) ? OrderStatus.FINISH_PAY.name(): OrderStatus.PART_PAY.name()));
+        orderDO.setStatus(BigDecimal.ZERO.equals(orderVO.getPaymentAmountTotal()) ? OrderStatus.WAITING_PAY : (orderVO.getPaymentAmountTotal().equals(orderDO.getTotalAmount()) ? OrderStatus.FINISH_PAY: OrderStatus.PART_PAY));
         orderDO.setSettleAccount(orderVO.getSettleAccountTotal());
         orderDO.setBillerId(orderVO.getBillerId());
         orderDO.setBillerName(userDO.getName());
-        orderDO.setAuditStatus(AuditStatus.NO.name());
+        orderDO.setAuditStatus(AuditStatus.NO);
         orderDO.setRemark(orderVO.getRemark());
         return orderDO;
     }
@@ -120,7 +120,7 @@ public class SEOrderConverter {
         RPOrderDO rpOrderDO = new RPOrderDO();
         rpOrderDO.setBillDate(orderDO.getBillDate());
         rpOrderDO.setBillNo(OrderUtils.generateOrderNoCW(BillType.CW_SK_ORDER));
-        rpOrderDO.setBillType(BillType.CW_SK_ORDER.name());
+        rpOrderDO.setBillType(BillType.CW_SK_ORDER);
         rpOrderDO.setDebtorId(orderDO.getConsumerId());
         rpOrderDO.setDebtorName(orderDO.getConsumerName());
         rpOrderDO.setCheckId(ShiroUtils.getUserId().toString());
@@ -128,8 +128,8 @@ public class SEOrderConverter {
         rpOrderDO.setPaymentAmount(orderDO.getPaymentAmount());
         rpOrderDO.setCheckAmount(orderDO.getPaymentAmount());
         rpOrderDO.setDiscountAmount(BigDecimal.ZERO);
-        rpOrderDO.setAuditStatus(AuditStatus.YES.name());
-        rpOrderDO.setBillSource(BillSource.SYSTEM.name());
+        rpOrderDO.setAuditStatus(AuditStatus.YES);
+        rpOrderDO.setBillSource(BillSource.SYSTEM);
         rpOrderDO.setRemark(Constant.PO_RP_ORDER_REMARK);
         return rpOrderDO;
     }

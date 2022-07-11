@@ -1,6 +1,5 @@
 package com.bootdo.wh.validator;
 
-import com.alibaba.fastjson.JSON;
 import com.bootdo.common.constants.ErrorMessage;
 import com.bootdo.common.constants.OrderStatusCode;
 import com.bootdo.common.enumeration.AuditStatus;
@@ -8,20 +7,16 @@ import com.bootdo.common.enumeration.EnumCollection;
 import com.bootdo.common.exception.BusinessException;
 import com.bootdo.common.utils.MapUtils;
 import com.bootdo.common.utils.StringUtil;
-import com.bootdo.po.domain.OrderDO;
-import com.bootdo.rp.domain.RPOrderDO;
 import com.bootdo.wh.controller.request.WHOrderVO;
 import com.bootdo.wh.dao.WHOrderDao;
 import com.bootdo.wh.domain.WHOrderDO;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @Author: yogiCai
@@ -38,7 +33,7 @@ public class WHOrderValidator {
         }
         if (StringUtil.isEmpty(order.getBillNo())) return;
         List<WHOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNo", order.getBillNo()));
-        if (!CollectionUtils.isEmpty(orderDOList) && AuditStatus.YES.name().equals(orderDOList.get(0).getAuditStatus())) {
+        if (!CollectionUtils.isEmpty(orderDOList) && AuditStatus.YES.equals(orderDOList.get(0).getAuditStatus())) {
             throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "修改"));
         }
     }
@@ -54,7 +49,7 @@ public class WHOrderValidator {
         if (CollectionUtils.isEmpty(billNos)) return;
         List<WHOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", billNos));
         for (WHOrderDO orderDO : orderDOList) {
-            if (AuditStatus.YES.name().equals(orderDO.getAuditStatus())) {
+            if (AuditStatus.YES.equals(orderDO.getAuditStatus())) {
                 throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "删除"));
             }
         }

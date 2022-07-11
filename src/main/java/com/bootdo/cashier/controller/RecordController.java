@@ -1,16 +1,14 @@
 package com.bootdo.cashier.controller;
 
 import cn.hutool.core.map.MapUtil;
-import com.alibaba.fastjson.JSON;
 import com.bootdo.cashier.controller.response.MultiSelect;
-import com.bootdo.cashier.domain.RecordDO;
 import com.bootdo.cashier.domain.RecordDO;
 import com.bootdo.cashier.service.RecordService;
 import com.bootdo.common.annotation.Log;
-import com.bootdo.common.utils.*;
-import com.bootdo.po.domain.OrderDO;
-import com.bootdo.report.controller.response.SReconResult;
-import com.google.common.collect.ImmutableMap;
+import com.bootdo.common.utils.PageJQUtils;
+import com.bootdo.common.utils.PoiUtil;
+import com.bootdo.common.utils.QueryJQ;
+import com.bootdo.common.utils.R;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -66,7 +64,7 @@ public class RecordController {
 	 * 导出
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/export", method = RequestMethod.GET)
+	@GetMapping("/export")
 	@RequiresPermissions("cashier:record:record")
 	void sReconVCExport(@RequestParam Map<String, Object> params, Model model) {
 		List<RecordDO> orderList = recordService.list(params);

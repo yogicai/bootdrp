@@ -4,11 +4,10 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
-import cn.afterturn.easypoi.excel.export.styler.AbstractExcelExportStyler;
 import cn.afterturn.easypoi.excel.export.styler.ExcelExportStylerDefaultImpl;
-import cn.afterturn.easypoi.excel.export.styler.IExcelExportStyler;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.log.Log;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -136,6 +135,7 @@ public class PoiUtil {
         public InnerExportParams() {
             super.setHeight((short) 8);
             super.setStyle(InnerExcelExportStylerDefaultImpl.class);
+            super.setDictHandler(SpringUtil.getBean("IExcelDictHandlerImpl"));
         }
 
     }

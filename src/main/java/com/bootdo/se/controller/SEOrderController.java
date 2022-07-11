@@ -2,6 +2,7 @@ package com.bootdo.se.controller;
 
 import com.bootdo.common.annotation.Log;
 import com.bootdo.common.utils.PageJQUtils;
+import com.bootdo.common.utils.PoiUtil;
 import com.bootdo.common.utils.QueryJQ;
 import com.bootdo.common.utils.R;
 import com.bootdo.se.domain.SEOrderDO;
@@ -27,35 +28,47 @@ import java.util.Map;
 public class SEOrderController {
     @Autowired
     private SEOrderValidator orderValidator;
-	@Autowired
-	private SEOrderService orderService;
-	
-	@GetMapping()
-	@RequiresPermissions("se:order:order")
-	String Order(){
-	    return "se/order/order";
-	}
+    @Autowired
+    private SEOrderService orderService;
+
+    @GetMapping()
+    @RequiresPermissions("se:order:order")
+    String Order() {
+        return "se/order/order";
+    }
 
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @RequiresPermissions("se:order:order")
-    public PageJQUtils listP(@RequestBody Map<String, Object> params){
+    public PageJQUtils listP(@RequestBody Map<String, Object> params) {
         return list(params);
     }
 
-	@ResponseBody
-	@GetMapping("/list")
-	@RequiresPermissions("se:order:order")
-	public PageJQUtils list(@RequestParam Map<String, Object> params){
-		//查询列表数据
+    @ResponseBody
+    @GetMapping("/list")
+    @RequiresPermissions("se:order:order")
+    public PageJQUtils list(@RequestParam Map<String, Object> params) {
+        //查询列表数据
         QueryJQ query = new QueryJQ(params);
         List<SEOrderDO> orderList = orderService.list(query);
         int total = orderService.count(query);
         int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
         PageJQUtils pageUtils = new PageJQUtils(orderList, totalPage, query.getPage(), total);
-		return pageUtils;
-	}
+        return pageUtils;
+    }
 
+    /**
+     * 单据列表导出
+     */
+    @ResponseBody
+    @GetMapping("/export")
+    @RequiresPermissions("po:order:order")
+    public void export(@RequestParam Map<String, Object> params) {
+        //查询列表数据
+        QueryJQ query = new QueryJQ(params, false);
+        List<SEOrderDO> orderList = orderService.list(query);
+        PoiUtil.exportExcelWithStream("SEOrderResult.xls", SEOrderDO.class, orderList);
+    }
 
     /**
      * 审核、反审核
@@ -70,16 +83,16 @@ public class SEOrderController {
         return R.ok();
     }
 
-	/**
-	 * 删除
-	 */
+    /**
+     * 删除
+     */
     @Log("销售单删除")
-	@PostMapping( "/remove")
-	@ResponseBody
-	@RequiresPermissions("se:order:remove")
-	public R remove(@RequestParam("billNos[]")List<String> billNos){
+    @PostMapping("/remove")
+    @ResponseBody
+    @RequiresPermissions("se:order:remove")
+    public R remove(@RequestParam("billNos[]") List<String> billNos) {
         orderValidator.validateRemove(billNos);
         orderService.batchRemove(billNos);
         return R.ok();
-	}
+    }
 }

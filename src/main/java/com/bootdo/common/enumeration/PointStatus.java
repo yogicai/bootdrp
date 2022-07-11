@@ -1,33 +1,21 @@
 package com.bootdo.common.enumeration;
 
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.ImmutableMap;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
- * @Author: yogiCai
- * @Date: 2018-01-21 11:45:46
+ * @author yogiCai
+ * @date 2018-01-21 11:45:46
  */
+@AllArgsConstructor
+@Getter
 public enum PointStatus implements EnumBean {
 
+    /** 正常 */
     NORMAL("正常"),
     DISABLE("不可用"),
     SETTLE("已结算");
 
     private final String remark;
 
-    private PointStatus(String remark) {
-        this.remark = remark;
-    }
-
-    public String remark() {
-        return this.remark;
-    }
-
-    public String type() {
-        return this.name();
-    }
-
-    public String toString() {
-        return JSON.toJSONString(ImmutableMap.of(name(), remark()));
-    }
 }

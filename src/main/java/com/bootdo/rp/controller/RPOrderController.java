@@ -3,6 +3,7 @@ package com.bootdo.rp.controller;
 import com.bootdo.common.annotation.Log;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.utils.PageJQUtils;
+import com.bootdo.common.utils.PoiUtil;
 import com.bootdo.common.utils.QueryJQ;
 import com.bootdo.common.utils.R;
 import com.bootdo.rp.domain.RPOrderDO;
@@ -30,20 +31,20 @@ import java.util.Map;
 public class RPOrderController extends BaseController{
     @Autowired
     private RPOrderValidator orderValidator;
-	@Autowired
-	private RPOrderService orderService;
-	
-	@GetMapping()
-	@RequiresPermissions("rp:order:order")
-	String Order(@RequestParam Map<String, Object> params, Model model){
-        model.addAttribute("billType", MapUtils.getString(params, "billType"));
-	    return "rp/order/order";
-	}
+    @Autowired
+    private RPOrderService orderService;
 
-	@ResponseBody
-	@GetMapping("/list")
-	@RequiresPermissions("rp:order:order")
-	public PageJQUtils list(@RequestParam Map<String, Object> params){
+    @GetMapping()
+    @RequiresPermissions("rp:order:order")
+    String Order(@RequestParam Map<String, Object> params, Model model) {
+        model.addAttribute("billType", MapUtils.getString(params, "billType"));
+        return "rp/order/order";
+    }
+
+    @ResponseBody
+    @GetMapping("/list")
+    @RequiresPermissions("rp:order:order")
+    public PageJQUtils list(@RequestParam Map<String, Object> params) {
         //查询列表数据
         QueryJQ query = new QueryJQ(params);
         List<RPOrderDO> orderList = orderService.list(query);
@@ -51,7 +52,20 @@ public class RPOrderController extends BaseController{
         int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
         PageJQUtils pageUtils = new PageJQUtils(orderList, totalPage, query.getPage(), total);
         return pageUtils;
-	}
+    }
+
+    /**
+     * 单据列表导出
+     */
+    @ResponseBody
+    @GetMapping("/export")
+    @RequiresPermissions("po:order:order")
+    public void export(@RequestParam Map<String, Object> params) {
+        //查询列表数据
+        QueryJQ query = new QueryJQ(params, false);
+        List<RPOrderDO> orderList = orderService.list(query);
+        PoiUtil.exportExcelWithStream("RPOrderResult.xls", RPOrderDO.class, orderList);
+    }
 
     /**
      * 审核、反审核

@@ -1,14 +1,17 @@
 package com.bootdo.common.enumeration;
 
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.ImmutableMap;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
- * @Author: yogiCai
- * @Date: 2018-01-21 11:45:46
+ * @author yogiCai
+ * @date 2018-01-21 11:45:46
  */
+@AllArgsConstructor
+@Getter
 public enum CategoryType implements EnumBean {
 
+    /** 客户类目  */
     CUSTOMER("客户类目"),
     VENDOR("供应商类目"),
     PRODUCT("商品类目"),
@@ -18,19 +21,4 @@ public enum CategoryType implements EnumBean {
 
     private final String remark;
 
-    private CategoryType(String remark) {
-        this.remark = remark;
-    }
-
-    public String remark() {
-        return this.remark;
-    }
-
-    public String type() {
-        return this.name();
-    }
-
-    public String toString() {
-        return JSON.toJSONString(ImmutableMap.of(name(), remark()));
-    }
 }

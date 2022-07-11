@@ -2,7 +2,6 @@ package com.bootdo.rp.convert;
 
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.BillSource;
-import com.bootdo.common.enumeration.BillType;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.OrderUtils;
 import com.bootdo.common.utils.StringUtil;
@@ -66,16 +65,16 @@ public class RPOrderConverter {
 
     public static RPOrderDO convertOrder(RPOrderVO orderVO, UserDO usrDO, String detectName) {
         RPOrderDO orderDO = new RPOrderDO();
-        orderDO.setBillNo(StringUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoCW(BillType.valueOf(orderVO.getBillType())) : orderVO.getBillNo());
-        orderDO.setBillType(BillType.valueOf(orderVO.getBillType()).name());
+        orderDO.setBillNo(StringUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoCW(orderVO.getBillType()) : orderVO.getBillNo());
+        orderDO.setBillType(orderVO.getBillType());
         orderDO.setBillDate(orderVO.getBillDate());
         orderDO.setDebtorId(orderVO.getDebtorId());
         orderDO.setDebtorName(detectName);
         orderDO.setCheckId(orderVO.getCheckId());
         orderDO.setCheckName(usrDO.getName());
         orderDO.setDiscountAmount(orderVO.getDiscountAmount());
-        orderDO.setBillSource(BillSource.USER.name());
-        orderDO.setAuditStatus(AuditStatus.NO.name());
+        orderDO.setBillSource(BillSource.USER);
+        orderDO.setAuditStatus(AuditStatus.NO);
         orderDO.setRemark(orderVO.getRemark());
         return orderDO;
     }

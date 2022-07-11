@@ -42,7 +42,7 @@
                 UNION ALL
             SELECT a.`category_id` AS categoryId,a.`parent_id` AS parentId,a.`name` AS name,a.`type` AS type,a.`order_num` AS orderNum,b.`no` AS dataId,b.`name` AS dataName,b.`status` AS status FROM data_category a LEFT JOIN `data_account` b ON a.`category_id`=b.`type`
                 UNION ALL
-            SELECT a.`dept_id` AS categoryId,a.`parent_id` AS parentId,a.`name` AS name,'USER' AS type,a.`order_num` AS orderNum,b.`user_id` AS dataId,b.`username` AS dataName,b.`status` AS status FROM sys_dept a LEFT JOIN sys_user b ON a.`dept_id`=b.`dept_id`
+            SELECT a.`dept_id` AS categoryId,a.`parent_id` AS parentId,a.`name` AS name,'USER' AS type,a.`order_num` AS orderNum,b.`user_id` AS dataId,b.`name` AS dataName,b.`status` AS status FROM sys_dept a LEFT JOIN sys_user b ON a.`dept_id`=b.`dept_id`
         ) aa
         <where>
             <if test="categoryId != null and categoryId != ''"> and category_id = #{categoryId} </if>

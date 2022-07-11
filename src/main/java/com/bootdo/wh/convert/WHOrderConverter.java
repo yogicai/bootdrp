@@ -1,14 +1,13 @@
 package com.bootdo.wh.convert;
 
 import com.bootdo.common.enumeration.AuditStatus;
-import com.bootdo.common.enumeration.BillType;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.OrderUtils;
 import com.bootdo.common.utils.ShiroUtils;
 import com.bootdo.common.utils.StringUtil;
-import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.data.domain.StockDO;
 import com.bootdo.data.domain.VendorDO;
+import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.wh.controller.request.WHOrderEntryVO;
 import com.bootdo.wh.controller.request.WHOrderVO;
 import com.bootdo.wh.domain.WHOrderDO;
@@ -53,13 +52,13 @@ public class WHOrderConverter {
 
     public static WHOrderDO convertOrder(WHOrderVO orderVO, VendorDO vendorDO) {
         WHOrderDO orderDO = new WHOrderDO();
-        orderDO.setBillNo(StringUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoWH(BillType.valueOf(orderVO.getBillType())) : orderVO.getBillNo());
-        orderDO.setBillType(BillType.valueOf(orderVO.getBillType()).name());
+        orderDO.setBillNo(StringUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoWH(orderVO.getBillType()) : orderVO.getBillNo());
+        orderDO.setBillType(orderVO.getBillType());
         orderDO.setServiceType(orderVO.getServiceType());
         orderDO.setBillDate(orderVO.getBillDate());
         orderDO.setDebtorId(orderVO.getDebtorId());
         orderDO.setDebtorName(vendorDO.getName());
-        orderDO.setAuditStatus(AuditStatus.NO.name());
+        orderDO.setAuditStatus(AuditStatus.NO);
         orderDO.setRemark(orderVO.getRemark());
         orderDO.setOperatorId(ShiroUtils.getUser().getUserId().toString());
         orderDO.setOperatorName(ShiroUtils.getUser().getUsername());
