@@ -1,5 +1,6 @@
 let prefix = "/engage/product/cost";
 let tableGrid;
+let dataForm;
 
 $(function() {
     load();
@@ -16,6 +17,8 @@ function load() {
     });
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
+
+    dataForm  = $('#search');
 
     tableGrid = $("#table_list").jqGrid({
         url: prefix + "/list",
@@ -91,12 +94,12 @@ function search(pageBtn) {
     }
     inputPage = inputPage > totalPage ? totalPage : inputPage;
     inputPage = inputPage < 1 ? 1 : inputPage;
-    let postData = $.extend({}, $('#search').serializeObject(), { 'page': inputPage, 'rows': rowNum });
+    let postData = $.extend({}, dataForm.serializeObject(), { 'page': inputPage, 'rows': rowNum });
     tableGrid.jqGrid('setGridParam', {postData:  $.param(postData)}).trigger("reloadGrid");
 }
 
 function reLoad(type) {
-    let postData = $.extend({}, $('#search').serializeObject(), {'page': 1, 'rows': tableGrid.jqGrid('getGridParam', 'rowNum')});
+    let postData = $.extend({}, dataForm.serializeObject(), {'page': 1, 'rows': tableGrid.jqGrid('getGridParam', 'rowNum')});
     tableGrid.jqGrid('setGridParam', {postData:  $.param(postData)}).trigger("reloadGrid");
 }
 
@@ -114,4 +117,10 @@ function adjust(id) {
         area : [ '800px', '480px' ],
         content : prefix + '/adjust/' + ids[0] // iframe的url
     });
+}
+
+function exportExcel() {
+    let queryParam = dataForm.serialize();
+    let url = prefix + "/export?" + queryParam //下载地址
+    utils.download(url ,'ProductCostResult.xls')
 }

@@ -1,37 +1,39 @@
 package com.bootdo.engage.controller;
 
 import com.bootdo.common.controller.BaseController;
-import com.bootdo.common.utils.*;
+import com.bootdo.common.utils.PageJQUtils;
+import com.bootdo.common.utils.PoiUtil;
+import com.bootdo.common.utils.QueryJQ;
+import com.bootdo.common.utils.R;
 import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.engage.service.ProductCostService;
-import com.bootdo.data.validator.DataValidator;
 import com.bootdo.engage.validator.EngageValidator;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 商品信息表
+ * 商品成本管理
  * @Author: yogiCai
  * @Date: 2018-02-16 16:30:26
  */
 @Controller
 @RequestMapping("/engage/product/cost")
 public class ProductCostController extends BaseController {
-	@Autowired
+	@Resource
 	private EngageValidator engageValidator;
-	@Autowired
+	@Resource
 	private ProductCostService productCostService;
 
 	
 	@GetMapping()
 	@RequiresPermissions("engage:product:cost")
-	String cost(){
+	public String cost(){
 		return "engage/product/cost";
 	}
 	
@@ -44,8 +46,20 @@ public class ProductCostController extends BaseController {
 		List<ProductCostDO> productList = productCostService.costList(query);
 		int total = productCostService.costCount(query);
 		int totalPage = total / (query.getLimit() + 1) + 1;
-		PageJQUtils pageUtils = new PageJQUtils(productList, totalPage, query.getPage(), total);
-		return pageUtils;
+		return new PageJQUtils(productList, totalPage, query.getPage(), total);
+	}
+
+	/**
+	 * 成本导出
+	 */
+	@ResponseBody
+	@GetMapping("/export")
+	@RequiresPermissions("engage:product:cost")
+	public void export(@RequestParam Map<String, Object> params) {
+		//查询列表数据
+		QueryJQ query = new QueryJQ(params, false);
+		List<ProductCostDO> productList = productCostService.costList(query);
+		PoiUtil.exportExcelWithStream("ProductCostResult.xls", ProductCostDO.class, productList);
 	}
 
 	/**
@@ -53,7 +67,7 @@ public class ProductCostController extends BaseController {
 	 */
 	@GetMapping("/adjust/{id}")
 	@RequiresPermissions("engage:product:cost")
-	String edit(@PathVariable("id") Integer id,Model model){
+	public String edit(@PathVariable("id") Integer id,Model model){
 		ProductCostDO productCost = productCostService.get(id);
 		model.addAttribute("productCost", productCost);
 		return "engage/product/costAdjust";
