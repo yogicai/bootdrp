@@ -1,26 +1,24 @@
 package com.bootdo.report.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @author caiyz
  * @since 2020-11-10 11:00
  */
+@Getter
+@AllArgsConstructor
 public enum EChartSeriesType {
 
     /** 曲线 */
     LINE("line"),
     /** 饼图 */
-    BAR("bar");
+    BAR("bar"),
+
+    ;
 
 
     private final String value;
-
-    public String value() {
-        return value;
-    }
-
-
-    EChartSeriesType(String value) {
-        this.value = value;
-    }
 
 }

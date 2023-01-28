@@ -2,7 +2,6 @@ package com.bootdo.cashier.service;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.csv.CsvData;
 import cn.hutool.core.text.csv.CsvUtil;
 import cn.hutool.core.util.CharsetUtil;
@@ -10,10 +9,7 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.cashier.controller.response.MultiSelect;
 import com.bootdo.cashier.dao.RecordDao;
-import com.bootdo.cashier.domain.JournalDO;
 import com.bootdo.cashier.domain.RecordDO;
-import com.bootdo.common.utils.MapUtils;
-import com.bootdo.common.utils.R;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 
 /** 
@@ -99,11 +94,11 @@ public class RecordService {
 		RecordDO recordHead = new RecordDO();
 		csvData.getRows().forEach(row -> {
 			if (row.getFieldCount() == 1 && StrUtil.startWith(row.get(0), ALIPAY_NAME)) {
-				String nick = StrUtil.split(row.get(0), COMMA)[1];
+				String nick = StrUtil.splitToArray(row.get(0), COMMA)[1];
 				recordHead.setNick(nick);
 				param.put("nick", nick);
 			} else if (row.getFieldCount() == 1 && StrUtil.startWith(row.get(0), ALIPAY_ACCOUNT)) {
-				String account = StrUtil.split(row.get(0), COMMA)[1];
+				String account = StrUtil.splitToArray(row.get(0), COMMA)[1];
 				recordHead.setAccount(account);
 				param.put("account", account);
 			} else if (row.getFieldCount() == 1 && StrUtil.startWith(row.get(0), TRADE_TIME)) {
@@ -147,7 +142,7 @@ public class RecordService {
 		RecordDO recordHead = new RecordDO();
 		csvData.getRows().forEach(row -> {
 			if (row.getOriginalLineNumber() == 2 && StrUtil.startWith(row.get(0), WX_NAME)) {
-				String nick = StrUtil.split(row.get(0), COMMA)[1];
+				String nick = StrUtil.splitToArray(row.get(0), COMMA)[1];
 				recordHead.setNick(nick);
 				recordHead.setAccount(nick);
 				param.put("nick", nick);

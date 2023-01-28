@@ -28,8 +28,8 @@ import java.util.Map;
 
 @Service
 public class WHOrderEntryService {
-	@Autowired
-	private WHOrderDao orderDao;
+    @Autowired
+    private WHOrderDao orderDao;
     @Autowired
     private WHOrderEntryDao orderEntryDao;
     @Autowired
@@ -40,7 +40,7 @@ public class WHOrderEntryService {
     private ProductCostDao productCostDao;
 
     @Transactional(rollbackFor = Exception.class)
-    public WHOrderDO save(WHOrderVO orderVO){
+    public WHOrderDO save(WHOrderVO orderVO) {
         VendorDO vendorDO = vendorDao.get(NumberUtils.toInt(orderVO.getDebtorId()));
         Map<String, StockDO> stockDOMap = stockService.listStock(Maps.newHashMap());
         Map<String, ProductCostDO> costDOMap = convertProductCostMap(orderVO);

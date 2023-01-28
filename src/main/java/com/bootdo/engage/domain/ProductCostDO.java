@@ -28,7 +28,7 @@ public class ProductCostDO implements Serializable {
     @Excel(name = "商品名称", width = 20)
     private String productName;
     /** 商品类型 */
-    @Excel(name = "商品类型")
+    @Excel(name = "商品类型", dict = "PRODUCT")
     private String productType;
     /** 商品金额 */
     @Excel(name = "商品金额", numFormat = "#,##0.00", width = 15)
@@ -49,7 +49,7 @@ public class ProductCostDO implements Serializable {
     @Excel(name = "估算时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
     private Date costDate;
     /** 成本类型 */
-    @Excel(name = "成本类型")
+    @Excel(name = "成本类型", dict = "COST_TYPE", width = 15)
     private String costType;
     /** 关联单号 */
     @Excel(name = "关联单号", width = 25)

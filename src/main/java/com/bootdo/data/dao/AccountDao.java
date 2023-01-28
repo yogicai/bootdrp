@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author: yogiCai
+ * @author yogiCai
  * @date 2018-02-16 16:30:26
  */
 @Mapper

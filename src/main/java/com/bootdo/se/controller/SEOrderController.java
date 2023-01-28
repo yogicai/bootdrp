@@ -18,11 +18,11 @@ import java.util.Map;
 
 /**
  * 购货订单
- * 
+ *
  * @author yogiCai
  * @date 2018-02-18 16:50:26
  */
- 
+
 @Controller
 @RequestMapping("/se/order")
 public class SEOrderController {
@@ -33,12 +33,12 @@ public class SEOrderController {
 
     @GetMapping()
     @RequiresPermissions("se:order:order")
-    String Order() {
+    public String order() {
         return "se/order/order";
     }
 
     @ResponseBody
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @PostMapping(value = "/list")
     @RequiresPermissions("se:order:order")
     public PageJQUtils listP(@RequestBody Map<String, Object> params) {
         return list(params);
@@ -53,8 +53,7 @@ public class SEOrderController {
         List<SEOrderDO> orderList = orderService.list(query);
         int total = orderService.count(query);
         int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
-        PageJQUtils pageUtils = new PageJQUtils(orderList, totalPage, query.getPage(), total);
-        return pageUtils;
+        return new PageJQUtils(orderList, totalPage, query.getPage(), total);
     }
 
     /**
@@ -74,10 +73,10 @@ public class SEOrderController {
      * 审核、反审核
      */
     @Log("销售单审核、反审核")
-    @PostMapping( "/audit")
+    @PostMapping("/audit")
     @ResponseBody
     @RequiresPermissions("se:order:audit")
-    public R audit(@RequestBody Map<String, Object> params){
+    public R audit(@RequestBody Map<String, Object> params) {
         orderValidator.validateAudit(params);
         orderService.audit(params);
         return R.ok();

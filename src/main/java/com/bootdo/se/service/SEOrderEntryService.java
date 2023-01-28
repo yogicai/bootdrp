@@ -50,7 +50,7 @@ public class SEOrderEntryService {
     private ProductCostDao productCostDao;
 
     @Transactional(rollbackFor = Exception.class)
-    public SEOrderDO save(SEOrderVO orderVO){
+    public SEOrderDO save(SEOrderVO orderVO) {
         UserDO userDO = userDao.get(NumberUtils.toLong(orderVO.getBillerId()));
         ConsumerDO consumerDO = consumerDao.get(NumberUtils.toInt(orderVO.getConsumerId()));
         Map<String, StockDO> stockDOMap = stockService.listStock(Maps.newHashMap());

@@ -201,17 +201,17 @@ public class SEReportService {
         IntStream.rangeClosed(0, yearList.size() -1).forEach(i -> {
             IntStream.rangeClosed(1, 12).forEach(m -> {
                 String year = yearList.get(i);
-                double value = MapUtils.getDoubleValue(multiKeyMap.get(year, String.valueOf(m)), type.column());
+                double value = MapUtils.getDoubleValue(multiKeyMap.get(year, String.valueOf(m)), type.getValue());
                 option.getSeries().get(i).getData().add(value);
             });
 
-            option.getSeries().get(i).setType(EChartSeriesType.BAR.value());
+            option.getSeries().get(i).setType(EChartSeriesType.BAR.getValue());
             option.getSeries().get(i).setName(yearList.get(i) + "年");
             option.getLegend().getData().add(yearList.get(i) + "年");
         });
 
 
-        option.getTitle().setText(type.text());
+        option.getTitle().setText(type.getText());
         option.getxAxis().get(0).getData().addAll(month_series);
         //销售单Series最大值
         double maxYAxis = option.getSeries().stream().flatMap(s -> s.getData().stream()).mapToDouble(s -> Double.valueOf(s.toString())).max().getAsDouble();

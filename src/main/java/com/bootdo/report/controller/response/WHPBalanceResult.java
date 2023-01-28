@@ -8,8 +8,8 @@ import java.util.List;
 
 
 /**
-* @Author: yogiCai
-* @Date: 2018-02-01 10:43:43
+* @author yogiCai
+* @date 2018-02-01 10:43:43
 */
 @Data
 public class WHPBalanceResult {
@@ -18,6 +18,6 @@ public class WHPBalanceResult {
     /** 动态列名 */
     private final List<String> stockList = Lists.newArrayList();
     /** 商品信息 */
-	private final List<WHProductInfo> productInfoList = Lists.newArrayList();
+    private final List<WHProductInfo> productInfoList = Lists.newArrayList();
 
 }

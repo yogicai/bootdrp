@@ -8,6 +8,7 @@ import java.util.Map;
 
 /**
  * 应收、应付票据结算表
+ *
  * @author yogiCai
  * @date 2018-02-21 21:23:27
  */
@@ -15,16 +16,16 @@ import java.util.Map;
 public interface RPOrderSettleDao {
 
     RPOrderSettleDO get(Integer id);
-	
-	List<RPOrderSettleDO> list(Map<String, Object> map);
-	
-	int count(Map<String, Object> map);
-	
-	int save(RPOrderSettleDO orderSettle);
-	
-	int update(RPOrderSettleDO orderSettle);
-	
-	int remove(Integer id);
+
+    List<RPOrderSettleDO> list(Map<String, Object> map);
+
+    int count(Map<String, Object> map);
+
+    int save(RPOrderSettleDO orderSettle);
+
+    int update(RPOrderSettleDO orderSettle);
+
+    int remove(Integer id);
 
     int saveBatch(List<RPOrderSettleDO> orderEntryList);
 

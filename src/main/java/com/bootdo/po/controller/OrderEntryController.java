@@ -18,7 +18,8 @@ import java.util.Map;
 
 /**
  * 购货订单分录
- * @Author: yogiCai
+ *
+ * @author yogiCai
  * @date 2018-01-21 12:38:44
  */
 
@@ -32,7 +33,7 @@ public class OrderEntryController {
 
     @GetMapping()
     @RequiresPermissions("po:entry:entry")
-    String OrderEntry(@RequestParam Map<String, Object> params, Model model){
+    public String orderEntry(@RequestParam Map<String, Object> params, Model model) {
         model.addAttribute("billType", MapUtils.getString(params, "billType"));
         return "po/entry/entry";
     }
@@ -55,14 +56,14 @@ public class OrderEntryController {
      */
     @GetMapping("/add")
     @RequiresPermissions("po:entry:add")
-    String add(){
+    public String add() {
         return "po/entry/add";
     }
 
 
     @GetMapping("/addVendor")
     @RequiresPermissions("po:entry:add")
-    String addHead(){
+    public String addHead() {
         return "po/entry/addVendor";
     }
 
@@ -70,9 +71,9 @@ public class OrderEntryController {
     @ResponseBody
     @GetMapping("/get")
     @RequiresPermissions("po:order:order")
-    public R get(@RequestParam Map<String, Object> params){
+    public R get(@RequestParam Map<String, Object> params) {
         //查询列表数据
-        OrderVO orderVO= orderEntryService.getOrderVO(params);
+        OrderVO orderVO = orderEntryService.getOrderVO(params);
         return R.ok().put("order", orderVO);
     }
 }

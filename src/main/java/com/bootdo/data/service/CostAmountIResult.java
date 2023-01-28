@@ -10,7 +10,7 @@ import java.util.Map;
 @Service
 public class CostAmountIResult {
 
-	private final Map<String, ProductCostDO> costMap = Maps.newHashMap();
+    private final Map<String, ProductCostDO> costMap = Maps.newHashMap();
 
 
     public Map<String, ProductCostDO> getCostMap() {

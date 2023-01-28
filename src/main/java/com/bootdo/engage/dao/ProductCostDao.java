@@ -8,31 +8,32 @@ import java.util.Map;
 
 /**
  * 商品成本表
+ *
  * @author yogiCai
  * @date 2018-03-17 19:35:03
  */
 @Mapper
 public interface ProductCostDao {
 
-	ProductCostDO get(Integer id);
-	
-	List<ProductCostDO> list(Map<String, Object> map);
+    ProductCostDO get(Integer id);
 
-	int count(Map<String, Object> map);
+    List<ProductCostDO> list(Map<String, Object> map);
 
-	List<ProductCostDO> listLate(Map<String, Object> map);
+    int count(Map<String, Object> map);
 
-	List<ProductCostDO> costList(Map<String, Object> map);
+    List<ProductCostDO> listLate(Map<String, Object> map);
 
-	int costCount(Map<String, Object> map);
+    List<ProductCostDO> costList(Map<String, Object> map);
 
-	int save(ProductCostDO productCost);
+    int costCount(Map<String, Object> map);
 
-	int saveBatch(List<ProductCostDO> productCostDOList);
-	
-	int update(ProductCostDO productCost);
-	
-	int remove(Integer id);
-	
-	int batchRemove(Integer[] ids);
+    int save(ProductCostDO productCost);
+
+    int saveBatch(List<ProductCostDO> productCostDOList);
+
+    int update(ProductCostDO productCost);
+
+    int remove(Integer id);
+
+    int batchRemove(Integer[] ids);
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * 类别管理
- * @Author: yogiCai
+ * @author yogiCai
  * @date 2018-02-04 17:12:20
  */
 @Mapper

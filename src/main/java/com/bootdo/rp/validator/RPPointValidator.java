@@ -7,8 +7,8 @@ import com.bootdo.rp.domain.PointEntryDO;
 import org.springframework.stereotype.Service;
 
 /**
- * @Author: yogiCai
- * @Date: 2018-02-04 10:07:05
+ * @author yogiCai
+ * @date 2018-02-04 10:07:05
  */
 @Service
 public class RPPointValidator {

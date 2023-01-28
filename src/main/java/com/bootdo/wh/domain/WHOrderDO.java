@@ -41,7 +41,7 @@ public class WHOrderDO {
     /**
      * 业务类型
      */
-    @Excel(name = "业务类型", dict = "data_wh_ck_rk", width = 12)
+    @Excel(name = "业务类型", dict = "data_wh_ck,data_wh_rk", width = 12)
     private String serviceType;
 
     /**

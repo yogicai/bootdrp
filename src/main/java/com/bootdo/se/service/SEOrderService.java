@@ -39,8 +39,8 @@ import java.util.Set;
 
 @Service
 public class SEOrderService {
-	@Autowired
-	private SEOrderDao orderDao;
+    @Autowired
+    private SEOrderDao orderDao;
     @Autowired
     private SEOrderEntryDao orderEntryDao;
     @Autowired
@@ -56,25 +56,25 @@ public class SEOrderService {
     @Autowired
     private AccountDao accountDao;
 
-	
-	public SEOrderDO get(Integer id){
-		return orderDao.get(id);
-	}
-	
-	public List<SEOrderDO> list(Map<String, Object> map){
-		return orderDao.list(map);
-	}
-	
-	public int count(Map<String, Object> map){
-		return orderDao.count(map);
-	}
-	
-	public int save(SEOrderDO order){
-		return orderDao.save(order);
-	}
-	
-	@Transactional(rollbackFor = Exception.class)
-    public int audit(Map<String, Object> params){
+
+    public SEOrderDO get(Integer id) {
+        return orderDao.get(id);
+    }
+
+    public List<SEOrderDO> list(Map<String, Object> map) {
+        return orderDao.list(map);
+    }
+
+    public int count(Map<String, Object> map) {
+        return orderDao.count(map);
+    }
+
+    public int save(SEOrderDO order) {
+        return orderDao.save(order);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public int audit(Map<String, Object> params) {
         AuditStatus auditStatus = AuditStatus.fromValue(org.apache.commons.collections.MapUtils.getString(params, "auditStatus"));
         List<SEOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", MapUtils.getList(params, "billNos")));
         List<SEOrderDO> orderDOList1 = Lists.newArrayList();
@@ -104,7 +104,6 @@ public class SEOrderService {
             pointEntryDOList.add(SEOrderConverter.convertPointDO(orderDO, auditStatus, scale));
             billNoSet.add(orderDO.getBillNo());
         }
-//        pointEntryDao.delete(ImmutableMap.of("relateNos", billNoSet));
         pointEntryDao.saveBatch(pointEntryDOList);
     }
 
@@ -142,15 +141,15 @@ public class SEOrderService {
         return 1;
     }
 
-    public int remove(Integer id){
-		return orderDao.remove(id);
-	}
+    public int remove(Integer id) {
+        return orderDao.remove(id);
+    }
 
     @Transactional(rollbackFor = Exception.class)
-    public int batchRemove(List<String> billNos){
+    public int batchRemove(List<String> billNos) {
         orderDao.delete(ImmutableMap.of("billNos", billNos));
         orderEntryDao.delete(ImmutableMap.of("billNos", billNos));
         return 1;
     }
-	
+
 }

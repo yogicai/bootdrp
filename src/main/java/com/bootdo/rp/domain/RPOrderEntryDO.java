@@ -19,25 +19,25 @@ import java.util.Date;
 public class RPOrderEntryDO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	//
+	/**  */
 	private Integer id;
-	//应收、应付票据编号
+	/** 应收、应付票据编号 */
 	private String billNo;
-	//单据日期
+	/** 单据日期 */
 	private Date srcBillDate;
-	//单据类型
+	/** 单据类型 */
 	private BillType srcBillType;
-	//单据编号
+	/** 单据编号 */
 	private String srcBillNo;
-	//总欠款
+	/** 总欠款 */
 	private BigDecimal srcTotalAmount;
-	//已付金额
+	/** 已付金额 */
 	private BigDecimal srcPaymentAmount;
-	//本次核销金额
+	/** 本次核销金额 */
 	private BigDecimal checkAmount;
-	//创建时间
+	/** 创建时间 */
 	private Date createTime;
-	//修改时间
+	/** 修改时间 */
 	private Date updateTime;
 
 }

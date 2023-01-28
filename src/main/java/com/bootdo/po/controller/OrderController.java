@@ -21,10 +21,11 @@ import java.util.Map;
 
 /**
  * 购货订单
+ *
  * @author yogiCai
  * @date 2017-11-28 21:30:03
  */
- 
+
 @Controller
 @RequestMapping("/po/order")
 public class OrderController extends BaseController {
@@ -35,13 +36,13 @@ public class OrderController extends BaseController {
 
     @GetMapping()
     @RequiresPermissions("po:order:order")
-    String Order(@RequestParam Map<String, Object> params, Model model) {
+    public String order(@RequestParam Map<String, Object> params, Model model) {
         model.addAttribute("billType", MapUtils.getString(params, "billType"));
         return "po/order/order";
     }
 
     @ResponseBody
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @PostMapping(value = "/list")
     @RequiresPermissions("se:order:order")
     public PageJQUtils listP(@RequestBody Map<String, Object> params) {
         return list(params);
@@ -56,8 +57,7 @@ public class OrderController extends BaseController {
         List<OrderDO> orderList = orderService.list(query);
         int total = orderService.count(query);
         int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
-        PageJQUtils pageUtils = new PageJQUtils(orderList, totalPage, query.getPage(), total);
-        return pageUtils;
+        return new PageJQUtils(orderList, totalPage, query.getPage(), total);
     }
 
     /**
@@ -77,10 +77,10 @@ public class OrderController extends BaseController {
      * 审核、反审核
      */
     @Log("采购单审核、反审核")
-    @PostMapping( "/audit")
+    @PostMapping("/audit")
     @ResponseBody
     @RequiresPermissions("po:order:audit")
-    public R audit(@RequestBody Map<String, Object> params){
+    public R audit(@RequestBody Map<String, Object> params) {
         orderValidator.validateAudit(params);
         orderService.audit(params);
         return R.ok();

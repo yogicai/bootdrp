@@ -1,22 +1,13 @@
 package com.bootdo.report.controller.response;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import cn.afterturn.easypoi.excel.annotation.ExcelCollection;
-import cn.afterturn.easypoi.excel.annotation.ExcelIgnore;
-import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
-import com.bootdo.wh.controller.response.WHStockInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 
 /**
-* @Author: yogiCai
-* @Date: 2018-02-01 10:43:43
+* @author yogiCai
+* @date 2018-02-01 10:43:43
 */
 @Data
 public class SReconResult {

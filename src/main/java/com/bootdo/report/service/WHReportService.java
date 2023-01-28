@@ -31,8 +31,8 @@ import java.util.*;
  */
 @Service
 public class WHReportService {
-	@Resource
-	private WHReportDao whReportDao;
+    @Resource
+    private WHReportDao whReportDao;
     @Resource
     private ProductCostDao productCostDao;
 
@@ -40,7 +40,7 @@ public class WHReportService {
     private final Set<String> seBillSet = Sets.newHashSet(BillType.TH_ORDER.name(), BillType.WH_CK_ORDER.name());
 
     @Transactional(rollbackFor = Exception.class)
-    public WHPBalanceResult pBalance(Map<String, Object> params){
+    public WHPBalanceResult pBalance(Map<String, Object> params) {
         List<Map<String, Object>> list = whReportDao.pBalance(params);
         TreeMap<String, List<Map<String, Object>>> listMap = Maps.newTreeMap();
         TreeMap<String, String> stockMap = Maps.newTreeMap();

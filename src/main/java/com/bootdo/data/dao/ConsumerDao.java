@@ -9,7 +9,7 @@ import java.util.Map;
 
 /**
  * 客户信息表
- * @Author: yogiCai
+ * @author yogiCai
  * @date 2017-11-18 22:41:14
  */
 @Mapper

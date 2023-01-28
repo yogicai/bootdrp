@@ -19,8 +19,8 @@ import java.util.Map;
 
 /**
  * 商品成本管理
- * @Author: yogiCai
- * @Date: 2018-02-16 16:30:26
+ * @author yogiCai
+ * @date 2018-02-16 16:30:26
  */
 @Controller
 @RequestMapping("/engage/product/cost")

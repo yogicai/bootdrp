@@ -4,8 +4,8 @@ import com.bootdo.engage.domain.ProductCostDO;
 import org.springframework.stereotype.Service;
 
 /**
- * @Author: yogiCai
- * @Date: 2018-02-04 10:07:05
+ * @author yogiCai
+ * @date 2018-02-04 10:07:05
  */
 @Service
 public class EngageValidator {

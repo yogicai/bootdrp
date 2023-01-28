@@ -8,8 +8,8 @@ import java.util.Map;
 
 /**
  * 购货订单分录
+ *
  * @author yogiCai
- * @email 1992lcg@163.com
  * @date 2018-02-18 16:50:26
  */
 @Mapper

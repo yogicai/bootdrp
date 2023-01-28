@@ -33,8 +33,8 @@ import java.util.Map;
 
 @Service
 public class OrderService {
-	@Autowired
-	private OrderDao orderDao;
+    @Autowired
+    private OrderDao orderDao;
     @Autowired
     private OrderEntryDao orderEntryDao;
     @Autowired
@@ -48,26 +48,26 @@ public class OrderService {
     @Autowired
     private CostAmountCalculator costAmountCalculator;
 
-	
-	public OrderDO get(Integer id){
-		return orderDao.get(id);
-	}
-	
-	public List<OrderDO> list(Map<String, Object> map){
-		return orderDao.list(map);
-	}
-	
-	public int count(Map<String, Object> map){
-		return orderDao.count(map);
-	}
-	
-	public int save(OrderDO order){
-		return orderDao.save(order);
-	}
-	
 
-	@Transactional(rollbackFor = Exception.class)
-    public int audit(Map<String, Object> params){
+    public OrderDO get(Integer id) {
+        return orderDao.get(id);
+    }
+
+    public List<OrderDO> list(Map<String, Object> map) {
+        return orderDao.list(map);
+    }
+
+    public int count(Map<String, Object> map) {
+        return orderDao.count(map);
+    }
+
+    public int save(OrderDO order) {
+        return orderDao.save(order);
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public int audit(Map<String, Object> params) {
         AuditStatus auditStatus = AuditStatus.fromValue(MapUtils.getString(params, "auditStatus"));
         List<OrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", com.bootdo.common.utils.MapUtils.getList(params, "billNos")));
         List<OrderDO> orderDOList1 = Lists.newArrayList();
@@ -130,15 +130,15 @@ public class OrderService {
         return 1;
     }
 
-	public int remove(Integer id){
-		return orderDao.remove(id);
-	}
+    public int remove(Integer id) {
+        return orderDao.remove(id);
+    }
 
     @Transactional(rollbackFor = Exception.class)
-	public int batchRemove(List<String> billNos){
+    public int batchRemove(List<String> billNos) {
         orderDao.delete(ImmutableMap.of("billNos", billNos));
         orderEntryDao.delete(ImmutableMap.of("billNos", billNos));
-		return 1;
-	}
+        return 1;
+    }
 
 }

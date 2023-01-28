@@ -18,28 +18,28 @@ import java.util.Map;
 
 /**
  * 入库出库商品
- * 
+ *
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
- 
+
 @Controller
 @RequestMapping("/wh/entry")
 public class WHOrderEntryController {
     @Autowired
     private WHOrderValidator orderValidator;
-	@Autowired
-	private WHOrderEntryService orderEntryService;
+    @Autowired
+    private WHOrderEntryService orderEntryService;
 
-	/**
-	* 左侧菜单单据详情页URL
-	*/
-	@GetMapping()
-	@RequiresPermissions("wh:entry:entry")
-	String OrderEntry(@RequestParam Map<String, Object> params, Model model){
+    /**
+     * 左侧菜单单据详情页URL
+     */
+    @GetMapping()
+    @RequiresPermissions("wh:entry:entry")
+    public String orderEntry(@RequestParam Map<String, Object> params, Model model) {
         model.addAttribute("billType", MapUtils.getString(params, "billType"));
         return "wh/entry/entry";
-	}
+    }
 
     /**
      * 保存单据
@@ -57,18 +57,18 @@ public class WHOrderEntryController {
     /**
      * 保证单据页面，添加分录商品弹窗
      */
-	@GetMapping("/add")
-	@RequiresPermissions("wh:entry:add")
-	String add(){
-	    return "wh/entry/add";
-	}
+    @GetMapping("/add")
+    @RequiresPermissions("wh:entry:add")
+    public String add() {
+        return "wh/entry/add";
+    }
 
     /**
      * 保证单据页面，供应商弹窗
      */
     @GetMapping("/addHead")
     @RequiresPermissions("wh:entry:add")
-    String addHead(){
+    public String addHead() {
         return "wh/entry/addHead";
     }
 
@@ -78,9 +78,9 @@ public class WHOrderEntryController {
     @ResponseBody
     @GetMapping("/get")
     @RequiresPermissions("wh:order:remove")
-    public R get(@RequestParam Map<String, Object> params){
+    public R get(@RequestParam Map<String, Object> params) {
         //查询列表数据
-        WHOrderVO orderVO= orderEntryService.getOrderVO(params);
+        WHOrderVO orderVO = orderEntryService.getOrderVO(params);
         return R.ok().put("order", orderVO);
     }
 }

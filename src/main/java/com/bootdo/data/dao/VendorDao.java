@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * 供应商信息表
- * @Author: yogiCai
+ * @author yogiCai
  * @date 2017-11-24 23:12:54
  */
 @Mapper

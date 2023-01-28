@@ -17,38 +17,38 @@ import java.util.*;
 
 @Service
 public class CategoryService {
-	@Autowired
-	private CategoryDao categoryDao;
+    @Autowired
+    private CategoryDao categoryDao;
     @Autowired
     private ProductDao productDao;
-	
-	public CategoryDO get(Long categoryId){
-		return categoryDao.get(categoryId);
-	}
-	
-	public List<CategoryDO> list(Map<String, Object> map){
-		return categoryDao.list(map);
-	}
-	
-	public int count(Map<String, Object> map){
-		return categoryDao.count(map);
-	}
-	
-	public int save(CategoryDO category){
-		return categoryDao.save(category);
-	}
-	
-	public int update(CategoryDO category){
-		return categoryDao.update(category);
-	}
-	
-	public int remove(Long categoryId){
-		return categoryDao.remove(categoryId);
-	}
-	
-	public int batchRemove(Long[] categoryIds){
-		return categoryDao.batchRemove(categoryIds);
-	}
+
+    public CategoryDO get(Long categoryId) {
+        return categoryDao.get(categoryId);
+    }
+
+    public List<CategoryDO> list(Map<String, Object> map) {
+        return categoryDao.list(map);
+    }
+
+    public int count(Map<String, Object> map) {
+        return categoryDao.count(map);
+    }
+
+    public int save(CategoryDO category) {
+        return categoryDao.save(category);
+    }
+
+    public int update(CategoryDO category) {
+        return categoryDao.update(category);
+    }
+
+    public int remove(Long categoryId) {
+        return categoryDao.remove(categoryId);
+    }
+
+    public int batchRemove(Long[] categoryIds) {
+        return categoryDao.batchRemove(categoryIds);
+    }
 
     public Tree<CategoryDO> getTree(Map<String, Object> params) {
         List<Tree<CategoryDO>> trees = new ArrayList<Tree<CategoryDO>>();
@@ -86,7 +86,7 @@ public class CategoryService {
     }
 
     public List<AsyncTree> getAsyncTreeLeaf(Map<String, Object> params) {
-	    List<AsyncTree> nodeList = Lists.newArrayList();
+        List<AsyncTree> nodeList = Lists.newArrayList();
         List<ProductDO> productDOList = productDao.list(ImmutableMap.of("type", MapUtils.getString(params, "id")));
         for (ProductDO productDO : productDOList) {
             AsyncTree<CategoryDO> tree = new AsyncTree<>();
@@ -99,10 +99,10 @@ public class CategoryService {
         return nodeList;
     }
 
-    public Map<String, List<Tree<CategoryDO>>> listTree(Map<String, Object> params){
+    public Map<String, List<Tree<CategoryDO>>> listTree(Map<String, Object> params) {
         Tree<CategoryDO> trees = getTree(params);
         Map<String, List<Tree<CategoryDO>>> listTree = Maps.newHashMap();
-        for (Tree<CategoryDO> node :trees.getChildren()) {
+        for (Tree<CategoryDO> node : trees.getChildren()) {
             String type = MapUtils.getString(node.getAttributes(), "type");
             if (!listTree.containsKey(type)) {
                 listTree.put(type, new ArrayList<>());
@@ -112,7 +112,7 @@ public class CategoryService {
         return listTree;
     }
 
-    public Map<String, List<Tree<Map>>> listTreeData(Map<String, Object> params){
+    public Map<String, List<Tree<Map>>> listTreeData(Map<String, Object> params) {
         List<Tree<Map>> trees = new ArrayList<Tree<Map>>();
         List<Map> categoryData = categoryDao.listTreeData(params);
 
@@ -152,7 +152,7 @@ public class CategoryService {
     }
 
 
-    public Map<String, List<CategoryDO>> lists(Map<String, Object> map){
+    public Map<String, List<CategoryDO>> lists(Map<String, Object> map) {
         Map<String, List<CategoryDO>> maps = new HashMap<>();
         List<CategoryDO> list = categoryDao.list(map);
         for (CategoryDO categoryDO : list) {

@@ -1,9 +1,14 @@
 package com.bootdo.report.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @author caiyz
  * @since 2020-11-10 11:00
  */
+@Getter
+@AllArgsConstructor
 public enum BillStatType {
 
     /** 营业额 */
@@ -17,23 +22,12 @@ public enum BillStatType {
     /** 欠款 */
     DEBT("debtAmount", "欠款"),
     /** 订单数 */
-    COUNT("count", "订单数");
+    COUNT("count", "订单数"),
+
+    ;
 
 
     private final String value;
     private final String text;
-
-    public String column() {
-        return value;
-    }
-
-    public String text() {
-        return text;
-    }
-
-    BillStatType(String column, String text) {
-        this.value = column;
-        this.text = text;
-    }
 
 }

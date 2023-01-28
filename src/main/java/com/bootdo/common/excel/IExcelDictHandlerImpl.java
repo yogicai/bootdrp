@@ -1,4 +1,4 @@
-package com.bootdo.type;
+package com.bootdo.common.excel;
 
 import cn.afterturn.easypoi.handler.inter.IExcelDictHandler;
 import cn.hutool.core.collection.CollUtil;

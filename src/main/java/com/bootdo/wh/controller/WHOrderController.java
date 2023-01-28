@@ -21,14 +21,14 @@ import java.util.Map;
 
 /**
  * 入库出库单
- * 
+ *
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
- 
+
 @Controller
 @RequestMapping("/wh/order")
-public class WHOrderController extends BaseController{
+public class WHOrderController extends BaseController {
     @Autowired
     private WHOrderValidator orderValidator;
     @Autowired
@@ -39,7 +39,7 @@ public class WHOrderController extends BaseController{
      */
     @GetMapping()
     @RequiresPermissions("wh:order:order")
-    String Order(@RequestParam Map<String, Object> params, Model model) {
+    public String order(@RequestParam Map<String, Object> params, Model model) {
         model.addAttribute("billType", MapUtils.getString(params, "billType"));
         return "wh/order/order";
     }
@@ -56,8 +56,7 @@ public class WHOrderController extends BaseController{
         List<WHOrderDO> orderList = orderService.list(query);
         int total = orderService.count(query);
         int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
-        PageJQUtils pageUtils = new PageJQUtils(orderList, totalPage, query.getPage(), total);
-        return pageUtils;
+        return new PageJQUtils(orderList, totalPage, query.getPage(), total);
     }
 
     /**
@@ -77,10 +76,10 @@ public class WHOrderController extends BaseController{
      * 审核、反审核
      */
     @Log("库存单审核、反审核")
-    @PostMapping( "/audit")
+    @PostMapping("/audit")
     @ResponseBody
     @RequiresPermissions("wh:order:audit")
-    public R audit(@RequestBody Map<String, Object> params){
+    public R audit(@RequestBody Map<String, Object> params) {
         orderValidator.validateAudit(params);
         orderService.audit(params);
         return R.ok();
@@ -90,10 +89,10 @@ public class WHOrderController extends BaseController{
      * 删除
      */
     @Log("库存单删除")
-    @PostMapping( "/remove")
+    @PostMapping("/remove")
     @ResponseBody
     @RequiresPermissions("wh:order:remove")
-    public R remove(@RequestParam("billNos[]")List<String> billNos){
+    public R remove(@RequestParam("billNos[]") List<String> billNos) {
         orderValidator.validateRemove(billNos);
         orderService.batchRemove(billNos);
         return R.ok();

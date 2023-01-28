@@ -39,15 +39,15 @@ import java.util.Map;
 public class OrderEntryService {
     @Autowired
     private OrderDao orderDao;
-	@Autowired
-	private OrderEntryDao orderEntryDao;
+    @Autowired
+    private OrderEntryDao orderEntryDao;
     @Autowired
     private VendorDao vendorDao;
     @Autowired
     private StockService stockService;
 
     @Transactional(rollbackFor = Exception.class)
-    public OrderDO save(OrderVO orderVO){
+    public OrderDO save(OrderVO orderVO) {
         VendorDO vendorDO = vendorDao.get(NumberUtils.toInt(orderVO.getVendorId()));
         Map<String, StockDO> stockDOMap = stockService.listStock(Maps.newHashMap());
         OrderDO orderDO = OrderConverter.convertOrder(orderVO, vendorDO);
