@@ -4,7 +4,7 @@ let tableGrid;
 let dataForm;
 let initData = [];
 let currentRow = {};
-let colNames = ['商品编号', '商品名称', '条形码',  '单位', '累计入库数', '商品单价', '商品金额', '库存数量', '单位成本', '成本'];
+let colNames = ['商品编号', '商品名称', '条形码',  '单位', '累计入库数量', '入库单价', '入库金额', '库存数量', '库存单价', '库存金额'];
 let colModel = [
     { name:'entryId', index:'entryId', editable:false, width:50 },
     { name:'entryName', index:'entryName', editable:false, sorttype:"text", width:150, frozen: true },

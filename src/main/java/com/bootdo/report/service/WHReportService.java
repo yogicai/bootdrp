@@ -1,5 +1,6 @@
 package com.bootdo.report.service;
 
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.common.enumeration.BillType;
 import com.bootdo.common.utils.DateUtils;
 import com.bootdo.common.utils.MapUtils;
@@ -46,14 +47,14 @@ public class WHReportService {
         TreeMap<String, String> stockMap = Maps.newTreeMap();
         WHPBalanceResult result = new WHPBalanceResult();
 
-        result.setToDate(StringUtils.defaultIfBlank(MapUtils.getString(params, "toDate"), DateUtils.currentDate()));
+        result.setToDate(StringUtils.defaultIfBlank(MapUtil.getStr(params, "toDate"), DateUtils.currentDate()));
         //按商品ID分类整理库存信息
         for (Map<String, Object> map : list) {
-            String key = MapUtils.getString(map, "no");
+            String key = MapUtil.getStr(map, "no");
             if (!listMap.containsKey(key)) {
                 listMap.put(key, Lists.newArrayList());
-                if (!StringUtil.isEmpty(MapUtils.getString(map, "stock_no"))) {
-                    stockMap.put(MapUtils.getString(map, "stock_no"), MapUtils.getString(map, "stock_name"));
+                if (!StringUtil.isEmpty(MapUtil.getStr(map, "stock_no"))) {
+                    stockMap.put(MapUtil.getStr(map, "stock_no"), MapUtil.getStr(map, "stock_name"));
                 }
             }
             listMap.get(key).add(map);
@@ -66,14 +67,15 @@ public class WHReportService {
         }
         //处理商品信息及总库存信息
         //是否查询零库存商品（0:是，其他:否）
-        boolean showSto = MapUtils.getIntValue(params, "showSto", 1) == 0;
+        boolean showSto = MapUtil.getInt(params, "showSto", 1) == 0;
         for (Map.Entry<String, List<Map<String, Object>>> entry : listMap.entrySet()) {
             WHProductInfo productInfo = convertProductInfo(entry.getValue(), costDOMap);
-            if (showSto && BigDecimal.ZERO.compareTo(productInfo.getInventory()) >= 0) {
-                //零库存商品
+            //零库存商品
+            if (showSto && BigDecimal.ZERO.equals(productInfo.getInventory())) {
                 result.getProductInfoList().add(productInfo);
-            } else if (!showSto) {
-                //全部商品
+            }
+            //全部商品
+            if (!showSto) {
                 result.getProductInfoList().add(productInfo);
             }
         }
@@ -110,8 +112,8 @@ public class WHReportService {
             entryAmountTotal = entryAmountTotal.add(defaultEntryAmount(map, "entry_amount"));
             totalAmountTotal = totalAmountTotal.add(defaultEntryAmount(map, "total_amount"));
 
-            String stockNo = MapUtils.getString(map, "stock_no");
-            String stockName = MapUtils.getString(map, "stock_name");
+            String stockNo = MapUtil.getStr(map, "stock_no");
+            String stockName = MapUtil.getStr(map, "stock_name");
             if (!productInfo.getStockInfoMap().containsKey(stockNo)) {
                 WHStockInfo stockInfo = new WHStockInfo();
                 stockInfo.setStockNo(stockNo);
@@ -122,16 +124,16 @@ public class WHReportService {
                 productInfo.getStockInfoMap().get(stockNo).addTotalQty(defaultStockAmount(map));
             }
         }
-        ProductCostDO costDO = costDOMap.get(MapUtils.getString(mapList.get(0), "no"));
-        productInfo.setEntryId(MapUtils.getString(mapList.get(0), "no"));
-        productInfo.setEntryName(MapUtils.getString(mapList.get(0), "name"));
-        productInfo.setEntryBarcode(MapUtils.getString(mapList.get(0), "bar_code"));
-        productInfo.setEntryUnit(MapUtils.getString(mapList.get(0), "unit"));
-
+        ProductCostDO costDO = costDOMap.get(MapUtil.getStr(mapList.get(0), "no"));
+        productInfo.setEntryId(MapUtil.getStr(mapList.get(0), "no"));
+        productInfo.setEntryName(MapUtil.getStr(mapList.get(0), "name"));
+        productInfo.setEntryBarcode(MapUtil.getStr(mapList.get(0), "bar_code"));
+        productInfo.setEntryUnit(MapUtil.getStr(mapList.get(0), "unit"));
+        //累计入库（采购入库、盘点入库）商品数量、均价、金额
         productInfo.setQtyTotal(qtyTotal);
         productInfo.setEntryPrice(NumberUtils.div(entryAmountTotal, qtyTotal));
         productInfo.setEntryAmount(entryAmountTotal);
-
+        //实际库存数量（采购入库 + 盘点入库 - 退货出库 - 盘点出库）商品数量、均价、金额
         productInfo.setInventory(inventoryTotal);
         productInfo.setCostPrice(costDO != null ? costDO.getCostPrice() : BigDecimal.ZERO);
         productInfo.setCostAmount(NumberUtils.mul(productInfo.getCostPrice(), inventoryTotal));
@@ -150,7 +152,7 @@ public class WHReportService {
         //处理每个商品的库存数量
         Map<String, BigDecimal> productMap = Maps.newHashMap();
         for (Map<String, Object> map : list) {
-            String no = MapUtils.getString(map, "no");
+            String no = MapUtil.getStr(map, "no");
             productMap.put(no, NumberUtils.add(MapUtils.getBigDecimal(productMap, no), defaultStockAmount(map)));
         }
         //计算库存总数量、成本
@@ -169,22 +171,22 @@ public class WHReportService {
         Map<String, BigDecimal> result = new HashMap<>();
         List<Map<String, Object>> list = whReportDao.pBalance(params);
         for (Map<String, Object> map : list) {
-            result.put(MapUtils.getString(map, "no"), NumberUtils.add(MapUtils.getBigDecimal(result, MapUtils.getString(map, "no")), defaultStockAmount(map)));
+            result.put(MapUtil.getStr(map, "no"), NumberUtils.add(MapUtils.getBigDecimal(result, MapUtil.getStr(map, "no")), defaultStockAmount(map)));
         }
         return result;
     }
 
     private BigDecimal defaultStockAmount(Map<String, Object> map) {
-        String billType = MapUtils.getString(map, "bill_type");
+        String billType = MapUtil.getStr(map, "bill_type");
         if (poBillSet.contains(billType)) {
-            return BigDecimal.valueOf(MapUtils.getIntValue(map, "total_qty"));
+            return BigDecimal.valueOf(MapUtil.getInt(map, "total_qty", 0));
         } else {
-            return BigDecimal.valueOf(MapUtils.getIntValue(map, "total_qty") * -1);
+            return BigDecimal.valueOf(MapUtil.getInt(map, "total_qty", 0) * -1L);
         }
     }
 
     private BigDecimal defaultEntryAmount(Map<String, Object> map, String key) {
-        String billType = MapUtils.getString(map, "bill_type");
-        return BigDecimal.valueOf(poBillSet.contains(billType) ? MapUtils.getIntValue(map, key) : 0);
+        String billType = MapUtil.getStr(map, "bill_type");
+        return BigDecimal.valueOf(poBillSet.contains(billType) ? MapUtil.getInt(map, key, 0) : 0);
     }
 }

@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum BillType implements EnumBean {
+public enum BillType implements EnumBean<BillType> {
 
     /** 采购单  */
     CG_ORDER("采购单"),

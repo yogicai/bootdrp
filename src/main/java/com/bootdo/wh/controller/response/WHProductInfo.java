@@ -31,24 +31,24 @@ public class WHProductInfo {
     @Excel(name = "商品单位", dict = "data_unit", needMerge = true)
     private String entryUnit;
     /** 单位数量 */
-    @Excel(name = "单位数量", needMerge = true)
+    @Excel(name = "入库商品数量", needMerge = true)
     private BigDecimal qtyTotal;
     /** 商品单价 */
-    @Excel(name = "商品单价", needMerge = true)
+    @Excel(name = "入库商品单价", needMerge = true)
     private BigDecimal entryPrice;
     /** 商品金额 */
-    @Excel(name = "商品金额", needMerge = true)
+    @Excel(name = "入库商品金额", needMerge = true)
     private BigDecimal entryAmount;
     /** 库存数量 */
-    @Excel(name = "库存数量", needMerge = true)
+    @Excel(name = "库存商品数量", needMerge = true)
     private BigDecimal inventory;
     /** 库存单位成本 */
-    @Excel(name = "库存单位成本", needMerge = true, numFormat = "#.00")
+    @Excel(name = "库存商品单价", needMerge = true, numFormat = "#.00")
     private BigDecimal costPrice;
     /** 库存成本（商品成本 + 费用成本） */
-    @Excel(name = "库存成本（商品成本 + 费用成本）", needMerge = true)
+    @Excel(name = "库存商品金额（商品成本 + 费用成本）", needMerge = true)
     private BigDecimal costAmount;
-
+    /** 仓库库存明细 */
     @ExcelCollection(name = "仓库库存明细")
     private final List<WHStockInfo> stockInfoList = Lists.newArrayList();
 
