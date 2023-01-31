@@ -45,7 +45,7 @@ public class SEReportController extends BaseController {
     @RequiresPermissions("wh:report:pBalance")
     public R pSeTotal(@RequestBody Map<String, Object> params, Model model) {
         SEBillTotalResult result;
-        int days = MapUtil.getInt(params, "days");
+        int days = MapUtil.getInt(params, "days", 0);
         //过去多少天
         String type = MapUtil.getStr(params, "type");
         //WEEK MONTH
