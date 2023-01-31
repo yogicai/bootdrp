@@ -296,8 +296,9 @@
                             let html = "", data = result[types[t]];
                             if (data) {
                                 Object.values(data).forEach(function(value, index) { html += '<option value="' + value + '">' + value + '</option>'; })
-                                $("#" + elementIds[t]).append(html);
+                                $("#" + elementIds[t]).html(html);
                                 $("#" + elementIds[t]).multiselect(option);
+                                $("#" + elementIds[t]).multiselect('rebuild');
                             }
                         }
                     }

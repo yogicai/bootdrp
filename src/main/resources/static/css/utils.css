@@ -21,6 +21,11 @@
     margin-right: 0;
 }
 
+.tool-pull-left-sm {
+    margin-left: 3px;
+    margin-right: 0;
+}
+
 .util-ibox {
     clear: both;
     margin-bottom: 10px;

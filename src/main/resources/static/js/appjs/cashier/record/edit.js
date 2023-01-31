@@ -1,5 +1,7 @@
+let costTypeEle = $("#costType");
 $().ready(function() {
 	validateRule();
+	initData();
 	utils.createDatePicker('tradeTime');
 });
 
@@ -8,6 +10,11 @@ $.validator.setDefaults({
 		update();
 	}
 });
+
+function initData() {
+	costTypeEle.val(costTypeEle.attr("value")).trigger("chosen:updated");
+}
+
 function update() {
 	$.ajax({
 		cache : true,

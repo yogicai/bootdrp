@@ -1,18 +1,24 @@
 let prefix = "/cashier/record";
+let dataForm;
 let tableGrid;
 let recordDate;
 let recordDateS;
 let recordDateE;
+let loading;
 $(function() {
-    utils.loadMultiSelect(
-        ["type","account","payDirect","payStatus","tradeClass","source"],
-        ["type","account","payDirect","payStatus","tradeClass","source"],
-        [{nonSelectedText: '交易渠道'},{nonSelectedText: '交易账号'},{nonSelectedText: '交易方向'},{nonSelectedText: '交易状态'},{nonSelectedText: '交易类型'},{nonSelectedText: '数据来源'}],
-        prefix + '/multiSelect'
-    );
     dataForm = $("#search");
+    initMultiSelect();
     load();
 });
+
+function initMultiSelect() {
+    utils.loadMultiSelect(
+        ["type","account","payDirect","payStatus","tradeClass","source","costType"],
+        ["type","account","payDirect","payStatus","tradeClass","source","costType"],
+        [{nonSelectedText: '交易渠道'},{nonSelectedText: '交易账号'},{nonSelectedText: '交易方向'},{nonSelectedText: '交易状态'},{nonSelectedText: '交易类型'},{nonSelectedText: '数据来源'},{nonSelectedText: '资金用途'}],
+        prefix + '/multiSelect'
+    )
+}
 
 function load() {
     recordDate = utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
@@ -21,37 +27,46 @@ function load() {
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
+    dataForm  = $('#search');
+
     tableGrid = $("#table_list").jqGrid({
         url: prefix + "/list",
         datatype: "json",
-        postData: $.extend({}, $('#search').serializeObject(), {'start' : recordDateS.getDate().format('yyyy-MM-dd'), 'end' : recordDateE.getDate().format('yyyy-MM-dd')}),
+        postData: $.extend({}, dataForm.serializeObject(), {'start' : recordDateS.getDate().format('yyyy-MM-dd'), 'end' : recordDateE.getDate().format('yyyy-MM-dd')}),
         height: window.innerHeight - 210,
         autowidth: true,
         shrinkToFit: true,
         multiselect: true,
         rowNum: 20,
         rowList: [20, 50, 100],
-        colNames: ['编号', '昵称', '账号', '渠道', '交易时间', '交易分类', '交易对方', '交易对方账户', '商品说明', '交易方式', '金额(元)', '收/支', '交易状态', '数据来源'],
+        colNames: ['编号', '昵称', '账号', '渠道', '交易时间', '交易分类', '交易对方', '交易对方账户', '商品说明', '交易方式', '资金用途', '金额(元)', '收/支', '交易状态', '数据来源'],
         colModel: [
             { name:'id', index:'id', editable:false, width:90, hidedlg:true, hidden:true },
             { name:'nick', index:'nick', editable:true, sorttype:"text", width:70 },
             { name:'account', index:'account', editable:true, sorttype:"text", width:100 },
-            { name:'type', index:'type', editable:true, sorttype:"text", width:70 },
+            { name:'type', index:'type', editable:true, sorttype:"text", width:60 },
             { name:'tradeTime', index:'tradeTime', editable:true, edittype:'custom', width:120 },
             { name:'tradeClass', index:'tradeClass', editable:true, sorttype:"text", width:80 },
-            { name:'targetName', index:'targetName', editable:true, sorttype:"text", width:150 },
-            { name:'targetAccount', index:'targetAccount', editable:true, sorttype:"text", width:150, hidden: true },
-            { name:'tradeGoods', index:'tradeGoods', editable:true, sorttype:"text", width:150 },
-            { name:'tradeType', index:'tradeType', editable:true, sorttype:"text", width:80 },
-            { name:'payAmount', index:'payAmount', editable:true, sorttype:"float", width:90, align:"right" },
-            { name:'payDirect', index:'payDirect', editable:true, sorttype:"text", width:80 },
+            { name:'targetName', index:'targetName', editable:true, sorttype:"text", width:120 },
+            { name:'targetAccount', index:'targetAccount', editable:true, sorttype:"text", width:120 },
+            { name:'tradeGoods', index:'tradeGoods', editable:true, sorttype:"text", width:120 },
+            { name:'tradeType', index:'tradeType', editable:true, sorttype:"text", width:60 },
+            { name:'costType', index:'costType', editable:true, sorttype:"text", width:80 },
+            { name:'payAmount', index:'payAmount', editable:true, sorttype:"float", width:80, align:"right"},
+            { name:'payDirect', index:'payDirect', editable:true, sorttype:"text", width:50 },
             { name:'payStatus', index:'payStatus', editable:true, sorttype:"text", width:80 },
             { name:'source', index:'source', editable:true, sorttype:"text", width:80 }
         ],
         pager: "#pager_list",
         viewrecords: true, //是否显示总记录数
         footerrow: true,
+        beforeSelectRow: function (rowid) {
+            let selrow = tableGrid.jqGrid('getGridParam','selrow');
+            tableGrid.jqGrid('resetSelection');
+            return selrow !== rowid;
+        },
         ondblClickRow: function (rowid, iRow, iCol, e) {
+            tableGrid.setSelection(rowid);
             edit([rowid]);
         },
         loadComplete: function (data) {
@@ -84,15 +99,25 @@ function load() {
         method: "post",  // 也可用put
         paramName: "file", // 提交的参数,默认为file
         disablePreviews: true,
+        addedfile: function (file) {
+            parent.layer.load(1, {
+                shadeClose: false,
+                title: '加载中..',
+                shade: [0.5,'#000']
+            });
+        },
         success: function (file, message) {
             parent.layer.msg(message.msg);
+            parent.layer.closeAll('loading');
         },
         queuecomplete: function () {
             //全部上传后重置文件队列
             Dropzone.forElement("#dropz").removeAllFiles(true);
+            reLoad();
+            initMultiSelect();
         },
         error: function (file, message) {
-            parent.layer.msg(message);
+            parent.layer.closeAll('loading');
         }
     });
 }
@@ -110,36 +135,43 @@ function collectTotal(data){
     let totalAmountObj = {
         tradeTime:'本页合计：',
         tradeClass: `${recordNum}笔`,
-        targetName: `${utils.priceFormat(payAmountTotal)}元`,
-        tradeGoods: `总计：` ,
-        tradeType: `${totalCount}笔`,
-        payAmount: `${utils.priceFormat(totalAmount)}元`
+        targetName: `${utils.priceFormat(payAmountTotal)}`,
+        tradeType: `总计：` ,
+        costType: `${totalCount}笔`,
+        payAmount: `${utils.priceFormat(totalAmount)}`
     };
     // 设置表格合计项金额
     tableGrid.footerData('set', totalAmountObj);
 }
 
 function search(pageBtn) {
-    var inputPage = 1;
-    var rowNum = tableGrid.getGridParam('rowNum');//获取每页数
-    var curPage = tableGrid.getGridParam('page');//获取返回的当前页
-    var totalPage = tableGrid.getGridParam('lastpage');//获取总页数
-    if (pageBtn == 'first') {
+    let inputPage = 1;
+    let rowNum = tableGrid.getGridParam('rowNum');//获取每页数
+    let curPage = tableGrid.getGridParam('page');//获取返回的当前页
+    let totalPage = tableGrid.getGridParam('lastpage');//获取总页数
+    if (pageBtn === 'first') {
         inputPage = 0;
-    } else if (pageBtn == 'last') {
+    } else if (pageBtn === 'last') {
         inputPage = totalPage;
-    } else if (pageBtn == 'prev') {
+    } else if (pageBtn === 'prev') {
         inputPage = curPage - 1;
-    } else if (pageBtn == 'next') {
+    } else if (pageBtn === 'next') {
         inputPage = curPage + 1;
-    } else if (pageBtn == 'user') {
+    } else if (pageBtn === 'user') {
         inputPage = $('.ui-pg-input').val();//输入框页数
-    } else if (pageBtn == 'records') {
+    } else if (pageBtn === 'records') {
         rowNum = $('.ui-pg-selbox').val();//输入框页数
     }
     inputPage = inputPage > totalPage ? totalPage : inputPage;
     inputPage = inputPage < 1 ? 1 : inputPage;
-    let postData = $.extend({}, $('#search').serializeObject(), { 'page': inputPage, 'rows': rowNum });
+    let postData = $.extend({}, dataForm.serializeObject(), { 'page': inputPage, 'rows': rowNum });
+
+    Object.keys(postData).forEach((element, index, array) => {
+        if (Array.isArray(postData[element])) {
+            postData[element] = postData[element].join();
+        }
+    });
+
     tableGrid.jqGrid('setGridParam', {postData:  $.param(postData)}).trigger("reloadGrid");
 }
 
@@ -191,7 +223,7 @@ function remove() {
                 'ids' : ids
             },
             success : function(r) {
-                if (r.code==0) {
+                if (r.code===0) {
                     layer.msg(r.msg);
                     search();
                 }else{

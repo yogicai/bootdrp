@@ -1,7 +1,6 @@
 package com.bootdo.cashier.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import cn.hutool.core.bean.BeanUtil;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -62,6 +61,11 @@ public class RecordDO implements Serializable {
      */
     @Excel(name = "交易方式")
     private String tradeType;
+    /**
+     * 资金用途
+     */
+    @Excel(name = "资金用途", width = 15)
+    private String costType;
     /**
      * 金额(元)
      */

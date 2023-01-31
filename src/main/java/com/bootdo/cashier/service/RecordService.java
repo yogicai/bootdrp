@@ -1,10 +1,10 @@
 package com.bootdo.cashier.service;
 
-import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.CharsetDetector;
 import cn.hutool.core.text.csv.CsvData;
 import cn.hutool.core.text.csv.CsvUtil;
-import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.cashier.controller.response.MultiSelect;
@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,9 +88,13 @@ public class RecordService {
 	}
 
 	private void readAliCvs(MultipartFile file) throws Exception {
-		Map<String, Object> param = new HashMap<>();
+		Map<String, Object> param = new HashMap<>(8);
 		List<RecordDO> recordDOList = new ArrayList<>();
-		CsvData csvData = CsvUtil.getReader().read(new InputStreamReader(file.getInputStream(), CharsetUtil.GBK));
+		// 获取字符编码
+		Charset charset = CharsetDetector.detect(file.getInputStream());
+		//获取csv文件读取器
+		CsvData csvData = CsvUtil.getReader().read(new InputStreamReader(file.getInputStream(), charset));
+		//文件标题
 		RecordDO recordHead = new RecordDO();
 		csvData.getRows().forEach(row -> {
 			if (row.getFieldCount() == 1 && StrUtil.startWith(row.get(0), ALIPAY_NAME)) {
@@ -121,6 +125,7 @@ public class RecordService {
 				recordDO.setBizNo(trimStr(row.get(9)));
 				recordDO.setTradeTime(DateUtil.parse(row.get(10)));
 				recordDO.setRemark(StrUtil.EMPTY);
+				recordDO.setCostType(trimStr(row.get(11)));
 				recordDO.setSource("对账单导入");
 				recordDOList.add(recordDO);
 			}
@@ -129,25 +134,29 @@ public class RecordService {
 			recordDO.setNick(recordHead.getNick());
 			recordDO.setAccount(recordHead.getAccount());
 		});
-		if (CollectionUtil.isNotEmpty(recordDOList)) {
+		if (CollUtil.isNotEmpty(recordDOList)) {
 			recordDao.remove(param);
 			recordDao.saveBatch(recordDOList);
 		}
 	}
 
 	private void readWxCvs(MultipartFile file) throws Exception {
-		Map<String, Object> param = new HashMap<>();
+		Map<String, Object> param = new HashMap<>(8);
 		List<RecordDO> recordDOList = new ArrayList<>();
-		CsvData csvData = CsvUtil.getReader().read(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+		//获取字符编码
+		Charset charset = CharsetDetector.detect(file.getInputStream());
+		//获取csv文件读取器
+		CsvData csvData = CsvUtil.getReader().read(new InputStreamReader(file.getInputStream(), charset));
+		//文件标题
 		RecordDO recordHead = new RecordDO();
 		csvData.getRows().forEach(row -> {
-			if (row.getOriginalLineNumber() == 2 && StrUtil.startWith(row.get(0), WX_NAME)) {
+			if (row.getOriginalLineNumber() == 1 && StrUtil.startWith(row.get(0), WX_NAME)) {
 				String nick = StrUtil.splitToArray(row.get(0), COMMA)[1];
 				recordHead.setNick(nick);
 				recordHead.setAccount(nick);
 				param.put("nick", nick);
 				param.put("account", nick);
-			} else if (row.getOriginalLineNumber() == 3 && StrUtil.startWith(row.get(0), TRADE_TIME)) {
+			} else if (row.getOriginalLineNumber() == 2 && StrUtil.startWith(row.get(0), TRADE_TIME)) {
 				Matcher matcher = TRADE_TIME_PATTERN.matcher(row.get(0));
 				boolean b = matcher.matches();
 				param.put("start", b ? matcher.group(1) : StrUtil.EMPTY);
@@ -167,6 +176,7 @@ public class RecordService {
 				recordDO.setTxnNo(trimStr(row.get(8)));
 				recordDO.setBizNo(trimStr(row.get(9)));
 				recordDO.setRemark(trimStr(row.get(10)));
+				recordDO.setCostType(trimStr(row.get(11)));
 				recordDO.setSource("对账单导入");
 				recordDOList.add(recordDO);
 			}
@@ -175,14 +185,14 @@ public class RecordService {
 			recordDO.setNick(recordHead.getNick());
 			recordDO.setAccount(recordHead.getAccount());
 		});
-		if (CollectionUtil.isNotEmpty(recordDOList)) {
+		if (CollUtil.isNotEmpty(recordDOList)) {
 			recordDao.remove(param);
 			recordDao.saveBatch(recordDOList);
 		}
 	}
 
 	private String trimStr(String str) {
-		return StrUtil.removeAny(StrUtil.trim(str), StrUtil.TAB);
+		return StrUtil.blankToDefault(StrUtil.removeAny(StrUtil.trim(str), StrUtil.TAB), StrUtil.SLASH);
 	}
 
 	public MultiSelect multiSelect() {
@@ -195,6 +205,7 @@ public class RecordService {
 			multiSelect.getPayStatus().putIfAbsent(recordDO.getPayStatus(), recordDO.getPayStatus());
 			multiSelect.getTradeClass().putIfAbsent(recordDO.getTradeClass(), recordDO.getTradeClass());
 			multiSelect.getSource().putIfAbsent(recordDO.getSource(), recordDO.getSource());
+			multiSelect.getCostType().putIfAbsent(recordDO.getCostType(), recordDO.getCostType());
 		});
 		return multiSelect;
 	}

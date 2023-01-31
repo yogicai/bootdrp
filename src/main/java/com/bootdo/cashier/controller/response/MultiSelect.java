@@ -2,8 +2,8 @@ package com.bootdo.cashier.controller.response;
 
 import lombok.Data;
 
-import java.io.Serializable;
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * (CashierRecord)实体类
@@ -41,6 +41,11 @@ public class MultiSelect {
      * 数据来源
      */
     private Map<String, String> source = new TreeMap<>();
+
+    /**
+     * 资金用途
+     */
+    private Map<String, String> costType = new TreeMap<>();
 
 }
 

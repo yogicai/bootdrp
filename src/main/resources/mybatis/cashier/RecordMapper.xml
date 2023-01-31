@@ -7,19 +7,20 @@
             <if test="id != null"> and id = #{id} </if>
             <if test="nick != null and nick != ''"> and nick = #{nick} </if>
             <if test="account != null and account != ''"> and account = #{account} </if>
-            <if test="type != null and type != ''"> and type = #{type} </if>
+            <if test="type != null and type != ''"> and type in <foreach collection="type.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
             <if test="tradeTime != null"> and trade_time = #{tradeTime} </if>
-            <if test="tradeClass != null and tradeClass != ''"> and trade_class = #{tradeClass} </if>
+            <if test="tradeClass != null and tradeClass != ''"> and trade_class in <foreach collection="tradeClass.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
             <if test="targetName != null and targetName != ''"> and target_name = #{targetName} </if>
-            <if test="targetAccount != null and targetAccount != ''"> and target_account = #{targetAccount} </if>
+            <if test="targetAccount != null and targetAccount != ''"> and target_account in <foreach collection="targetAccount.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
             <if test="tradeGoods != null and tradeGoods != ''"> and trade_goods = #{tradeGoods} </if>
-            <if test="tradeType != null and tradeType != ''"> and trade_type = #{tradeType} </if>
+            <if test="tradeType != null and tradeType != ''"> and trade_type in <foreach collection="tradeType.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
             <if test="payAmount != null"> and pay_amount = #{payAmount} </if>
-            <if test="payDirect != null and payDirect != ''"> and pay_direct = #{payDirect} </if>
-            <if test="payStatus != null and payStatus != ''"> and pay_status = #{payStatus} </if>
+            <if test="payDirect != null and payDirect != ''"> and pay_direct in <foreach collection="payDirect.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
+            <if test="payStatus != null and payStatus != ''"> and pay_status in <foreach collection="payStatus.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
             <if test="txnNo != null and txnNo != ''"> and txn_no = #{txnNo} </if>
             <if test="bizNo != null and bizNo != ''"> and biz_no = #{bizNo} </if>
             <if test="remark != null and remark != ''"> and remark = #{remark} </if>
+            <if test="costType != null and costType != ''"> and cost_type in <foreach collection="costType.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
             <if test="source != null and source != ''"> and source = #{source} </if>
             <if test="updateTime != null"> and update_time = #{updateTime} </if>
             <if test="start != null and start != ''"> and trade_time >= #{start} </if>
@@ -43,14 +44,14 @@
 
     <!--查询单个-->
     <select id="get" resultType="com.bootdo.cashier.domain.RecordDO">
-        select id, nick, account, type, trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, source, update_time
+        select id, nick, account, type, trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, cost_type, source, update_time
         from cashier_record where id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="list" resultType="com.bootdo.cashier.domain.RecordDO">
         select
-        id, nick, account, type, trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, source, update_time
+        id, nick, account, type, trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, cost_type, source, update_time
         from cashier_record
         <include refid="whereSql"/>
         <include refid="pageSql"/>
@@ -72,23 +73,23 @@
 
     <!--新增所有列-->
     <insert id="save" keyProperty="id" useGeneratedKeys="true">
-        insert into cashier_record(trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, source, nick, account, type)
-        values (#{tradeTime}, #{tradeClass}, #{targetName}, #{targetAccount}, #{tradeGoods}, #{tradeType}, #{payAmount}, #{payDirect}, #{payStatus}, #{txnNo}, #{bizNo}, #{remark}, #{source}, #{nick}, #{account}, #{type})
+        insert into cashier_record(trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, cost_type, source, nick, account, type)
+        values (#{tradeTime}, #{tradeClass}, #{targetName}, #{targetAccount}, #{tradeGoods}, #{tradeType}, #{payAmount}, #{payDirect}, #{payStatus}, #{txnNo}, #{bizNo}, #{remark}, #{costType}, #{source}, #{nick}, #{account}, #{type})
     </insert>
 
     <insert id="saveBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into cashier_record(trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, source, nick, account, type)
+        insert into cashier_record(trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, cost_type, source, nick, account, type)
         values
         <foreach collection="list" item="entity" separator=",">
-            (#{entity.tradeTime}, #{entity.tradeClass}, #{entity.targetName}, #{entity.targetAccount}, #{entity.tradeGoods}, #{entity.tradeType}, #{entity.payAmount}, #{entity.payDirect}, #{entity.payStatus}, #{entity.txnNo}, #{entity.bizNo}, #{entity.remark}, #{entity.source}, #{entity.nick}, #{entity.account}, #{entity.type})
+            (#{entity.tradeTime}, #{entity.tradeClass}, #{entity.targetName}, #{entity.targetAccount}, #{entity.tradeGoods}, #{entity.tradeType}, #{entity.payAmount}, #{entity.payDirect}, #{entity.payStatus}, #{entity.txnNo}, #{entity.bizNo}, #{entity.remark}, #{entity.costType}, #{entity.source}, #{entity.nick}, #{entity.account}, #{entity.type})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into cashier_record(trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, source, nick, account, type)
+        insert into cashier_record(trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, cost_type, source, nick, account, type)
         values
         <foreach collection="list" item="entity" separator=",">
-            (#{entity.tradeTime}, #{entity.tradeClass}, #{entity.targetName}, #{entity.targetAccount}, #{entity.tradeGoods}, #{entity.tradeType}, #{entity.payAmount}, #{entity.payDirect}, #{entity.payStatus}, #{entity.txnNo}, #{entity.bizNo}, #{entity.remark}, #{entity.source}, #{entity.nick}, #{entity.account}, #{entity.type})
+            (#{entity.tradeTime}, #{entity.tradeClass}, #{entity.targetName}, #{entity.targetAccount}, #{entity.tradeGoods}, #{entity.tradeType}, #{entity.payAmount}, #{entity.payDirect}, #{entity.payStatus}, #{entity.txnNo}, #{entity.bizNo}, #{entity.remark}, #{entity.costType}, #{entity.source}, #{entity.nick}, #{entity.account}, #{entity.type})
         </foreach>
         on duplicate key update
         trade_time = values(trade_time),
@@ -165,6 +166,9 @@
             <if test="type != null and type != ''">
                 type = #{type},
             </if>
+            <if test="costType != null and costType != ''">
+                cost_type = #{costType},
+            </if>
         </set>
         where id = #{id}
     </update>
@@ -204,7 +208,7 @@
     </delete>
 
     <select id="multiSelect" resultType="com.bootdo.cashier.domain.RecordDO">
-        select distinct cr.type, cr.account, cr.pay_status, cr.pay_direct, cr.trade_class, cr.source
+        select distinct cr.type, cr.account, cr.pay_status, cr.pay_direct, cr.trade_class, cr.source, cr.cost_type
         from cashier_record cr
         <include refid="whereSql"/>
     </select>
