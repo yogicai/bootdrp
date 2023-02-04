@@ -25,7 +25,6 @@ import com.bootdo.se.domain.SEOrderDO;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 @Service
@@ -75,7 +73,7 @@ public class SEOrderService {
 
     @Transactional(rollbackFor = Exception.class)
     public int audit(Map<String, Object> params) {
-        AuditStatus auditStatus = AuditStatus.fromValue(org.apache.commons.collections.MapUtils.getString(params, "auditStatus"));
+        AuditStatus auditStatus = AuditStatus.fromValue(MapUtils.getString(params, "auditStatus"));
         List<SEOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", MapUtils.getList(params, "billNos")));
         List<SEOrderDO> orderDOList1 = Lists.newArrayList();
         //去除已经是审核（未审核）状态的订单
@@ -99,10 +97,8 @@ public class SEOrderService {
         List<DictDO> dictDOList = dictDao.list(ImmutableMap.of("type", "point_scale"));
         BigDecimal scale = CollectionUtils.isEmpty(dictDOList) ? BigDecimal.valueOf(0.1D) : NumberUtils.toBigDecimal(dictDOList.get(0).getValue());
         List<PointEntryDO> pointEntryDOList = Lists.newArrayList();
-        Set<String> billNoSet = Sets.newHashSet();
         for (SEOrderDO orderDO : orderDOList) {
             pointEntryDOList.add(SEOrderConverter.convertPointDO(orderDO, auditStatus, scale));
-            billNoSet.add(orderDO.getBillNo());
         }
         pointEntryDao.saveBatch(pointEntryDOList);
     }

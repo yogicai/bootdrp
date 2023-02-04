@@ -301,7 +301,7 @@ public class CostAmountCalculator {
         if (incBillTypeSet.contains(billType)) {
             return BigDecimal.valueOf(MapUtils.getIntValue(map, "total_qty"));
         } else {
-            return BigDecimal.valueOf(MapUtils.getIntValue(map, "total_qty") * -1);
+            return BigDecimal.valueOf(MapUtils.getIntValue(map, "total_qty") * -1L);
         }
     }
 

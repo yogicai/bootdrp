@@ -1,11 +1,11 @@
-var prefix = "/report";
-var tableGrid;
-var dataForm;
-var start;
-var end;
-var initData = [];
-var colNames = ['商品编号', '商品名称', '单位', '均价', '销售开单量', '商品数量', '商品成本', '销售金额', '销售毛利'];
-var colModel = [
+let prefix = "/report";
+let tableGrid;
+let dataForm;
+let start;
+let end;
+let initData = [];
+let colNames = ['商品编号', '商品名称', '单位', '均价', '销售开单量', '商品数量', '商品成本', '销售金额', '销售毛利'];
+let colModel = [
     { name:'entryId', index:'entryId', editable:false, align: "center", width:30 },
     { name:'entryName', index:'entryName', editable:false, sorttype:"text", align: "center", width:60 },
     { name:'entryUnit', index:'entryUnit', editable:false, sorttype:"text", align: "center", width:30 },
@@ -16,13 +16,14 @@ var colModel = [
     { name:'entryAmount', index:'entryAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
     { name:'billProfit', index:'billProfit', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }    ];
 
-var gridConfig = {
+let gridConfig = {
     datatype: "local",
     data: initData,
     height: window.innerHeight - 170,
     rowNum: 10000,
     autowidth: true,
     shrinkToFit: true,
+    rownumbers: true,
     footerrow: true,
     colNames: colNames,
     colModel: colModel,
@@ -44,23 +45,29 @@ function load() {
     tableGrid = $("#table_list").jqGrid(gridConfig);
 
     $(window).bind('resize', function () {
-        var width = $('.jqGrid_wrapper').width();
-        $('#table_list').setGridWidth(width);
-        $('#table_list').setGridHeight(window.innerHeight - 170);
+        let width = $('.jqGrid_wrapper').width();
+        tableGrid.setGridWidth(width);
+        tableGrid.setGridHeight(window.innerHeight - 170);
     });
 }
 
 function loadGrid() {
+    //消空数据
+    tableGrid.jqGrid('clearGridData');
+    //加载新数据
     $.ajax({
         url: prefix + "/saleProduct",
         type : "post",
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(dataForm.serializeObject()),
         success: function (r) {
-            if (r.code == 0) {
-                var _gridConfig = $.extend({}, gridConfig, {data: r.result});
-                $('#table_list').jqGrid('clearGridData');
-                $('#table_list').jqGrid('setGridParam', _gridConfig).trigger('reloadGrid');
+            if (r.code === 0) {
+                let _gridConfig = $.extend({}, gridConfig, {data: r.result});
+                $.jgrid.gridUnload('#table_list');
+                tableGrid = $('#table_list').jqGrid( _gridConfig );
+                tableGrid.trigger("reloadGrid", { fromServer: true });
+                // tableGrid.jqGrid('clearGridData');
+                // tableGrid.jqGrid('setGridParam', _gridConfig).trigger('reloadGrid');
 
                 collectTotal();
 
@@ -80,12 +87,12 @@ function search() {
 
 //计算表格合计行数据
 function collectTotal(){
-    var recordNum = $("#table_list").jqGrid('getGridParam', 'records');
-    var billCountTotal = $("#table_list").getCol('billCount', false,'sum');
-    var costAmountTotal=$("#table_list").getCol('costAmount',false,'sum');
-    var entryAmountTotal=$("#table_list").getCol('entryAmount',false,'sum');
-    var billProfitTotal=$("#table_list").getCol('billProfit',false,'sum');
-    var totalAmountObj = { entryId: '合计:', entryName:'数量：' + recordNum, billCount: billCountTotal, costAmount: costAmountTotal, entryAmount: entryAmountTotal, billProfit: billProfitTotal };
+    let recordNum = tableGrid.jqGrid('getGridParam', 'records');
+    let billCountTotal = tableGrid.getCol('billCount', false,'sum');
+    let costAmountTotal=tableGrid.getCol('costAmount',false,'sum');
+    let entryAmountTotal=tableGrid.getCol('entryAmount',false,'sum');
+    let billProfitTotal=tableGrid.getCol('billProfit',false,'sum');
+    let totalAmountObj = { entryId: '合计:', entryName:'数量：' + recordNum, billCount: billCountTotal, costAmount: costAmountTotal, entryAmount: entryAmountTotal, billProfit: billProfitTotal };
     // 设置表格合计项金额
-    $("#table_list").footerData('set', totalAmountObj);
+    tableGrid.footerData('set', totalAmountObj);
 };

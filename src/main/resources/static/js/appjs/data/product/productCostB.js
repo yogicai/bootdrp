@@ -13,7 +13,7 @@ function load() {
     tableGrid = $("#table_list").jqGrid({
         url: prefix + "/listCost",
         datatype: "json",
-        postData: { "productNo": rowData['entryId'] },
+        postData: { "productNo": rowData['entryId'] || rowData['productNo'] },
         colNames: ['', '商品编号', '采购价', '成本单价', '成本数量', '商品余额', '成本', '成本时间', '类型', '关联单号', '创建时间', '修改时间'],
         colModel: [
             { name:'id', index:'id', editable:false, width:50, hidden:true },

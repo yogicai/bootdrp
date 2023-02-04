@@ -30,6 +30,7 @@ let gridConfig = {
     rowNum: 10000,
     autowidth: true,
     shrinkToFit: true,
+    rownumbers: true,
     footerrow: true,
     colNames: colNames,
     colModel: colModel,
@@ -67,13 +68,16 @@ function load() {
 }
 
 function loadGrid() {
+    //消空数据
+    tableGrid.jqGrid('clearGridData');
+    //加载新数据
     $.ajax({
         url: prefix + "/pBalance",
         type : "post",
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(dataForm.serializeObject()),
         success: function (r) {
-            if (r.code == 0) {
+            if (r.code === 0) {
                 let stockList = r.result.stockList;
                 let _colNames = colNames.concat();
                 let _colModel = colModel.concat();
@@ -90,7 +94,7 @@ function loadGrid() {
                         val["totalQty".concat(keyS)] = valS.totalQty;
                     });
                 });
-                let _gridConfig = $.extend({}, gridConfig, {height: window.innerHeight - 200    , colNames: _colNames, colModel: _colModel, data: r.result.productInfoList});
+                let _gridConfig = $.extend({}, gridConfig, {height: window.innerHeight - 200, colNames: _colNames, colModel: _colModel, data: r.result.productInfoList});
                 $.jgrid.gridUnload('#table_list');
                 tableGrid = $('#table_list').jqGrid( _gridConfig );
                 tableGrid.trigger("reloadGrid", { fromServer: true });
@@ -112,14 +116,14 @@ function search() {
 
 //计算表格合计行数据
 function collectTotal(addColModelName){
-    let recordNum = $("#table_list").jqGrid('getGridParam', 'records');
-    let inventoryTotal=$("#table_list").getCol('inventory',false,'sum');
-    let entryAmountTotal=$("#table_list").getCol('entryAmount',false,'sum');
-    let totalAmountTotal=$("#table_list").getCol('totalAmount',false,'sum');
-    let totalCostTotal=$("#table_list").getCol('costAmount',false,'sum');
+    let recordNum = tableGrid.jqGrid('getGridParam', 'records');
+    let inventoryTotal=tableGrid.getCol('inventory',false,'sum');
+    let entryAmountTotal=tableGrid.getCol('entryAmount',false,'sum');
+    let totalAmountTotal=tableGrid.getCol('totalAmount',false,'sum');
+    let totalCostTotal=tableGrid.getCol('costAmount',false,'sum');
     let totalAmountObj = { entryName: '合计:', entryBarcode:'商品数量：' + recordNum, inventory: inventoryTotal, costAmount: totalCostTotal, entryAmount: entryAmountTotal, totalAmount: totalAmountTotal };
     $.each(addColModelName, function (key, val){
-        totalAmountObj[val] = $("#table_list").getCol(val,false,'sum');
+        totalAmountObj[val] = tableGrid.getCol(val,false,'sum');
     });
     // 设置表格合计项金额
     tableGrid.footerData('set', totalAmountObj);

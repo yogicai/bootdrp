@@ -61,12 +61,10 @@ function load() {
         viewrecords: true, //是否显示总记录数
         footerrow: true,
         beforeSelectRow: function (rowid) {
-            let selrow = tableGrid.jqGrid('getGridParam','selrow');
             tableGrid.jqGrid('resetSelection');
-            return selrow !== rowid;
+            return true;
         },
         ondblClickRow: function (rowid, iRow, iCol, e) {
-            tableGrid.setSelection(rowid);
             edit([rowid]);
         },
         loadComplete: function (data) {

@@ -1,6 +1,8 @@
 let prefix = "/engage/product/cost";
+let prefixCost = "/data/product";
 let tableGrid;
 let dataForm;
+let currentRow = {};
 
 $(function() {
     load();
@@ -50,9 +52,12 @@ function load() {
         pager: "#pager_list",
         viewrecords: true,
         beforeSelectRow: function (rowid) {
-            let selrow = tableGrid.jqGrid('getGridParam','selrow');
             tableGrid.jqGrid('resetSelection');
-            return selrow !== rowid;
+            return true;
+        },
+        ondblClickRow: function (rowid, iRow, iCol, e) {
+            currentRow = tableGrid.jqGrid("getRowData", rowid);
+            searchCost(currentRow);
         },
         onPaging:search
     });
@@ -105,8 +110,8 @@ function reLoad(type) {
 
 function adjust(id) {
     let ids = tableGrid.jqGrid("getGridParam", "selarrrow");
-    if (ids.length != 1) {
-        layer.msg(ids.length == 0 ? "请选择要修改的记录" : "一次只能修改一条记录");
+    if (ids.length !== 1) {
+        layer.msg(ids.length === 0 ? "请选择要修改的记录" : "一次只能修改一条记录");
         return;
     }
     layer.open({
@@ -117,6 +122,21 @@ function adjust(id) {
         area : [ '800px', '480px' ],
         content : prefix + '/adjust/' + ids[0] // iframe的url
     });
+}
+
+function searchCost(rowData) {
+    layer.open({
+        type : 2,
+        title : '商品成本',
+        maxmin : true,
+        shadeClose : false, // 点击遮罩关闭层
+        area : [ '1300px', '650px' ],
+        content : prefixCost + '/productCostB' // iframe的url
+    });
+}
+
+function getCurrentRow() {
+    return currentRow || {};
 }
 
 function exportExcel() {

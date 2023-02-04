@@ -130,14 +130,17 @@ public class ProductController extends BaseController {
         return R.ok();
     }
 
+    /**
+     * 资料-商品管理-商品成本查询
+     */
     @GetMapping("/productCost")
     @RequiresPermissions("data:product:product")
-    public String addHead() {
+    public String productCost() {
         return "data/product/productCost";
     }
 
     /**
-     * 库存全额查询页面-商品成本
+     * 报表-库存余量查询-商品成本查询（双击）
      */
     @GetMapping("/productCostB")
     @RequiresPermissions("data:product:product")

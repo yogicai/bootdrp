@@ -1,14 +1,14 @@
-var prefix = "/report";
-var type = $('#type').val();
-var tableGrid;
-var dataForm;
-var start;
-var end;
-var initData = [];
-var colNamesC = ['编号', '客户名称', '年度',  '应收金额', '收款金额', '商品成本', '销售毛利', '欠款金额'];
-var colNamesV = ['编号', '供应商名称', '年度',  '应付金额', '付款金额', '', '', '欠款金额'];
-var colNames = type == 'CUSTOMER' ? colNamesC : colNamesV;
-var colModelC = [
+let prefix = "/report";
+let type = $('#type').val();
+let tableGrid;
+let dataForm;
+let start;
+let end;
+let initData = [];
+let colNamesC = ['编号', '客户名称', '年度',  '应收金额', '收款金额', '商品成本', '销售毛利', '欠款金额'];
+let colNamesV = ['编号', '供应商名称', '年度',  '应付金额', '付款金额', '', '', '欠款金额'];
+let colNames = type === 'CUSTOMER' ? colNamesC : colNamesV;
+let colModelC = [
     { name:'instituteId', index:'instituteId', editable:false, align: "center", width:30 },
     { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", width:60 },
     { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center", width:80 },
@@ -18,7 +18,7 @@ var colModelC = [
     { name:'profitAmount', index:'profitAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
     { name:'debtAmount', index:'debtAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }
 ];
-var colModelV = [
+let colModelV = [
     { name:'instituteId', index:'instituteId', editable:false, align: "center", width:30 },
     { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", width:60 },
     { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center", width:80 },
@@ -28,29 +28,30 @@ var colModelV = [
     { name:'profitAmount', index:'profitAmount', editable:false, width:80, align:"right", sorttype:"float", hidden:true, formatter:"number" },
     { name:'debtAmount', index:'debtAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }
 ];
-var colModel = type == 'CUSTOMER' ? colModelC : colModelV;
+let colModel = type === 'CUSTOMER' ? colModelC : colModelV;
 
-var gridConfig = {
+let gridConfig = {
     datatype: "local",
     data: initData,
     height: window.innerHeight - 170,
     rowNum: 10000,
     autowidth: true,
     shrinkToFit: true,
+    rownumbers: true,
     footerrow: true,
     colNames: colNames,
     colModel: colModel,
     ondblClickRow: function (rowid, iRow, iCol, e) {
-        var rowData = tableGrid.jqGrid('getRowData', rowid);
-        var postData = {start: start, end: end};
-        postData[type == 'CUSTOMER' ? 'consumerId' : 'vendorId'] = rowData.instituteId;
-        var postUrl = type == 'CUSTOMER' ? '/se/order' : '/po/order';
+        let rowData = tableGrid.jqGrid('getRowData', rowid);
+        let postData = {start: start, end: end};
+        postData[type === 'CUSTOMER' ? 'consumerId' : 'vendorId'] = rowData.instituteId;
+        let postUrl = type === 'CUSTOMER' ? '/se/order' : '/po/order';
         utils.listDataGrid(postUrl, postData);
     }
 };
 
 $(function() {
-    if (type == 'CUSTOMER') {
+    if (type === 'CUSTOMER') {
         utils.loadCategory(["CUSTOMER_DATA"], ["instituteId"], [{width:"150px"}]);
     } else {
         utils.loadCategory(["VENDOR_DATA"], ["instituteId"], [{width:"150px"}]);
@@ -67,23 +68,29 @@ function load() {
     tableGrid = $("#table_list").jqGrid(gridConfig);
 
     $(window).bind('resize', function () {
-        var width = $('.jqGrid_wrapper').width();
-        $('#table_list').setGridWidth(width);
-        $('#table_list').setGridHeight(window.innerHeight - 170);
+        let width = $('.jqGrid_wrapper').width();
+        tableGrid.setGridWidth(width);
+        tableGrid.setGridHeight(window.innerHeight - 170);
     });
 }
 
 function loadGrid() {
+    //消空数据
+    tableGrid.jqGrid('clearGridData');
+    //加载新数据
     $.ajax({
         url: prefix + "/sRecon",
         type : "post",
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(dataForm.serializeObject()),
         success: function (r) {
-            if (r.code == 0) {
-                var _gridConfig = $.extend({}, gridConfig, {data: r.result});
-                $('#table_list').jqGrid('clearGridData');
-                $('#table_list').jqGrid('setGridParam', _gridConfig).trigger('reloadGrid');
+            if (r.code === 0) {
+                let _gridConfig = $.extend({}, gridConfig, {data: r.result});
+                $.jgrid.gridUnload('#table_list');
+                tableGrid = $('#table_list').jqGrid( _gridConfig );
+                tableGrid.trigger("reloadGrid", { fromServer: true });
+                // tableGrid.jqGrid('clearGridData');
+                // tableGrid.jqGrid('setGridParam', _gridConfig).trigger('reloadGrid');
 
                 collectTotal();
 
@@ -102,15 +109,15 @@ function search() {
 
 //计算表格合计行数据
 function collectTotal(){
-    var recordNum = $("#table_list").jqGrid('getGridParam', 'records');
-    var totalAmountTotal=$("#table_list").getCol('totalAmount',false,'sum');
-    var paymentAmountTotal=$("#table_list").getCol('paymentAmount',false,'sum');
-    var debtAmountTotal=$("#table_list").getCol('debtAmount',false,'sum');
-    var costAmountTotal=$("#table_list").getCol('costAmount',false,'sum');
-    var profitAmountTotal=$("#table_list").getCol('profitAmount',false,'sum');
-    var totalAmountObj = { instituteId: '合计:', instituteName:'数量：' + recordNum, totalAmount: totalAmountTotal, paymentAmount: paymentAmountTotal, debtAmount: debtAmountTotal, costAmount: costAmountTotal, profitAmount: profitAmountTotal };
+    let recordNum = tableGrid.jqGrid('getGridParam', 'records');
+    let totalAmountTotal=tableGrid.getCol('totalAmount',false,'sum');
+    let paymentAmountTotal=tableGrid.getCol('paymentAmount',false,'sum');
+    let debtAmountTotal=tableGrid.getCol('debtAmount',false,'sum');
+    let costAmountTotal=tableGrid.getCol('costAmount',false,'sum');
+    let profitAmountTotal=tableGrid.getCol('profitAmount',false,'sum');
+    let totalAmountObj = { instituteId: '合计:', instituteName:'数量：' + recordNum, totalAmount: totalAmountTotal, paymentAmount: paymentAmountTotal, debtAmount: debtAmountTotal, costAmount: costAmountTotal, profitAmount: profitAmountTotal };
     // 设置表格合计项金额
-    $("#table_list").footerData('set', totalAmountObj);
+    tableGrid.footerData('set', totalAmountObj);
 };
 
 function exportExcel() {
