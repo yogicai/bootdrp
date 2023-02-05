@@ -36,7 +36,9 @@ function load() {
         height: window.innerHeight - 210,
         autowidth: true,
         shrinkToFit: true,
-        multiselect: true,
+        multiselect: true, //自带多选
+        multiboxonly: true, //变成单选
+        rownumbers: true, //行号
         rowNum: 20,
         rowList: [20, 50, 100],
         colNames: ['编号', '昵称', '账号', '渠道', '交易时间', '交易分类', '交易对方', '交易对方账户', '商品说明', '交易方式', '资金用途', '金额(元)', '收/支', '交易状态', '数据来源'],
@@ -61,8 +63,8 @@ function load() {
         viewrecords: true, //是否显示总记录数
         footerrow: true,
         beforeSelectRow: function (rowid) {
-            tableGrid.jqGrid('resetSelection');
-            return true;
+            // tableGrid.jqGrid('resetSelection');
+            // return true;
         },
         ondblClickRow: function (rowid, iRow, iCol, e) {
             edit([rowid]);

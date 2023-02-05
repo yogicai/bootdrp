@@ -68,8 +68,8 @@ function load() {
 }
 
 function loadGrid() {
-    //消空数据
-    tableGrid.jqGrid('clearGridData');
+    //loading
+    $(".loading").show();
     //加载新数据
     $.ajax({
         url: prefix + "/pBalance",

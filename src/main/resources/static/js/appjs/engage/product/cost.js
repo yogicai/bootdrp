@@ -29,7 +29,9 @@ function load() {
         height: window.innerHeight - 170,
         autowidth: true,
         shrinkToFit: true,
-        multiselect: true,
+        multiselect: false, //自带多选
+        multiboxonly: true, //变成单选
+        rownumbers: true,
         rowNum: 50,
         rowList: [10, 20, 50, 100],
         colNames: ['', '商品编号', '商品名称', '商品类别', '采购价', '成本单价', '成本数量', '商品余额', '成本', '成本时间', '类型', '关联单号', '备注', '修改时间'],
@@ -52,8 +54,8 @@ function load() {
         pager: "#pager_list",
         viewrecords: true,
         beforeSelectRow: function (rowid) {
-            tableGrid.jqGrid('resetSelection');
-            return true;
+            // tableGrid.jqGrid('resetSelection');
+            // return true;
         },
         ondblClickRow: function (rowid, iRow, iCol, e) {
             currentRow = tableGrid.jqGrid("getRowData", rowid);
@@ -108,10 +110,11 @@ function reLoad(type) {
     tableGrid.jqGrid('setGridParam', {postData:  $.param(postData)}).trigger("reloadGrid");
 }
 
-function adjust(id) {
-    let ids = tableGrid.jqGrid("getGridParam", "selarrrow");
-    if (ids.length !== 1) {
-        layer.msg(ids.length === 0 ? "请选择要修改的记录" : "一次只能修改一条记录");
+function adjust() {
+    //未启用复选框（即单选），用selrow获取行号；启用复选框，用selarrrow获取行号数组
+    let rowid = tableGrid.jqGrid("getGridParam", "selrow");
+    if (!rowid) {
+        layer.msg("请选择要修改的记录");
         return;
     }
     layer.open({
@@ -120,7 +123,7 @@ function adjust(id) {
         maxmin : true,
         shadeClose : false, // 点击遮罩关闭层
         area : [ '800px', '480px' ],
-        content : prefix + '/adjust/' + ids[0] // iframe的url
+        content : prefix + '/adjust/' + rowid // iframe的url
     });
 }
 
