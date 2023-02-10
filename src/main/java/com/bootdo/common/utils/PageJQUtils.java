@@ -3,7 +3,9 @@ package com.bootdo.common.utils;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: yogiCai
@@ -19,8 +21,10 @@ public class PageJQUtils implements Serializable {
 	private int records;
 	/** 列表数据 */
 	private List<?> rows;
-	/** 总记录合计 */
+	/** 总合计 */
 	private int totalAmount;
+	/** 总数量合计 */
+	private Map<String, Object> extra = new HashMap<>(3);
 
 
 	/**
@@ -44,4 +48,11 @@ public class PageJQUtils implements Serializable {
 		this.totalAmount = totalAmount;
 	}
 
+	public PageJQUtils(List<?> list, int total, int page, int records, Map<String, Object> extra) {
+		this.rows = list;
+		this.total = total;
+		this.page = page;
+		this.records = records;
+		this.extra = extra;
+	}
 }

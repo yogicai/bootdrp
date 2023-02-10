@@ -6,6 +6,8 @@ import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.utils.DateUtils;
 import com.bootdo.common.utils.R;
 import com.bootdo.common.utils.StringUtil;
+import com.bootdo.engage.controller.response.BalanceTotalResult;
+import com.bootdo.engage.service.ProductBalanceService;
 import com.bootdo.report.controller.response.SEBillTotalResult;
 import com.bootdo.report.controller.response.SEDebtTotalResult;
 import com.bootdo.report.controller.response.echart.EChartOption;
@@ -36,6 +38,8 @@ import java.util.Map;
 public class SEReportController extends BaseController {
     @Resource
     private SEReportService seReportService;
+    @Resource
+    private ProductBalanceService productBalanceService;
 
     /**
      * 销售总额 + 销售毛利(首页统计图)
@@ -117,5 +121,17 @@ public class SEReportController extends BaseController {
     public R pHisPBillTrend(@RequestBody Map<String, Object> params, Model model) {
         EChartOption option = seReportService.pHisPBillTrend(params);
         return R.ok().put("result", option);
+    }
+
+    /**
+     * 库存余量 + 成本(首页统计图)
+     */
+    @ResponseBody
+    @PostMapping(value = "/pBalanceTotal")
+    @RequiresPermissions("wh:report:pBalance")
+    public R pBalanceTotal(@RequestBody Map<String, Object> params, Model model) {
+        params.put("status", 1);
+        BalanceTotalResult result = productBalanceService.pBalanceTotal(params);
+        return R.ok().put("result", result);
     }
 }

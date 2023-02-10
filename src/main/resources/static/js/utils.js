@@ -36,36 +36,48 @@
 
     //加载数据字典下拉框
     Utils.prototype.loadTypes = function loadTypes(types, elementIds){
-        if (types.length == elementIds.length) {
+        if (types.length === elementIds.length) {
             var sysDict = utils.dataCache.sysDict;
             for (var t = 0; t < types.length; t++) {
-                var html = "", data = sysDict[types[t]];
-                var value = $("#" + elementIds[t]).attr("value")
-                for (var i = 0; data != null && i < data.length; i++) {
+                let html = "", data = sysDict[types[t]];
+                let element = $("#" + elementIds[t]);
+                let value = element.attr("value")
+                for (let i = 0; data != null && i < data.length; i++) {
                     if (data[i].value == value) {
                         html += '<option value="' + data[i].value + '" selected>' + data[i].name + '</option>'
                     } else {
                         html += '<option value="' + data[i].value + '">' + data[i].name + '</option>'
                     }
                 }
-                $("#" + elementIds[t]).append(html);
-                $("#" + elementIds[t]).chosen({maxHeight : 100 });
+                element.append(html);
+                element.chosen({maxHeight : 100 });
             }
         }
     };
 
     //加载数据字典
-    Utils.prototype.formatType = function formatType(value,type){
+    Utils.prototype.formatType = function formatType(value, type) {
         if (type === undefined) return value;
-        var data = utils.dataCache.sysDict[type];
+        let data = utils.dataCache.sysDict[type];
         if (data === undefined) return value;
-        for (var t = 0; t < data.length; t++) {
+        for (let t = 0; t < data.length; t++) {
             if (data[t].value == value) {
                 return data[t].name;
             }
         }
     };
 
+    //加载数据字典
+    Utils.prototype.unformatType = function unFormatType(value, type) {
+        if (type === undefined) return value;
+        let data = utils.dataCache.sysDict[type];
+        if (data === undefined) return value;
+        for (let t = 0; t < data.length; t++) {
+            if (data[t].name === value) {
+                return data[t].value;
+            }
+        }
+    };
 
 /* ========================================================================
  * 类目缓存
@@ -95,17 +107,18 @@
 
     //类目下拉框
     Utils.prototype.loadCategory = function loadCategory(types, elementIds, options){
-        if (types.length == elementIds.length) {
-            var categoryData = utils.dataCache.categoryData;
-            for (var t = 0; t < types.length; t++) {
-                var opts = $.extend({}, {maxHeight : 100, width:"100%"}, options && options[t]);
-                var html = "", data = categoryData[types[t]];
-                var value = $("#" + elementIds[t]).attr("value")
+        if (types.length === elementIds.length) {
+            let categoryData = utils.dataCache.categoryData;
+            for (let t = 0; t < types.length; t++) {
+                let element = $("#" + elementIds[t]);
+                let opts = $.extend({}, {maxHeight : 100, width:"100%"}, options && options[t]);
+                let html = "", data = categoryData[types[t]];
+                let value = element.attr("value")
                 for (var i = 0; data != null && i < data.length; i++) {
                     html += Utils.prototype.dealCategory(data[i], value);
                 }
-                $("#" + elementIds[t]).append(html);
-                $("#" + elementIds[t]).chosen(opts);
+                element.append(html);
+                element.chosen(opts);
             }
         }
     };
@@ -208,11 +221,12 @@
 
     //加载数据字典
     Utils.prototype.loadEnumTypes = function loadEnumTypes(types, elementIds, options){
-        if (types.length == elementIds.length) {
-            var sysEnumMap = utils.dataCache.sysEnumMap;
-            for (var t = 0; t < types.length; t++) {
-                var html = "", data = sysEnumMap[types[t]];
-                var value = $("#" + elementIds[t]).attr("value")
+        if (types.length === elementIds.length) {
+            let sysEnumMap = utils.dataCache.sysEnumMap;
+            for (let t = 0; t < types.length; t++) {
+                let html = "", data = sysEnumMap[types[t]];
+                let element = $("#" + elementIds[t]);
+                let value = element.attr("value")
                 for (var i = 0; data != null && i < data.length; i++) {
                     if (data[i].value == value) {
                         html += '<option value="' + data[i].value + '" selected>' + data[i].name + '</option>'
@@ -220,9 +234,9 @@
                         html += '<option value="' + data[i].value + '">' + data[i].name + '</option>'
                     }
                 }
-                var opts = $.extend({}, {maxHeight : 100, width:"100%"}, options && options[t]);
-                $("#" + elementIds[t]).append(html);
-                $("#" + elementIds[t]).chosen(opts);
+                let opts = $.extend({}, {maxHeight : 100, width:"100%"}, options && options[t]);
+                element.append(html);
+                element.chosen(opts);
             }
         }
     };
@@ -236,23 +250,38 @@
     };
 
     //加载枚举值（各种状态信息）
-    Utils.prototype.formatEnum = function formatEnum(value,type){
+    Utils.prototype.formatEnum = function formatEnum(value, type) {
         if (type === undefined) return value;
-        var data = utils.dataCache.sysEnum[type];
+        let data = utils.dataCache.sysEnum[type];
         if (data === undefined) return value;
-        for (var t = 0; t < data.length; t++) {
+        for (let t = 0; t < data.length; t++) {
             if (data[t].hasOwnProperty(value)) {
                 return data[t][value];
             }
         }
-        return "";
+        return value;
     };
 
-    Utils.prototype.formatEnumS = function formatEnumS(value,type){
-        if (value == 'YES') {
-            return '<span style="color:blue;font-weight:bold">' + Utils.prototype.formatEnum(value,type) + '</span>';
+    //加载枚举值（各种状态信息）
+    Utils.prototype.unformatEnum = function unFormatEnum(value, type) {
+        if (type === undefined) return value;
+        let data = utils.dataCache.sysEnum[type];
+        if (data === undefined) return value;
+        for (let t = 0; t < data.length; t++) {
+            for (const [k, v] of Object.entries(data[t])) {
+                if (v === value) {
+                    return k;
+                }
+            }
+        }
+        return value;
+    };
+
+    Utils.prototype.formatEnumS = function formatEnumS(value, type) {
+        if (value === 'YES') {
+            return '<span style="color:blue;font-weight:bold">' + Utils.prototype.formatEnum(value, type) + '</span>';
         } else {
-            return Utils.prototype.formatEnum(value,type);
+            return Utils.prototype.formatEnum(value, type);
         }
     };
 
@@ -296,9 +325,10 @@
                             let html = "", data = result[types[t]];
                             if (data) {
                                 Object.values(data).forEach(function(value, index) { html += '<option value="' + value + '">' + value + '</option>'; })
-                                $("#" + elementIds[t]).html(html);
-                                $("#" + elementIds[t]).multiselect(option);
-                                $("#" + elementIds[t]).multiselect('rebuild');
+                                let element = $("#" + elementIds[t]);
+                                element.html(html);
+                                element.multiselect(option);
+                                element.multiselect('rebuild');
                             }
                         }
                     }
@@ -358,7 +388,7 @@
     };
 
     // 手工触发订单金额计算事件
-     Utils.prototype.collectAmountManual = function collectAmountManual(amountOrder){
+    Utils.prototype.collectAmountManual = function collectAmountManual(amountOrder){
         var totalObj = amountOrder['totalObj'];
         var valueObj = amountOrder['valueObj'];
         var formulas = amountOrder['formula'];
@@ -434,7 +464,7 @@
     };
 
     Utils.prototype.createDateRangePicker = function createDateRangePicker(elem, opt, defaultV1, defaultV2) {
-        var _date = $('#'+ elem).datepicker(
+        let _date = $('#'+ elem).datepicker(
             $.extend({}, {
                 language: "zh-CN",
                 todayBtn: "linked",
@@ -456,10 +486,10 @@
     *  报表模块展示订单明细列表(只适用于采购单、销售单)
     * ======================================================================== */
     Utils.prototype.listDataGrid = function listDataGrid(dataUrl, opttion) {
-        var dataIndex;
+        let dataIndex;
         //触发菜单单击
         window.parent.$(".J_menuItem").each(function (index) {
-            if ($(this).attr('href') == dataUrl) {
+            if ($(this).attr('href') === dataUrl) {
                 window.parent.$(this).trigger('click');
                 dataIndex = window.parent.$(this).data('index');
                 return false;
@@ -473,7 +503,7 @@
             var loadFlag = false;
             //加载订单数据
             window.parent.$('.J_mainContent .J_iframe').each(function () {
-                if ($(this).data('id') == dataUrl) {
+                if ($(this).data('id') === dataUrl) {
                     var win = window.parent.$('iframe[name="iframe' + dataIndex +'"]')[0].contentWindow;
                     if (win.tableGrid) {
                         var postData = $.extend({}, opttion, { 'page': 1, 'rows': 100 });
@@ -551,6 +581,9 @@
      * @returns {String} 例如 '124.35'
      */
     Utils.prototype.priceFormat = function priceFormat(num) {
+        if (!isFinite(num)) {
+            return num;
+        }
         let str =  (num/1).toFixed(2) + ''
         // 没有小数点时，在末尾补上一个小数点
         if (str.indexOf('.') === -1) {

@@ -56,7 +56,7 @@ public class RecordController {
         int total = MapUtil.getInt(map, "totalCount", 0);
         int totalSum = MapUtil.getInt(map, "totalAmount", 0);
         int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
-        return new PageJQUtils(orderList, totalPage, query.getPage(), total, totalSum);
+        return new PageJQUtils(orderList, totalPage, query.getPage(), total,totalSum);
     }
 
     /**

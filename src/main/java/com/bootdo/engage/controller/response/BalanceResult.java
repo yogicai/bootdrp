@@ -1,4 +1,4 @@
-package com.bootdo.report.controller.response;
+package com.bootdo.engage.controller.response;
 
 import com.bootdo.wh.controller.response.WHProductInfo;
 import com.google.common.collect.Lists;
@@ -12,7 +12,7 @@ import java.util.List;
 * @date 2018-02-01 10:43:43
 */
 @Data
-public class WHPBalanceResult {
+public class BalanceResult {
     /** 库存日期 */
     private String toDate;
     /** 动态列名 */

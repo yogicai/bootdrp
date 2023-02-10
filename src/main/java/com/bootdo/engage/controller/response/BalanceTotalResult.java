@@ -1,4 +1,4 @@
-package com.bootdo.report.controller.response;
+package com.bootdo.engage.controller.response;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 * @date 2018-02-01 10:43:43
 */
 @Data
-public class WHPBalanceTotalResult {
+public class BalanceTotalResult {
     /** 库存余量 */
     private BigDecimal qtyTotal = BigDecimal.ZERO;
     /** 成本（商品成本 + 费用成本） */

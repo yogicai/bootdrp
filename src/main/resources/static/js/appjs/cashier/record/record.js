@@ -54,7 +54,7 @@ function load() {
             { name:'tradeGoods', index:'tradeGoods', editable:true, sorttype:"text", width:120 },
             { name:'tradeType', index:'tradeType', editable:true, sorttype:"text", width:60 },
             { name:'costType', index:'costType', editable:true, sorttype:"text", width:80 },
-            { name:'payAmount', index:'payAmount', editable:true, sorttype:"float", width:80, align:"right"},
+            { name:'payAmount', index:'payAmount', editable:true, sorttype:"float", width:80, align:"right", formatter: utils.priceFormat},
             { name:'payDirect', index:'payDirect', editable:true, sorttype:"text", width:50 },
             { name:'payStatus', index:'payStatus', editable:true, sorttype:"text", width:80 },
             { name:'source', index:'source', editable:true, sorttype:"text", width:80 }

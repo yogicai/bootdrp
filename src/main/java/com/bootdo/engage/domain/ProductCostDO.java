@@ -39,6 +39,9 @@ public class ProductCostDO implements Serializable {
     /** 库存数量 */
     @Excel(name = "库存数量")
     private BigDecimal costQty;
+    /** 库存变更 */
+    @Excel(name = "库存变更")
+    private BigDecimal entryQty;
     /** 库存余额(此次库存变化时刻的库存数量) */
     @Excel(name = "商品成本", numFormat = "#,##0.00", width = 15)
     private BigDecimal costBalance;

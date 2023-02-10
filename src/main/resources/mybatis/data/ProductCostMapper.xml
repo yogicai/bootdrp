@@ -4,37 +4,37 @@
 <mapper namespace="com.bootdo.engage.dao.ProductCostDao">
 
 	<select id="get" resultType="com.bootdo.engage.domain.ProductCostDO">
-		select `id`,`product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost where id = #{value}
+		select `id`,`product_no`,`entry_price`,`entry_qty`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost where id = #{value}
 	</select>
 
 	<select id="list" resultType="com.bootdo.engage.domain.ProductCostDO">
-		select `id`,`product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost
-        <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="productNo != null and productNo != ''"> and product_no = #{productNo} </if>
-                  <if test="entryPrice != null and entryPrice != ''"> and entry_price = #{entryPrice} </if>
-		  		  <if test="costPrice != null and costPrice != ''"> and cost_price = #{costPrice} </if>
-		  		  <if test="costDate != null and costDate != ''"> and cost_date = #{costDate} </if>
-		  		  <if test="costType != null and costType != ''"> and cost_type = #{costType} </if>
-                  <if test="relateNo != null and relateNo != ''"> and relate_no = #{relateNo} </if>
-		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
-		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
-		  		</where>
-        <choose>
-            <when test="sort != null and sort.trim() != ''">
-                order by ${sort} ${order}
-            </when>
+		select `id`,`product_no`,`entry_price`,`entry_qty`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost
+		<where>
+			<if test="id != null and id != ''">and id = #{id}</if>
+			<if test="productNo != null and productNo != ''">and product_no = #{productNo}</if>
+			<if test="entryPrice != null and entryPrice != ''">and entry_price = #{entryPrice}</if>
+			<if test="costPrice != null and costPrice != ''">and cost_price = #{costPrice}</if>
+			<if test="costDate != null and costDate != ''">and cost_date = #{costDate}</if>
+			<if test="costType != null and costType != ''">and cost_type = #{costType}</if>
+			<if test="relateNo != null and relateNo != ''">and relate_no = #{relateNo}</if>
+			<if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+			<if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
 			<otherwise>
-                order by id desc
+				order by id desc
 			</otherwise>
-        </choose>
+		</choose>
 		<if test="offset != null and limit != null">
 			limit #{offset}, #{limit}
 		</if>
 	</select>
 
     <select id="listLate" resultType="com.bootdo.engage.domain.ProductCostDO">
-        select `id`,`product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost
+        select `id`,`product_no`,`entry_price`,`entry_qty`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             <if test="productNo != null and productNo != ''"> and product_no = #{productNo} </if>
             <if test="costDate != null and costDate != ''"> and cost_date = #{costDate} </if>
@@ -123,23 +123,23 @@
 	<insert id="save" parameterType="com.bootdo.engage.domain.ProductCostDO" useGeneratedKeys="true" keyProperty="id">
 		insert into data_product_cost
 		(
-          `product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`
+          `product_no`,`entry_price`,`entry_qty`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`
 		)
 		values
 		(
-          #{productNo},#{entryPrice},#{costPrice},#{costQty},#{costBalance},#{costAmount},#{costDate},#{costType},#{relateNo},#{remark}
+          #{productNo},#{entryPrice},#{entryQty},#{costPrice},#{costQty},#{costBalance},#{costAmount},#{costDate},#{costType},#{relateNo},#{remark}
 		)
 	</insert>
 
     <insert id ="saveBatch" parameterType="java.util.List" >
         insert into data_product_cost
         (
-          `product_no`,`entry_price`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`
+          `product_no`,`entry_price`,`entry_qty`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`
         )
         values
         <foreach collection ="list" item="item" index= "index" separator =",">
         (
-          #{item.productNo},#{item.entryPrice},#{item.costPrice},#{item.costQty},#{item.costBalance},#{item.costAmount},#{item.costDate},#{item.costType},#{item.relateNo},#{item.remark}
+          #{item.productNo},#{item.entryPrice},#{item.entryQty},#{item.costPrice},#{item.costQty},#{item.costBalance},#{item.costAmount},#{item.costDate},#{item.costType},#{item.relateNo},#{item.remark}
         )
         </foreach >
     </insert>

@@ -1,5 +1,4 @@
-let prefix = "/report";
-let prefixCost = "/data/product";
+let prefix = "/engage/product";
 let tableGrid;
 let dataForm;
 let initData = [];
@@ -34,16 +33,12 @@ let gridConfig = {
     footerrow: true,
     colNames: colNames,
     colModel: colModel,
-    /*        multiselect: true,
-            beforeSelectRow: function(rowid, e){
-                //单选效果
-                let _rowid = tableGrid.jqGrid("getGridParam", "selrow");
-                tableGrid.jqGrid('resetSelection');
-                return _rowid !== rowid;
-            },*/
+    beforeSelectRow: function (rowid, e) {
+
+    },
     ondblClickRow: function (rowid, iRow, iCol, e) {
         currentRow = tableGrid.jqGrid("getRowData", rowid);
-        searchCost(currentRow);
+        searchEntryBalance(currentRow);
     }
 };
 
@@ -72,7 +67,7 @@ function loadGrid() {
     $(".loading").show();
     //加载新数据
     $.ajax({
-        url: prefix + "/pBalance",
+        url: prefix + "/balance/list",
         type : "post",
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(dataForm.serializeObject()),
@@ -129,23 +124,23 @@ function collectTotal(addColModelName){
     tableGrid.footerData('set', totalAmountObj);
 }
 
-function searchCost(rowData) {
+function searchEntryBalance(rowData) {
     layer.open({
         type : 2,
-        title : '商品成本',
+        title : '库存余额',
         maxmin : true,
         shadeClose : false, // 点击遮罩关闭层
         area : [ '1300px', '650px' ],
-        content : prefixCost + '/productCostB' // iframe的url
+        content : prefix + '/balanceEntry' // iframe的url
     });
 }
 
 function getCurrentRow() {
-    return currentRow || {};
+    return $.extend(currentRow || {}, {"searchObj": dataForm.serializeObject()});
 }
 
 function exportExcel() {
     let queryParam = dataForm.serialize();
-    let url = prefix + "/pBalance/export?" + queryParam //下载地址
-    utils.download(url ,'WHProductInfoResult.xls');
+    let url = prefix + "/balance/export?" + queryParam //下载地址
+    utils.download(url ,'ProductBalanceResult.xls');
 }

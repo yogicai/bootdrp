@@ -1,4 +1,4 @@
-package com.bootdo.report.service;
+package com.bootdo.engage.service;
 
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.common.enumeration.BillType;
@@ -8,9 +8,10 @@ import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.StringUtil;
 import com.bootdo.engage.dao.ProductCostDao;
 import com.bootdo.engage.domain.ProductCostDO;
-import com.bootdo.report.controller.response.WHPBalanceResult;
-import com.bootdo.report.controller.response.WHPBalanceTotalResult;
-import com.bootdo.report.dao.WHReportDao;
+import com.bootdo.engage.controller.response.EntryBalanceResult;
+import com.bootdo.engage.controller.response.BalanceResult;
+import com.bootdo.engage.controller.response.BalanceTotalResult;
+import com.bootdo.engage.dao.ProductBalanceDao;
 import com.bootdo.wh.controller.response.WHProductInfo;
 import com.bootdo.wh.controller.response.WHStockInfo;
 import com.google.common.collect.ImmutableMap;
@@ -31,9 +32,9 @@ import java.util.*;
  * @since 2020-11-10 14:48
  */
 @Service
-public class WHReportService {
+public class ProductBalanceService {
     @Resource
-    private WHReportDao whReportDao;
+    private ProductBalanceDao productBalanceDao;
     @Resource
     private ProductCostDao productCostDao;
 
@@ -41,11 +42,11 @@ public class WHReportService {
     private final Set<String> seBillSet = Sets.newHashSet(BillType.TH_ORDER.name(), BillType.WH_CK_ORDER.name());
 
     @Transactional(rollbackFor = Exception.class)
-    public WHPBalanceResult pBalance(Map<String, Object> params) {
-        List<Map<String, Object>> list = whReportDao.pBalance(params);
+    public BalanceResult pBalance(Map<String, Object> params) {
+        List<Map<String, Object>> list = productBalanceDao.pBalance(params);
         TreeMap<String, List<Map<String, Object>>> listMap = Maps.newTreeMap();
         TreeMap<String, String> stockMap = Maps.newTreeMap();
-        WHPBalanceResult result = new WHPBalanceResult();
+        BalanceResult result = new BalanceResult();
 
         result.setToDate(StringUtils.defaultIfBlank(MapUtil.getStr(params, "toDate"), DateUtils.currentDate()));
         //按商品ID分类整理库存信息
@@ -140,9 +141,9 @@ public class WHReportService {
         return productInfo;
     }
 
-    public WHPBalanceTotalResult pBalanceTotal(Map<String, Object> params) {
-        WHPBalanceTotalResult result = new WHPBalanceTotalResult();
-        List<Map<String, Object>> list = whReportDao.pBalance(params);
+    public BalanceTotalResult pBalanceTotal(Map<String, Object> params) {
+        BalanceTotalResult result = new BalanceTotalResult();
+        List<Map<String, Object>> list = productBalanceDao.pBalance(params);
         //处理商品成本信息
         Map<String, ProductCostDO> costDOMap = Maps.newHashMap();
         List<ProductCostDO> costDOList = productCostDao.listLate(ImmutableMap.of("latest", true));
@@ -165,16 +166,18 @@ public class WHReportService {
     }
 
     /**
-     * 查询商品库存余额（用于销售单添加商品展示用）
+     * 报表-商品库存余额-商品库存变更明细
      */
-    public Map<String, BigDecimal> queryPBalance(Map<String, Object> params) {
-        Map<String, BigDecimal> result = new HashMap<>();
-        List<Map<String, Object>> list = whReportDao.pBalance(params);
-        for (Map<String, Object> map : list) {
-            result.put(MapUtil.getStr(map, "no"), NumberUtils.add(MapUtils.getBigDecimal(result, MapUtil.getStr(map, "no")), defaultStockAmount(map)));
-        }
-        return result;
+    @Transactional(readOnly = true)
+    public List<EntryBalanceResult> pBalanceEntry(Map<String, Object> params) {
+        return productBalanceDao.pBalanceEntry(params);
     }
+
+    @Transactional(readOnly = true)
+    public Map<String, Object> pBalanceEntryCountSum(Map<String, Object> map) {
+        return productBalanceDao.pBalanceEntryCountSum(map);
+    }
+
 
     private BigDecimal defaultStockAmount(Map<String, Object> map) {
         String billType = MapUtil.getStr(map, "bill_type");

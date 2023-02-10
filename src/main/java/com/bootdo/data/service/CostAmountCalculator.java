@@ -13,7 +13,7 @@ import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.po.dao.OrderEntryDao;
 import com.bootdo.po.domain.OrderDO;
 import com.bootdo.po.domain.OrderEntryDO;
-import com.bootdo.report.dao.WHReportDao;
+import com.bootdo.engage.dao.ProductBalanceDao;
 import com.bootdo.wh.dao.WHOrderEntryDao;
 import com.bootdo.wh.domain.WHOrderDO;
 import com.bootdo.wh.domain.WHOrderEntryDO;
@@ -40,7 +40,7 @@ public class CostAmountCalculator {
     @Autowired
     private WHOrderEntryDao whOrderEntryDao;
     @Autowired
-    private WHReportDao whReportDao;
+    private ProductBalanceDao whReportDao;
     @Autowired
     private ProductDao productDao;
 
@@ -118,7 +118,8 @@ public class CostAmountCalculator {
                     productCostDO.setCostType(costType.name());
                     productCostDO.setRelateNo(orderDO.getBillNo());
                     productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.getRemark(), auditStatus.getRemark1()));
-                } else if (inventory.compareTo(BigDecimal.ZERO) > 0) { //历史库存大于0 && 当前库存大于0则，取当前这一单的数据+ 历史库存成本 计算库存成本、单价成本
+                } else if (inventory.compareTo(BigDecimal.ZERO) > 0) {
+                    //历史库存大于0 && 当前库存大于0则，取当前这一单的数据+ 历史库存成本 计算库存成本、单价成本
                     BigDecimal costPrice = costDOMap.containsKey(entry.getEntryId()) ? NumberUtils.toBigDecimal(costDOMap.get(entry.getEntryId()).getCostPrice()) : BigDecimal.ZERO; //库存单位成本
                     BigDecimal amountFee = NumberUtils.toBigDecimal(entryAmountFee.get(entry.getEntryId())); //本次商品均摊费用 +　本次商品金额
                     BigDecimal amountFeeCost = NumberUtils.mul(costPrice, inventory).add(NumberUtils.mul(amountFee, mulFactor)); //库存成本 +　本次费用　+ 本次商品金额
@@ -147,7 +148,8 @@ public class CostAmountCalculator {
                     productCostDO.setCostType(costType.name());
                     productCostDO.setRelateNo(orderDO.getBillNo());
                     productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.getRemark(), auditStatus.getRemark1()));
-                } else if (inventory.compareTo(BigDecimal.ZERO) > 0) { //历史库存大于0 && 当前库存大于0则，取当前这一单的数据+ 历史库存成本 计算库存成本、单价成本
+                } else if (inventory.compareTo(BigDecimal.ZERO) > 0) {
+                    //历史库存大于0 && 当前库存大于0则，取当前这一单的数据+ 历史库存成本 计算库存成本、单价成本
                     BigDecimal costPrice = costDOMap.containsKey(entry.getEntryId()) ? NumberUtils.toBigDecimal(costDOMap.get(entry.getEntryId()).getCostPrice()) : BigDecimal.ZERO; //库存单位成本
                     BigDecimal amountFee = NumberUtils.toBigDecimal(entryAmountFee.get(entry.getEntryId())); //本次商品均摊费用 +　本次商品金额
                     BigDecimal amountFeeCost = NumberUtils.mul(costPrice, inventory).add(NumberUtils.mul(amountFee, mulFactor)); //库存成本 +　本次费用　+ 本次商品金额

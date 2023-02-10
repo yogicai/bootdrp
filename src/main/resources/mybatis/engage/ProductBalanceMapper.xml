@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.engage.dao.ProductBalanceDao">
+
+    <select id="pBalance" resultType="java.util.Map">
+        SELECT
+            aa.`no`, aa.`name`, aa.`unit`, aa.`type`, aa.`brand`, aa.`bar_code`, bb.bill_type, bb.stock_no, bb.stock_name, AVG(bb.entry_price) AS `entry_price`, SUM(bb.total_qty) AS `total_qty`, bb.entry_unit, SUM(bb.entry_amount) AS `entry_amount`, SUM(bb.total_amount) AS `total_amount`
+        FROM (
+                SELECT
+                    po.bill_date, po.`bill_type`, pe.`stock_no`, pe.`stock_name`, pe.`entry_id`, pe.`entry_price`,pe.`total_qty`,pe.`entry_unit`,pe.`entry_amount`,pe.`total_amount`, pe.`create_time`
+                FROM
+                    po_order po LEFT JOIN po_order_entry pe ON po.`bill_no`=pe.`bill_no`
+                WHERE
+                    po.`audit_status`='YES'
+                UNION ALL
+                SELECT
+                    so.bill_date, so.`bill_type`, se.`stock_no`, se.`stock_name`, se.`entry_id`, se.`entry_price`,se.`total_qty`,se.`entry_unit`,se.`entry_amount`,se.`total_amount`, se.`create_time`
+                FROM
+                    se_order so LEFT JOIN se_order_entry se ON so.`bill_no`=se.`bill_no`
+                WHERE
+                    so.`audit_status`='YES'
+                UNION ALL
+                SELECT
+                    wo.bill_date, wo.`bill_type`, we.`stock_no`, we.`stock_name`, we.`entry_id`, we.`entry_price`,we.`total_qty`,we.`entry_unit`,we.`entry_amount`,we.`entry_amount` AS `total_amount`,we.`create_time`
+                FROM
+                    wh_order wo LEFT JOIN wh_order_entry we ON wo.`bill_no`=we.`bill_no`
+                WHERE
+                    wo.`audit_status`='YES'
+            ) bb LEFT JOIN data_product aa ON aa.`no`=bb.entry_id
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <if test="toDate != null and toDate != ''">and bb.bill_date <![CDATA[ <= ]]> #{toDate}</if>
+            <if test="status != null and status != ''">and aa.status = #{status}</if>
+            <if test="type != null and type != ''">and aa.type = #{type}</if>
+            <if test="stock != null and stock != ''">and bb.stock_no = #{stock}</if>
+            <if test="product != null and product != ''">and aa.no = #{product}</if>
+            <if test="types != null">and aa.type in
+                <foreach collection="types" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="stocks != null">and bb.stock_no in
+                <foreach collection="stocks" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="products != null">and aa.no in
+                <foreach collection="products" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="searchText != null and searchText != ''">
+                and ( aa.no like '%${searchText}%' or aa.name like '%${searchText}%')
+            </if>
+        </trim>
+        GROUP BY aa.no, bb.bill_type, bb.stock_no
+        <choose>
+            <when test="sort != null and sort.trim() != ''">order by ${sort} ${order}</when>
+            <otherwise>order by aa.id desc</otherwise>
+        </choose>
+        <if test="offset != null and limit != null">limit #{offset}, #{limit}</if>
+    </select>
+
+    <sql id="whereSql">
+        <where>
+            <if test="billDate != null and billDate != ''"> and bill_date = #{billDate} </if>
+            <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
+            <if test="entryId != null and entryId != ''"> and entry_Id = #{entryId} </if>
+            <if test="start != null and start != ''"> and bill_date >= #{start} </if>
+            <if test="end != null and end != ''"> <![CDATA[ and bill_date <= #{end} ]]> </if>
+            <if test="audit != null and audit != ''"> and audit_status = #{audit} </if>
+        </where>
+    </sql>
+    <sql id="selectSql">
+            select
+                aa.bill_no, aa.bill_date, aa.bill_type, a.entry_id, a.entry_name, a.entry_unit, a.entry_price, ifnull(round(a.total_amount/a.total_qty, 2) , 0) as cost_price, a.total_qty, a.create_time, a.update_time
+            from
+                po_order_entry a left join po_order aa on a.bill_no=aa.bill_no
+            <include refid="whereSql"/>
+            union all
+            select
+                bb.bill_no, bb.bill_date, bb.bill_type, b.entry_id, b.entry_name, b.entry_unit, b.entry_price, b.cost_price, b.total_qty, b.create_time, b.update_time
+            from
+                se_order_entry b left join se_order bb on b.bill_no=bb.bill_no
+            <include refid="whereSql"/>
+            union all
+            select
+                cc.bill_no, cc.bill_date, cc.bill_type, c.entry_id, c.entry_name, c.entry_unit, c.entry_price, c.cost_price, c.total_qty, c.create_time, c.update_time
+            from
+                wh_order_entry c left join wh_order cc on c.bill_no=cc.bill_no
+            <include refid="whereSql"/>
+    </sql>
+
+    <select id="pBalanceEntry" resultType="com.bootdo.engage.controller.response.EntryBalanceResult">
+        <include refid="selectSql"/>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">order by ${sort} ${order}, bill_date desc</when>
+            <otherwise>order by bill_date desc</otherwise>
+        </choose>
+        <if test="offset != null and limit != null">limit #{offset}, #{limit}</if>
+    </select>
+
+    <select id="pBalanceEntryCountSum" resultType="java.util.Map">
+        select
+            count(*) as totalCount,
+            sum(if(bill_type in ('CG_ORDER', 'WH_RK_ORDER'), total_qty, 0)) as incomeQty,
+            sum(if(bill_type in ('CG_ORDER', 'WH_RK_ORDER'), 0, total_qty)) as outcomeQty,
+            sum(if(bill_type in ('CG_ORDER', 'WH_RK_ORDER'), total_qty, -total_qty)) as balanceQty
+        from
+            (<include refid="selectSql"/>) kk
+    </select>
+</mapper>

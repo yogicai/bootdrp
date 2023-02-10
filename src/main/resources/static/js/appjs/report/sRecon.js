@@ -118,7 +118,7 @@ function collectTotal(){
     let totalAmountObj = { instituteId: '合计:', instituteName:'数量：' + recordNum, totalAmount: totalAmountTotal, paymentAmount: paymentAmountTotal, debtAmount: debtAmountTotal, costAmount: costAmountTotal, profitAmount: profitAmountTotal };
     // 设置表格合计项金额
     tableGrid.footerData('set', totalAmountObj);
-};
+}
 
 function exportExcel() {
     let queryParam = dataForm.serialize();

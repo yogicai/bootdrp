@@ -1,6 +1,8 @@
 package com.bootdo.common.utils;
 
 
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -25,15 +27,25 @@ public class QueryJQ extends LinkedHashMap<String, Object> {
     private String start;
     /** 查询终止时间 */
     private String end;
+    /** 排序列 */
+    private String sort;
+    /** 升序、降序 */
+    private String order;
 
     public QueryJQ(Map<String, Object> params, boolean page) {
         try {
             this.putAll(params);
-            this.start = DateUtils.getDayBegin(MapUtils.getString(params, "start"));
-            this.end = DateUtils.getDayEnd(MapUtils.getString(params, "end"));
-            this.limit = MapUtils.getIntValue(params, "rows");
-            this.page = MapUtils.getIntValue(params, "page");
+            this.start = DateUtils.getDayBegin(MapUtil.getStr(params, "start"));
+            this.end = DateUtils.getDayEnd(MapUtil.getStr(params, "end"));
+            this.limit = MapUtil.getInt(params, "rows");
+            this.page = MapUtil.getInt(params, "page");
             this.offset = (this.page - 1) * this.limit;
+
+            this.sort = MapUtil.getStr(params, "sidx");
+            this.order = MapUtil.getStr(params, "sord");
+
+            this.put("sort", StrUtil.toUnderlineCase(this.sort));
+            this.put("order", this.order);
 
             this.put("start", start);
             this.put("end", end);
