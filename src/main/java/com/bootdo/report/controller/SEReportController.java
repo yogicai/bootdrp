@@ -14,7 +14,6 @@ import com.bootdo.report.controller.response.echart.EChartOption;
 import com.bootdo.report.service.SEReportService;
 import com.google.common.collect.ImmutableMap;
 import io.swagger.annotations.Api;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +45,6 @@ public class SEReportController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pSeTotal")
-    @RequiresPermissions("wh:report:pBalance")
     public R pSeTotal(@RequestBody Map<String, Object> params, Model model) {
         SEBillTotalResult result;
         int days = MapUtil.getInt(params, "days", 0);
@@ -63,7 +61,6 @@ public class SEReportController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pDebtTotal")
-    @RequiresPermissions("wh:report:pBalance")
     public R pDebtTotal(@RequestBody Map<String, Object> params, Model model) {
         SEDebtTotalResult result = seReportService.pDebtTotal(ImmutableMap.of("audit", AuditStatus.YES.name()));
         return R.ok().put("result", result);
@@ -74,7 +71,6 @@ public class SEReportController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pBillTrend")
-    @RequiresPermissions("wh:report:pBalance")
     public R pSEBillTrend(@RequestBody Map<String, Object> params, Model model) {
         EChartOption option = seReportService.pBillTrend(params);
         return R.ok().put("result", option);
@@ -85,7 +81,6 @@ public class SEReportController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pBillTrendPie")
-    @RequiresPermissions("wh:report:pBalance")
     public R pSEBillTrendPie(@RequestBody Map<String, Object> params, Model model) {
         EChartOption option = seReportService.pBillTrendPie(params);
         return R.ok().put("result", option);
@@ -96,7 +91,6 @@ public class SEReportController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pCashTotal")
-    @RequiresPermissions("wh:report:pBalance")
     public R pCashTotal(@RequestBody Map<String, Object> params, Model model) {
         return seReportService.pCashTotal(ImmutableMap.of("audit", AuditStatus.YES.name(), "billDate", DateUtils.getYearBegin()));
     }
@@ -106,7 +100,6 @@ public class SEReportController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pCashTrend")
-    @RequiresPermissions("wh:report:pBalance")
     public R pCashTrend(@RequestBody Map<String, Object> params, Model model) {
         EChartOption option = seReportService.pCashTrend(params);
         return R.ok().put("result", option);
@@ -117,7 +110,6 @@ public class SEReportController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pHisPCashTrend")
-    @RequiresPermissions("wh:report:pBalance")
     public R pHisPBillTrend(@RequestBody Map<String, Object> params, Model model) {
         EChartOption option = seReportService.pHisPBillTrend(params);
         return R.ok().put("result", option);
@@ -128,7 +120,6 @@ public class SEReportController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pBalanceTotal")
-    @RequiresPermissions("wh:report:pBalance")
     public R pBalanceTotal(@RequestBody Map<String, Object> params, Model model) {
         params.put("status", 1);
         BalanceTotalResult result = productBalanceService.pBalanceTotal(params);

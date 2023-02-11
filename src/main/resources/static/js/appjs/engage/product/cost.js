@@ -47,7 +47,7 @@ function load() {
             { name:'costBalance', index:'costBalance', editable:false, width:80, align:"right", formatter:"number" },
             { name:'costAmount', index:'costAmount', editable:false, width:80, align:"right", formatter:"number" },
             { name:'costDate', index:'costDate', editable:false, width:140, hidden: true },
-            { name:'costType', index:'costType', editable:false, width:80, formatter:function (cellValue){return utils.formatEnum(cellValue, 'COST_TYPE')} },
+            { name:'costType', index:'costType', editable:false, width:80, formatter:function (cellValue){return utils.formatEnum(cellValue, 'COST_TYPE')}, unformat: function (cellValue) { return utils.unformatEnum(cellValue, 'COST_TYPE') } },
             { name:'relateNo', index:'relateNo', editable:false, width:180 },
             { name:'remark', index:'remark', editable:false, width:130 },
             { name:'updateTime', index:'updateTime', editable:false, width:140 }
@@ -55,12 +55,14 @@ function load() {
         pager: "#pager_list",
         viewrecords: true,
         beforeSelectRow: function (rowid) {
-            // tableGrid.jqGrid('resetSelection');
-            // return true;
+
         },
         ondblClickRow: function (rowid, iRow, iCol, e) {
             currentRow = tableGrid.jqGrid("getRowData", rowid);
             searchCost(currentRow);
+        },
+        loadComplete: function (data) {
+            utils.changeRowCss(tableGrid, "costType", "MANUAL");
         },
         onPaging:search
     });

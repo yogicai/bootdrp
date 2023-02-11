@@ -39,8 +39,8 @@ function load() {
         footerrow: true,
         sortname: "billType",
         loadComplete: function (data) {
-            changRowCss();
             collectTotal(data);
+            utils.changeRowCss(tableGrid, "billType", "CG_ORDER,WH_RK_ORDER");
         }
     });
 
@@ -94,18 +94,3 @@ function formatBalance(cellvalue, options, rowObject) {
     }
 }
 
-/**
- * 设置行背景色
- */
-function changRowCss() {
-    //在表格加载完成后执行
-    let ids = tableGrid.jqGrid("getDataIDs");
-    let rowDataArr = tableGrid.jqGrid("getRowData");
-    //采购单、入库单，行背景颜色设为红色
-    for (let i = 0; i < rowDataArr.length; i++) {
-        let rowData = rowDataArr[i];
-        if (billTypeSet.has(rowData['billType'])) {
-            $("#" + ids[i] + " td").css("background-color", "#FDF5E6");
-        }
-    }
-}

@@ -75,7 +75,7 @@ public class ReportController extends BaseController {
      * 商品销售统计报表
      */
     @GetMapping("/saleProduct")
-    @RequiresPermissions("wh:report:pBalance")
+    @RequiresPermissions("report:report:report")
     public String balance(@RequestParam Map<String, Object> params, Model model) {
         return "report/saleProduct";
     }

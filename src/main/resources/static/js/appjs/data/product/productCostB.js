@@ -25,7 +25,7 @@ function load() {
             { name:'costBalance', index:'costBalance', editable:false, width:70, align: "right", formatter:"number" },
             { name:'costAmount', index:'costAmount', editable:false, width:80, align: "right", formatter:"number" },
             { name:'costDate', index:'costDate', editable:false, width:100, hidden: true },
-            { name:'costType', index:'costType', editable:false, width:70, formatter:function (cellValue){return utils.formatEnum(cellValue, 'COST_TYPE')} },
+            { name:'costType', index:'costType', editable:false, width:70, formatter:function (cellValue){return utils.formatEnum(cellValue, 'COST_TYPE')}, unformat: function (cellValue) { return utils.unformatEnum(cellValue, 'COST_TYPE') } },
             { name:'relateNo', index:'relateNo', editable:false, width:120 },
             { name:'createTime', index:'createTime', editable:false, width:100 },
             { name:'updateTime', index:'updateTime', editable:false,  width:100 }
@@ -37,7 +37,10 @@ function load() {
         rowNum: 20,
         rowList: [20, 50, 100],
         pager: "#pager_list",
-        viewrecords: true
+        viewrecords: true,
+        loadComplete: function (data) {
+            utils.changeRowCss(tableGrid, "costType", "MANUAL");
+        }
     });
 
     tableGrid.jqGrid('navGrid', '#pager_list', {

@@ -592,4 +592,21 @@
         return str.replace(/(\d)(?=(\d{3})+\.)/g, '$1,').replace(/\.$/, '');
     }
 
+    /**
+     * 设置jqGrid行背景色
+     */
+    Utils.prototype.changeRowCss = function changeRowCss(tableGrid, matchKey, matchValue) {
+        let matchValueSet = new Set(matchValue.split(','));
+        //在表格加载完成后执行
+        let ids = tableGrid.jqGrid("getDataIDs");
+        let rowDataArr = tableGrid.jqGrid("getRowData");
+        //采购单、入库单，行背景颜色设为红色
+        for (let i = 0; i < rowDataArr.length; i++) {
+            let rowData = rowDataArr[i];
+            if (matchValueSet.has(rowData[matchKey])) {
+                $("#" + ids[i] + " td").css("background-color", "#FDF5E6");
+            }
+        }
+    }
+
 }(window));
