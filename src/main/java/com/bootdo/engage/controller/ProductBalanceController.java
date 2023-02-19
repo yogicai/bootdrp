@@ -37,8 +37,8 @@ public class ProductBalanceController extends BaseController {
      */
     @GetMapping("/balance")
     @RequiresPermissions("engage:product:balance")
-    public String bBalance(@RequestParam Map<String, Object> params, Model model) {
-        return "/engage/product/balance";
+    public String bBalance() {
+        return "engage/product/balance";
     }
 
     /**
@@ -71,7 +71,7 @@ public class ProductBalanceController extends BaseController {
     @GetMapping("/balanceEntry")
     @RequiresPermissions("engage:product:balance")
     public String bBalanceEntry(@RequestParam Map<String, Object> params, Model model) {
-        return "/engage/product/balanceEntry";
+        return "engage/product/balanceEntry";
     }
 
     /**

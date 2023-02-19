@@ -596,16 +596,31 @@
      * 设置jqGrid行背景色
      */
     Utils.prototype.changeRowCss = function changeRowCss(tableGrid, matchKey, matchValue) {
-        let matchValueSet = new Set(matchValue.split(','));
+        let matchValueList = matchValue.split(',');
         //在表格加载完成后执行
         let ids = tableGrid.jqGrid("getDataIDs");
         let rowDataArr = tableGrid.jqGrid("getRowData");
         //采购单、入库单，行背景颜色设为红色
         for (let i = 0; i < rowDataArr.length; i++) {
             let rowData = rowDataArr[i];
-            if (matchValueSet.has(rowData[matchKey])) {
+            if (matchValueList.find(mv => rowData[matchKey].includes(mv))) {
                 $("#" + ids[i] + " td").css("background-color", "#FDF5E6");
             }
+        }
+    }
+
+    /**
+     * 设置jqGrid单元格背景色
+     */
+    Utils.prototype.changeRowCellCss = function changeRowCellCss(cellValue, matchValue) {
+        let matchValueList = matchValue.split(',');
+
+        cellValue = isFinite(cellValue) ? this.priceFormat(cellValue) : cellValue;
+
+        if (matchValueList.find(mv => cellValue.includes(mv))) {
+            return '<span style="color:#FF9900;">' + cellValue + '</span>';
+        } else {
+            return cellValue;
         }
     }
 

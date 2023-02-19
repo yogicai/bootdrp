@@ -29,7 +29,7 @@ function load() {
         height: window.innerHeight - 170,
         autowidth: true,
         shrinkToFit: true,
-        multiselect: false, //自带多选
+        multiselect: true, //自带多选
         multiboxonly: true, //变成单选
         rownumbers: true,
         rowNum: 50,
@@ -49,7 +49,7 @@ function load() {
             { name:'costDate', index:'costDate', editable:false, width:140, hidden: true },
             { name:'costType', index:'costType', editable:false, width:80, formatter:function (cellValue){return utils.formatEnum(cellValue, 'COST_TYPE')}, unformat: function (cellValue) { return utils.unformatEnum(cellValue, 'COST_TYPE') } },
             { name:'relateNo', index:'relateNo', editable:false, width:180 },
-            { name:'remark', index:'remark', editable:false, width:130 },
+            { name:'remark', index:'remark', editable:false, width:130, formatter:function (cellValue){return utils.changeRowCellCss(cellValue, '反审核')} },
             { name:'updateTime', index:'updateTime', editable:false, width:140 }
         ],
         pager: "#pager_list",
@@ -63,6 +63,7 @@ function load() {
         },
         loadComplete: function (data) {
             utils.changeRowCss(tableGrid, "costType", "MANUAL");
+            utils.changeRowCss(tableGrid, "remark", "反审核");
         },
         onPaging:search
     });

@@ -14,7 +14,7 @@ function load() {
         url: prefix + "/listCost",
         datatype: "json",
         postData: { "productNo": rowData['entryId'] || rowData['productNo'] },
-        colNames: ['', '商品编号', '采购价', '成本单价', '商品库存', '库存变更', '库存余额', '库存成本', '成本时间', '类型', '关联单号', '创建时间', '修改时间'],
+        colNames: ['', '商品编号', '采购价', '成本单价', '商品库存', '库存变更', '库存余额', '库存成本', '成本时间', '类型', '关联单号', '备注', '修改时间'],
         colModel: [
             { name:'id', index:'id', editable:false, width:50, hidden:true },
             { name:'productNo', index:'productNo', editable:false, width:60 },
@@ -27,7 +27,7 @@ function load() {
             { name:'costDate', index:'costDate', editable:false, width:100, hidden: true },
             { name:'costType', index:'costType', editable:false, width:70, formatter:function (cellValue){return utils.formatEnum(cellValue, 'COST_TYPE')}, unformat: function (cellValue) { return utils.unformatEnum(cellValue, 'COST_TYPE') } },
             { name:'relateNo', index:'relateNo', editable:false, width:120 },
-            { name:'createTime', index:'createTime', editable:false, width:100 },
+            { name:'remark', index:'remark', editable:false, width:130, formatter:function (cellValue){return utils.changeRowCellCss(cellValue, '反审核')} },
             { name:'updateTime', index:'updateTime', editable:false,  width:100 }
         ],
         height: window.innerHeight - 120,
@@ -40,6 +40,7 @@ function load() {
         viewrecords: true,
         loadComplete: function (data) {
             utils.changeRowCss(tableGrid, "costType", "MANUAL");
+            utils.changeRowCss(tableGrid, "remark", "反审核");
         }
     });
 

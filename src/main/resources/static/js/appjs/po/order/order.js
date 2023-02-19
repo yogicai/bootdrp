@@ -55,6 +55,9 @@ function load() {
             var row = tableGrid.getRowData(rowid);
             doubleClick('/po/entry?billType=' + row.billType, row.billNo);
         },
+        loadComplete: function (data) {
+            utils.changeRowCss(tableGrid, "status", "未结款,部分结款");
+        },
         onPaging:search
     });
     // Setup buttons

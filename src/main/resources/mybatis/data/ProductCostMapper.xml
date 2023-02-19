@@ -149,6 +149,7 @@
 		<set>
 			<if test="productNo != null">`product_no` = #{productNo}, </if>
             <if test="entryPrice != null">`entry_price` = #{entryPrice}, </if>
+			<if test="entryQty != null">`entry_qty` = #{entryQty}, </if>
 			<if test="costPrice != null">`cost_price` = #{costPrice}, </if>
             <if test="costQty != null">`cost_qty` = #{costQty}, </if>
             <if test="costBalance != null">`cost_balance` = #{costBalance}, </if>
