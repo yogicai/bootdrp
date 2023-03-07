@@ -1,14 +1,18 @@
 package com.bootdo.data.service;
 
-import com.bootdo.engage.dao.ProductCostDao;
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.data.dao.ProductDao;
-import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.data.domain.ProductDO;
+import com.bootdo.engage.dao.ProductCostDao;
+import com.bootdo.engage.domain.ProductCostDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -21,9 +25,28 @@ public class ProductService {
 	public ProductDO get(Integer id){
 		return productDao.get(id);
 	}
-	
-	public List<ProductDO> list(Map<String, Object> map){
-		return productDao.list(map);
+
+	public List<ProductDO> list(Map<String, Object> map) {
+		//商品列表
+		List<ProductDO> productDOList = productDao.list(map);
+		//商品成本
+		Set<Integer> productNoSet = productDOList.stream().map(ProductDO::getNo).collect(Collectors.toSet());
+		Map<String, Object> param = MapUtil.<String, Object>builder().put("latest", true).put("productNos", productNoSet).build();
+
+		Map<String, ProductCostDO> productCostDoMap = productCostDao.listLate(param).stream()
+				.collect(Collectors.toMap(ProductCostDO::getProductNo, v -> v, (o, n) -> n));
+
+		productDOList.forEach(productDo -> {
+			String productNo = productDo.getNo().toString();
+			if (productCostDoMap.containsKey(productNo)) {
+				productDo.setCostPrice(productCostDoMap.get(productNo).getCostPrice());
+				productDo.setCostQty(productCostDoMap.get(productNo).getCostQty());
+			} else {
+				productDo.setCostPrice(productDo.getPurchasePrice());
+				productDo.setCostQty(BigDecimal.ZERO);
+			}
+		});
+		return productDOList;
 	}
 	
 	public int count(Map<String, Object> map){

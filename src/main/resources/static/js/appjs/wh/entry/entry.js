@@ -1,16 +1,16 @@
-var lastSel; //jqGrid最后编辑未保存的行号
-var tableGrid;
-var dataForm;
-var prefix = "/wh/entry";
-var prefixOrder = "/wh/order";
-var initData = [{},{},{}];
-var mask;
+let lastSel; //jqGrid最后编辑未保存的行号
+let tableGrid;
+let dataForm;
+let prefix = "/wh/entry";
+let prefixOrder = "/wh/order";
+let initData = [{},{},{}];
+let mask;
 
-var colNames_RK = ['','','商品名称','商品ID', '条形码',  '单位', '仓库', '数量', '入库单价', '入库金额', '备注'];
-var colNames_CK = ['','','商品名称','商品ID', '条形码',  '单位', '仓库', '数量', '出库单位成本', '入库成本', '备注'];
-var billType = $('#billType').val();
-var colNames = billType == 'WH_RK_ORDER' ? colNames_RK : colNames_CK;
-var dataUrl = billType == 'WH_RK_ORDER' ? '/wh/order?billType=WH_RK_ORDER' : '/wh/order?billType=WH_CK_ORDER';
+let colNames_RK = ['','','商品名称','商品ID', '条形码',  '单位', '仓库', '数量', '入库单价', '入库金额', '备注'];
+let colNames_CK = ['','','商品名称','商品ID', '条形码',  '单位', '仓库', '数量', '出库单位成本', '入库成本', '备注'];
+let billType = $('#billType').val();
+let colNames = billType == 'WH_RK_ORDER' ? colNames_RK : colNames_CK;
+let dataUrl = billType == 'WH_RK_ORDER' ? '/wh/order?billType=WH_RK_ORDER' : '/wh/order?billType=WH_CK_ORDER';
 
 $(function() {
     dataForm  = $('#data_form');
@@ -35,7 +35,7 @@ function load() {
         datatype : "local",
         data: initData,
         height: 'auto',
-        rowNum:100,
+        rowNum: 1000,
         shrinkToFit: false,
         autoScroll: true,
         rownumbers:true,
@@ -45,8 +45,8 @@ function load() {
         colNames: colNames,
         colModel: [
             { name: 'act', width:60, fixed:true, sortable:false, resize:false, formatter : function(cellValue, options, rowObject) {
-                    var e = '<a class="btn btn-primary btn-xs" href="#" mce_href="#" onclick="addRow(' + options.rowId + ', tableGrid)"><i class="fa  fa-plus"></i></a> ';
-                    var d = '<a class="btn btn-warning btn-xs" href="#" mce_href="#" onclick="delRow('+ options.rowId + ', tableGrid)"><i class="fa fa-minus"></i></a> ';
+                    let e = '<a class="btn btn-primary btn-xs" href="#" mce_href="#" onclick="addRow(' + options.rowId + ', tableGrid)"><i class="fa  fa-plus"></i></a> ';
+                    let d = '<a class="btn btn-warning btn-xs" href="#" mce_href="#" onclick="delRow('+ options.rowId + ', tableGrid)"><i class="fa fa-minus"></i></a> ';
                     return e + d ;
                 }},
             { name:'id', index:'id', editable:false, hidedlg:true, hidden:true},
@@ -93,15 +93,15 @@ function load() {
 
 //计算表格合计行数据
 function collectTotal(){
-    var totalQtyTotal=$("#table_list").getCol('totalQty',false,'sum');
-    var entryAmountTotal=$("#table_list").getCol('entryAmount',false,'sum');
+    let totalQtyTotal=$("#table_list").getCol('totalQty',false,'sum');
+    let entryAmountTotal=$("#table_list").getCol('entryAmount',false,'sum');
     // 设置表格合计项金额
-    $("#table_list").footerData('set', { entryName: '合计:', totalQty: totalQtyTotal, entryAmount: entryAmountTotal });
-};
+    $("#table_list").footerData('set', { entryName: '合计:', totalQty: totalQtyTotal, entryAmount: utils.priceFormat(entryAmountTotal) });
+}
 
 // 自定义表格编辑框
 function myelem (value, options) {
-    var el =
+    let el =
         '<div class="input-group">' +
         '<input type="text" name="entryName" class="form-control" value="'+ value +'">' +
         '<span class="input-group-btn"> <button type="button" class="btn btn-white" onclick="add()">...</button> </span>' +
@@ -137,26 +137,26 @@ amountEntry = {
 
 //获取编辑状态行数据
 function collectRow($rowId){
-    var rowId = $rowId || $("#table_list").jqGrid("getGridParam", "selrow");
-    var originRow = $("#table_list tr[id="+(rowId)+"]");
-    var entryPrice=originRow.find("[name='entryPrice']").val();
-    var totalQty=originRow.find("[name='totalQty']").val();
-    var entryAmount=originRow.find("[name='entryAmount']").val();
+    let rowId = $rowId || $("#table_list").jqGrid("getGridParam", "selrow");
+    let originRow = $("#table_list tr[id="+(rowId)+"]");
+    let entryPrice=originRow.find("[name='entryPrice']").val();
+    let totalQty=originRow.find("[name='totalQty']").val();
+    let entryAmount=originRow.find("[name='entryAmount']").val();
     amountEntry.totalObj = { entryPrice: entryPrice, totalQty: totalQty, entryAmount: entryAmount };
     return amountEntry;
 }
 
 //增加行
 function addRow(rowid, tableGrid){
-    var rowData = { };
-    var ids = tableGrid.jqGrid('getDataIDs');
-    var maxId = ids.length == 0 ? 1 : Math.max.apply(Math,ids);
+    let rowData = { };
+    let ids = tableGrid.jqGrid('getDataIDs');
+    let maxId = ids.length == 0 ? 1 : Math.max.apply(Math,ids);
     tableGrid.jqGrid('addRowData', maxId+1, rowData, 'after', rowid);//插入行
 }
 
 //删除行
 function delRow(rowid, tableGrid) {
-    var ids = tableGrid.jqGrid('getDataIDs')
+    let ids = tableGrid.jqGrid('getDataIDs')
     if (ids.length > 1) {
         tableGrid.jqGrid('delRowData', rowid);
     } else {
@@ -166,8 +166,8 @@ function delRow(rowid, tableGrid) {
 
 //保存
 function save(add) {
-    var order = dataForm.serializeObject();
-    var entryArr = tableGrid.jqGrid("getRowData");
+    let order = dataForm.serializeObject();
+    let entryArr = tableGrid.jqGrid("getRowData");
     order.entryVOList = [];
 
     if (order.serviceType == "" || order.billDate == "") {
@@ -175,7 +175,7 @@ function save(add) {
         return;
     }
 
-    var validateFlag = true;
+    let validateFlag = true;
     $.each(entryArr, function (key, val) {
         delete val['act'];
         if (val['entryName'] != "" && val['entryId'] != "") {
@@ -210,7 +210,7 @@ function save(add) {
 
 //审核
 function audit(type) {
-    var billNo = $("#billNo").val();
+    let billNo = $("#billNo").val();
     if (billNo &&　billNo != "") {
         $.ajax({
             url : prefixOrder+"/audit",
@@ -233,7 +233,7 @@ function audit(type) {
 
 //历史单据
 function listOrder() {
-    var dataIndex;
+    let dataIndex;
     //触发菜单单击
     window.parent.$(".J_menuItem").each(function (index) {
         if ($(this).attr('href') == dataUrl) {
@@ -245,7 +245,7 @@ function listOrder() {
     //重新刷订单列表
     window.parent.$('.J_mainContent .J_iframe').each(function () {
         if ($(this).data('id') == dataUrl) {
-            var win = window.parent.$('iframe[name="iframe' + dataIndex +'"]')[0].contentWindow;
+            let win = window.parent.$('iframe[name="iframe' + dataIndex +'"]')[0].contentWindow;
             if (win.reLoad) {
                 win.reLoad();
             }
@@ -275,10 +275,10 @@ function add() {
 //订单表格插入数据
 function insertData(datas) {
     if (!datas || datas.length <= 0) return;
-    var ids = tableGrid.jqGrid('getDataIDs');
-    var maxId = ids.length == 0 ? 1 : Math.max.apply(Math, ids);
-    var rowId = tableGrid.jqGrid("getGridParam", "selrow")
-    for (var i = 0; i < datas.length; i++) {
+    let ids = tableGrid.jqGrid('getDataIDs');
+    let maxId = ids.length == 0 ? 1 : Math.max.apply(Math, ids);
+    let rowId = tableGrid.jqGrid("getGridParam", "selrow")
+    for (let i = 0; i < datas.length; i++) {
         if (i === 0) {
             tableGrid.jqGrid('saveRow', rowId);
             tableGrid.jqGrid('setRowData', rowId, datas[i]);//更新当前行
@@ -289,9 +289,9 @@ function insertData(datas) {
         }
     }
     //选中下一个空行
-    var ids = tableGrid.jqGrid('getDataIDs');
+    ids = tableGrid.jqGrid('getDataIDs');
     $.each(ids, function (key, val) {
-        var data = tableGrid.jqGrid("getRowData", val);
+        let data = tableGrid.jqGrid("getRowData", val);
         if (data['entryName'] == "") {
             tableGrid.setSelection(val, false);
             return false;

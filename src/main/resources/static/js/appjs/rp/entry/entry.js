@@ -39,7 +39,7 @@ function load() {
         datatype : "local",
         data: initData,
         height: 'auto',
-        rowNum:100,
+        rowNum:1000,
         shrinkToFit: false,
         autoScroll: true,
         rownumbers:true,

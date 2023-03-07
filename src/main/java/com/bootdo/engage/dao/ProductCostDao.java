@@ -1,5 +1,6 @@
 package com.bootdo.engage.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bootdo.engage.domain.ProductCostDO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,7 +14,7 @@ import java.util.Map;
  * @date 2018-03-17 19:35:03
  */
 @Mapper
-public interface ProductCostDao {
+public interface ProductCostDao extends BaseMapper<ProductCostDO> {
 
     ProductCostDO get(Integer id);
 

@@ -12,8 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,11 +54,6 @@ public class ProductController extends BaseController {
         //查询列表数据
         QueryJQ query = new QueryJQ(params);
         List<ProductDO> productList = productService.list(query);
-        Map<String, BigDecimal> balanceMap = new HashMap<>();
-        //处理库存余额信息
-        for (ProductDO productDO : productList) {
-            productDO.setCostQty(MapUtils.getBigDecimal(balanceMap, productDO.getNo().toString()));
-        }
         int total = productService.count(query);
         int totalPage = total / (query.getLimit() + 1) + 1;
         return new PageJQUtils(productList, totalPage, query.getPage(), total);

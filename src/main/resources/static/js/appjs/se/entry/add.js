@@ -1,8 +1,8 @@
-var prefix = "/data/product";
-var prefixCategory = "/data/category";
-var tableGrid;
+let prefix = "/data/product";
+let prefixCategory = "/data/category";
+let tableGrid;
 $(function() {
-    var categoryId = '';
+    let categoryId = '';
     getTreeData();
     load(categoryId);
     bindEvent();
@@ -15,18 +15,19 @@ function load(categoryId) {
         url: prefix + "/listJQ",
         datatype: "json",
         postData: { "status": 1 },
-        colNames: ['', '商品编号', '商品名称', '库存', '条形码', '类别', '品牌', '单位',  /**'采购价',*/ '零售价','仓库', '仓库编号', '状态'],
+        colNames: ['', '商品编号', '商品名称', '库存', '成本价', '采购价', '零售价', '条形码', '类别', '品牌', '单位', '仓库', '仓库编号', '状态'],
         colModel: [
             { name:'rowId', index:'', hidden: true, key: true, frozen : true },
             { name:'no', index:'no', editable:false, key: false, width:70, frozen : true },
             { name:'name', index:'name', editable:false, width:150},
             { name:'costQty', index:'costQty', editable:false, width:70, align:"right", formatter:"number" },
-            { name:'barCode', index:'barCode', editable:false, width:150 },
+            { name:'costPrice', index:'costPrice', editable:false, width:80, align:"right", formatter:"number" },
+            { name:'purchasePrice', index:'purchasePrice', editable:false, width:80, align:"right", formatter:"number"},
+            { name:'salePrice', index:'salePrice', editable:false, width:80, align:"right", formatter:"number" },
+            { name:'barCode', index:'barCode', editable:false, width:150, hidden: true},
             { name:'type', index:'type', editable:false, width:60, formatter : function (value,row,index){ return utils.formatCategory(value, "PRODUCT")} },
             { name:'brand', index:'brand', editable:false, width:60, formatter : function (value,row,index){ return utils.formatType(value, "data_brand")} },
             { name:'unit', index:'unit', editable:false, width:40, formatter : function (value,row,index){ return utils.formatType(value, "data_unit")} },
-            // { name:'purchasePrice', index:'purchasePrice', editable:false, width:80, align:"right", formatter:"number" },
-            { name:'salePrice', index:'salePrice', editable:false, width:80, align:"right", formatter:"number" },
             { name:'stockNo', index:'stockNo', editable:false, width:80, formatter : function (value,row,index){ return utils.formatType(value, "data_stock")} },
             { name:'stockNo', index:'stockNo', editable:false, width:80, hidden:true },
             { name:'status', index:'status', editable:false, width:50, formatter:utils.formatYN }
@@ -54,7 +55,7 @@ function load(categoryId) {
 
     // Add responsive to jqGrid
     $(window).bind('resize', function () {
-        var width = $('.jqGrid_wrapper').width();
+        let width = $('.jqGrid_wrapper').width();
         $('#table_list').setGridWidth(width);
         $('#table_list').setGridHeight(window.innerHeight - 180);
     });
@@ -67,10 +68,10 @@ function reLoad() {
 
 //添加商品到订单分录
 function add() {
-    var selectData = new Array();
-    var ids = tableGrid.jqGrid('getGridParam', 'selarrrow');
+    let selectData = [];
+    let ids = tableGrid.jqGrid('getGridParam', 'selarrrow');
     $(ids).each(function (index, id){
-        var row = tableGrid.jqGrid('getRowData', id);
+        let row = tableGrid.jqGrid('getRowData', id);
         selectData.push({ "entryName": row.name,"entryId": row.no,"entryUnit": row.unit,"totalQty": 1,"entryPrice": row.salePrice,"stockNo": row.stockNo,"entryAmount":row.salePrice,"totalAmount":row.salePrice })
     });
     if (selectData.length > 0) {
@@ -87,7 +88,7 @@ function addAndClose() {
 
 //关闭窗口
 function cancel() {
-    var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+    let index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
     parent.layer.close(index);
 }
 
@@ -126,7 +127,7 @@ $('#jstree').on("changed.jstree", function(e, data) {
 
 //绑定事件
 function bindEvent() {
-    var timeoutID;
+    let timeoutID;
     $('#searchText').bind('keyup', function () {
         clearTimeout(timeoutID);
         timeoutID= window.setTimeout(function(){
