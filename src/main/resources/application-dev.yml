@@ -2,12 +2,12 @@ bootdo:
   uploadPath: D:/var/uploaded_files/
 logging:
   level:
-    com.bootdo: debug
+    com.bootdo: info
   file: logs/bootdo.log
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
+    driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/bootdo?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=CTT&nullCatalogMeansCurrent=true
     username: root
     password:

@@ -27,8 +27,32 @@ spring:
   devtools:
     restart:
       enabled: false
-mybatis: 
+#mybatis:
+#  configuration:
+#    map-underscore-to-camel-case: true
+#  mapper-locations: mybatis/**/*Mapper.xml
+#  typeAliasesPackage: com.bootdo.**.domain
+
+#mybaits相关配置
+mybatis-plus:
+  mapper-locations: mybatis/**/*Mapper.xml, classpath:/META-INF/modeler-mybatis-mappings/*.xml
   configuration:
     map-underscore-to-camel-case: true
-  mapper-locations: mybatis/**/*Mapper.xml
-  typeAliasesPackage: com.bootdo.**.domain
+    cache-enabled: true
+    lazy-loading-enabled: true
+    multiple-result-sets-enabled: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+      table-underline: true
+    enable-sql-runner: true
+  configuration-properties:
+    prefix:
+    #如果数据库为postgresql，则需要配置为blobType: BINARY
+    blobType: BLOB
+    #如果数据库为oracle或mssql，则需要配置为boolValue: 1
+    boolValue: true
+  type-enums-package: com.bootdo.*
