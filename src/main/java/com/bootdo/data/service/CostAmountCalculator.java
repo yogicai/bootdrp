@@ -88,6 +88,7 @@ public class CostAmountCalculator {
                 BigDecimal costPrice = costDOMap.containsKey(entry.getEntryId()) ? NumberUtils.toBigDecimal(costDOMap.get(entry.getEntryId()).getCostPrice()) : purchaseMap.get(entry.getEntryId());
                 productCostDO.setProductNo(entry.getEntryId());
                 productCostDO.setEntryPrice(entry.getEntryPrice());
+                productCostDO.setEntryQty(entry.getTotalQty());
                 productCostDO.setCostAmount(NumberUtils.mul(costPrice, inventoryC));
                 productCostDO.setCostQty(inventoryC);
                 productCostDO.setCostBalance(inventory);
@@ -110,6 +111,7 @@ public class CostAmountCalculator {
 
                     productCostDO.setProductNo(entry.getEntryId());
                     productCostDO.setEntryPrice(entry.getEntryPrice());
+                    productCostDO.setEntryQty(entry.getTotalQty());
                     productCostDO.setCostAmount(NumberUtils.mul(costPrice, inventoryC));
                     productCostDO.setCostQty(inventoryC);
                     productCostDO.setCostBalance(inventory);
@@ -126,6 +128,7 @@ public class CostAmountCalculator {
 
                     productCostDO.setProductNo(entry.getEntryId());
                     productCostDO.setEntryPrice(entry.getEntryPrice());
+                    productCostDO.setEntryQty(entry.getTotalQty());
                     productCostDO.setCostAmount(amountFeeCost);
                     productCostDO.setCostQty(inventoryC);
                     productCostDO.setCostBalance(inventory);
@@ -140,6 +143,7 @@ public class CostAmountCalculator {
                 if (inventoryC.compareTo(BigDecimal.ZERO) <= 0) {
                     productCostDO.setProductNo(entry.getEntryId());
                     productCostDO.setEntryPrice(entry.getEntryPrice());
+                    productCostDO.setEntryQty(entry.getTotalQty());
                     productCostDO.setCostAmount(NumberUtils.mul(purchaseMap.get(entry.getEntryId()), inventoryC));
                     productCostDO.setCostQty(inventoryC);
                     productCostDO.setCostBalance(inventory);
@@ -156,6 +160,7 @@ public class CostAmountCalculator {
 
                     productCostDO.setProductNo(entry.getEntryId());
                     productCostDO.setEntryPrice(entry.getEntryPrice());
+                    productCostDO.setEntryQty(entry.getTotalQty());
                     productCostDO.setCostAmount(amountFeeCost);
                     productCostDO.setCostQty(inventoryC);
                     productCostDO.setCostBalance(inventory);
@@ -208,6 +213,7 @@ public class CostAmountCalculator {
             ProductCostDO productCostDO = new ProductCostDO();
             productCostDO.setProductNo(entry.getEntryId());
             productCostDO.setEntryPrice(entry.getEntryPrice());
+            productCostDO.setEntryQty(entry.getTotalQty());
             productCostDO.setCostAmount(NumberUtils.mul(costPrice, inventoryC));
             productCostDO.setCostQty(inventoryC);
             productCostDO.setCostBalance(inventory);

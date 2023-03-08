@@ -40,7 +40,7 @@ function load() {
         viewrecords: true,
         loadComplete: function (data) {
             utils.changeRowCss(tableGrid, "costType", "MANUAL");
-            utils.changeRowCss(tableGrid, "remark", "反审核");
+            utils.changeRowCss(tableGrid, "remark", "反审核,出库");
         }
     });
 
