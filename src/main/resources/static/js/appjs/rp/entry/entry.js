@@ -1,26 +1,27 @@
-var lastSel; //jqGrid最后编辑未保存的行号
-var lastSel1; //jqGrid最后编辑未保存的行号
-var tableGrid;
-var tableGrid1;
-var dataForm;
-var debtorObj;
-var prefix = "/rp/entry";
-var prefixOrder = "/rp/order";
-var initData = [{},{},{}];
-var mask;
+let lastSel; //jqGrid最后编辑未保存的行号
+let lastSel1; //jqGrid最后编辑未保存的行号
+let tableGrid;
+let tableGrid1;
+let dataForm;
+let debtorObj;
+let prefix = "/rp/entry";
+let prefixOrder = "/rp/order";
+let initData = [{},{},{}];
+let mask;
 
-var colNames_SK = ['','ID','结算帐户', '收款金额',  '备注'];
-var colNames_FK = ['','ID','结算帐户', '付款金额',  '备注'];
+let colNames_SK = ['','ID','结算帐户', '收款金额',  '备注'];
+let colNames_FK = ['','ID','结算帐户', '付款金额',  '备注'];
+//var参数加附加到window对象属性中
 var billType = $('#billType').val();
-var colNames = billType == 'CW_SK_ORDER' ? colNames_SK : colNames_FK;
-var dataUrl = billType == 'CW_SK_ORDER' ? '/rp/order?billType=CW_SK_ORDER' : '/rp/order?billType=CW_FK_ORDER';
+let colNames = billType === 'CW_SK_ORDER' ? colNames_SK : colNames_FK;
+let dataUrl = billType === 'CW_SK_ORDER' ? '/rp/order?billType=CW_SK_ORDER' : '/rp/order?billType=CW_FK_ORDER';
 
 $(function() {
     dataForm  = $('#data_form');
     debtorObj = $('#debtorId');
     mask = $('#mask');
 
-    if (billType == 'CW_SK_ORDER') {
+    if (billType === 'CW_SK_ORDER') {
         utils.loadCategory(["CUSTOMER_DATA","USER_DATA"], ["debtorId","checkId"], [{width:"200px"},{width:"200px"}]);
     } else {
         utils.loadCategory(["VENDOR_DATA","USER_DATA"], ["debtorId","checkId"], [{width:"200px"},{width:"200px"}]);
@@ -49,8 +50,8 @@ function load() {
         colNames: colNames,
         colModel: [
             { name: 'act', width:60, fixed:true, sortable:false, resize:false, formatter : function(cellValue, options, rowObject) {
-                    var e = '<a class="btn btn-primary btn-xs" href="#" mce_href="#" onclick="addRow(' + options.rowId + ',tableGrid)"><i class="fa fa-plus"></i></a> ';
-                    var d = '<a class="btn btn-warning btn-xs" href="#" mce_href="#" onclick="delRow('+ options.rowId + ',tableGrid)"><i class="fa fa-minus"></i></a> ';
+                    let e = '<a class="btn btn-primary btn-xs" href="#" mce_href="#" onclick="addRow(' + options.rowId + ',tableGrid)"><i class="fa fa-plus"></i></a> ';
+                    let d = '<a class="btn btn-warning btn-xs" href="#" mce_href="#" onclick="delRow('+ options.rowId + ',tableGrid)"><i class="fa fa-minus"></i></a> ';
                     return e + d ;
                 }},
             { name:'id', index:'id', editable:false, hidedlg:true, hidden:true},
@@ -85,16 +86,16 @@ function load() {
         rownumWidth:30,
         footerrow : true,
         editurl: "clientArray",
-        colNames: ['','ID','源单编号', '单据类别', '单据类别', '单据日期', '单据金额', '已核销金额', '未核销金额', '本次核销金额'],
+        colNames: ['','ID','源单编号', '单据类别', '单据类别', '单据日期', '单据金额', '历史核销金额', '未核销金额', '本次核销金额'],
         colModel: [
             { name: 'act', width:60, fixed:true, sortable:false, resize:false, formatter : function(cellValue, options, rowObject) {
-                    var e = '<a class="btn btn-primary btn-xs" href="#" mce_href="#" onclick="addRow(' + options.rowId + ', tableGrid1)"><i class="fa  fa-plus"></i></a> ';
-                    var d = '<a class="btn btn-warning btn-xs" href="#" mce_href="#" onclick="delRow('+ options.rowId + ', tableGrid1)"><i class="fa fa-minus"></i></a> ';
+                    let e = '<a class="btn btn-primary btn-xs" href="#" mce_href="#" onclick="addRow(' + options.rowId + ', tableGrid1)"><i class="fa  fa-plus"></i></a> ';
+                    let d = '<a class="btn btn-warning btn-xs" href="#" mce_href="#" onclick="delRow('+ options.rowId + ', tableGrid1)"><i class="fa fa-minus"></i></a> ';
                     return e + d ;
                 }},
             { name:'id', index:'id', editable:false, hidedlg:true, hidden:true},
             { name:'srcBillNo', index:'srcBillNo', editable:true, edittype:'custom', width:300, editoptions: utils.myElementAndValue() },
-            { name:'srcBillType', index:'srcBillType', editable:false, width:100, formatter:function (cellValue){return utils.formatEnum(cellValue, 'BILL_TYPE')} },
+            { name:'srcBillType', index:'srcBillType', editable:false, width:100, formatter:function (cellValue){return utils.formatEnum(cellValue, 'BILL_TYPE', '')} },
             { name:'srcBillType', index:'srcBillType', editable:false, width:100, hidden:true },
             { name:'srcBillDate', index:'srcBillDate', editable:false, width:150 },
             { name:'srcTotalAmount', index:'srcTotalAmount', editable:false, width:100 },
@@ -143,33 +144,33 @@ function load() {
 
 //计算表格合计行数据
 function collectTotal(){
-    var paymentAmountTotal=$("#table_list").getCol('paymentAmount',false,'sum').toFixed(2);
+    let paymentAmountTotal=$("#table_list").getCol('paymentAmount',false,'sum').toFixed(2);
     // 设置表格合计项金额
     $("#table_list").footerData('set', { settleAccount: '合计:', paymentAmount: paymentAmountTotal});
-};
+}
 
 
 //计算表格合计行数据
 function collectTotal1(){
-    var srcTotalAmountTotal=$("#table_list1").getCol('srcTotalAmount',false,'sum').toFixed(2);
-    var srcPaymentAmountTotal=$("#table_list1").getCol('srcPaymentAmount',false,'sum').toFixed(2);
-    var srcUnPaymentAmountTotal=$("#table_list1").getCol('srcUnPaymentAmount',false,'sum').toFixed(2);
-    var checkAmountTotal=$("#table_list1").getCol('checkAmount',false,'sum').toFixed(2);
+    let srcTotalAmountTotal=$("#table_list1").getCol('srcTotalAmount',false,'sum').toFixed(2);
+    let srcPaymentAmountTotal=$("#table_list1").getCol('srcPaymentAmount',false,'sum').toFixed(2);
+    let srcUnPaymentAmountTotal=$("#table_list1").getCol('srcUnPaymentAmount',false,'sum').toFixed(2);
+    let checkAmountTotal=$("#table_list1").getCol('checkAmount',false,'sum').toFixed(2);
     // 设置表格合计项金额
     $("#table_list1").footerData('set', { srcBillNo: '合计:', srcTotalAmount: srcTotalAmountTotal, srcPaymentAmount: srcPaymentAmountTotal, srcUnPaymentAmount: srcUnPaymentAmountTotal, checkAmount:  checkAmountTotal });
-};
+}
 
 //增加行
 function addRow(rowid, tableGrid){
-    var rowData = { };
-    var ids = tableGrid.jqGrid('getDataIDs');
-    var maxId = ids.length == 0 ? 1 : Math.max.apply(Math,ids);
+    let rowData = { };
+    let ids = tableGrid.jqGrid('getDataIDs');
+    let maxId = ids.length === 0 ? 1 : Math.max.apply(Math,ids);
     tableGrid.jqGrid('addRowData', maxId+1, rowData, 'after', rowid);//插入行
 }
 
 //删除行
 function delRow(rowid, tableGrid) {
-    var ids = tableGrid.jqGrid('getDataIDs')
+    let ids = tableGrid.jqGrid('getDataIDs')
     if (ids.length > 1) {
         tableGrid.jqGrid('delRowData', rowid);
     } else {
@@ -177,40 +178,46 @@ function delRow(rowid, tableGrid) {
     }
 }
 
+//新增
+function addNewOrder() {
+    initBillNo();
+    clearGrid();
+}
+
 //保存
 function save(add) {
-    var order = dataForm.serializeObject();
-    var settleArr = tableGrid.jqGrid("getRowData");
-    var entryArr = tableGrid1.jqGrid("getRowData");
+    let order = dataForm.serializeObject();
+    let settleArr = tableGrid.jqGrid("getRowData");
+    let entryArr = tableGrid1.jqGrid("getRowData");
     order.settleVOList = [];
     order.entryVOList = [];
 
-    if (order.debtorId == "" || order.checkId == "" || order.billDate == "") {
-        if (billType == 'CW_SK_ORDER') {
-            layer.msg((order.debtorId == "" ? "【零售客户】" : "") + (order.checkId == "" ? "【收款人】" : "") + (order.billDate == "" ? "【单据日期】" : "") + "不能为空！")
+    if (order.debtorId === "" || order.checkId === "" || order.billDate === "") {
+        if (billType === 'CW_SK_ORDER') {
+            layer.msg((order.debtorId === "" ? "【零售客户】" : "") + (order.checkId === "" ? "【收款人】" : "") + (order.billDate === "" ? "【单据日期】" : "") + "不能为空！")
         } else {
-            layer.msg((order.debtorId == "" ? "【供应商】" : "") + (order.checkId == "" ? "【付款人】" : "") + (order.billDate == "" ? "【单据日期】" : "") + "不能为空！")
+            layer.msg((order.debtorId === "" ? "【供应商】" : "") + (order.checkId === "" ? "【付款人】" : "") + (order.billDate === "" ? "【单据日期】" : "") + "不能为空！")
         }
         return;
     }
-    var settleAmount = 0, checkAmount = 0;
+    let settleAmount = 0, checkAmount = 0;
     $.each(settleArr, function (key, val) {
         delete val['act'];
-        if (val['settleAccount'] != "") {
+        if (val['settleAccount'] !== "") {
             order.settleVOList.push(val);
-            settleAmount += parseFloat((val['paymentAmount'] * 1.0).toFixed(2))
+            settleAmount += utils.parseNumeric(val['paymentAmount'])
         }
     });
     $.each(entryArr, function (key, val) {
         delete val['act'];
-        if (val['srcBillNo'] != "") {
+        if (val['srcBillNo'] !== "") {
             order.entryVOList.push(val);
-            checkAmount += parseFloat((val['checkAmount'] * 1.0).toFixed(2))
+            checkAmount += utils.parseNumeric(val['checkAmount'])
         }
     });
 
-    var discountAmount = parseFloat($('input[name="discountAmount"]').val());
-    if (settleAmount == 0 && checkAmount == 0) {
+    let discountAmount = utils.parseNumeric($('input[name="discountAmount"]').val());
+    if (settleAmount === 0 && checkAmount === 0) {
         layer.msg("收款金额、核销金额不能都为0！");
     } else if (math.equal(settleAmount + discountAmount, checkAmount)) {
         saveAjax(order);
@@ -231,10 +238,10 @@ function saveAjax(order) {
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(order),
         success : function(r) {
-            if (r.code == 0 && add == 1) { //保存并新增
+            if (r.code === 0 && add === 1) { //保存并新增
                 initBillNo();
                 clearGrid();
-            } else if (r.code == 0) {
+            } else if (r.code === 0) {
                 initBillNo(r.billNo);
             }
             layer.msg(r.msg);
@@ -244,14 +251,14 @@ function saveAjax(order) {
 
 //审核
 function audit(type) {
-    var billNo = $("#billNo").val();
-    if (billNo &&　billNo != "") {
+    let billNo = $("#billNo").val();
+    if (billNo &&　billNo !== "") {
         $.ajax({
             url : prefixOrder+"/audit",
             type : "post",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            data : JSON.stringify({ 'billNos' : [billNo],  'auditStatus' : type == 0 ? 'YES' : 'NO' }),
+            data : JSON.stringify({ 'billNos' : [billNo],  'auditStatus' : type === 0 ? 'YES' : 'NO' }),
             success : function(r) {
                 mask.removeClass('util-has-audit');
                 mask.addClass('util-has-audit');
@@ -265,10 +272,10 @@ function audit(type) {
 
 //历史单据
 function listOrder() {
-    var dataIndex;
+    let dataIndex;
     //触发菜单单击
     window.parent.$(".J_menuItem").each(function (index) {
-        if ($(this).attr('href') == dataUrl) {
+        if ($(this).attr('href') === dataUrl) {
             window.parent.$(this).trigger('click');
             dataIndex = window.parent.$(this).data('index');
             return false;
@@ -276,8 +283,8 @@ function listOrder() {
     });
     //重新刷订单列表
     window.parent.$('.J_mainContent .J_iframe').each(function () {
-        if ($(this).data('id') == dataUrl) {
-            var win = window.parent.$('iframe[name="iframe' + dataIndex +'"]')[0].contentWindow;
+        if ($(this).data('id') === dataUrl) {
+            let win = window.parent.$('iframe[name="iframe' + dataIndex +'"]')[0].contentWindow;
             if (win.reLoad) {
                 win.reLoad();
             }
@@ -294,7 +301,7 @@ function listLog(rowid) {
 
 //添加订单商品信息弹窗
 function add() {
-    if (debtorObj.val() == "") {
+    if (debtorObj.val() === "") {
         layer.msg('请先选择销货单位！');
     } else {
         layer.open({
@@ -311,20 +318,20 @@ function add() {
 //订单表格插入数据
 function insertData(datas) {
     if (!datas || datas.length <= 0) return;
-    var ids = tableGrid1.jqGrid('getDataIDs');
-    var maxId = ids.length == 0 ? 1 : Math.max.apply(Math, ids);
-    var rowId = tableGrid1.jqGrid("getGridParam", "selrow");
+    let ids = tableGrid1.jqGrid('getDataIDs');
+    let maxId = ids.length === 0 ? 1 : Math.max.apply(Math, ids);
+    let rowId = tableGrid1.jqGrid("getGridParam", "selrow");
 
     tableGrid1.jqGrid('saveRow', rowId);
-    for (var i = 0; i < datas.length; i++) {
-        var update = false;
+    for (let i = 0; i < datas.length; i++) {
+        let update = false;
         $.each(ids, function (key, val) {
-            var rowData = tableGrid1.jqGrid("getRowData", val);
-            if (rowData['srcBillNo'] == datas[i]['srcBillNo']) {
+            let rowData = tableGrid1.jqGrid("getRowData", val);
+            if (rowData['srcBillNo'] === datas[i]['srcBillNo']) {
                 rowId = val; update = true; return false;
             }
         });
-        if (update || i == 0) {
+        if (update || i === 0) {
             tableGrid1.jqGrid('setRowData', rowId, datas[i]);//更新当前行
         } else {
             maxId = maxId + 1;
@@ -333,10 +340,10 @@ function insertData(datas) {
         }
     }
     //选中下一个空行
-    var ids = tableGrid1.jqGrid('getDataIDs');
+    ids = tableGrid1.jqGrid('getDataIDs');
     $.each(ids, function (key, val) {
-        var data = tableGrid1.jqGrid("getRowData", val);
-        if (data['srcBillNo'] == "") {
+        let data = tableGrid1.jqGrid("getRowData", val);
+        if (data['srcBillNo'] === "") {
             tableGrid1.setSelection(val, false);
             return false;
         }
@@ -371,7 +378,7 @@ function initOrder(billNo) {
             contentType: "application/json; charset=utf-8",
             data: {"billNo": billNo},
             success: function (r) {
-                if (r.code == 0) {
+                if (r.code === 0) {
                     tableGrid.clearGridData();
                     tableGrid.jqGrid('setGridParam', {data: r.order.settleVOList}).trigger('reloadGrid');
 
@@ -380,7 +387,7 @@ function initOrder(billNo) {
 
                     dataForm.setForm(r.order);
                     mask.removeClass('util-has-audit');
-                    mask.addClass(r.order && r.order.auditStatus == 'YES' ? 'util-has-audit' :'');
+                    mask.addClass(r.order && r.order.auditStatus === 'YES' ? 'util-has-audit' :'');
 
                     initBillNo(r.order.billNo);
                 } else {
@@ -408,7 +415,7 @@ function clearGrid() {
 function initBillNo(ival) {
     ival = ival || "";
     $("[name=billNo]").each(function (index, element) {
-        if ($(element).prop("tagName") == "SPAN") {
+        if ($(element).prop("tagName") === "SPAN") {
             $(element).html("单据编号: " + ival);
         } else {
             $(element).val(ival);

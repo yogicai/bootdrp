@@ -44,7 +44,7 @@
                 order by ${sort} ${order}
             </when>
             <otherwise>
-                order by bill_date desc
+                order by bill_date desc, update_time desc
             </otherwise>
         </choose>
         <if test="offset != null and limit != null">

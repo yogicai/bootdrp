@@ -1,7 +1,7 @@
-var prefix = window.parent.billType == "CW_SK_ORDER" ? "/se/order" : "/po/order";
-var tableGrid;
-var debtorId = window.parent.$("#debtorId").val();
-var postData = { "statusNot": ["FINISH_PAY", "ORDER_CANCEL"], "audit": "YES", "consumerId": debtorId, "vendorId": debtorId };
+let prefix = window.parent.billType === "CW_SK_ORDER" ? "/se/order" : "/po/order";
+let tableGrid;
+let debtorId = window.parent.$("#debtorId").val();
+let postData = { "statusNot": ["FINISH_PAY", "ORDER_CANCEL"], "audit": "YES", "consumerId": debtorId, "vendorId": debtorId };
 $(function() {
     load();
 });
@@ -62,9 +62,9 @@ function load() {
 
     // Add responsive to jqGrid
     $(window).bind('resize', function () {
-        var width = $('.jqGrid_wrapper').width();
-        $('#table_list').setGridWidth(width);
-        $('#table_list').setGridHeight(window.innerHeight - 180);
+        let width = $('.jqGrid_wrapper').width();
+        tableGrid.setGridWidth(width);
+        tableGrid.setGridHeight(window.innerHeight - 180);
     });
 }
 
@@ -75,10 +75,10 @@ function reLoad() {
 
 //添加商品到订单分录
 function add() {
-    var selectData = new Array();
-    var ids = tableGrid.jqGrid('getGridParam', 'selarrrow');
+    let selectData = [];
+    let ids = tableGrid.jqGrid('getGridParam', 'selarrrow');
     $(ids).each(function (index, id){
-        var row = tableGrid.jqGrid('getRowData', id);
+        let row = tableGrid.jqGrid('getRowData', id);
         selectData.push({ "srcBillNo": row.billNo,"srcBillType": row.billType,"srcBillDate": row.billDate,"srcTotalAmount": row.totalAmount,"srcPaymentAmount": row.paymentAmount,"srcUnPaymentAmount": (row.totalAmount - row.paymentAmount).toFixed(2),"checkAmount":(row.totalAmount - row.paymentAmount).toFixed(2) })
     });
     if (selectData.length > 0) {
@@ -95,7 +95,7 @@ function addAndClose() {
 
 //关闭窗口
 function cancel() {
-    var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+    let index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
     parent.layer.close(index);
 }
 

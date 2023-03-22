@@ -81,7 +81,7 @@ public class SEOrderConverter {
         orderDO.setPaymentAmount(orderVO.getPaymentAmountTotal());
         orderDO.setExpenseFee(orderVO.getExpenseFeeTotal());
         orderDO.setTotalAmount(NumberUtils.add(orderVO.getFinalAmountTotal(), orderVO.getExpenseFeeTotal()));
-        orderDO.setStatus(BigDecimal.ZERO.equals(orderVO.getPaymentAmountTotal()) ? OrderStatus.WAITING_PAY : (orderVO.getPaymentAmountTotal().equals(orderDO.getTotalAmount()) ? OrderStatus.FINISH_PAY: OrderStatus.PART_PAY));
+        orderDO.setStatus(BigDecimal.ZERO.equals(orderVO.getPaymentAmountTotal()) ? OrderStatus.WAITING_PAY : (orderVO.getPaymentAmountTotal().compareTo(orderDO.getTotalAmount()) >= 0 ? OrderStatus.FINISH_PAY: OrderStatus.PART_PAY));
         orderDO.setSettleAccount(orderVO.getSettleAccountTotal());
         orderDO.setBillerId(orderVO.getBillerId());
         orderDO.setBillerName(userDO.getName());

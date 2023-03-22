@@ -250,8 +250,10 @@
     };
 
     //加载枚举值（各种状态信息）
-    Utils.prototype.formatEnum = function formatEnum(value, type) {
-        if (type === undefined) return value;
+    Utils.prototype.formatEnum = function formatEnum(value, type, defaultValue) {
+        if (type === undefined || value === undefined) {
+            return defaultValue;
+        }
         let data = utils.dataCache.sysEnum[type];
         if (data === undefined) return value;
         for (let t = 0; t < data.length; t++) {
@@ -264,7 +266,9 @@
 
     //加载枚举值（各种状态信息）
     Utils.prototype.unformatEnum = function unFormatEnum(value, type) {
-        if (type === undefined) return value;
+        if (type === undefined || value === undefined) {
+            return value;
+        }
         let data = utils.dataCache.sysEnum[type];
         if (data === undefined) return value;
         for (let t = 0; t < data.length; t++) {
@@ -590,6 +594,14 @@
             str += '.'
         }
         return str.replace(/(\d)(?=(\d{3})+\.)/g, '$1,').replace(/\.$/, '');
+    }
+
+    /**
+     * 数值转化
+     * @returns {number|number} 例如 124.35
+     */
+    Utils.prototype.parseNumeric = function parseNumeric(num, fraction = 2) {
+        return $.isNumeric(num) ? parseFloat(num).toFixed(fraction) * 1.0 : 0.00;
     }
 
     /**
