@@ -1,16 +1,16 @@
-var prefix = "/wh/order";
-var tableGrid;
-var colNames_RK = ['单据日期', '编号', '类型', '业务类型',  '供应商', '入库数量', '入库金额', '审核状态', '备注', '修改时间'];
-var colNames_CK = ['单据日期', '编号', '类型', '业务类型',  '供应商', '出库数量', '出库成本', '审核状态', '备注', '修改时间'];
+let prefix = "/wh/order";
+let tableGrid;
+let colNames_RK = ['单据日期', '编号', '类型', '业务类型',  '供应商', '入库数量', '入库金额', '审核状态', '备注', '创建时间', '修改时间'];
+let colNames_CK = ['单据日期', '编号', '类型', '业务类型',  '供应商', '出库数量', '出库成本', '审核状态', '备注', '创建时间', '修改时间'];
 var billType = $('#billType').val();
-var colNames = billType == 'WH_RK_ORDER' ? colNames_RK : colNames_CK;
-var dataUrl = billType == 'WH_RK_ORDER' ? '/wh/entry?billType=WH_RK_ORDER' : '/wh/entry?billType=WH_CK_ORDER';
-var data_type = billType == 'WH_RK_ORDER' ? 'data_wh_rk' : 'data_wh_ck';
+let colNames = billType === 'WH_RK_ORDER' ? colNames_RK : colNames_CK;
+let dataUrl = billType === 'WH_RK_ORDER' ? '/wh/entry?billType=WH_RK_ORDER' : '/wh/entry?billType=WH_CK_ORDER';
+let data_type = billType === 'WH_RK_ORDER' ? 'data_wh_rk' : 'data_wh_ck';
 
 
 $(function() {
 
-    if (billType == 'WH_RK_ORDER') {
+    if (billType === 'WH_RK_ORDER') {
         utils.loadTypes(["data_wh_rk"], ["serviceType"]);
     } else {
         utils.loadTypes(["data_wh_ck"], ["serviceType"]);
@@ -52,12 +52,13 @@ function load() {
             { name:'entryAmount', index:'entryAmount', editable:true, width:100, align:"right", sorttype:"float", formatter:"number" },
             { name:'auditStatus', index:'auditStatus', editable:true, sorttype:"text", width:70, formatter:function (cellValue){return utils.formatEnumS(cellValue, 'AUDIT_STATUS')} },
             { name:'remark', index:'remark', editable:true, sorttype:"text", width:140 },
+            { name:'createTime', index:'createTime', editable:true, width:140 },
             { name:'updateTime', index:'updateTime', editable:true, width:140 }
         ],
         pager: "#pager_list",
         viewrecords: true,
         ondblClickRow: function (rowid, iRow, iCol, e) {
-            var row = tableGrid.getRowData(rowid);
+            let row = tableGrid.getRowData(rowid);
             doubleClick(dataUrl, row.billNo);
         },
         onPaging:search
@@ -75,33 +76,33 @@ function load() {
     });
     // Add responsive to jqGrid
     $(window).bind('resize', function () {
-        var width = $('.jqGrid_wrapper').width();
+        let width = $('.jqGrid_wrapper').width();
         tableGrid.setGridWidth(width);
         tableGrid.setGridHeight(window.innerHeight - 180);
     });
 }
 
 function search(pageBtn) {
-    var inputPage = 1;
-    var rowNum = tableGrid.getGridParam('rowNum');//获取每页数
-    var curPage = tableGrid.getGridParam('page');//获取返回的当前页
-    var totalPage = tableGrid.getGridParam('lastpage');//获取总页数
-    if (pageBtn == 'first') {
+    let inputPage = 1;
+    let rowNum = tableGrid.getGridParam('rowNum');//获取每页数
+    let curPage = tableGrid.getGridParam('page');//获取返回的当前页
+    let totalPage = tableGrid.getGridParam('lastpage');//获取总页数
+    if (pageBtn === 'first') {
         inputPage = 0;
-    } else if (pageBtn == 'last') {
+    } else if (pageBtn === 'last') {
         inputPage = totalPage;
-    } else if (pageBtn == 'prev') {
+    } else if (pageBtn === 'prev') {
         inputPage = curPage - 1;
-    } else if (pageBtn == 'next') {
+    } else if (pageBtn === 'next') {
         inputPage = curPage + 1;
-    } else if (pageBtn == 'user') {
+    } else if (pageBtn === 'user') {
         inputPage = $('.ui-pg-input').val();//输入框页数
-    } else if (pageBtn == 'records') {
+    } else if (pageBtn === 'records') {
         rowNum = $('.ui-pg-selbox').val();//输入框页数
     }
     inputPage = inputPage > totalPage ? totalPage : inputPage;
     inputPage = inputPage < 1 ? 1 : inputPage;
-    var postData = $.extend({}, $('#search').serializeObject(), { 'page': inputPage, 'rows': rowNum });
+    let postData = $.extend({}, $('#search').serializeObject(), { 'page': inputPage, 'rows': rowNum });
     tableGrid.jqGrid('setGridParam', {postData:  $.param(postData)}).trigger("reloadGrid");
 }
 
@@ -110,15 +111,15 @@ function reLoad() {
 }
 
 function audit(type) {
-    var ids = tableGrid.jqGrid("getGridParam", "selarrrow");
-    if (ids.length == 0) {
-        layer.msg("请选择要" + type == 0 ? "审核" : "反审核" + "的数据");
+    let ids = tableGrid.jqGrid("getGridParam", "selarrrow");
+    if (ids.length === 0) {
+        layer.msg("请选择要" + type === 0 ? "审核" : "反审核" + "的数据");
         return;
     }
 
-    var selectData = new Array();
+    let selectData = [];
     $(ids).each(function (index, id){
-        var row = tableGrid.jqGrid('getRowData', id);
+        let row = tableGrid.jqGrid('getRowData', id);
         selectData.push(row.billNo)
     });
 
@@ -126,9 +127,9 @@ function audit(type) {
         url : prefix+"/audit",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify({ 'billNos' : selectData,  'auditStatus' : type == 0 ? 'YES' : 'NO' }),
+        data : JSON.stringify({ 'billNos' : selectData,  'auditStatus' : type === 0 ? 'YES' : 'NO' }),
         success : function(r) {
-            if (r.code==0) {
+            if (r.code===0) {
                 layer.msg(r.msg);
                 reLoad();
             }else{
@@ -139,15 +140,15 @@ function audit(type) {
 }
 
 function remove() {
-    var ids = tableGrid.jqGrid("getGridParam", "selarrrow");
-    if (ids.length == 0) {
+    let ids = tableGrid.jqGrid("getGridParam", "selarrrow");
+    if (ids.length === 0) {
         layer.msg("请选择要删除的数据");
         return;
     }
 
-    var selectData = new Array();
+    let selectData = [];
     $(ids).each(function (index, id){
-        var row = tableGrid.jqGrid('getRowData', id);
+        let row = tableGrid.jqGrid('getRowData', id);
         selectData.push(row.billNo)
     });
 
@@ -161,7 +162,7 @@ function remove() {
                 'billNos' : selectData
             },
             success : function(r) {
-                if (r.code==0) {
+                if (r.code===0) {
                     layer.msg(r.msg);
                     reLoad();
                 }else{
@@ -181,10 +182,10 @@ function doubleClick(dataUrl, billNo) {
 }
 
 function triggerMenu(dataUrl, billNo) {
-    var dataIndex;
+    let dataIndex;
     //触发菜单单击
     window.parent.$(".J_menuItem").each(function (index) {
-        if ($(this).attr('href') == dataUrl) {
+        if ($(this).attr('href') === dataUrl) {
             window.parent.$(this).trigger('click');
             dataIndex = window.parent.$(this).data('index');
             return false;
@@ -192,8 +193,8 @@ function triggerMenu(dataUrl, billNo) {
     });
     //加载订单数据
     window.parent.$('.J_mainContent .J_iframe').each(function () {
-        if ($(this).data('id') == dataUrl) {
-            var win = window.parent.$('iframe[name="iframe' + dataIndex +'"]')[0].contentWindow;
+        if ($(this).data('id') === dataUrl) {
+            let win = window.parent.$('iframe[name="iframe' + dataIndex +'"]')[0].contentWindow;
             if (win.initOrder) {
                 win.initOrder(billNo);
             } else if (win.frameElement) {

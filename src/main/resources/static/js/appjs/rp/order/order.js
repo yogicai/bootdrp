@@ -1,11 +1,11 @@
 var prefix = "/rp/order";
 var dataForm;
 var tableGrid;
-var colNames_SK = ['单据日期', '编号', '类型', '销货单位', '结算帐户', '收款金额', '分录备注', '收款合计', '本次核销金额', '整单折扣', '收款人', '审核状态', '备注', '修改时间'];
-var colNames_FK = ['单据日期', '编号', '类型', '购货单位', '结算帐户', '付款金额', '分录备注', '付款合计', '本次核销金额', '整单折扣', '付款人', '审核状态', '备注', '修改时间'];
+var colNames_SK = ['单据日期', '编号', '类型', '销货单位', '结算帐户', '收款金额', '分录备注', '收款合计', '本次核销金额', '整单折扣', '收款人', '审核状态', '备注', '创建时间', '修改时间'];
+var colNames_FK = ['单据日期', '编号', '类型', '购货单位', '结算帐户', '付款金额', '分录备注', '付款合计', '本次核销金额', '整单折扣', '付款人', '审核状态', '备注', '创建时间', '修改时间'];
 var billType = $('#billType').val();
-var colNames = billType == 'CW_SK_ORDER' ? colNames_SK : colNames_FK;
-var dataUrl = billType == 'CW_SK_ORDER' ? '/rp/entry?billType=CW_SK_ORDER' : '/rp/entry?billType=CW_FK_ORDER';
+var colNames = billType === 'CW_SK_ORDER' ? colNames_SK : colNames_FK;
+var dataUrl = billType === 'CW_SK_ORDER' ? '/rp/entry?billType=CW_SK_ORDER' : '/rp/entry?billType=CW_FK_ORDER';
 
 
 $(function() {
@@ -50,6 +50,7 @@ function load() {
             { name:'checkName', index:'checkName', editable:true, sorttype:"text", width:70 },
             { name:'auditStatus', index:'auditStatus', editable:true, sorttype:"text", width:70, formatter:function (cellValue){return utils.formatEnumS(cellValue, 'AUDIT_STATUS')} },
             { name:'remark', index:'remark', editable:true, sorttype:"text", width:150 },
+            { name:'createTime', index:'createTime', editable:true, width:140 },
             { name:'updateTime', index:'updateTime', editable:true, width:150 }
         ],
         pager: "#pager_list",

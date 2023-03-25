@@ -28,7 +28,7 @@ function load() {
         multiselect: true,
         rowNum: 20,
         rowList: [20, 50, 100],
-        colNames: ['单据日期', '编号', '类型', '类型','供应商', '数量', '商品金额', '优惠率', '优惠金额', '采购费用', '已付金额', '优惠后商品金额', '合计金额', '状态', '审核状态', '结算帐户', '备注', '更新时间'],
+        colNames: ['单据日期', '编号', '类型', '类型','供应商', '数量', '商品金额', '优惠率', '优惠金额', '采购费用', '已付金额', '优惠后商品金额', '合计金额', '状态', '审核状态', '结算帐户', '备注', '创建时间', '更新时间'],
         colModel: [
             { name:'billDate', index:'billDate', editable:true, width:80, sorttype:"date", formatter:"date", frozen: true },
             { name:'billNo', index:'billNo', editable:true, sorttype:"text", width:170, frozen: true },
@@ -37,9 +37,9 @@ function load() {
             { name:'vendorName', index:'vendorName', editable:true, sorttype:"text", width:80 },
             { name:'totalQty', index:'totalQty', editable:true, width:60, align:"right", sorttype:"int", formatter:"number" },
             { name:'entryAmount', index:'entryAmount', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
-            { name:'discountRate', index:'discountRate', editable:true, width:60, align:"right", sorttype:"float", formatter:"number" },
+            { name:'discountRate', index:'discountRate', editable:true, width:60, align:"right", sorttype:"float", formatter:"number", hidden: true },
             { name:'discountAmount', index:'discountAmount', editable:true, width:70, align:"right", sorttype:"float", formatter:"number" },
-            { name:'purchaseFee', index:'purchaseFee', editable:true, width:70, align:"right", sorttype:"float", formatter:"number" },
+            { name:'purchaseFee', index:'purchaseFee', editable:true, width:70, align:"right", sorttype:"float", formatter:"number", hidden: true },
             { name:'paymentAmount', index:'paymentAmount', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
             { name:'finalAmount', index:'finalAmount', editable:true, width:90, align:"right", sorttype:"float", formatter:"number" },
             { name:'totalAmount', index:'totalAmount', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
@@ -47,6 +47,7 @@ function load() {
             { name:'auditStatus', index:'auditStatus', editable:true, sorttype:"text", width:70, formatter:function (cellValue){return utils.formatEnumS(cellValue, 'AUDIT_STATUS')} },
             { name:'settleAccount', index:'settleAccount', editable:true, sorttype:"text", width:80, formatter:function (cellValue){return utils.formatCategory(cellValue, 'ACCOUNT_DATA')} },
             { name:'remark', index:'remark', editable:true, sorttype:"text", width:140 },
+            { name:'createTime', index:'createTime', editable:true, width:140 },
             { name:'updateTime', index:'updateTime', editable:true, width:140 }
         ],
         pager: "#pager_list",
