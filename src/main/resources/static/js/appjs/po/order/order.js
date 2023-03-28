@@ -1,6 +1,6 @@
-var prefix = "/po/order";
-var dataForm;
-var tableGrid;
+let prefix = "/po/order";
+let dataForm;
+let tableGrid;
 $(function() {
     load();
     utils.loadEnumTypes(["ORDER_CG_STATUS","AUDIT_STATUS"], ["status","audit"], [{width:"105px"},{width:"105px"}]);
@@ -53,7 +53,7 @@ function load() {
         pager: "#pager_list",
         viewrecords: true,
         ondblClickRow: function (rowid, iRow, iCol, e) {
-            var row = tableGrid.getRowData(rowid);
+            let row = tableGrid.getRowData(rowid);
             doubleClick('/po/entry?billType=' + row.billType, row.billNo);
         },
         loadComplete: function (data) {
@@ -74,33 +74,60 @@ function load() {
     });
     // Add responsive to jqGrid
     $(window).bind('resize', function () {
-        var width = $('.jqGrid_wrapper').width();
+        let width = $('.jqGrid_wrapper').width();
         tableGrid.setGridWidth(width);
         tableGrid.setGridHeight(window.innerHeight - 180);
+    });
+
+    $("button#dropzPo").dropzone({
+        id: "#dropzPo",
+        url: prefix + "/importExcel",
+        method: "post",  // 也可用put
+        paramName: "file", // 提交的参数,默认为file
+        disablePreviews: true,
+        addedfile: function (file) {
+            parent.layer.load(1, {
+                shadeClose: false,
+                title: '加载中..',
+                shade: [0.5,'#000']
+            });
+        },
+        success: function (file, message) {
+            parent.layer.msg(message.msg);
+            parent.layer.closeAll('loading');
+        },
+        queuecomplete: function () {
+            //全部上传后重置文件队列
+            Dropzone.forElement("#dropz").removeAllFiles(true);
+            reLoad();
+        },
+        error: function (file, message) {
+            parent.layer.closeAll('loading');
+        }
     });
 }
 
 function search(pageBtn) {
-    var inputPage = 1;
-    var rowNum = tableGrid.getGridParam('rowNum');//获取每页数
-    var curPage = tableGrid.getGridParam('page');//获取返回的当前页
-    var totalPage = tableGrid.getGridParam('lastpage');//获取总页数
-    if (pageBtn == 'first') {
+    let inputPage = 1;
+    let rowNum = tableGrid.getGridParam('rowNum');//获取每页数
+    let curPage = tableGrid.getGridParam('page');//获取返回的当前页
+    let totalPage = tableGrid.getGridParam('lastpage');//获取总页数
+    if (pageBtn === 'first') {
         inputPage = 0;
-    } else if (pageBtn == 'last') {
+    } else if (pageBtn === 'last') {
         inputPage = totalPage;
-    } else if (pageBtn == 'prev') {
+    } else if (pageBtn === 'prev') {
         inputPage = curPage - 1;
-    } else if (pageBtn == 'next') {
+    } else if (pageBtn === 'next') {
         inputPage = curPage + 1;
-    } else if (pageBtn == 'user') {
+    } else if (pageBtn === 'user') {
         inputPage = $('.ui-pg-input').val();//输入框页数
-    } else if (pageBtn == 'records') {
+    } else if (pageBtn === 'records') {
         rowNum = $('.ui-pg-selbox').val();//输入框页数
     }
     inputPage = inputPage > totalPage ? totalPage : inputPage;
     inputPage = inputPage < 1 ? 1 : inputPage;
-    var postData = $.extend({}, $('#search').serializeObject(), { 'page': inputPage, 'rows': rowNum });
+    let postData = $.extend({}, $('#search').serializeObject(), { 'page': inputPage, 'rows': rowNum });
     tableGrid.jqGrid('setGridParam', {postData: $.param(postData)}).trigger("reloadGrid");
 }
 
@@ -109,15 +136,15 @@ function reLoad() {
 }
 
 function audit(type) {
-    var ids = tableGrid.jqGrid("getGridParam", "selarrrow");
-    if (ids.length == 0) {
-        layer.msg("请选择要" + type == 0 ? "审核" : "反审核" + "的数据");
+    let ids = tableGrid.jqGrid("getGridParam", "selarrrow");
+    if (ids.length === 0) {
+        layer.msg(`请选择要 ${type === 0 ? "审核" : "反审核"} 的数据`);
         return;
     }
 
-    var selectData = new Array();
+    let selectData = [];
     $(ids).each(function (index, id){
-        var row = tableGrid.jqGrid('getRowData', id);
+        let row = tableGrid.jqGrid('getRowData', id);
         selectData.push(row.billNo)
     });
 
@@ -125,9 +152,9 @@ function audit(type) {
         url : prefix+"/audit",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify({ 'billNos' : selectData,  'auditStatus' : type == 0 ? 'YES' : 'NO' }),
+        data : JSON.stringify({ 'billNos' : selectData,  'auditStatus' : type === 0 ? 'YES' : 'NO' }),
         success : function(r) {
-            if (r.code==0) {
+            if (r.code===0) {
                 layer.msg(r.msg);
                 reLoad();
             }else{
@@ -138,15 +165,15 @@ function audit(type) {
 }
 
 function remove() {
-    var ids = tableGrid.jqGrid("getGridParam", "selarrrow");
-    if (ids.length == 0) {
+    let ids = tableGrid.jqGrid("getGridParam", "selarrrow");
+    if (ids.length === 0) {
         layer.msg("请选择要删除的数据");
         return;
     }
 
-    var selectData = new Array();
+    let selectData = [];
     $(ids).each(function (index, id){
-        var row = tableGrid.jqGrid('getRowData', id);
+        let row = tableGrid.jqGrid('getRowData', id);
         selectData.push(row.billNo)
     });
 
@@ -160,7 +187,7 @@ function remove() {
                 'billNos': selectData
             },
             success: function (r) {
-                if (r.code == 0) {
+                if (r.code === 0) {
                     layer.msg(r.msg);
                     reLoad();
                 } else {
@@ -180,10 +207,10 @@ function doubleClick(dataUrl, billNo) {
 }
 
 function triggerMenu(dataUrl, billNo) {
-    var dataIndex;
+    let dataIndex;
     //触发菜单单击
     window.parent.$(".J_menuItem").each(function (index) {
-        if ($(this).attr('href') == dataUrl) {
+        if ($(this).attr('href') === dataUrl) {
             window.parent.$(this).trigger('click');
             dataIndex = window.parent.$(this).data('index');
             return false;
@@ -191,8 +218,8 @@ function triggerMenu(dataUrl, billNo) {
     });
     //加载订单数据
     window.parent.$('.J_mainContent .J_iframe').each(function () {
-        if ($(this).data('id') == dataUrl) {
-            var win = window.parent.$('iframe[name="iframe' + dataIndex +'"]')[0].contentWindow;
+        if ($(this).data('id') === dataUrl) {
+            let win = window.parent.$('iframe[name="iframe' + dataIndex +'"]')[0].contentWindow;
             if (win.initOrder) {
                 win.initOrder(billNo);
             } else if (win.frameElement) {
@@ -207,6 +234,12 @@ function triggerMenu(dataUrl, billNo) {
 
 function exportExcel() {
     let queryParam = dataForm.serialize();
-    let url = prefix + "/export?" + queryParam //下载地址
+    let url = prefix + "/export?" + queryParam
     utils.download(url ,'POOrderResult.xls');
+}
+
+function importExcel() {
+    let queryParam = dataForm.serialize();
+    let url = prefix + "/import?" + queryParam
+    utils.download(url, 'SEOrderResult.xls');
 }

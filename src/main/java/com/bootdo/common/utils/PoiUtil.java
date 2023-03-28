@@ -9,7 +9,9 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.log.Log;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -17,7 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -86,20 +90,56 @@ public class PoiUtil {
      * @param pojoClass  Excel实体类
      */
     public static <T> List<T> importExcel(String filePath, Integer titleRows, Integer headerRows, Class<T> pojoClass) {
-        //判断文件是否存在
-        if (ObjectUtil.isEmpty(filePath)) {
-            return null;
-        }
+        List<T> list = new ArrayList<>();
+
         ImportParams params = new ImportParams();
         params.setTitleRows(titleRows);
         params.setHeadRows(headerRows);
-        List<T> list = null;
+
         try {
             list = ExcelImportUtil.importExcel(new File(filePath), pojoClass, params);
         } catch (Exception e) {
-            log.error(">>> 导入数据异常：{}", e.getMessage());
+            log.error(">>> 导入数据异常：{}", e.getMessage(), e);
         }
         return list;
+    }
+
+    /**
+     * 根据接收的Excel文件来导入Excel,并封装成实体类
+     *
+     * @param file       上传的文件
+     * @param pojoClass  Excel实体类
+     */
+    public static <T> List<T> importExcel(MultipartFile file, Class<T> pojoClass, ImportParams importParams ) {
+        List<T> list = new ArrayList<>();
+        try {
+            list = ExcelImportUtil.importExcel(file.getInputStream(), pojoClass, importParams);
+        } catch (Exception e) {
+            log.error(">>> 导入数据异常：{}", e.getMessage(), e);
+        }
+        return list;
+    }
+
+    /**
+     * 生成workbook
+     *
+     * @param file       上传的文件
+     */
+    public static Workbook getWorkBook(MultipartFile file) throws IOException {
+        //这样写excel能兼容03和07
+        InputStream is = file.getInputStream();
+        Workbook hssfWorkbook = null;
+        try {
+            hssfWorkbook = new HSSFWorkbook(is);
+        } catch (Exception ex) {
+            is = file.getInputStream();
+            hssfWorkbook = new XSSFWorkbook(is);
+        }
+        return hssfWorkbook;
+    }
+
+    public static int getSheetNum(MultipartFile file) throws IOException {
+        return getWorkBook(file).getNumberOfSheets();
     }
 
     /**

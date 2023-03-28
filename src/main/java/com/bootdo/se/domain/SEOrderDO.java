@@ -2,6 +2,7 @@ package com.bootdo.se.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.bootdo.common.enumeration.AuditStatus;
+import com.bootdo.common.enumeration.BillSource;
 import com.bootdo.common.enumeration.BillType;
 import com.bootdo.common.enumeration.OrderStatus;
 import lombok.Data;
@@ -100,7 +101,13 @@ public class SEOrderDO {
     /** 审核状态 */
     @Excel(name = "审核状态", enumExportField = "remark")
     private AuditStatus auditStatus;
-    
+
+    /**
+     * 单据来源
+     */
+    @Excel(name = "单据来源", enumExportField = "remark")
+    private BillSource billSource;
+
     /** 备注 */
     @Excel(name = "备注")
     private String remark;

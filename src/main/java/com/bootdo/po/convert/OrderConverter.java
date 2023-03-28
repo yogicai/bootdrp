@@ -75,7 +75,7 @@ public class OrderConverter {
         orderDO.setFinalAmount(orderVO.getFinalAmountTotal());
         orderDO.setPaymentAmount(orderVO.getPaymentAmountTotal());
         orderDO.setTotalAmount(NumberUtils.add(orderVO.getFinalAmountTotal(), orderVO.getPurchaseFeeTotal()));
-        orderDO.setStatus(BigDecimal.ZERO.equals(orderVO.getPaymentAmountTotal()) ? OrderStatus.WAITING_PAY : (orderVO.getPaymentAmountTotal().compareTo(orderDO.getTotalAmount()) >= 0 ? OrderStatus.FINISH_PAY: OrderStatus.PART_PAY));
+        orderDO.setStatus(OrderStatus.fromPayment(orderVO.getPaymentAmountTotal(), orderDO.getTotalAmount()));
         orderDO.setSettleAccount(orderVO.getSettleAccountTotal());
         orderDO.setBillerId(ShiroUtils.getUser().getUserId().toString());
         orderDO.setAuditStatus(AuditStatus.NO);

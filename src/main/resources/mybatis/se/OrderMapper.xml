@@ -33,6 +33,7 @@
             <if test="end != null and end != ''"> <![CDATA[ and bill_date <= #{end} ]]> </if>
             <if test="status != null and status != ''"> and status = #{status} </if>
             <if test="audit != null and audit != ''"> and audit_status = #{audit} </if>
+            <if test="billSource != null and billSource != ''"> and bill_source = #{billSource} </if>
             <if test="auditStatus != null and auditStatus != ''"> and audit_status = #{auditStatus} </if>
             <if test="statusNot != null and statusNot.size() > 0"> and status not in
                 <foreach item="status" collection="statusNot" open="(" separator="," close=")"> #{status} </foreach>
@@ -57,11 +58,11 @@
     </sql>
 
     <select id="get" resultType="com.bootdo.se.domain.SEOrderDO">
-        select `id`,`bill_date`,`bill_no`,`bill_type`,`consumer_id`,`consumer_name`,`total_qty`,`cost_amount`,`entry_amount`,`discount_amount`,`discount_rate`,`purchase_fee`,`final_amount`,`payment_amount`,`expense_fee`,`total_amount`,`status`,`settle_account`,`biller_id`,`biller_name`,`audit_status`,`remark`,`create_time`,`update_time` from se_order where id = #{value}
+        select `id`,`bill_date`,`bill_no`,`bill_type`,`consumer_id`,`consumer_name`,`total_qty`,`cost_amount`,`entry_amount`,`discount_amount`,`discount_rate`,`purchase_fee`,`final_amount`,`payment_amount`,`expense_fee`,`total_amount`,`status`,`settle_account`,`biller_id`,`biller_name`,`audit_status`,`bill_source`,`remark`,`create_time`,`update_time` from se_order where id = #{value}
     </select>
 
     <select id="list" resultType="com.bootdo.se.domain.SEOrderDO">
-        select `id`,`bill_date`,`bill_no`,`bill_type`,`consumer_id`,`consumer_name`,`total_qty`,`cost_amount`,`entry_amount`,`discount_amount`,`discount_rate`,`purchase_fee`,`final_amount`,`payment_amount`,`expense_fee`,`total_amount`,`status`,`settle_account`,`biller_id`,`biller_name`,`audit_status`,`remark`,`create_time`,`update_time` from se_order
+        select `id`,`bill_date`,`bill_no`,`bill_type`,`consumer_id`,`consumer_name`,`total_qty`,`cost_amount`,`entry_amount`,`discount_amount`,`discount_rate`,`purchase_fee`,`final_amount`,`payment_amount`,`expense_fee`,`total_amount`,`status`,`settle_account`,`biller_id`,`biller_name`,`audit_status`,`bill_source`,`remark`,`create_time`,`update_time` from se_order
         <include refid="whereSql"/>
         <include refid="pageSql"/>
     </select>
@@ -75,35 +76,35 @@
         insert into se_order
         (
             `bill_date`, `bill_no`, `bill_type`, `consumer_id`,`consumer_name`,`total_qty`, `cost_amount`, `entry_amount`, `discount_amount`, `discount_rate`, `purchase_fee`,
-            `final_amount`, `payment_amount`, `expense_fee`, `total_amount`, `status`, `settle_account`, `biller_id`, `biller_name`, `audit_status`, `remark`
+            `final_amount`, `payment_amount`, `expense_fee`, `total_amount`, `status`, `settle_account`, `biller_id`, `biller_name`, `audit_status`,`bill_source`, `remark`
         )
         values
         (
             #{billDate}, #{billNo}, #{billType}, #{consumerId},#{consumerName},#{totalQty}, #{costAmount}, #{entryAmount}, #{discountAmount}, #{discountRate}, #{purchaseFee},
-            #{finalAmount}, #{paymentAmount}, #{expenseFee}, #{totalAmount}, #{status}, #{settleAccount}, #{billerId}, #{billerName}, #{auditStatus}, #{remark}
+            #{finalAmount}, #{paymentAmount}, #{expenseFee}, #{totalAmount}, #{status}, #{settleAccount}, #{billerId}, #{billerName}, #{auditStatus}, #{billSource}, #{remark}
         )
         ON DUPLICATE KEY UPDATE
         bill_date= VALUES(bill_date),bill_type= VALUES(bill_type),consumer_id= VALUES(consumer_id),consumer_name= VALUES(consumer_name),total_qty= VALUES(total_qty),cost_amount= VALUES(cost_amount),entry_amount= VALUES(entry_amount),
         discount_amount= VALUES(discount_amount),discount_rate= VALUES(discount_rate),purchase_fee= VALUES(purchase_fee),final_amount= VALUES(final_amount),payment_amount= VALUES(payment_amount),
-        expense_fee= VALUES(expense_fee),total_amount= VALUES(total_amount),status= VALUES(status),settle_account= VALUES(settle_account),biller_id= VALUES(biller_id),biller_name= VALUES(biller_name),audit_status= VALUES(audit_status),remark= VALUES(remark)
+        expense_fee= VALUES(expense_fee),total_amount= VALUES(total_amount),status= VALUES(status),settle_account= VALUES(settle_account),biller_id= VALUES(biller_id),biller_name= VALUES(biller_name),audit_status= VALUES(audit_status),bill_source= VALUES(bill_source),remark= VALUES(remark)
     </insert>
 
     <insert id="saveOrUpdate" parameterType="java.util.List">
         insert into po_order
         (
         `bill_date`, `bill_no`, `bill_type`, `consumer_id`,`consumer_name`,`total_qty`, `cost_amount`, `entry_amount`, `discount_amount`, `discount_rate`, `purchase_fee`,
-        `final_amount`, `payment_amount`, `expense_fee`, `total_amount`, `status`, `settle_account`, `biller_id`, `biller_name`, `audit_status`, `remark`
+        `final_amount`, `payment_amount`, `expense_fee`, `total_amount`, `status`, `settle_account`, `biller_id`, `biller_name`, `bill_source`, `audit_status`, `remark`
         ) values
         <foreach collection="list" item="item" index="index" separator=",">
             (
             #{billDate}, #{billNo}, #{billType}, #{consumerId},#{consumerName},#{totalQty}, #{costAmount}, #{entryAmount}, #{discountAmount}, #{discountRate}, #{purchaseFee},
-            #{finalAmount}, #{paymentAmount}, #{expenseFee}, #{totalAmount}, #{status}, #{settleAccount}, #{billerId}, #{billerName}, #{auditStatus}, #{remark}
+            #{finalAmount}, #{paymentAmount}, #{expenseFee}, #{totalAmount}, #{status}, #{settleAccount}, #{billerId}, #{billerName}, #{billSource}, #{auditStatus}, #{remark}
             )
         </foreach>
         ON DUPLICATE KEY UPDATE
         bill_date= VALUES(bill_date),bill_type= VALUES(bill_type),consumer_id= VALUES(consumer_id),consumer_name= VALUES(consumer_name),total_qty= VALUES(total_qty),cost_amount= VALUES(cost_amount),entry_amount= VALUES(entry_amount),
         discount_amount= VALUES(discount_amount),discount_rate= VALUES(discount_rate),purchase_fee= VALUES(purchase_fee),final_amount= VALUES(final_amount),payment_amount= VALUES(payment_amount),
-        expense_fee= VALUES(expense_fee),total_amount= VALUES(total_amount),status= VALUES(status),settle_account= VALUES(settle_account),biller_id= VALUES(biller_id),biller_name= VALUES(biller_name),audit_status= VALUES(audit_status),remark= VALUES(remark)
+        expense_fee= VALUES(expense_fee),total_amount= VALUES(total_amount),status= VALUES(status),settle_account= VALUES(settle_account),biller_id= VALUES(biller_id),biller_name= VALUES(biller_name),audit_status= VALUES(audit_status),bill_source= VALUES(bill_source),remark= VALUES(remark)
     </insert>
 	 
 	<update id="update" parameterType="com.bootdo.se.domain.SEOrderDO">
@@ -128,6 +129,7 @@
 			<if test="settleAccount != null">`settle_account` = #{settleAccount}, </if>
 			<if test="billerId != null">`biller_id` = #{billerId}, </if>
 			<if test="billerName != null">`biller_name` = #{billerName}, </if>
+			<if test="billSource != null">`bill_source` = #{billSource}, </if>
 			<if test="auditStatus != null">`audit_status` = #{auditStatus}, </if>
 			<if test="remark != null">`remark` = #{remark}</if>
 		</set>

@@ -1,5 +1,6 @@
 package com.bootdo.common.exception;
 
+import com.bootdo.common.exception.biz.BizServiceException;
 import com.bootdo.common.utils.R;
 import org.apache.shiro.authz.AuthorizationException;
 import org.slf4j.Logger;
@@ -61,31 +62,36 @@ public class BDExceptionHandler {
 		return R.error("服务器错误，请联系管理员");
 	}
 
-    @ExceptionHandler(BusinessException.class)
-    public R handleException(BusinessException e) {
-        logger.error(e.getMessage(), e);
-        return R.error(e.getStatusCode(), e.getBusinessMessage());
-    }
+	@ExceptionHandler(BizServiceException.class)
+	public R handleBizServiceException(BizServiceException e) {
+		logger.error(e.getMessage(), e);
+		return R.error(e.getCode(), e.getErrorMessage());
+	}
 
+	@ExceptionHandler(BusinessException.class)
+	public R handleException(BusinessException e) {
+		logger.error(e.getMessage(), e);
+		return R.error(e.getStatusCode(), e.getBusinessMessage());
+	}
 
-    @ExceptionHandler(value = {BindException.class, MethodArgumentNotValidException.class})
-    public ResponseEntity invalidArgument(Exception ex) {
-        Map result = new HashMap<String, Object>();
-        result.put("status_code", 500);
-        StringBuffer sb = new StringBuffer();
+	@ExceptionHandler(value = {BindException.class, MethodArgumentNotValidException.class})
+	public ResponseEntity invalidArgument(Exception ex) {
+		Map result = new HashMap<String, Object>();
+		result.put("status_code", 500);
+		StringBuffer sb = new StringBuffer();
 
-        if (ex instanceof BindException) {
-            List<FieldError> fieldErrors = ((BindException)ex).getFieldErrors();
-            for (FieldError error : fieldErrors) {
-                sb.append(error.getDefaultMessage());
-            }
-        } else if (ex instanceof MethodArgumentNotValidException) {
-            List<FieldError> fieldErrors = ((MethodArgumentNotValidException)ex).getBindingResult().getFieldErrors();
-            for (FieldError error : fieldErrors) {
-                sb.append(error.getDefaultMessage());
-            }
-        }
-        result.put("message", sb.toString());
-        return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+		if (ex instanceof BindException) {
+			List<FieldError> fieldErrors = ((BindException)ex).getFieldErrors();
+			for (FieldError error : fieldErrors) {
+				sb.append(error.getDefaultMessage());
+			}
+		} else if (ex instanceof MethodArgumentNotValidException) {
+			List<FieldError> fieldErrors = ((MethodArgumentNotValidException)ex).getBindingResult().getFieldErrors();
+			for (FieldError error : fieldErrors) {
+				sb.append(error.getDefaultMessage());
+			}
+		}
+		result.put("message", sb.toString());
+		return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }

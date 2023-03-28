@@ -1,7 +1,10 @@
 package com.bootdo.common.enumeration;
 
+import cn.hutool.core.util.NumberUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.math.BigDecimal;
 
 /**
  * @author yogiCai
@@ -18,5 +21,17 @@ public enum OrderStatus implements EnumBean {
     ORDER_CANCEL("订单取消");
 
     private final String remark;
+
+
+    public static OrderStatus fromPayment(BigDecimal paymentAmount, BigDecimal totalAmount) {
+
+        if (NumberUtil.null2Zero(paymentAmount).compareTo(BigDecimal.ZERO) == 0) {
+            return WAITING_PAY;
+        }
+        if (NumberUtil.sub(totalAmount, paymentAmount).compareTo(BigDecimal.ZERO) <= 0) {
+            return FINISH_PAY;
+        }
+        return PART_PAY;
+    }
 
 }

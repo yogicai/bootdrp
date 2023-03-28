@@ -1,5 +1,6 @@
 package com.bootdo.se.convert;
 
+import cn.hutool.core.util.ObjUtil;
 import com.bootdo.common.config.Constant;
 import com.bootdo.common.enumeration.*;
 import com.bootdo.common.utils.NumberUtils;
@@ -81,10 +82,11 @@ public class SEOrderConverter {
         orderDO.setPaymentAmount(orderVO.getPaymentAmountTotal());
         orderDO.setExpenseFee(orderVO.getExpenseFeeTotal());
         orderDO.setTotalAmount(NumberUtils.add(orderVO.getFinalAmountTotal(), orderVO.getExpenseFeeTotal()));
-        orderDO.setStatus(BigDecimal.ZERO.equals(orderVO.getPaymentAmountTotal()) ? OrderStatus.WAITING_PAY : (orderVO.getPaymentAmountTotal().compareTo(orderDO.getTotalAmount()) >= 0 ? OrderStatus.FINISH_PAY: OrderStatus.PART_PAY));
+        orderDO.setStatus(OrderStatus.fromPayment(orderVO.getPaymentAmountTotal(), orderDO.getTotalAmount()));
         orderDO.setSettleAccount(orderVO.getSettleAccountTotal());
         orderDO.setBillerId(orderVO.getBillerId());
         orderDO.setBillerName(userDO.getName());
+        orderDO.setBillSource(ObjUtil.defaultIfNull(orderVO.getBillSource(), BillSource.USER));
         orderDO.setAuditStatus(AuditStatus.NO);
         orderDO.setRemark(orderVO.getRemark());
         return orderDO;

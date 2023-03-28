@@ -41,24 +41,25 @@
             </form>
 
             <div class="columns pull-left tool-pull-left-sm">
-                <button class="btn btn-success" onclick="search()">查询</button>
-                <button class="btn btn-success" onclick="exportExcel()">导出</button>
+                <button class="btn btn-sm btn-success" onclick="search()">查询</button>
+                <button class="btn btn-sm btn-primary" id="dropzPo">导入</button>
+                <button class="btn btn-sm btn-success" onclick="exportExcel()">导出</button>
             </div>
 
             <div class="columns pull-right">
-                <button shiro:hasPermission="po:order:add" type="button" class="btn  btn-primary" onclick="add('/po/entry?billType=CG_ORDER')" href="/po/entry">
+                <button shiro:hasPermission="po:order:add" type="button" class="btn btn-sm btn-primary" onclick="add('/po/entry?billType=CG_ORDER')" href="/po/entry">
                     <i class="fa fa-plus" aria-hidden="true"></i>添加
                 </button>
-                <button shiro:hasPermission="po:order:add" type="button" class="btn  btn-primary" onclick="add('/po/entry?billType=TH_ORDER')" href="/po/entry">
+                <button shiro:hasPermission="po:order:add" type="button" class="btn btn-sm btn-primary" onclick="add('/po/entry?billType=TH_ORDER')" href="/po/entry">
                     <i class="fa fa-plus" aria-hidden="true"></i>退货
                 </button>
-                <button shiro:hasPermission="po:order:audit" type="button" class="btn  btn-primary" onclick="audit(0)">
+                <button shiro:hasPermission="po:order:audit" type="button" class="btn btn-sm btn-primary" onclick="audit(0)">
                     <i class="fa fa-check" aria-hidden="true"></i>审核
                 </button>
-                <button shiro:hasPermission="po:order:audit" type="button" class="btn  btn-primary" onclick="audit(1)">
+                <button shiro:hasPermission="po:order:audit" type="button" class="btn btn-sm btn-primary" onclick="audit(1)">
                     <i class="fa fa-reply" aria-hidden="true"></i>反审核
                 </button>
-                <button shiro:hasPermission="po:order:batchRemove" type="button" class="btn  btn-danger" onclick="remove()">
+                <button shiro:hasPermission="po:order:batchRemove" type="button" class="btn btn-sm btn-danger" onclick="remove()">
                     <i class="fa fa-trash" aria-hidden="true"></i>删除
                 </button>
             </div>

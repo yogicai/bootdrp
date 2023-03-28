@@ -1,6 +1,8 @@
 package com.bootdo.se.service;
 
 
+import cn.hutool.core.util.ObjectUtil;
+import com.bootdo.common.enumeration.BillSource;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.data.dao.ConsumerDao;
 import com.bootdo.engage.dao.ProductCostDao;
@@ -87,6 +89,7 @@ public class SEOrderEntryService {
         orderVO.setDebtAccountTotal(NumberUtils.subtract(NumberUtils.add(orderDO.getFinalAmount(), orderDO.getExpenseFee()), orderDO.getPaymentAmount()));
         orderVO.setExpenseFeeTotal(orderDO.getExpenseFee());
         orderVO.setPurchaseFeeTotal(orderDO.getPurchaseFee());
+        orderVO.setBillSource(ObjectUtil.defaultIfNull(orderDO.getBillSource(), BillSource.USER));
         orderVO.setRemark(orderDO.getRemark());
         orderVO.setAuditStatus(orderDO.getAuditStatus());
         for (SEOrderEntryDO orderEntryDO : orderEntryDOList) {

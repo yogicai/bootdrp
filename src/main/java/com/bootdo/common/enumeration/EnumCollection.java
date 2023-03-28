@@ -17,6 +17,8 @@ import java.util.Map;
 public class EnumCollection {
     //单据类型
     public static final EnumSet<BillType> BILL_TYPE = EnumSet.of(BillType.CG_ORDER, BillType.TH_ORDER, BillType.XS_ORDER, BillType.CW_SK_ORDER, BillType.CW_FK_ORDER, BillType.WH_RK_ORDER, BillType.WH_CK_ORDER);
+   //单据来源
+    public static final EnumSet<BillSource> BILL_SOURCE = EnumSet.of(BillSource.SYSTEM, BillSource.USER, BillSource.IMPORT);
     //采购单状态
     public static final EnumSet<OrderStatus> ORDER_CG_STATUS = EnumSet.of(OrderStatus.WAITING_PAY, OrderStatus.PART_PAY, OrderStatus.FINISH_PAY, OrderStatus.ORDER_CANCEL);
     //销售单状态
@@ -42,6 +44,7 @@ public class EnumCollection {
     public static Map<String, List<Map<String, String>>> listEnum() {
         Map<String, List<Map<String, String>>> setMap = Maps.newHashMap();
         setMap.put("BILL_TYPE", convertEnumList(BILL_TYPE));
+        setMap.put("BILL_SOURCE", convertEnumList(BILL_SOURCE));
         setMap.put("ORDER_CG_STATUS", convertEnumList(ORDER_CG_STATUS));
         setMap.put("ORDER_XS_STATUS", convertEnumList(ORDER_XS_STATUS));
         setMap.put("CATEGORY_TYPE", convertEnumList(CATEGORY_TYPE));
@@ -68,6 +71,7 @@ public class EnumCollection {
     public static Map<String, List<Map<String, String>>> listEnumMap() {
         Map<String, List<Map<String, String>>> setMap = Maps.newHashMap();
         setMap.put("BILL_TYPE", convertEnumMap(BILL_TYPE));
+        setMap.put("BILL_SOURCE", convertEnumMap(BILL_SOURCE));
         setMap.put("ORDER_CG_STATUS", convertEnumMap(ORDER_CG_STATUS));
         setMap.put("ORDER_XS_STATUS", convertEnumMap(ORDER_XS_STATUS));
         setMap.put("CATEGORY_TYPE", convertEnumMap(CATEGORY_TYPE));

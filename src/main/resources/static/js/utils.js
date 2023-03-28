@@ -251,7 +251,7 @@
 
     //加载枚举值（各种状态信息）
     Utils.prototype.formatEnum = function formatEnum(value, type, defaultValue) {
-        if (type === undefined || value === undefined) {
+        if (type === undefined || value === undefined || value === null) {
             return defaultValue;
         }
         let data = utils.dataCache.sysEnum[type];
@@ -474,7 +474,8 @@
                 todayBtn: "linked",
                 autoclose: true,
                 clearBtn: true,
-                todayHighlight: true
+                todayHighlight: true,
+                zIndexOffset: 10000
             }, opt)
         );
         if (defaultV1 && defaultV2) {

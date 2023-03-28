@@ -3,7 +3,7 @@ let dataForm;
 let tableGrid;
 $(function () {
     load();
-    utils.loadEnumTypes(["ORDER_CG_STATUS", "AUDIT_STATUS"], ["status", "audit"]);
+    utils.loadEnumTypes(["ORDER_CG_STATUS", "AUDIT_STATUS", "BILL_SOURCE"], ["status", "audit", "billSource"]);
     utils.loadCategory(["CUSTOMER_DATA", "USER_DATA"], ["consumerId", "billerId"], [{width: "100px"}, {width: "120px"}]);
 });
 
@@ -28,7 +28,7 @@ function load() {
         multiselect: true,
         rowNum: 20,
         rowList: [20, 50, 100],
-        colNames: ['单据日期', '编号', '类型', '销售人员', '客户', '数量', '商品金额', '优惠率', '优惠金额', '采购费用', '已付金额', '优惠后商品金额', '客户承担金额', '合计金额', '状态', '审核状态', '结算帐户', '备注', '创建时间', '更新时间'],
+        colNames: ['单据日期', '编号', '类型', '销售人员', '客户', '数量', '商品金额', '优惠率', '优惠金额', '采购费用', '已付金额', '优惠后商品金额', '客户承担金额', '合计金额', '状态', '审核状态', '结算帐户', '来源', '备注', '创建时间', '更新时间'],
         colModel: [
             {name: 'billDate', index: 'billDate', editable: true, width: 80, sorttype: "date", formatter: "date", frozen: true},
             {name: 'billNo', index: 'billNo', editable: true, sorttype: "text", width: 170, frozen: true},
@@ -61,6 +61,11 @@ function load() {
             {
                 name: 'settleAccount', index: 'settleAccount', editable: true, sorttype: "text", width: 80, formatter: function (cellValue) {
                     return utils.formatCategory(cellValue, 'ACCOUNT_DATA')
+                }
+            },
+            {
+                name: 'billSource', index: 'billSource', editable: true, sorttype: "text", width: 60, align: "center", formatter: function (cellValue) {
+                    return utils.formatEnum(cellValue, 'BILL_SOURCE', '')
                 }
             },
             {name: 'remark', index: 'remark', editable: true, sorttype: "text", width: 140},
@@ -130,7 +135,7 @@ function reLoad() {
 function audit(type) {
     let ids = tableGrid.jqGrid("getGridParam", "selarrrow");
     if (ids.length === 0) {
-        layer.msg("请选择要" + type === 0 ? "审核" : "反审核" + "的数据");
+        layer.msg(`请选择要 ${type === 0 ? "审核" : "反审核"} 的数据`);
         return;
     }
 
@@ -228,4 +233,16 @@ function exportExcel() {
     let queryParam = dataForm.serialize();
     let url = prefix + "/export?" + queryParam //下载地址
     utils.download(url, 'SEOrderResult.xls');
+}
+
+function importExcel() {
+    layer.open({
+        type : 2,
+        title : '导入',
+        maxmin : true,
+        shadeClose : false, // 点击遮罩关闭层
+        area : [ '600px', '410px' ],
+        content : '/order/import/excel', // iframe的url
+        // end: reLoad
+    });
 }

@@ -1,6 +1,7 @@
 package com.bootdo.se.controller.request;
 
 import com.bootdo.common.enumeration.AuditStatus;
+import com.bootdo.common.enumeration.BillSource;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.collect.Lists;
 import lombok.Data;
@@ -23,8 +24,6 @@ public class SEOrderVO {
     private String billNo;
     /** 销售人员ID */
     private String billerId;
-    /** 仓库编号 */
-    private String stockNo;
     /** 客户ID */
     private String consumerId;
     /** 客户名称 */
@@ -49,6 +48,8 @@ public class SEOrderVO {
     private BigDecimal purchaseFeeTotal;
     /** 备注 */
     private String remark;
+    /** 单据来源 */
+    private BillSource billSource;
     /** 审核状态 */
     private AuditStatus auditStatus;
 

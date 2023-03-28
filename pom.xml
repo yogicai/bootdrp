@@ -26,7 +26,7 @@
         <mp.version>3.0.7.1</mp.version>
         <velocity.version>1.7</velocity.version>
         <activiti.version>5.22.0</activiti.version>
-        <easypoi.version>4.2.0</easypoi.version>
+        <easypoi.version>4.4.0</easypoi.version>
         <hutool.version>5.8.11</hutool.version>
     </properties>
 

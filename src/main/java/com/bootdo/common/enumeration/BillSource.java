@@ -13,7 +13,9 @@ public enum BillSource implements EnumBean {
 
     /** 系统  */
     SYSTEM("系统"),
-    USER("用户");
+    USER("用户"),
+    IMPORT("导入"),
+    ;
 
     private final String remark;
 

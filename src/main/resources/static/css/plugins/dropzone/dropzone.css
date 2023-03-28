@@ -205,7 +205,9 @@
 
 .dropzone {
   min-height: 150px;
-  border: 2px solid rgba(0, 0, 0, 0.3);
+  /*border: 2px solid rgba(0, 0, 0, 0.3);*/
+  border: 2px dashed #0087F7;
+  border-radius: 5px;
   background: white;
   padding: 20px 20px;
 }
@@ -447,7 +449,7 @@
   transition: opacity 0.3s ease;
   border-radius: 8px;
   font-size: 13px;
-  top: 130px;
+  top: 145px;
   left: -10px;
   width: 140px;
   background: #be2626;
