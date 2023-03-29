@@ -237,9 +237,3 @@ function exportExcel() {
     let url = prefix + "/export?" + queryParam
     utils.download(url ,'POOrderResult.xls');
 }
-
-function importExcel() {
-    let queryParam = dataForm.serialize();
-    let url = prefix + "/import?" + queryParam
-    utils.download(url, 'SEOrderResult.xls');
-}

@@ -3,7 +3,7 @@ let dataForm;
 let tableGrid;
 $(function () {
     load();
-    utils.loadEnumTypes(["ORDER_CG_STATUS", "AUDIT_STATUS", "BILL_SOURCE"], ["status", "audit", "billSource"]);
+    utils.loadEnumTypes(["ORDER_CG_STATUS", "AUDIT_STATUS", "BILL_SOURCE"], ["status", "audit", "billSource"], [{width: "100px"}, {width: "100px"}, {width: "80px"}]);
     utils.loadCategory(["CUSTOMER_DATA", "USER_DATA"], ["consumerId", "billerId"], [{width: "100px"}, {width: "120px"}]);
 });
 
@@ -233,6 +233,11 @@ function exportExcel() {
     let queryParam = dataForm.serialize();
     let url = prefix + "/export?" + queryParam //下载地址
     utils.download(url, 'SEOrderResult.xls');
+}
+
+function exportExcelTpl() {
+    let url = "/order/import/excel/tpl" //下载地址
+    utils.download(url, `${(new Date()).format("yyyy-MM")}.xls`);
 }
 
 function importExcel() {

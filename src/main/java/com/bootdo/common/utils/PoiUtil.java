@@ -4,6 +4,7 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.afterturn.easypoi.excel.export.styler.ExcelExportStylerDefaultImpl;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -21,9 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * 简单导入导出工具类
@@ -55,6 +54,45 @@ public class PoiUtil {
             outputStream.close();
         } catch (IOException e) {
             log.error(">>> 导出数据异常：{}", e.getMessage());
+        }
+    }
+
+    /**
+     * 导出excel工具类   多个excel
+     * <p>
+     * * 要保证  sheetName列表的顺序,dateList的date顺序,sheetName的name顺序保持一致
+     *
+     * @param pojoClassList 导出数据实体集合
+     * @param dateList      导出数据集合列表
+     * @param sheetNameList 导出多个sheet的name集合,按顺序
+     */
+    public static void exportExcelWithStream(String excelName, List<Class<?>> pojoClassList, List<List<?>> dateList, List<String> sheetNameList) {
+        try {
+            List<Map<String, Object>> sheetList = new ArrayList<>();
+
+            for (int i = 0; i < sheetNameList.size(); i++) {
+                ExportParams exportParams = new ExportParams();
+                exportParams.setSheetName(sheetNameList.get(i));
+                HashMap<String, Object> exportMap = new HashMap<>();
+                exportMap.put("title", exportParams);
+                exportMap.put("entity", pojoClassList.get(i));
+                exportMap.put("data", dateList.get(i));
+                sheetList.add(exportMap);
+            }
+
+            Workbook workbook = ExcelExportUtil.exportExcel(sheetList, ExcelType.HSSF);
+
+            HttpServletResponse response = HttpServletUtil.getResponse();
+            String fileName = URLEncoder.encode(excelName, CharsetUtil.UTF_8);
+            response.reset();
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+            response.setContentType("application/octet-stream;charset=UTF-8");
+            ServletOutputStream outputStream = response.getOutputStream();
+            workbook.write(outputStream);
+            outputStream.close();
+
+        } catch (Exception e) {
+            log.error(">>> 导出数据异常：{}", e.getMessage(), e);
         }
     }
 

@@ -36,7 +36,7 @@
                 order by ${sort} ${order}
             </when>
 			<otherwise>
-                order by id desc
+                order by sort asc
 			</otherwise>
         </choose>
 		<if test="offset != null and limit != null">
@@ -74,12 +74,12 @@
 		insert into se_order_entry
 		(
             `bill_no`, `entry_id`, `entry_name`, `entry_unit`, `entry_price`, `cost_price`, `stock_no`, `stock_name`, `total_qty`, `cost_amount`, `entry_amount`,
-            `discount_amount`, `discount_rate`, `purchase_fee`, `total_amount`, `remark`, `request_bill_no`
+            `discount_amount`, `discount_rate`, `purchase_fee`, `total_amount`, `remark`, `request_bill_no`, `sort`
 		)
 		values
 		(
             #{billNo}, #{entryId}, #{entryName}, #{entryUnit}, #{entryPrice}, #{costPrice}, #{stockNo}, #{stockName}, #{totalQty}, #{costAmount}, #{entryAmount},
-            #{discountAmount}, #{discountRate}, #{purchaseFee}, #{totalAmount}, #{remark}, #{requestBillNo}
+            #{discountAmount}, #{discountRate}, #{purchaseFee}, #{totalAmount}, #{remark}, #{requestBillNo}, #{sort}
 		)
         ON DUPLICATE KEY UPDATE
         entry_id= VALUES(entry_id),entry_name= VALUES(entry_name),entry_unit= VALUES(entry_unit),entry_price= VALUES(entry_price),costPrice= VALUES(cost_price),stock_no= VALUES(stock_no),stock_name= VALUES(stock_name),total_qty= VALUES(total_qty),
@@ -91,13 +91,13 @@
         insert into se_order_entry
         (
         `bill_no`, `entry_id`, `entry_name`, `entry_unit`, `entry_price`, `cost_price`, `stock_no`, `stock_name`, `total_qty`, `cost_amount`, `entry_amount`,
-        `discount_amount`, `discount_rate`, `purchase_fee`, `total_amount`, `remark`, `request_bill_no`
+        `discount_amount`, `discount_rate`, `purchase_fee`, `total_amount`, `remark`, `request_bill_no`, `sort`
         )
         values
         <foreach collection ="list" item="item" index= "index" separator =",">
             (
             #{item.billNo},#{item.entryId},#{item.entryName},#{item.entryUnit},#{item.entryPrice},#{item.costPrice},#{item.stockNo},#{item.stockName},#{item.totalQty},#{item.costAmount}, #{item.entryAmount},#{item.discountAmount},
-            #{item.discountRate},#{item.purchaseFee},#{item.totalAmount},#{item.remark},#{item.requestBillNo}
+            #{item.discountRate},#{item.purchaseFee},#{item.totalAmount},#{item.remark},#{item.requestBillNo},#{item.sort}
             )
         </foreach >
     </insert >
@@ -106,12 +106,12 @@
         insert into se_order_entry
         (
         `bill_no`, `entry_id`, `entry_name`, `entry_unit`, `entry_price`, `cost_price`, `stock_no`, `stock_name`, `total_qty`, `cost_amount`, `entry_amount`,
-        `discount_amount`, `discount_rate`, `purchase_fee`, `total_amount`, `remark`, `request_bill_no`
+        `discount_amount`, `discount_rate`, `purchase_fee`, `total_amount`, `remark`, `request_bill_no`, `sort`
         ) values
         <foreach collection="list" item="item" index="index" separator=",">
             (
             #{item.billNo},#{item.entryId},#{item.entryName},#{item.entryUnit},#{item.entryPrice},#{item.costPrice},#{item.stockNo},#{item.stockName},#{item.totalQty},#{item.costAmount},#{item.entryAmount},#{item.discountAmount},
-            #{item.discountRate},#{item.purchaseFee},#{item.totalAmount},#{item.remark},#{item.requestBillNo}
+            #{item.discountRate},#{item.purchaseFee},#{item.totalAmount},#{item.remark},#{item.requestBillNo},#{item.sort}
             )
         </foreach>
         ON DUPLICATE KEY UPDATE

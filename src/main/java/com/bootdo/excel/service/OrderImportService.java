@@ -2,9 +2,11 @@ package com.bootdo.excel.service;
 
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.enumeration.BillSource;
 import com.bootdo.common.exception.BootServiceExceptionEnum;
@@ -19,10 +21,10 @@ import com.bootdo.data.domain.ConsumerDO;
 import com.bootdo.data.domain.ProductDO;
 import com.bootdo.excel.param.OrderImportEntityParam;
 import com.bootdo.excel.param.OrderImportParam;
+import com.bootdo.excel.validator.ClassExcelVerifyHandler;
 import com.bootdo.se.controller.request.SEOrderEntryVO;
 import com.bootdo.se.controller.request.SEOrderVO;
 import com.bootdo.se.service.SEOrderEntryService;
-import com.bootdo.system.dao.UserDao;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,9 +43,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class OrderImportService {
-
-    @Resource
-    private UserDao userDao;
     @Resource
     private ConsumerDao consumerDao;
     @Resource
@@ -52,15 +51,18 @@ public class OrderImportService {
     private AccountDao accountDao;
     @Resource
     private SEOrderEntryService seOrderEntryService;
+    @Resource
+    private ClassExcelVerifyHandler classExcelVerifyHandler;
 
 
     @Transactional(rollbackFor = Exception.class)
     public void importExcel(OrderImportParam orderImportParam) throws Exception {
 
         String filename = orderImportParam.getFile().getOriginalFilename();
-        String billDateYm = StrUtil.subBefore(filename, StrUtil.C_DOT, true);
+        String billDateYm = DateUtil.format(orderImportParam.getBillDateB(), "yyyy-MM");
         //单据日期校验（文件名规则：单据日期yyyy-MM）
-        BootServiceExceptionEnum.BILL_DATE_INVALID.assertIsTrue(DateUtil.formatDate(orderImportParam.getBillDateB()).startsWith(billDateYm), orderImportParam.getBillDateB());
+        boolean billDateFlag = StrUtil.startWith(filename, billDateYm) && DateUtil.formatDate(orderImportParam.getBillDateB()).startsWith(billDateYm);
+        BootServiceExceptionEnum.BILL_DATE_INVALID.assertIsTrue(billDateFlag, orderImportParam.getBillDateB());
         //结算账户 默认取第一个
         AccountDO accountDo = accountDao.list(MapUtil.empty()).get(0);
         //客户用户信息
@@ -72,7 +74,6 @@ public class OrderImportService {
         //导入excel文件
         Workbook hssfWorkbook = PoiUtil.getWorkBook(orderImportParam.getFile());
 
-        List<SEOrderVO> seOrderVoList = new ArrayList<>();
         //订单导入
         for (Date date = orderImportParam.getBillDateB(); date.compareTo(orderImportParam.getBillDateE()) <= 0; date = DateUtil.offsetDay(date, 1)) {
 
@@ -84,12 +85,15 @@ public class OrderImportService {
             }
             //读取当前单据日期Sheet数据
             ImportParams importParams = new ImportParams();
+            importParams.setVerifyHandler(classExcelVerifyHandler);
             importParams.setStartSheetIndex(startSheetIndex);
             importParams.setSheetNum(1);
             List<OrderImportEntityParam> dataList = ExcelImportUtil.importExcel(orderImportParam.getFile().getInputStream(), OrderImportEntityParam.class, importParams);
 
             //当前单据日期的订单（一个Sheet）
             SEOrderVO seOrderVo = null;
+            List<SEOrderVO> seOrderVoList = new ArrayList<>();
+
             for (OrderImportEntityParam entity : dataList) {
                 //订单首行（有客户名、优惠金额、支付金额、已付金额）
                 if (StrUtil.isNotBlank(entity.getConsumerName())) {
@@ -101,8 +105,8 @@ public class OrderImportService {
                     seOrderVo.setBillDate(date);
                     seOrderVo.setConsumerId(consumerDo.getNo().toString());
                     seOrderVo.setConsumerName(entity.getConsumerName());
-                    seOrderVo.setDiscountAmountTotal(entity.getDiscountAmount());
-                    seOrderVo.setPaymentAmountTotal(entity.getPayAmount());
+                    seOrderVo.setDiscountAmountTotal(ObjUtil.defaultIfNull(entity.getDiscountAmount(), BigDecimal.ZERO));
+                    seOrderVo.setPaymentAmountTotal(ObjUtil.defaultIfNull(entity.getPayAmount(), BigDecimal.ZERO));
                     seOrderVo.setSettleAccountTotal(accountDo.getNo().toString());
                     seOrderVo.setBillSource(BillSource.IMPORT);
                     seOrderVo.setRemark(entity.getPaperBillNo());
@@ -177,6 +181,30 @@ public class OrderImportService {
      */
     private String joinKey(Object... objs) {
         return StrUtil.join(StrUtil.UNDERLINE, objs);
+    }
+
+
+    /**
+     * 销售单模板下载
+     */
+    public void exportTpl() {
+        //sheet页数
+        int sheetNum = 31;
+        //文件名
+        String fileName = DateUtil.format(new Date(), "yyyy-MM") + ".xls";
+
+        List<List<?>> dateList = new ArrayList<>(sheetNum);
+        List<String> sheetNameList = new ArrayList<>(sheetNum);
+        List<Class<?>> pojoClassList = new ArrayList<>(sheetNum);
+        OrderImportEntityParam entityParam = new OrderImportEntityParam();
+
+        for (int i = 1; i <= sheetNum; i++) {
+            dateList.add(CollUtil.newLinkedList(entityParam));
+            sheetNameList.add(StrUtil.toString(i));
+            pojoClassList.add(OrderImportEntityParam.class);
+        }
+
+        PoiUtil.exportExcelWithStream(fileName, pojoClassList, dateList, sheetNameList);
     }
 
 }

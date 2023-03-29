@@ -46,4 +46,14 @@ public class OrderImportController {
         importService.importExcel(orderImportParam);
         return R.ok();
     }
+
+    /**
+     * 模板下载
+     */
+    @ResponseBody
+    @GetMapping("/import/excel/tpl")
+    @RequiresPermissions("po:order:order")
+    public void exportTpl() {
+        importService.exportTpl();
+    }
 }

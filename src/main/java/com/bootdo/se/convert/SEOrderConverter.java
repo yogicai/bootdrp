@@ -38,6 +38,7 @@ public class SEOrderConverter {
         BigDecimal entryAmountTotal = BigDecimal.ZERO;
         BigDecimal costAmountTotal = BigDecimal.ZERO;
         BigDecimal qtyTotal = BigDecimal.ZERO;
+        int sort = 1;
         for (SEOrderEntryVO vo: orderVO.getEntryVOList()) {
             SEOrderEntryDO orderEntryDO = new SEOrderEntryDO();
             orderEntryDO.setBillNo(orderDO.getBillNo());
@@ -56,6 +57,7 @@ public class SEOrderConverter {
             orderEntryDO.setPurchaseFee(vo.getPurchaseFee());
             orderEntryDO.setTotalAmount(vo.getTotalAmount());
             orderEntryDO.setRemark(vo.getRemark());
+            orderEntryDO.setSort(sort++);
             entryAmountTotal = entryAmountTotal.add(vo.getEntryAmount());
             costAmountTotal = NumberUtils.add(costAmountTotal, orderEntryDO.getCostAmount());
             qtyTotal = NumberUtils.add(qtyTotal, vo.getTotalQty());

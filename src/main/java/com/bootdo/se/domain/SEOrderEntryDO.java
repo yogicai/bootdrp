@@ -53,6 +53,8 @@ public class SEOrderEntryDO implements Serializable {
     private String remark;
     /** 购货订单号 */
     private String requestBillNo;
+    /** 分录顺序 */
+    private Integer sort;
     /** 创建时间 */
     private Date createTime;
     /** 修改时间 */

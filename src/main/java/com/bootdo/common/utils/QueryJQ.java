@@ -37,9 +37,6 @@ public class QueryJQ extends LinkedHashMap<String, Object> {
             this.putAll(params);
             this.start = DateUtils.getDayBegin(MapUtil.getStr(params, "start"));
             this.end = DateUtils.getDayEnd(MapUtil.getStr(params, "end"));
-            this.limit = MapUtil.getInt(params, "rows");
-            this.page = MapUtil.getInt(params, "page");
-            this.offset = (this.page - 1) * this.limit;
 
             this.sort = MapUtil.getStr(params, "sidx");
             this.order = MapUtil.getStr(params, "sord");
@@ -51,6 +48,10 @@ public class QueryJQ extends LinkedHashMap<String, Object> {
             this.put("end", end);
 
             if (page) {
+                this.limit = MapUtil.getInt(params, "rows");
+                this.page = MapUtil.getInt(params, "page");
+                this.offset = (this.page - 1) * this.limit;
+
                 this.put("offset", offset);
                 this.put("limit", limit);
             }

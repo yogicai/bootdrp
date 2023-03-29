@@ -1,5 +1,7 @@
 package com.bootdo.rp.validator;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.bootdo.common.constants.ErrorMessage;
 import com.bootdo.common.constants.OrderStatusCode;
@@ -45,6 +47,12 @@ public class RPOrderValidator {
     public void validateSave(RPOrderVO order) {
         if (order.getBillDate() == null || order.getDebtorId() == null || order.getCheckId() == null) {
             throw new BusinessException(OrderStatusCode.ORDER_INVALID, ErrorMessage.PARAM_INVALID);
+        }
+        if (CollUtil.isEmpty(order.getEntryVOList()) || order.getEntryVOList().stream().anyMatch(entry -> ObjectUtil.isNull(entry.getCheckAmount()))) {
+            throw new BusinessException(OrderStatusCode.ORDER_INVALID, ErrorMessage.RP_ORDER_CHECK_ORDER_NULL);
+        }
+        if (CollUtil.isEmpty(order.getSettleVOList()) || order.getSettleVOList().stream().anyMatch(entry -> ObjectUtil.isNull(entry.getPaymentAmount()))) {
+            throw new BusinessException(OrderStatusCode.ORDER_INVALID, ErrorMessage.RP_ORDER_SETTLE_ITEM_NULL);
         }
         if (StringUtil.isEmpty(order.getBillNo())) return;
         List<RPOrderDO> orderDOList = rpOrderDao.list(ImmutableMap.of("billNo", order.getBillNo()));

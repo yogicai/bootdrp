@@ -12,6 +12,8 @@ public final class ErrorMessage {
     public static final String CW_ORDER_REMOVE = "请先删除相关联%s %s";
     public static final String CW_ORDER_AUDIT = "请先反审核相关联 %s %s";
     public static final String RP_ORDER_AUDIT = "请先审核 %s %s";
+    public static final String RP_ORDER_CHECK_ORDER_NULL = "核销订单、核销金额不能为空";
+    public static final String RP_ORDER_SETTLE_ITEM_NULL = "收款账户、收款金额不能为空";
     public static final String DATA_NAME_DUPLICATE = "%s名称重复";
     public static final String DATA_NO_DUPLICATE = "%s编号重复";
     public static final String SIGNATURE_MISMATCHES = "请求内容与签名不匹配";

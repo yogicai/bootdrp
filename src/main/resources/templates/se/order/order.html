@@ -35,7 +35,7 @@
 
                         <div class="input-group columns pull-left tool-pull-left-sm">
                             <select data-placeholder="请选择" name="billSource" id="billSource" class="form-control">
-                                <option value="">订单来源</option>
+                                <option value="">来源</option>
                             </select>
                         </div>
 
@@ -54,8 +54,18 @@
 
                     <div class="columns pull-left tool-pull-left-sm">
                         <button class="btn btn-sm btn-success" onclick="search()">查询</button>
-                        <button class="btn btn-sm btn-primary" onclick="importExcel()">导入</button>
-                        <button class="btn btn-sm btn-success" onclick="exportExcel()">导出</button>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-primary" onclick="importExcel()">导入</button>
+                            <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" onclick="exportExcel()">导出</a></li>
+                                <li><a href="#" onclick="exportExcelTpl()">模板下载</a></li>
+                                <li role="separator" class="divider"></li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="columns pull-right">
