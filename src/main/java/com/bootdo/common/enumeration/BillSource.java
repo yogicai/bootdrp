@@ -1,5 +1,6 @@
 package com.bootdo.common.enumeration;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,7 +10,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum BillSource implements EnumBean {
+public enum BillSource implements EnumBean<BillSource> {
 
     /** 系统  */
     SYSTEM("系统"),
@@ -18,5 +19,15 @@ public enum BillSource implements EnumBean {
     ;
 
     private final String remark;
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static BillSource fromCode(String name) {
+        for (BillSource o : BillSource.values()) {
+            if (o.name().equals(name) ) {
+                return o;
+            }
+        }
+        return null;
+    }
 
 }
