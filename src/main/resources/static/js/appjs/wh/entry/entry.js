@@ -9,13 +9,13 @@ let mask;
 let colNames_RK = ['','','商品名称','商品ID', '条形码',  '单位', '仓库', '数量', '入库单价', '入库金额', '备注'];
 let colNames_CK = ['','','商品名称','商品ID', '条形码',  '单位', '仓库', '数量', '出库单位成本', '入库成本', '备注'];
 let billType = $('#billType').val();
-let colNames = billType == 'WH_RK_ORDER' ? colNames_RK : colNames_CK;
-let dataUrl = billType == 'WH_RK_ORDER' ? '/wh/order?billType=WH_RK_ORDER' : '/wh/order?billType=WH_CK_ORDER';
+let colNames = billType === 'WH_RK_ORDER' ? colNames_RK : colNames_CK;
+let dataUrl = billType === 'WH_RK_ORDER' ? '/wh/order?billType=WH_RK_ORDER' : '/wh/order?billType=WH_CK_ORDER';
 
 $(function() {
     dataForm  = $('#data_form');
     mask = $('#mask');
-    if (billType == 'WH_RK_ORDER') {
+    if (billType === 'WH_RK_ORDER') {
         utils.loadTypes(["data_wh_rk"], ["serviceType"]);
     } else {
         utils.loadTypes(["data_wh_ck"], ["serviceType"]);

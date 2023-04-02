@@ -5,8 +5,8 @@ import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.OrderUtils;
 import com.bootdo.common.utils.ShiroUtils;
 import com.bootdo.common.utils.StringUtil;
+import com.bootdo.data.domain.ConsumerDO;
 import com.bootdo.data.domain.StockDO;
-import com.bootdo.data.domain.VendorDO;
 import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.wh.controller.request.WHOrderEntryVO;
 import com.bootdo.wh.controller.request.WHOrderVO;
@@ -50,14 +50,14 @@ public class WHOrderConverter {
         return entryDOList;
         }
 
-    public static WHOrderDO convertOrder(WHOrderVO orderVO, VendorDO vendorDO) {
+    public static WHOrderDO convertOrder(WHOrderVO orderVO, ConsumerDO consumerDO) {
         WHOrderDO orderDO = new WHOrderDO();
         orderDO.setBillNo(StringUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoWH(orderVO.getBillType()) : orderVO.getBillNo());
         orderDO.setBillType(orderVO.getBillType());
         orderDO.setServiceType(orderVO.getServiceType());
         orderDO.setBillDate(orderVO.getBillDate());
         orderDO.setDebtorId(orderVO.getDebtorId());
-        orderDO.setDebtorName(vendorDO.getName());
+        orderDO.setDebtorName(consumerDO.getName());
         orderDO.setAuditStatus(AuditStatus.NO);
         orderDO.setRemark(orderVO.getRemark());
         orderDO.setOperatorId(ShiroUtils.getUser().getUserId().toString());

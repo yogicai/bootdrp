@@ -1,11 +1,11 @@
 package com.bootdo.wh.service;
 
-import com.bootdo.engage.dao.ProductCostDao;
-import com.bootdo.data.dao.VendorDao;
-import com.bootdo.engage.domain.ProductCostDO;
+import com.bootdo.data.dao.ConsumerDao;
+import com.bootdo.data.domain.ConsumerDO;
 import com.bootdo.data.domain.StockDO;
-import com.bootdo.data.domain.VendorDO;
 import com.bootdo.data.service.StockService;
+import com.bootdo.engage.dao.ProductCostDao;
+import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.wh.controller.request.WHOrderEntryVO;
 import com.bootdo.wh.controller.request.WHOrderVO;
 import com.bootdo.wh.convert.WHOrderConverter;
@@ -33,7 +33,7 @@ public class WHOrderEntryService {
     @Autowired
     private WHOrderEntryDao orderEntryDao;
     @Autowired
-    private VendorDao vendorDao;
+    private ConsumerDao consumerDao;
     @Autowired
     private StockService stockService;
     @Autowired
@@ -41,10 +41,10 @@ public class WHOrderEntryService {
 
     @Transactional(rollbackFor = Exception.class)
     public WHOrderDO save(WHOrderVO orderVO) {
-        VendorDO vendorDO = vendorDao.get(NumberUtils.toInt(orderVO.getDebtorId()));
+        ConsumerDO consumerDO = consumerDao.get(NumberUtils.toInt(orderVO.getDebtorId()));
         Map<String, StockDO> stockDOMap = stockService.listStock(Maps.newHashMap());
         Map<String, ProductCostDO> costDOMap = convertProductCostMap(orderVO);
-        WHOrderDO orderDO = WHOrderConverter.convertOrder(orderVO, vendorDO);
+        WHOrderDO orderDO = WHOrderConverter.convertOrder(orderVO, consumerDO);
         List<WHOrderEntryDO> orderEntryDOList = WHOrderConverter.convertOrderEntry(orderVO, orderDO, stockDOMap, costDOMap);
         //订单入库
         orderDao.save(orderDO);
