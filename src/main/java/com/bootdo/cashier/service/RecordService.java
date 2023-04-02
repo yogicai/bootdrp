@@ -11,10 +11,9 @@ import com.bootdo.cashier.controller.response.MultiSelect;
 import com.bootdo.cashier.dao.RecordDao;
 import com.bootdo.cashier.domain.RecordDO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -77,7 +76,7 @@ public class RecordService {
 		return recordDao.batchRemove(ids);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void importCvs(MultipartFile file) throws Exception {
 		String filename = file.getOriginalFilename();
 		if (StrUtil.startWith(filename, ALIPAY)) {

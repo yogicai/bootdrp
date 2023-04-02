@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @ServletComponentScan
 @MapperScan("com.bootdo.*.dao")
-@SpringBootApplication
+@SpringBootApplication(exclude = {org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class})
 public class BootdoApplication {
     public static void main(String[] args) {
         SpringApplication.run(BootdoApplication.class, args);
