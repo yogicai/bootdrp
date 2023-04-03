@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum AuditStatus implements EnumBean {
+public enum AuditStatus implements EnumBean<AuditStatus> {
 
     /** 已审核  */
     YES("已审核","审核"),

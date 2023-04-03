@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum CostVersion implements EnumBean {
+public enum CostVersion implements EnumBean<CostVersion> {
 
     /** 最新成本 */
     CURRENT("最新成本"),

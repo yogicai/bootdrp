@@ -9,7 +9,7 @@ import lombok.Getter;
 */
 @AllArgsConstructor
 @Getter
-public enum InstituteType implements EnumBean {
+public enum InstituteType implements EnumBean<InstituteType> {
 
     /** 零售客户  */
     CUSTOMER("零售客户"),

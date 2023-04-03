@@ -29,7 +29,7 @@
                 order by ${sort} ${order}
             </when>
 			<otherwise>
-                order by id desc
+                order by status desc,id desc
 			</otherwise>
         </choose>
 		<if test="offset != null and limit != null">

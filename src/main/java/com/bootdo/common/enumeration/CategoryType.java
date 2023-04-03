@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum CategoryType implements EnumBean {
+public enum CategoryType implements EnumBean<CategoryType> {
 
     /** 客户类目  */
     CUSTOMER("客户类目"),

@@ -3,7 +3,8 @@ var searchForm;
 $(function() {
     searchForm  = $('#search');
 	load();
-    utils.loadCategory(["CUSTOMER"], ["type"], [{width:"180px"}]);
+    utils.loadCategory(["CUSTOMER"], ["type"], [{width:"120px"}]);
+	utils.loadEnumTypes(["STATUS_TYPE"], ["status"], [{width:"120px"}]);
 });
 
 function load() {

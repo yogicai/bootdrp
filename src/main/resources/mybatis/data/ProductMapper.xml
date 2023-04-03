@@ -58,7 +58,7 @@
                 order by ${sort} ${order}
             </when>
             <otherwise>
-                order by no asc
+                order by status desc, no asc
             </otherwise>
         </choose>
         <if test="offset != null and limit != null">

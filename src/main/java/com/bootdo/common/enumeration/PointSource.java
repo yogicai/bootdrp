@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum PointSource implements EnumBean {
+public enum PointSource implements EnumBean<PointSource> {
 
     /** 订单  */
     ORDER("订单"),

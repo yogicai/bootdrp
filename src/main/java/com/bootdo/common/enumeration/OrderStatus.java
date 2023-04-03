@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  */
 @AllArgsConstructor
 @Getter
-public enum OrderStatus implements EnumBean {
+public enum OrderStatus implements EnumBean<OrderStatus> {
 
     /** 未结款  */
     WAITING_PAY("未结款"),

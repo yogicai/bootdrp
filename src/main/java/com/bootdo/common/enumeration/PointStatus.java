@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum PointStatus implements EnumBean {
+public enum PointStatus implements EnumBean<PointStatus> {
 
     /** 正常 */
     NORMAL("正常"),
