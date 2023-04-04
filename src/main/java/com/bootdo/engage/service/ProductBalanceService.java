@@ -1,17 +1,21 @@
 package com.bootdo.engage.service;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.enumeration.BillType;
 import com.bootdo.common.utils.DateUtils;
 import com.bootdo.common.utils.MapUtils;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.StringUtil;
-import com.bootdo.engage.dao.ProductCostDao;
-import com.bootdo.engage.domain.ProductCostDO;
-import com.bootdo.engage.controller.response.EntryBalanceResult;
+import com.bootdo.data.service.CostAmountCalculator;
+import com.bootdo.data.service.CostAmountIResult;
+import com.bootdo.engage.controller.param.BalanceAdjustParam;
 import com.bootdo.engage.controller.response.BalanceResult;
 import com.bootdo.engage.controller.response.BalanceTotalResult;
+import com.bootdo.engage.controller.response.EntryBalanceResult;
 import com.bootdo.engage.dao.ProductBalanceDao;
+import com.bootdo.engage.dao.ProductCostDao;
+import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.wh.controller.response.WHProductInfo;
 import com.bootdo.wh.controller.response.WHStockInfo;
 import com.google.common.collect.ImmutableMap;
@@ -25,7 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * @author caiyz
@@ -37,6 +45,9 @@ public class ProductBalanceService {
     private ProductBalanceDao productBalanceDao;
     @Resource
     private ProductCostDao productCostDao;
+    @Resource
+    private CostAmountCalculator costAmountCalculator;
+
 
     private final Set<String> poBillSet = Sets.newHashSet(BillType.CG_ORDER.name(), BillType.WH_RK_ORDER.name());
     private final Set<String> seBillSet = Sets.newHashSet(BillType.TH_ORDER.name(), BillType.WH_CK_ORDER.name());
@@ -72,7 +83,7 @@ public class ProductBalanceService {
         for (Map.Entry<String, List<Map<String, Object>>> entry : listMap.entrySet()) {
             WHProductInfo productInfo = convertProductInfo(entry.getValue(), costDOMap);
             //零库存商品
-            if (showSto && BigDecimal.ZERO.equals(productInfo.getInventory())) {
+            if (showSto && productInfo.getInventory().compareTo(BigDecimal.ZERO) <= 0) {
                 result.getProductInfoList().add(productInfo);
             }
             //全部商品
@@ -178,6 +189,22 @@ public class ProductBalanceService {
         return productBalanceDao.pBalanceEntryCountSum(map);
     }
 
+    /**
+     * 手动调整库存
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Set<String> pBalanceAdjust(BalanceAdjustParam balanceAdjustParam) {
+
+        List<String> productNoList;
+        if (StrUtil.isNotBlank(balanceAdjustParam.getProductNos())) {
+            productNoList = StrUtil.split(balanceAdjustParam.getProductNos(), StrUtil.COMMA);
+        } else {
+            productNoList = productCostDao.listLate(ImmutableMap.of("latest", true)).stream()
+                    .map(ProductCostDO::getProductNo).collect(Collectors.toList());
+        }
+        CostAmountIResult result = costAmountCalculator.adjustBillCost(productNoList);
+        return result.getCostMap().keySet();
+    }
 
     private BigDecimal defaultStockAmount(Map<String, Object> map) {
         String billType = MapUtil.getStr(map, "bill_type");

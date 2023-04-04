@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
  * @author: yogiCai
@@ -30,4 +31,13 @@ public class MapUtils extends org.apache.commons.collections.MapUtils{
         String value = getString(map, key, defaultValue);
         return "".equals(value) ? defaultValue : value;
     }
+
+    public static <K, V, R> R computeIfPresent(Map<K, V> map, K key, BiFunction<K, V, R> remappingFunction, R defaultValue) {
+        V value = map.get(key);
+        if (null != value) {
+            return remappingFunction.apply(key, value);
+        }
+        return defaultValue;
+    }
+
 }

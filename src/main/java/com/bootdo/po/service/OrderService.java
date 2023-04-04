@@ -19,7 +19,6 @@ import com.bootdo.rp.domain.RPOrderEntryDO;
 import com.bootdo.rp.domain.RPOrderSettleDO;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -70,13 +70,9 @@ public class OrderService {
     public int audit(Map<String, Object> params) {
         AuditStatus auditStatus = AuditStatus.fromValue(MapUtils.getString(params, "auditStatus"));
         List<OrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", com.bootdo.common.utils.MapUtils.getList(params, "billNos")));
-        List<OrderDO> orderDOList1 = Lists.newArrayList();
         //去除已经是审核（未审核）状态的订单
-        for (OrderDO orderDO : orderDOList) {
-            if (!auditStatus.equals(orderDO.getAuditStatus())) {
-                orderDOList1.add(orderDO);
-            }
-        }
+        List<OrderDO> orderDOList1 = orderDOList.stream()
+                .filter(orderDO -> !auditStatus.equals(orderDO.getAuditStatus())).collect(Collectors.toList());
         //审核采购单重新计算商品成本、生成收付款单
         if (CollectionUtils.isNotEmpty(orderDOList1)) {
             handleCostAndAudit(orderDOList1, auditStatus);

@@ -6,7 +6,6 @@ import com.bootdo.wh.dao.WHOrderDao;
 import com.bootdo.wh.dao.WHOrderEntryDao;
 import com.bootdo.wh.domain.WHOrderDO;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -54,13 +54,9 @@ public class WHOrderService {
     public int audit(Map<String, Object> params) {
         AuditStatus auditStatus = AuditStatus.fromValue(MapUtils.getString(params, "auditStatus"));
         List<WHOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", MapUtils.getObject(params, "billNos")));
-        List<WHOrderDO> orderDOList1 = Lists.newArrayList();
         //去除已经是审核（未审核）状态的订单
-        for (WHOrderDO orderDO : orderDOList) {
-            if (!auditStatus.equals(orderDO.getAuditStatus())) {
-                orderDOList1.add(orderDO);
-            }
-        }
+        List<WHOrderDO> orderDOList1 = orderDOList.stream()
+                .filter(orderDO -> !auditStatus.equals(orderDO.getAuditStatus())).collect(Collectors.toList());
         //审核采购单重新计算商品成本
         if (CollectionUtils.isNotEmpty(orderDOList1)) {
             for (WHOrderDO orderDO : orderDOList1) {

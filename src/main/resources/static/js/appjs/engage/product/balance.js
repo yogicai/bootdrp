@@ -50,7 +50,7 @@ $(function() {
 });
 
 function load() {
-    utils.createDatePicker('date_1', {}, utils.getYearFirstDay(), new Date());
+    utils.createDatePicker('date_1', {}, new Date());
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
     tableGrid = $("#table_list").jqGrid(gridConfig);

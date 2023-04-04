@@ -15,6 +15,8 @@ public enum CostType implements EnumBean<CostType> {
     PO_CG("采购单调整"),
     PO_TH("采购退货单调整"),
 
+    SE_XS("销售单调整"),
+
     WH_RK("入库单调整"),
     WH_CK("出库单调整"),
 

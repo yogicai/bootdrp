@@ -6,6 +6,7 @@ import com.bootdo.common.utils.PageJQUtils;
 import com.bootdo.common.utils.PoiUtil;
 import com.bootdo.common.utils.QueryJQ;
 import com.bootdo.common.utils.R;
+import com.bootdo.engage.controller.param.BalanceAdjustParam;
 import com.bootdo.engage.controller.response.BalanceResult;
 import com.bootdo.engage.controller.response.EntryBalanceResult;
 import com.bootdo.engage.service.ProductBalanceService;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -90,4 +92,15 @@ public class ProductBalanceController extends BaseController {
         return new PageJQUtils(productList, totalPage, query.getPage(), total, map);
     }
 
+
+    /**
+     * 库存余量调整
+     */
+    @ResponseBody
+    @GetMapping(value = "/balance/adjust")
+    @RequiresPermissions("engage:product:balance")
+    public R pBalance(BalanceAdjustParam balanceAdjustParam) {
+        Collection<String> result = productBalanceService.pBalanceAdjust(balanceAdjustParam);
+        return R.ok().put("result", result);
+    }
 }

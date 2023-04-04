@@ -31,7 +31,7 @@ public class ProductCostDO implements Serializable {
     @Excel(name = "商品类型", dict = "PRODUCT")
     private String productType;
     /** 商品金额 */
-    @Excel(name = "商品金额", numFormat = "#,##0.00", width = 15)
+    @Excel(name = "采购价", numFormat = "#,##0.00", width = 15)
     private BigDecimal entryPrice;
     /** 成本单价 */
     @Excel(name = "成本单价", numFormat = "#,##0.00", width = 15)

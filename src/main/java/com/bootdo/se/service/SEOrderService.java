@@ -9,6 +9,7 @@ import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.StringUtil;
 import com.bootdo.data.dao.AccountDao;
 import com.bootdo.data.domain.AccountDO;
+import com.bootdo.data.service.CostAmountCalculator;
 import com.bootdo.rp.convert.RPOrderConverter;
 import com.bootdo.rp.dao.PointEntryDao;
 import com.bootdo.rp.dao.RPOrderDao;
@@ -30,9 +31,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -53,6 +56,8 @@ public class SEOrderService {
     private RPOrderSettleDao rpOrderSettleDao;
     @Autowired
     private AccountDao accountDao;
+    @Resource
+    private CostAmountCalculator costAmountCalculator;
 
 
     public SEOrderDO get(Integer id) {
@@ -75,19 +80,26 @@ public class SEOrderService {
     public int audit(Map<String, Object> params) {
         AuditStatus auditStatus = AuditStatus.fromValue(MapUtils.getString(params, "auditStatus"));
         List<SEOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", MapUtils.getList(params, "billNos")));
-        List<SEOrderDO> orderDOList1 = Lists.newArrayList();
         //去除已经是审核（未审核）状态的订单
-        for (SEOrderDO orderDO : orderDOList) {
-            if (!auditStatus.equals(orderDO.getAuditStatus())) {
-                orderDOList1.add(orderDO);
-            }
-        }
+        List<SEOrderDO> orderDOList1 = orderDOList.stream()
+                .filter(orderDO ->!auditStatus.equals(orderDO.getAuditStatus())).collect(Collectors.toList());
         //计算客户积分、生成收付款单
         if (CollectionUtils.isNotEmpty(orderDOList1)) {
+            handleCostAndAudit(orderDOList1, auditStatus);
             handlePoint(orderDOList1, auditStatus);
             handleRPOrder(orderDOList1, auditStatus);
         }
         return orderDao.audit(params);
+    }
+
+    /**
+     * 重新计算商品成本及审核订单
+     */
+    private int handleCostAndAudit(List<SEOrderDO> orderDOList, AuditStatus auditStatus) {
+        for (SEOrderDO orderDO : orderDOList) {
+            costAmountCalculator.calcSEBillCost(orderDO, auditStatus);
+        }
+        return 1;
     }
 
     /**
