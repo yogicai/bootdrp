@@ -6,6 +6,7 @@ import com.bootdo.common.config.Constant;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.BillType;
 import com.bootdo.common.enumeration.CostType;
+import com.bootdo.common.exception.BootServiceExceptionEnum;
 import com.bootdo.common.utils.DateUtils;
 import com.bootdo.common.utils.MapUtils;
 import com.bootdo.common.utils.NumberUtils;
@@ -210,6 +211,7 @@ public class CostAmountCalculator {
             BigDecimal mulFactor = convertMulFactor(orderDO.getBillType(), auditStatus);
             //目前商品成本
             ProductCostDO preProductCostDO = costDOMap.get(entry.getEntryId());
+            BootServiceExceptionEnum.PRODUCT_COST_NOT_FOUND.assertNotNull(preProductCostDO, entry.getEntryId(), entry.getEntryName());
             //库存数量
             BigDecimal inventory = NumberUtils.toBigDecimal(preProductCostDO.getCostQty());
             //库存数量 +　本次商品数量
