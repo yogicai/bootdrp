@@ -6,8 +6,8 @@ let currentRow = {};
 
 $(function() {
     load();
-    utils.loadEnumTypes(["COST_VERSION"], ["version"], [{width:"120px"}]);
-    utils.loadCategory(["PRODUCT"], ["productType"], [{width:"180px"}]);
+    utils.loadEnumTypes(["COST_VERSION", "COST_TYPE"], ["version", "costType"], [{width:"120px"}, {width:"120px"}]);
+    utils.loadCategory(["PRODUCT"], ["productType"], [{width:"120px"}]);
 });
 
 function load() {
