@@ -154,7 +154,7 @@ public class OrderImportService {
      */
     private <T> T getConsumer(Map<String, T> userDoMap, String consumerName) {
         Optional<Map.Entry<String, T>> optionalUserDO = userDoMap.entrySet().stream()
-                .filter(entry -> StrUtil.contains(entry.getKey(), consumerName)).findFirst();
+                .filter(entry -> StrUtil.contains(StrUtil.cleanBlank(entry.getKey()), consumerName)).findFirst();
         return optionalUserDO.map(Map.Entry::getValue).orElse(null);
     }
 
@@ -164,7 +164,7 @@ public class OrderImportService {
      */
     private ProductDO getProduct(Map<String, ProductDO> productDoMap, String productName, BigDecimal entityPrice) {
         List<ProductDO> productList = productDoMap.entrySet().stream()
-                .filter(entry -> StrUtil.contains(entry.getKey(), productName))
+                .filter(entry -> StrUtil.contains(StrUtil.cleanBlank(entry.getKey()), productName))
                 .map(Map.Entry::getValue)
                 .sorted((o1, o2) -> {
                     double offset1 = Math.abs(entityPrice.subtract(o1.getSalePrice()).doubleValue());
