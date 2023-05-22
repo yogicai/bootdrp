@@ -69,7 +69,7 @@ public class OrderImportService {
         Map<String, ConsumerDO> comsumerDoMap = consumerDao.list(MapUtil.empty()).stream()
                 .collect(Collectors.toMap(k -> joinKey(k.getNo(), k.getName()), v -> v, (o, n) -> n));
         //商品信息
-        Map<String, ProductDO> productDoMap = productDao.list(MapUtil.empty()).stream()
+        Map<String, ProductDO> productDoMap = productDao.list(MapUtil.of("status", 1)).stream()
                 .collect(Collectors.toMap(k -> joinKey(k.getNo(), k.getName()), v -> v, (o, n) -> n));
         //导入excel文件
         Workbook hssfWorkbook = PoiUtil.getWorkBook(orderImportParam.getFile());
