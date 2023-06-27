@@ -2,13 +2,16 @@ package com.bootdo.excel.service;
 
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
+import com.bootdo.common.config.Constant;
 import com.bootdo.common.enumeration.BillSource;
+import com.bootdo.common.excel.enums.VerifyResultEnum;
 import com.bootdo.common.exception.BootServiceExceptionEnum;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.PoiUtil;
@@ -88,13 +91,23 @@ public class OrderImportService {
             importParams.setVerifyHandler(classExcelVerifyHandler);
             importParams.setStartSheetIndex(startSheetIndex);
             importParams.setSheetNum(1);
-            List<OrderImportEntityParam> dataList = ExcelImportUtil.importExcel(orderImportParam.getFile().getInputStream(), OrderImportEntityParam.class, importParams);
+            //开启Excel校验
+            importParams.setNeedVerify(true);
+
+            ExcelImportResult<OrderImportEntityParam> result = ExcelImportUtil.importExcelMore(orderImportParam.getFile().getInputStream(), OrderImportEntityParam.class, importParams);
+
+            String errorMsg = result.getFailList().stream()
+                    .filter(o -> !VerifyResultEnum.ROW_NULL.equals(o.getVerifyResultEnum()))
+                    .map(o -> StrUtil.format(Constant.IMPORT_ORDER_INVALID, o.getRowNum() + 1, o.getErrorMsg()))
+                    .collect(Collectors.joining(Constant.HTML_BR));
+
+            BootServiceExceptionEnum.IMPORT_ORDER_NOT_VALID.assertIsFalse(result.isVerifyFail(), sheetName, errorMsg);
 
             //当前单据日期的订单（一个Sheet）
             SEOrderVO seOrderVo = null;
             List<SEOrderVO> seOrderVoList = new ArrayList<>();
 
-            for (OrderImportEntityParam entity : dataList) {
+            for (OrderImportEntityParam entity : result.getList()) {
                 //订单首行（有客户名、优惠金额、支付金额、已付金额）
                 if (StrUtil.isNotBlank(entity.getConsumerName())) {
                     //客户是否存在

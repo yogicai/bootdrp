@@ -31,6 +31,7 @@ public class BDExceptionHandler {
 	 */
 	@ExceptionHandler(BDException.class)
 	public R handleBDException(BDException e) {
+		logger.error(e.getMessage(), e);
 		R r = new R();
 		r.put("code", e.getCode());
 		r.put("msg", e.getMessage());

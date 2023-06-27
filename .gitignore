@@ -26,3 +26,4 @@ nbdist/
 /logs/
 
 src/main/resources/rebel.xml
+/app-log/

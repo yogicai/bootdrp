@@ -18,7 +18,7 @@ $(function () {
         dictRemoveFile: "删除文件",
         filesizeBase: 1024,
         uploadMultiple: false, // 关闭多文件上传
-        dictDefaultMessage: "拖入需要上传的文件",
+        dictDefaultMessage: "点击选择要上传的文件",
         dictMaxFilesExceeded: "您最多只能上传10个文件！",
         dictResponseError: '文件上传失败!',
         dictInvalidFileType: "你不能上传该类型文件,文件类型只能是*.jpg,*.gif,*.png。",
