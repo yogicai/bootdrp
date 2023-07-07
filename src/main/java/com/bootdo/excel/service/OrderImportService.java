@@ -101,7 +101,9 @@ public class OrderImportService {
                     .map(o -> StrUtil.format(Constant.IMPORT_ORDER_INVALID, o.getRowNum() + 1, o.getErrorMsg()))
                     .collect(Collectors.joining(Constant.HTML_BR));
 
-            BootServiceExceptionEnum.IMPORT_ORDER_NOT_VALID.assertIsFalse(result.isVerifyFail(), sheetName, errorMsg);
+            //非空行类型校验失败
+            boolean isVerifyFail = result.isVerifyFail() && result.getFailList().stream().anyMatch(o -> !VerifyResultEnum.ROW_NULL.equals(o.getVerifyResultEnum()));
+            BootServiceExceptionEnum.IMPORT_ORDER_NOT_VALID.assertIsFalse(isVerifyFail, sheetName, errorMsg);
 
             //当前单据日期的订单（一个Sheet）
             SEOrderVO seOrderVo = null;
