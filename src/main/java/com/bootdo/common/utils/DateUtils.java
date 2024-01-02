@@ -1,9 +1,8 @@
 package com.bootdo.common.utils;
 
+import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.config.Constant;
 import com.google.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -13,10 +12,9 @@ import java.util.List;
 
 /**
  * 日期处理
+ * @author L
  */
 public class DateUtils {
-    private final static Logger logger = LoggerFactory.getLogger(DateUtils.class);
-
     public final static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public final static DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public final static DateTimeFormatter ISO_SECOND_YMDHMS_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -141,12 +139,16 @@ public class DateUtils {
     }
 
     public static String getDayBegin(String dateStr) {
-        if (StringUtil.isEmpty(dateStr))  return "";
+        if (StrUtil.isEmpty(dateStr)) {
+            return "";
+        }
         return LocalDate.parse(dateStr, DATE_FORMAT).atStartOfDay().format(DATE_TIME_FORMAT);
     }
 
     public static String getDayEnd(String dateStr) {
-        if (StringUtil.isEmpty(dateStr))  return "";
+        if (StrUtil.isEmpty(dateStr)) {
+            return "";
+        }
         return LocalDate.parse(dateStr, DATE_FORMAT).atStartOfDay().plusHours(23).plusMinutes(59).plusSeconds(59).format(DATE_TIME_FORMAT);
     }
 
@@ -155,7 +157,9 @@ public class DateUtils {
     }
 
     public static String getMonthBegin(String dateStr, DateTimeFormatter formatter) {
-        if (StringUtil.isEmpty(dateStr))  return LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay().format(DATE_TIME_FORMAT);
+        if (StrUtil.isEmpty(dateStr)) {
+            return LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay().format(DATE_TIME_FORMAT);
+        }
         return LocalDate.parse(dateStr, formatter).with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay().format(DATE_TIME_FORMAT);
     }
 
@@ -164,7 +168,9 @@ public class DateUtils {
     }
 
     public static String getMonthEnd(String dateStr, DateTimeFormatter formatter) {
-        if (StringUtil.isEmpty(dateStr))  return LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59).format(DATE_TIME_FORMAT);
+        if (StrUtil.isEmpty(dateStr)) {
+            return LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59).format(DATE_TIME_FORMAT);
+        }
         return LocalDate.parse(dateStr, formatter).with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59).format(DATE_TIME_FORMAT);
     }
 
@@ -173,7 +179,9 @@ public class DateUtils {
     }
 
     public static String getYearBegin(String dateStr) {
-        if (StringUtil.isEmpty(dateStr))  return LocalDate.now().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay().format(DATE_TIME_FORMAT);
+        if (StrUtil.isEmpty(dateStr)) {
+            return LocalDate.now().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay().format(DATE_TIME_FORMAT);
+        }
         return LocalDate.parse(dateStr, DATE_FORMAT).with(TemporalAdjusters.firstDayOfYear()).atStartOfDay().format(DATE_TIME_FORMAT);
     }
 
@@ -182,7 +190,9 @@ public class DateUtils {
     }
 
     public static String getYearEnd(String dateStr) {
-        if (StringUtil.isEmpty(dateStr))  return LocalDate.now().with(TemporalAdjusters.lastDayOfYear()).atTime(23,59,59).format(DATE_TIME_FORMAT);
+        if (StrUtil.isEmpty(dateStr)) {
+            return LocalDate.now().with(TemporalAdjusters.lastDayOfYear()).atTime(23,59,59).format(DATE_TIME_FORMAT);
+        }
         return LocalDate.parse(dateStr, DATE_FORMAT).with(TemporalAdjusters.lastDayOfYear()).atTime(23,59,59).format(DATE_TIME_FORMAT);
     }
 

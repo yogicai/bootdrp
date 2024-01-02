@@ -1,11 +1,11 @@
 package com.bootdo.report.controller;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.utils.DateUtils;
 import com.bootdo.common.utils.R;
-import com.bootdo.common.utils.StringUtil;
 import com.bootdo.engage.controller.response.BalanceTotalResult;
 import com.bootdo.engage.service.ProductBalanceService;
 import com.bootdo.report.controller.response.SEBillTotalResult;
@@ -51,7 +51,7 @@ public class SEReportController extends BaseController {
         //过去多少天
         String type = MapUtil.getStr(params, "type");
         //WEEK MONTH
-        Map<String, Object> param = StringUtil.isEmpty(type) ? ImmutableMap.of("billDateStart", DateUtils.getStartStr(-days), "audit", AuditStatus.YES.name()) : ImmutableMap.of("billDateStart", DateUtils.getStartStr(type), "audit", AuditStatus.YES.name());
+        Map<String, Object> param = StrUtil.isEmpty(type) ? ImmutableMap.of("billDateStart", DateUtils.getStartStr(-days), "audit", AuditStatus.YES.name()) : ImmutableMap.of("billDateStart", DateUtils.getStartStr(type), "audit", AuditStatus.YES.name());
         result = seReportService.pBalanceTotal(param);
         return R.ok().put("result", result);
     }

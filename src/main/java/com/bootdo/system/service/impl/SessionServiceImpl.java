@@ -1,6 +1,6 @@
 package com.bootdo.system.service.impl;
 
-import com.bootdo.common.utils.MapUtils;
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.system.domain.UserDO;
 import com.bootdo.system.domain.UserOnline;
 import com.bootdo.system.service.SessionService;
@@ -30,7 +30,7 @@ public class SessionServiceImpl implements SessionService {
 	@Override
 	public List<UserOnline> list(Map<String, Object> params) {
 		List<UserOnline> list = new ArrayList<>();
-        String searchText = MapUtils.getString(params, "searchText", "");
+        String searchText = MapUtil.getStr(params, "searchText", "");
 		Collection<Session> sessions = sessionDAO.getActiveSessions();
 		for (Session session : sessions) {
 			UserOnline userOnline = new UserOnline();

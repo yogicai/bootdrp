@@ -1,10 +1,10 @@
 package com.bootdo.cashier.controller;
 
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.cashier.domain.JournalDO;
 import com.bootdo.cashier.service.JournalService;
 import com.bootdo.common.annotation.Log;
 import com.bootdo.common.utils.DateUtils;
-import com.bootdo.common.utils.MapUtils;
 import com.bootdo.common.utils.R;
 import com.google.common.collect.ImmutableMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -40,8 +40,8 @@ public class JournalController {
     @RequiresPermissions("cashier:journal:journal")
     public R list(@RequestParam Map<String, Object> params) {
         //查询列表数据
-        params.put("start", DateUtils.getMonthBegin(MapUtils.getString(params, "start")));
-        params.put("end", DateUtils.getMonthEnd(MapUtils.getString(params, "end")));
+        params.put("start", DateUtils.getMonthBegin(MapUtil.getStr(params, "start")));
+        params.put("end", DateUtils.getMonthEnd(MapUtil.getStr(params, "end")));
         List<JournalDO> dataList = journalService.list(params);
         return R.ok(ImmutableMap.of("rows", dataList));
     }

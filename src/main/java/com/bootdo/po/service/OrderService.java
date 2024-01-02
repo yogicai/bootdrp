@@ -1,8 +1,9 @@
 package com.bootdo.po.service;
 
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.BillSource;
-import com.bootdo.common.utils.StringUtil;
 import com.bootdo.data.dao.AccountDao;
 import com.bootdo.data.domain.AccountDO;
 import com.bootdo.data.service.CostAmountCalculator;
@@ -20,7 +21,6 @@ import com.bootdo.rp.domain.RPOrderSettleDO;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,8 +68,8 @@ public class OrderService {
 
     @Transactional(rollbackFor = Exception.class)
     public int audit(Map<String, Object> params) {
-        AuditStatus auditStatus = AuditStatus.fromValue(MapUtils.getString(params, "auditStatus"));
-        List<OrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", com.bootdo.common.utils.MapUtils.getList(params, "billNos")));
+        AuditStatus auditStatus = AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus"));
+        List<OrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", MapUtil.get(params, "billNos", List.class)));
         //去除已经是审核（未审核）状态的订单
         List<OrderDO> orderDOList1 = orderDOList.stream()
                 .filter(orderDO -> !auditStatus.equals(orderDO.getAuditStatus())).collect(Collectors.toList());
@@ -115,7 +115,7 @@ public class OrderService {
                 List<AccountDO> accountDOList = accountDao.list(ImmutableMap.of("nos", ImmutableSet.of(orderDO.getSettleAccount())));
                 RPOrderDO rpOrderDO = OrderConverter.convertRPOrder(orderDO);
                 //源订单号要保留
-                rpOrderDO.setBillNo(StringUtil.isEmpty(rpBillNo) ? rpOrderDO.getBillNo() : rpBillNo);
+                rpOrderDO.setBillNo(StrUtil.isEmpty(rpBillNo) ? rpOrderDO.getBillNo() : rpBillNo);
                 List<RPOrderEntryDO> rpOrderEntryDOList = OrderConverter.convertRPOrderEntry(rpOrderDO, orderDO);
                 List<RPOrderSettleDO> rpOrderSettleDOList = OrderConverter.convertRPOrderSettle(rpOrderDO, orderDO, RPOrderConverter.convertAccountMap(accountDOList));
                 rpOrderDao.save(rpOrderDO);

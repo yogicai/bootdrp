@@ -1,13 +1,13 @@
 package com.bootdo.po.validator;
 
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.bootdo.common.constants.ErrorMessage;
 import com.bootdo.common.constants.OrderStatusCode;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.EnumCollection;
 import com.bootdo.common.exception.BusinessException;
-import com.bootdo.common.utils.MapUtils;
-import com.bootdo.common.utils.StringUtil;
 import com.bootdo.po.controller.request.OrderVO;
 import com.bootdo.po.dao.OrderDao;
 import com.bootdo.po.domain.OrderDO;
@@ -38,7 +38,7 @@ public class OrderValidator {
         if (order.getBillDate() == null || order.getVendorId() == null) {
             throw new BusinessException(OrderStatusCode.ORDER_INVALID, ErrorMessage.PARAM_INVALID);
         }
-        if (StringUtil.isEmpty(order.getBillNo())) return;
+        if (StrUtil.isEmpty(order.getBillNo())) return;
         List<OrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNo", order.getBillNo()));
         if (!CollectionUtils.isEmpty(orderDOList) && AuditStatus.YES.equals(orderDOList.get(0).getAuditStatus())) {
             throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "修改"));
@@ -46,14 +46,14 @@ public class OrderValidator {
     }
 
     public void validateAudit(Map<String, Object> params) {
-        if (CollectionUtils.isEmpty(MapUtils.getList(params, "billNos"))
-                || !EnumCollection.AUDIT_STATUS.contains(AuditStatus.fromValue(MapUtils.getString(params, "auditStatus")))) {
+        if (CollectionUtils.isEmpty(MapUtil.get(params, "billNos", List.class))
+                || !EnumCollection.AUDIT_STATUS.contains(AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus")))) {
             throw new BusinessException(OrderStatusCode.ORDER_INVALID, ErrorMessage.PARAM_INVALID);
         }
-        AuditStatus auditStatus = AuditStatus.fromValue(MapUtils.getString(params, "auditStatus"));
+        AuditStatus auditStatus = AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus"));
         if (AuditStatus.NO.equals(auditStatus)) {
             Set<String> billNoSet = Sets.newHashSet();
-            List<RPOrderDO> rpOrderDOList = rpOrderDao.list(ImmutableMap.of("srcBillNos", MapUtils.getList(params, "billNos")));
+            List<RPOrderDO> rpOrderDOList = rpOrderDao.list(ImmutableMap.of("srcBillNos", MapUtil.get(params, "billNos", List.class)));
             for (RPOrderDO rpOrderDO : rpOrderDOList) {
                 if (AuditStatus.YES.equals(rpOrderDO.getAuditStatus())) {
                     billNoSet.add(rpOrderDO.getBillNo());

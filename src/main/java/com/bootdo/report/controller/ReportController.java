@@ -1,12 +1,12 @@
 package com.bootdo.report.controller;
 
+import cn.hutool.core.map.MapUtil;
 import com.alibaba.fastjson.JSON;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.utils.PoiUtil;
 import com.bootdo.common.utils.R;
 import com.bootdo.report.controller.response.SReconResult;
 import com.bootdo.report.service.ReportService;
-import org.apache.commons.collections.MapUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,7 +35,7 @@ public class ReportController extends BaseController {
     @GetMapping("/sRecon")
     @RequiresPermissions("report:recon:recon")
     public String sRecon(@RequestParam Map<String, Object> params, Model model) {
-        model.addAttribute("type", MapUtils.getString(params, "type"));
+        model.addAttribute("type", MapUtil.getStr(params, "type"));
         return "report/sRecon";
     }
 

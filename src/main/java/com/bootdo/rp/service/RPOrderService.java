@@ -1,9 +1,9 @@
 package com.bootdo.rp.service;
 
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.BillType;
 import com.bootdo.common.enumeration.OrderStatus;
-import com.bootdo.common.utils.MapUtils;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.po.convert.OrderConverter;
 import com.bootdo.po.dao.OrderDao;
@@ -85,8 +85,8 @@ public class RPOrderService {
      */
     @Transactional(rollbackFor = Exception.class)
     public int audit(Map<String, Object> params) {
-        AuditStatus auditStatus = AuditStatus.fromValue(org.apache.commons.collections.MapUtils.getString(params, "auditStatus"));
-        List<RPOrderDO> list = rpOrderDao.list(ImmutableMap.of("billNos", MapUtils.getList(params, "billNos")));
+        AuditStatus auditStatus = AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus"));
+        List<RPOrderDO> list = rpOrderDao.list(ImmutableMap.of("billNos", MapUtil.get(params, "billNos", List.class)));
         Set<String> billNoSet = Sets.newHashSet();
         //过滤已审核或未审核的订单
         for (RPOrderDO orderDO : list) {

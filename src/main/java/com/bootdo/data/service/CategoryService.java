@@ -1,5 +1,6 @@
 package com.bootdo.data.service;
 
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.common.domain.AsyncTree;
 import com.bootdo.common.domain.Tree;
 import com.bootdo.common.utils.BuildTree;
@@ -8,7 +9,6 @@ import com.bootdo.data.dao.ProductDao;
 import com.bootdo.data.domain.CategoryDO;
 import com.bootdo.data.domain.ProductDO;
 import com.google.common.collect.*;
-import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,12 +87,12 @@ public class CategoryService {
 
     public List<AsyncTree> getAsyncTreeLeaf(Map<String, Object> params) {
         List<AsyncTree> nodeList = Lists.newArrayList();
-        List<ProductDO> productDOList = productDao.list(ImmutableMap.of("type", MapUtils.getString(params, "id")));
+        List<ProductDO> productDOList = productDao.list(ImmutableMap.of("type", MapUtil.getStr(params, "id")));
         for (ProductDO productDO : productDOList) {
             AsyncTree<CategoryDO> tree = new AsyncTree<>();
             tree.setId(productDO.getNo().toString());
             tree.setText(productDO.getName());
-            tree.setParentId(MapUtils.getString(params, "id"));
+            tree.setParentId(MapUtil.getStr(params, "id"));
             tree.setLeaf(true);
             nodeList.add(tree);
         }
@@ -103,7 +103,7 @@ public class CategoryService {
         Tree<CategoryDO> trees = getTree(params);
         Map<String, List<Tree<CategoryDO>>> listTree = Maps.newHashMap();
         for (Tree<CategoryDO> node : trees.getChildren()) {
-            String type = MapUtils.getString(node.getAttributes(), "type");
+            String type = MapUtil.getStr(node.getAttributes(), "type");
             if (!listTree.containsKey(type)) {
                 listTree.put(type, new ArrayList<>());
             }
@@ -119,21 +119,21 @@ public class CategoryService {
         Set<String> categorySet = Sets.newHashSet();
         for (Map map : categoryData) {
             Tree<Map> tree = new Tree<Map>();
-            if (categorySet.add(MapUtils.getString(map, "categoryId"))) {
-                tree.setId(MapUtils.getString(map, "categoryId"));
+            if (categorySet.add(MapUtil.getStr(map, "categoryId"))) {
+                tree.setId(MapUtil.getStr(map, "categoryId"));
                 tree.setParentId("0");
-                tree.setText(MapUtils.getString(map, "name"));
+                tree.setText(MapUtil.getStr(map, "name"));
                 Map<String, Object> attributes = new HashMap<>(16);
-                attributes.put("type", MapUtils.getString(map, "type") + "_DATA");
+                attributes.put("type", MapUtil.getStr(map, "type") + "_DATA");
                 tree.setAttributes(attributes);
                 trees.add(tree);
             }
             tree = new Tree<Map>();
-            tree.setId(MapUtils.getString(map, "dataId"));
-            tree.setParentId(MapUtils.getString(map, "categoryId"));
-            tree.setText(MapUtils.getString(map, "dataName"));
+            tree.setId(MapUtil.getStr(map, "dataId"));
+            tree.setParentId(MapUtil.getStr(map, "categoryId"));
+            tree.setText(MapUtil.getStr(map, "dataName"));
             Map<String, Object> attributes = new HashMap<>(16);
-            attributes.put("type", MapUtils.getString(map, "type") + "_DATA");
+            attributes.put("type", MapUtil.getStr(map, "type") + "_DATA");
             tree.setAttributes(attributes);
             trees.add(tree);
         }
@@ -142,7 +142,7 @@ public class CategoryService {
         List<Tree<Map>> treeList = BuildTree.buildList(trees, ImmutableSet.of("0"));
         Map<String, List<Tree<Map>>> listTree = Maps.newHashMap();
         for (Tree<Map> node : treeList) {
-            String type = MapUtils.getString(node.getAttributes(), "type");
+            String type = MapUtil.getStr(node.getAttributes(), "type");
             if (!listTree.containsKey(type)) {
                 listTree.put(type, new ArrayList<>());
             }

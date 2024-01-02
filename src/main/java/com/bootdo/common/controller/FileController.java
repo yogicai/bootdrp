@@ -1,9 +1,15 @@
 package com.bootdo.common.controller;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.config.BootdoConfig;
 import com.bootdo.common.domain.FileDO;
 import com.bootdo.common.service.FileService;
-import com.bootdo.common.utils.*;
+import com.bootdo.common.utils.FileType;
+import com.bootdo.common.utils.PageUtils;
+import com.bootdo.common.utils.Query;
+import com.bootdo.common.utils.R;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -113,7 +119,7 @@ public class FileController extends BaseController {
 		}
 		String fileName = bootdoConfig.getUploadPath() + sysFileService.get(id).getUrl().replace("/files/", "");
 		if (sysFileService.remove(id) > 0) {
-			boolean b = FileUtil.deleteFile(fileName);
+			boolean b = FileUtil.del(fileName);
 			if (!b) {
 				return R.error("数据库记录删除成功，文件删除失败");
 			}
@@ -144,10 +150,11 @@ public class FileController extends BaseController {
 			return R.error(1, "演示系统不允许修改,完整体验请部署程序");
 		}
 		String fileName = file.getOriginalFilename();
-		fileName = FileUtil.renameToUUID(fileName);
+		fileName = StrUtil.replace(fileName, FileUtil.mainName(fileName), IdUtil.simpleUUID());
+
 		FileDO sysFile = new FileDO(FileType.fileType(fileName), "/files/" + fileName, new Date());
 		try {
-			FileUtil.uploadFile(file.getBytes(), bootdoConfig.getUploadPath(), fileName);
+			FileUtil.writeBytes(file.getBytes(), FileUtil.file(bootdoConfig.getUploadPath(), fileName));
 		} catch (Exception e) {
 			return R.error();
 		}

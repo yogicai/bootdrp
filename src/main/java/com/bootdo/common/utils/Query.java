@@ -1,8 +1,8 @@
 package com.bootdo.common.utils;
 
+import cn.hutool.core.map.MapUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.collections.MapUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -24,11 +24,11 @@ public class Query extends LinkedHashMap<String, Object> {
 
 	public Query(Map<String, Object> params, boolean page) {
 		this.putAll(params);
-		this.start = DateUtils.getDayBegin(com.bootdo.common.utils.MapUtils.getString(params, "start"));
-		this.end = DateUtils.getDayEnd(com.bootdo.common.utils.MapUtils.getString(params, "end"));
+		this.start = DateUtils.getDayBegin(MapUtil.getStr(params, "start"));
+		this.end = DateUtils.getDayEnd(MapUtil.getStr(params, "end"));
 		// 分页参数
-		this.offset = MapUtils.getIntValue(params, "offset");
-		this.limit = MapUtils.getIntValue(params, "limit", 10);
+		this.offset = MapUtil.getInt(params, "offset");
+		this.limit = MapUtil.getInt(params, "limit", 10);
 
 		this.put("start", start);
 		this.put("end", end);

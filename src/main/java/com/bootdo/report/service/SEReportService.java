@@ -1,8 +1,8 @@
 package com.bootdo.report.service;
 
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.common.config.Constant;
 import com.bootdo.common.utils.DateUtils;
-import com.bootdo.common.utils.MapUtils;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.R;
 import com.bootdo.po.dao.OrderDao;
@@ -77,7 +77,7 @@ public class SEReportService {
 
     public EChartOption pBillTrend(Map<String, Object> params) {
         EChartOption option = new EChartOption(1, 2, 3);
-        String type = MapUtils.getString(params, "type", Constant.Q_MONTH);
+        String type = MapUtil.getStr(params, "type", Constant.Q_MONTH);
         params.put("billDate", DateUtils.getDayStartStr(type));
         List<Map<String, Object>> seList = seReportDao.pBillTrend(params);
 
@@ -89,15 +89,15 @@ public class SEReportService {
         for (String time : dayTimeSerial) {
             boolean exists = false;
             for (Map<String, Object> map : seList) {
-                if (StringUtils.equals(time, MapUtils.getString(map, "otime"))) {
-                    BigDecimal count = MapUtils.getBigDecimal(map, "count");
-                    BigDecimal totalAmount = MapUtils.getBigDecimal(map, "totalAmount");
+                if (StringUtils.equals(time, MapUtil.getStr(map, "otime"))) {
+                    BigDecimal count = MapUtil.get(map, "count", BigDecimal.class, BigDecimal.ZERO);
+                    BigDecimal totalAmount = MapUtil.get(map, "totalAmount", BigDecimal.class, BigDecimal.ZERO);
                     billCount = billCount.compareTo(count) < 0 ? count : billCount;
                     maxYAxis = maxYAxis.compareTo(totalAmount) < 0 ? totalAmount : maxYAxis;
 
-                    option.getSeries().get(0).getData().add(MapUtils.getBigDecimal(map, "totalAmount"));
-                    option.getSeries().get(1).getData().add(NumberUtils.subtract(MapUtils.getBigDecimal(map, "totalAmount"), MapUtils.getBigDecimal(map, "paymentAmount")));
-                    option.getSeries().get(2).getData().add(MapUtils.getInteger(map, "count"));
+                    option.getSeries().get(0).getData().add(MapUtil.get(map, "totalAmount", BigDecimal.class, BigDecimal.ZERO));
+                    option.getSeries().get(1).getData().add(NumberUtils.subtract(MapUtil.get(map, "totalAmount", BigDecimal.class, BigDecimal.ZERO), MapUtil.get(map, "paymentAmount", BigDecimal.class, BigDecimal.ZERO)));
+                    option.getSeries().get(2).getData().add(MapUtil.getInt(map, "count"));
                     exists = true; break;
                 }
             }
@@ -118,7 +118,7 @@ public class SEReportService {
 
     public EChartOption pBillTrendPie(Map<String, Object> params) {
         EChartOption option = new EChartOption(0, 0, 2);
-        String type = MapUtils.getString(params, "type", Constant.Q_MONTH);
+        String type = MapUtil.getStr(params, "type", Constant.Q_MONTH);
         params.put("billDate", DateUtils.getDayStartStr(type));
         List<Map<String, Object>> seList = seReportDao.pBillTrendPie(params);
 
@@ -126,12 +126,12 @@ public class SEReportService {
         BigDecimal profitAmountOther = BigDecimal.ZERO, totalAmountOther = BigDecimal.ZERO;
         for (Map<String, Object> map : seList) {
             if (count <= topCount) {
-                option.getLegend().getData().add(MapUtils.getString(map, "name"));
-                option.getSeries().get(0).getData().add(new PieData(MapUtils.getString(map, "name"), MapUtils.getBigDecimal(map, "totalAmount")));
-                option.getSeries().get(1).getData().add(new PieData(MapUtils.getString(map, "name"), MapUtils.getBigDecimal(map, "profitAmount")));
+                option.getLegend().getData().add(MapUtil.getStr(map, "name"));
+                option.getSeries().get(0).getData().add(new PieData(MapUtil.getStr(map, "name"), MapUtil.get(map, "totalAmount", BigDecimal.class, BigDecimal.ZERO)));
+                option.getSeries().get(1).getData().add(new PieData(MapUtil.getStr(map, "name"), MapUtil.get(map, "profitAmount", BigDecimal.class, BigDecimal.ZERO)));
             } else {
-                profitAmountOther = NumberUtils.add(profitAmountOther, MapUtils.getBigDecimal(map, "totalAmount"));
-                totalAmountOther = NumberUtils.add(totalAmountOther, MapUtils.getBigDecimal(map, "profitAmount"));
+                profitAmountOther = NumberUtils.add(profitAmountOther, MapUtil.get(map, "totalAmount", BigDecimal.class, BigDecimal.ZERO));
+                totalAmountOther = NumberUtils.add(totalAmountOther, MapUtil.get(map, "profitAmount", BigDecimal.class, BigDecimal.ZERO));
             }
         }
         if (topCount < seList.size()) {
@@ -145,14 +145,14 @@ public class SEReportService {
     public R pCashTotal(Map<String, Object> params) {
         List<Map<String, Object>>  list = seReportDao.pCashTrend(params);
         if (CollectionUtils.isNotEmpty(list)) {
-            return R.ok(ImmutableMap.of("profitAmountT",MapUtils.getBigDecimal(list.get(0), "profitAmount"), "cashFlowAmountT",MapUtils.getBigDecimal(list.get(0), "cashFlowAmount")));
+            return R.ok(ImmutableMap.of("profitAmountT",MapUtil.get(list.get(0), "profitAmount", BigDecimal.class, BigDecimal.ZERO), "cashFlowAmountT",MapUtil.get(list.get(0), "cashFlowAmount", BigDecimal.class, BigDecimal.ZERO)));
         }
         return R.ok(ImmutableMap.of("profitAmountT",0, "cashFlowAmountT",0));
     }
 
     public EChartOption pCashTrend(Map<String, Object> params) {
         EChartOption option = new EChartOption(1, 2, 3);
-        String type = MapUtils.getString(params, "type", Constant.Q_MONTH);
+        String type = MapUtil.getStr(params, "type", Constant.Q_MONTH);
         params.put("billDate", DateUtils.getDayStartStr(type));
         List<Map<String, Object>> seList = seReportDao.pCashTrend(params);
 
@@ -163,11 +163,11 @@ public class SEReportService {
         for (String time : dayTimeSerial) {
             boolean exists = false;
             for (Map<String, Object> map : seList) {
-                if (StringUtils.equals(time, MapUtils.getString(map, "otime"))) {
-                    BigDecimal profitAmount = MapUtils.getBigDecimal(map, "profitAmount");
+                if (StringUtils.equals(time, MapUtil.getStr(map, "otime"))) {
+                    BigDecimal profitAmount = MapUtil.get(map, "profitAmount", BigDecimal.class, BigDecimal.ZERO);
                     maxYAxis = maxYAxis.compareTo(profitAmount) < 0 ? profitAmount : maxYAxis;
 
-                    option.getSeries().get(0).getData().add(MapUtils.getBigDecimal(map, "profitAmount"));
+                    option.getSeries().get(0).getData().add(MapUtil.get(map, "profitAmount", BigDecimal.class, BigDecimal.ZERO));
                     exists = true; break;
                 }
             }
@@ -183,15 +183,15 @@ public class SEReportService {
     public EChartOption pHisPBillTrend(Map<String, Object> params) {
 
         //图表数据类型
-        BillStatType type = BillStatType.valueOf(MapUtils.getString(params, "type"));
+        BillStatType type = BillStatType.valueOf(MapUtil.getStr(params, "type"));
         //销售单历史数据
         List<Map<String, Object>> seList = seReportDao.pHisPBillTrend(params);
 
         TreeSet yearSet = new TreeSet();
         MultiKeyMap<String, Map> multiKeyMap = new MultiKeyMap();
         seList.stream().forEach(m -> {
-            multiKeyMap.put(MapUtils.getString(m, "otime"), MapUtils.getString(m, "time"), m);
-            yearSet.add(MapUtils.getString(m, "otime"));
+            multiKeyMap.put(MapUtil.getStr(m, "otime"), MapUtil.getStr(m, "time"), m);
+            yearSet.add(MapUtil.getStr(m, "otime"));
         });
 
         //图表数据
@@ -201,7 +201,7 @@ public class SEReportService {
         IntStream.rangeClosed(0, yearList.size() -1).forEach(i -> {
             IntStream.rangeClosed(1, 12).forEach(m -> {
                 String year = yearList.get(i);
-                double value = MapUtils.getDoubleValue(multiKeyMap.get(year, String.valueOf(m)), type.getValue());
+                double value = MapUtil.getDouble(multiKeyMap.get(year, String.valueOf(m)), type.getValue());
                 option.getSeries().get(i).getData().add(value);
             });
 

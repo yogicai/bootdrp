@@ -1,9 +1,9 @@
 package com.bootdo.common.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.dao.DictDao;
 import com.bootdo.common.domain.DictDO;
 import com.bootdo.common.service.DictService;
-import com.bootdo.common.utils.StringUtils;
 import com.bootdo.data.dao.StockDao;
 import com.bootdo.data.domain.StockDO;
 import com.bootdo.system.domain.UserDO;
@@ -68,7 +68,7 @@ public class DictServiceImpl implements DictService {
         param.put("type", "hobby");
         List<DictDO> hobbyList = dictDao.list(param);
 
-        if (StringUtils.isNotEmpty(userDO.getHobby())) {
+        if (StrUtil.isNotEmpty(userDO.getHobby())) {
             String userHobbys[] = userDO.getHobby().split(";");
             for (String userHobby : userHobbys) {
                 for (DictDO hobby : hobbyList) {
@@ -91,31 +91,30 @@ public class DictServiceImpl implements DictService {
         return dictDao.list(param);
     }
 
+    @Override
+    public String getName(String type, String value) {
+        Map<String, Object> param = new HashMap<String, Object>(16);
+        param.put("type", type);
+        param.put("value", value);
+        String rString = dictDao.list(param).get(0).getName();
+        return rString;
+    }
 
-	@Override
-	public String getName(String type, String value) {
-		Map<String, Object> param = new HashMap<String, Object>(16);
-		param.put("type", type);
-		param.put("value", value);
-		String rString = dictDao.list(param).get(0).getName();
-		return rString;
-	};
-
-	@Override
-	public Map<String, List<DictDO>> lists(Map<String, Object> map){
-		Map<String, List<DictDO>> maps = new HashMap<>();
-		List<DictDO> list = dictDao.list(map);
-		for (DictDO dic : list) {
+    @Override
+    public Map<String, List<DictDO>> lists(Map<String, Object> map) {
+        Map<String, List<DictDO>> maps = new HashMap<>();
+        List<DictDO> list = dictDao.list(map);
+        for (DictDO dic : list) {
             if (!maps.containsKey(dic.getType())) {
                 maps.put(dic.getType(), new ArrayList<>());
             }
             maps.get(dic.getType()).add(dic);
-		}
-		return maps;
-	}
+        }
+        return maps;
+    }
 
     @Override
-    public Map<String, List<Map<String, String>>> listExtra(Map<String, Object> map){
+    public Map<String, List<Map<String, String>>> listExtra(Map<String, Object> map) {
         Map<String, List<Map<String, String>>> maps = new HashMap<>();
         List<StockDO> list = stockDao.list(map);
         List<Map<String, String>> listMap = Lists.newArrayList();

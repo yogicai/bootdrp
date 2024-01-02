@@ -1,6 +1,6 @@
 package com.bootdo.rp.service;
 
-import com.bootdo.common.utils.MapUtils;
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.data.dao.ConsumerDao;
 import com.bootdo.data.domain.ConsumerDO;
 import com.bootdo.rp.dao.PointEntryDao;
@@ -25,7 +25,7 @@ public class RPPointService {
 	}
 	
 	public List<PointEntryDO> list(Map<String, Object> map){
-	    String type = MapUtils.getString(map, "type");
+	    String type = MapUtil.getStr(map, "type");
         if ("COLLECT".equals(type)) {
             return pointEntryDao.listG(map);
         }
@@ -33,7 +33,7 @@ public class RPPointService {
 	}
 	
 	public int count(Map<String, Object> map){
-        String type = MapUtils.getString(map, "type");
+        String type = MapUtil.getStr(map, "type");
         if ("COLLECT".equals(type)) {
             return pointEntryDao.countG(map);
         }

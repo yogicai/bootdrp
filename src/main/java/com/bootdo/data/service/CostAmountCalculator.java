@@ -1,6 +1,8 @@
 package com.bootdo.data.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.config.Constant;
 import com.bootdo.common.enumeration.AuditStatus;
@@ -8,7 +10,6 @@ import com.bootdo.common.enumeration.BillType;
 import com.bootdo.common.enumeration.CostType;
 import com.bootdo.common.exception.BootServiceExceptionEnum;
 import com.bootdo.common.utils.DateUtils;
-import com.bootdo.common.utils.MapUtils;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.data.dao.ProductDao;
 import com.bootdo.data.domain.ProductDO;
@@ -31,7 +32,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 
@@ -83,7 +87,7 @@ public class CostAmountCalculator {
              */
             BigDecimal mulFactor = convertMulFactor(orderDO.getBillType(), auditStatus);
             //库存数量
-            BigDecimal inventory = MapUtils.computeIfPresent(costDOMap, entry.getEntryId(), (k, v) -> v.getCostQty(), BigDecimal.ZERO);
+            BigDecimal inventory = ObjectUtil.defaultIfNull(costDOMap.get(entry.getEntryId()), ProductCostDO::getCostQty, BigDecimal.ZERO);
             //库存数量 +　本次商品数量
             BigDecimal inventoryC = inventory.add(NumberUtils.mul(NumberUtils.toBigDecimal(entry.getTotalQty()), mulFactor));
 
@@ -91,7 +95,7 @@ public class CostAmountCalculator {
 
             //退货单不影响单位成本，但要重新计算商品总成本及库存数量；没有历史单位成本的商品，单位成本价取采购价
             if (BillType.TH_ORDER.equals(orderDO.getBillType())) {
-                BigDecimal costPrice = MapUtils.computeIfPresent(costDOMap, entry.getEntryId(), (k, v) -> v.getCostPrice(), purchaseMap.get(entry.getEntryId()));
+                BigDecimal costPrice = ObjectUtil.defaultIfNull(costDOMap.get(entry.getEntryId()), ProductCostDO::getCostPrice, purchaseMap.get(entry.getEntryId()));
                 productCostDO.setProductNo(entry.getEntryId());
                 productCostDO.setEntryPrice(entry.getEntryPrice());
                 productCostDO.setEntryQty(entry.getTotalQty());
@@ -130,7 +134,7 @@ public class CostAmountCalculator {
                     productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.getRemark(), auditStatus.getRemark1()));
                 } else if (inventory.compareTo(BigDecimal.ZERO) > 0) {
                     //历史库存大于0 && 当前库存大于0则，取当前这一单的数据+ 历史库存成本 计算库存成本、单价成本
-                    BigDecimal costPrice = MapUtils.computeIfPresent(costDOMap, entry.getEntryId(), (k, v) -> v.getCostPrice(), BigDecimal.ZERO);
+                    BigDecimal costPrice = ObjectUtil.defaultIfNull(costDOMap.get(entry.getEntryId()), ProductCostDO::getCostPrice, BigDecimal.ZERO);
                     //本次商品均摊费用 +　本次商品金额
                     BigDecimal amountFee = NumberUtils.toBigDecimal(entryAmountFee.get(entry.getEntryId()));
                     //库存成本 +　本次费用　+ 本次商品金额
@@ -164,7 +168,7 @@ public class CostAmountCalculator {
                     productCostDO.setRemark(String.format(Constant.COST_REMARK, costType.getRemark(), auditStatus.getRemark1()));
                 } else if (inventory.compareTo(BigDecimal.ZERO) > 0) {
                     //历史库存大于0 && 当前库存大于0则，取当前这一单的数据+ 历史库存成本 计算库存成本、单价成本
-                    BigDecimal costPrice = MapUtils.computeIfPresent(costDOMap, entry.getEntryId(), (k, v) -> v.getCostPrice(), BigDecimal.ZERO);
+                    BigDecimal costPrice = ObjectUtil.defaultIfNull(costDOMap.get(entry.getEntryId()), ProductCostDO::getCostPrice, BigDecimal.ZERO);
                     //本次商品均摊费用 +　本次商品金额
                     BigDecimal amountFee = NumberUtils.toBigDecimal(entryAmountFee.get(entry.getEntryId()));
                     //库存成本 +　本次费用　+ 本次商品金额
@@ -265,11 +269,11 @@ public class CostAmountCalculator {
              */
             BigDecimal mulFactor = convertMulFactor(orderDO.getBillType(), auditStatus);
             //库存数量
-            BigDecimal inventory = MapUtils.computeIfPresent(costDOMap, entry.getEntryId(), (k, v) -> v.getCostQty(), BigDecimal.ZERO);
+            BigDecimal inventory = ObjectUtil.defaultIfNull(costDOMap.get(entry.getEntryId()), ProductCostDO::getCostQty, BigDecimal.ZERO);
             //库存数量 +　本次商品数量
             BigDecimal inventoryC = inventory.add(NumberUtils.mul(NumberUtils.toBigDecimal(entry.getTotalQty()), mulFactor));
 
-            BigDecimal costPrice = MapUtils.computeIfPresent(costDOMap, entry.getEntryId(), (k, v) -> v.getCostPrice(), purchaseMap.get(entry.getEntryId()));
+            BigDecimal costPrice = ObjectUtil.defaultIfNull(costDOMap.get(entry.getEntryId()), ProductCostDO::getCostPrice, purchaseMap.get(entry.getEntryId()));
 
             //仓库调整库存不影响单位成本，但要重新计算商品总成本及库存数量（因为仓库调整单没有商品进货价信息重新计算单位成本不合理）
             //没有历史单位成本的商品，单位成本价取采购价
@@ -409,18 +413,18 @@ public class CostAmountCalculator {
         //商品库存
         return list.stream()
                 .collect(Collectors.groupingBy(
-                        map -> MapUtils.getString(map, "no"),
+                        map -> MapUtil.getStr(map, "no"),
                         TreeMap::new,
                         Collectors.reducing(BigDecimal.ZERO, this::defaultStockAmount, BigDecimal::add))
                 );
     }
 
     private BigDecimal defaultStockAmount(Map<String, Object> map) {
-        BillType billType = BillType.fromValue(MapUtils.getString(map, "bill_type"));
+        BillType billType = BillType.fromValue(MapUtil.getStr(map, "bill_type"));
         if (incBillTypeSet.contains(billType)) {
-            return BigDecimal.valueOf(MapUtils.getIntValue(map, "total_qty"));
+            return BigDecimal.valueOf(MapUtil.getInt(map, "total_qty"));
         } else {
-            return BigDecimal.valueOf(MapUtils.getIntValue(map, "total_qty") * -1L);
+            return BigDecimal.valueOf(MapUtil.getInt(map, "total_qty") * -1L);
         }
     }
 

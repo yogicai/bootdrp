@@ -1,5 +1,6 @@
 package com.bootdo.wh.service;
 
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.data.service.CostAmountCalculator;
 import com.bootdo.wh.dao.WHOrderDao;
@@ -7,7 +8,6 @@ import com.bootdo.wh.dao.WHOrderEntryDao;
 import com.bootdo.wh.domain.WHOrderDO;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,8 +52,8 @@ public class WHOrderService {
 
     @Transactional(rollbackFor = Exception.class)
     public int audit(Map<String, Object> params) {
-        AuditStatus auditStatus = AuditStatus.fromValue(MapUtils.getString(params, "auditStatus"));
-        List<WHOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", MapUtils.getObject(params, "billNos")));
+        AuditStatus auditStatus = AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus"));
+        List<WHOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", MapUtil.get(params, "billNos", List.class)));
         //去除已经是审核（未审核）状态的订单
         List<WHOrderDO> orderDOList1 = orderDOList.stream()
                 .filter(orderDO -> !auditStatus.equals(orderDO.getAuditStatus())).collect(Collectors.toList());

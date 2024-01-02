@@ -1,12 +1,12 @@
 package com.bootdo.se.service;
 
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.dao.DictDao;
 import com.bootdo.common.domain.DictDO;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.BillSource;
-import com.bootdo.common.utils.MapUtils;
 import com.bootdo.common.utils.NumberUtils;
-import com.bootdo.common.utils.StringUtil;
 import com.bootdo.data.dao.AccountDao;
 import com.bootdo.data.domain.AccountDO;
 import com.bootdo.data.service.CostAmountCalculator;
@@ -78,8 +78,8 @@ public class SEOrderService {
 
     @Transactional(rollbackFor = Exception.class)
     public int audit(Map<String, Object> params) {
-        AuditStatus auditStatus = AuditStatus.fromValue(MapUtils.getString(params, "auditStatus"));
-        List<SEOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", MapUtils.getList(params, "billNos")));
+        AuditStatus auditStatus = AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus"));
+        List<SEOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", MapUtil.get(params, "billNos", List.class)));
         //去除已经是审核（未审核）状态的订单
         List<SEOrderDO> orderDOList1 = orderDOList.stream()
                 .filter(orderDO ->!auditStatus.equals(orderDO.getAuditStatus())).collect(Collectors.toList());
@@ -138,7 +138,7 @@ public class SEOrderService {
                 List<AccountDO> accountDOList = accountDao.list(ImmutableMap.of("nos", ImmutableSet.of(orderDO.getSettleAccount())));
                 RPOrderDO rpOrderDO = SEOrderConverter.convertRPOrder(orderDO);
                 //源订单号要保留
-                rpOrderDO.setBillNo(StringUtil.isEmpty(rpBillNo) ? rpOrderDO.getBillNo() : rpBillNo);
+                rpOrderDO.setBillNo(StrUtil.isEmpty(rpBillNo) ? rpOrderDO.getBillNo() : rpBillNo);
                 List<RPOrderEntryDO> rpOrderEntryDOList = SEOrderConverter.convertRPOrderEntry(rpOrderDO, orderDO);
                 List<RPOrderSettleDO> rpOrderSettleDOList = SEOrderConverter.convertRPOrderSettle(rpOrderDO, orderDO, RPOrderConverter.convertAccountMap(accountDOList));
                 rpOrderDao.save(rpOrderDO);

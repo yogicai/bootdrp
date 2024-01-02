@@ -1,10 +1,10 @@
 package com.bootdo.wh.convert;
 
+import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.OrderUtils;
 import com.bootdo.common.utils.ShiroUtils;
-import com.bootdo.common.utils.StringUtil;
 import com.bootdo.data.domain.ConsumerDO;
 import com.bootdo.data.domain.StockDO;
 import com.bootdo.engage.domain.ProductCostDO;
@@ -52,7 +52,7 @@ public class WHOrderConverter {
 
     public static WHOrderDO convertOrder(WHOrderVO orderVO, ConsumerDO consumerDO) {
         WHOrderDO orderDO = new WHOrderDO();
-        orderDO.setBillNo(StringUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoWH(orderVO.getBillType()) : orderVO.getBillNo());
+        orderDO.setBillNo(StrUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoWH(orderVO.getBillType()) : orderVO.getBillNo());
         orderDO.setBillType(orderVO.getBillType());
         orderDO.setServiceType(orderVO.getServiceType());
         orderDO.setBillDate(orderVO.getBillDate());

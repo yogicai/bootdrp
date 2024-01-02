@@ -1,5 +1,6 @@
 package com.bootdo.rp.controller;
 
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.common.annotation.Log;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.utils.PageJQUtils;
@@ -9,7 +10,6 @@ import com.bootdo.common.utils.R;
 import com.bootdo.rp.domain.RPOrderDO;
 import com.bootdo.rp.service.RPOrderService;
 import com.bootdo.rp.validator.RPOrderValidator;
-import org.apache.commons.collections.MapUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,7 +37,7 @@ public class RPOrderController extends BaseController {
     @GetMapping()
     @RequiresPermissions("rp:order:order")
     public String order(@RequestParam Map<String, Object> params, Model model) {
-        model.addAttribute("billType", MapUtils.getString(params, "billType"));
+        model.addAttribute("billType", MapUtil.getStr(params, "billType"));
         return "rp/order/order";
     }
 

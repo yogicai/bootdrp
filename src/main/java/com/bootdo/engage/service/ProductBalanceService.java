@@ -4,9 +4,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.enumeration.BillType;
 import com.bootdo.common.utils.DateUtils;
-import com.bootdo.common.utils.MapUtils;
 import com.bootdo.common.utils.NumberUtils;
-import com.bootdo.common.utils.StringUtil;
 import com.bootdo.data.service.CostAmountCalculator;
 import com.bootdo.data.service.CostAmountIResult;
 import com.bootdo.engage.controller.param.BalanceAdjustParam;
@@ -23,7 +21,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,13 +56,13 @@ public class ProductBalanceService {
         TreeMap<String, String> stockMap = Maps.newTreeMap();
         BalanceResult result = new BalanceResult();
 
-        result.setToDate(StringUtils.defaultIfBlank(MapUtil.getStr(params, "toDate"), DateUtils.currentDate()));
+        result.setToDate(StrUtil.blankToDefault(MapUtil.getStr(params, "toDate"), DateUtils.currentDate()));
         //按商品ID分类整理库存信息
         for (Map<String, Object> map : list) {
             String key = MapUtil.getStr(map, "no");
             if (!listMap.containsKey(key)) {
                 listMap.put(key, Lists.newArrayList());
-                if (!StringUtil.isEmpty(MapUtil.getStr(map, "stock_no"))) {
+                if (!StrUtil.isEmpty(MapUtil.getStr(map, "stock_no"))) {
                     stockMap.put(MapUtil.getStr(map, "stock_no"), MapUtil.getStr(map, "stock_name"));
                 }
             }
@@ -165,7 +162,7 @@ public class ProductBalanceService {
         Map<String, BigDecimal> productMap = Maps.newHashMap();
         for (Map<String, Object> map : list) {
             String no = MapUtil.getStr(map, "no");
-            productMap.put(no, NumberUtils.add(MapUtils.getBigDecimal(productMap, no), defaultStockAmount(map)));
+            productMap.put(no, NumberUtils.add(MapUtil.get(productMap, no, BigDecimal.class, BigDecimal.ZERO), defaultStockAmount(map)));
         }
         //计算库存总数量、成本
         for (Map.Entry<String, BigDecimal> entry : productMap.entrySet()) {

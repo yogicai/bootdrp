@@ -1,15 +1,15 @@
 package com.bootdo.rp.validator;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.bootdo.common.constants.ErrorMessage;
 import com.bootdo.common.constants.OrderStatusCode;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.EnumCollection;
 import com.bootdo.common.exception.BusinessException;
-import com.bootdo.common.utils.MapUtils;
-import com.bootdo.common.utils.StringUtil;
 import com.bootdo.po.dao.OrderDao;
 import com.bootdo.po.domain.OrderDO;
 import com.bootdo.rp.controller.request.RPOrderVO;
@@ -54,7 +54,7 @@ public class RPOrderValidator {
         if (CollUtil.isEmpty(order.getSettleVOList()) || order.getSettleVOList().stream().anyMatch(entry -> ObjectUtil.isNull(entry.getPaymentAmount()))) {
             throw new BusinessException(OrderStatusCode.ORDER_INVALID, ErrorMessage.RP_ORDER_SETTLE_ITEM_NULL);
         }
-        if (StringUtil.isEmpty(order.getBillNo())) return;
+        if (StrUtil.isEmpty(order.getBillNo())) return;
         List<RPOrderDO> orderDOList = rpOrderDao.list(ImmutableMap.of("billNo", order.getBillNo()));
         if (!CollectionUtils.isEmpty(orderDOList) && AuditStatus.YES.equals(orderDOList.get(0).getAuditStatus())) {
             throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "修改"));
@@ -62,8 +62,8 @@ public class RPOrderValidator {
     }
 
     public void validateAudit(Map<String, Object> params) {
-        List<String> billNos = MapUtils.getList(params, "billNos");
-        AuditStatus auditStatus = AuditStatus.fromValue(MapUtils.getString(params, "auditStatus"));
+        List<String> billNos = MapUtil.get(params, "billNos", List.class);
+        AuditStatus auditStatus = AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus"));
         if (CollectionUtils.isEmpty(billNos) || !EnumCollection.AUDIT_STATUS.contains(auditStatus)) {
             throw new BusinessException(OrderStatusCode.ORDER_INVALID, ErrorMessage.PARAM_INVALID);
         }

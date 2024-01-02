@@ -1,5 +1,6 @@
 package com.bootdo.wh.controller;
 
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.common.annotation.Log;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.utils.PageJQUtils;
@@ -9,7 +10,6 @@ import com.bootdo.common.utils.R;
 import com.bootdo.wh.domain.WHOrderDO;
 import com.bootdo.wh.service.WHOrderService;
 import com.bootdo.wh.validator.WHOrderValidator;
-import org.apache.commons.collections.MapUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,7 +40,7 @@ public class WHOrderController extends BaseController {
     @GetMapping()
     @RequiresPermissions("wh:order:order")
     public String order(@RequestParam Map<String, Object> params, Model model) {
-        model.addAttribute("billType", MapUtils.getString(params, "billType"));
+        model.addAttribute("billType", MapUtil.getStr(params, "billType"));
         return "wh/order/order";
     }
 

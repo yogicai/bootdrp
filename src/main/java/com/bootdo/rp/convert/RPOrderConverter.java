@@ -1,10 +1,10 @@
 package com.bootdo.rp.convert;
 
+import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.BillSource;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.OrderUtils;
-import com.bootdo.common.utils.StringUtil;
 import com.bootdo.data.domain.AccountDO;
 import com.bootdo.rp.controller.request.RPOrderEntryVO;
 import com.bootdo.rp.controller.request.RPOrderSettleVO;
@@ -65,7 +65,7 @@ public class RPOrderConverter {
 
     public static RPOrderDO convertOrder(RPOrderVO orderVO, UserDO usrDO, String detectName) {
         RPOrderDO orderDO = new RPOrderDO();
-        orderDO.setBillNo(StringUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoCW(orderVO.getBillType()) : orderVO.getBillNo());
+        orderDO.setBillNo(StrUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoCW(orderVO.getBillType()) : orderVO.getBillNo());
         orderDO.setBillType(orderVO.getBillType());
         orderDO.setBillDate(orderVO.getBillDate());
         orderDO.setDebtorId(orderVO.getDebtorId());

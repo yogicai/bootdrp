@@ -1,5 +1,6 @@
 package com.bootdo.po.controller;
 
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.common.annotation.Log;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.utils.PageJQUtils;
@@ -9,7 +10,6 @@ import com.bootdo.common.utils.R;
 import com.bootdo.po.domain.OrderDO;
 import com.bootdo.po.service.OrderService;
 import com.bootdo.po.validator.OrderValidator;
-import org.apache.commons.collections.MapUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,7 +37,7 @@ public class OrderController extends BaseController {
     @GetMapping()
     @RequiresPermissions("po:order:order")
     public String order(@RequestParam Map<String, Object> params, Model model) {
-        model.addAttribute("billType", MapUtils.getString(params, "billType"));
+        model.addAttribute("billType", MapUtil.getStr(params, "billType"));
         return "po/order/order";
     }
 

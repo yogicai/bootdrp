@@ -1,5 +1,6 @@
 package com.bootdo.po.controller;
 
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.common.annotation.Log;
 import com.bootdo.common.utils.R;
 import com.bootdo.po.controller.request.OrderVO;
@@ -7,7 +8,6 @@ import com.bootdo.po.domain.OrderDO;
 import com.bootdo.po.service.OrderEntryService;
 import com.bootdo.po.validator.OrderValidator;
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.collections.MapUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,7 +34,7 @@ public class OrderEntryController {
     @GetMapping()
     @RequiresPermissions("po:entry:entry")
     public String orderEntry(@RequestParam Map<String, Object> params, Model model) {
-        model.addAttribute("billType", MapUtils.getString(params, "billType"));
+        model.addAttribute("billType", MapUtil.getStr(params, "billType"));
         return "po/entry/entry";
     }
 

@@ -1,5 +1,6 @@
 package com.bootdo.po.convert;
 
+import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.config.Constant;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.BillSource;
@@ -8,7 +9,6 @@ import com.bootdo.common.enumeration.OrderStatus;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.OrderUtils;
 import com.bootdo.common.utils.ShiroUtils;
-import com.bootdo.common.utils.StringUtil;
 import com.bootdo.data.domain.AccountDO;
 import com.bootdo.data.domain.StockDO;
 import com.bootdo.data.domain.VendorDO;
@@ -63,7 +63,7 @@ public class OrderConverter {
 
     public static OrderDO convertOrder(OrderVO orderVO, VendorDO vendorDO) {
         OrderDO orderDO = new OrderDO();
-        orderDO.setBillNo(StringUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoCG(orderVO.getBillType()) : orderVO.getBillNo());
+        orderDO.setBillNo(StrUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoCG(orderVO.getBillType()) : orderVO.getBillNo());
         orderDO.setBillType(orderVO.getBillType());
         orderDO.setBillDate(orderVO.getBillDate());
         orderDO.setVendorId(orderVO.getVendorId());

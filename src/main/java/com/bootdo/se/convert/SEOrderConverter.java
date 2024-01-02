@@ -1,16 +1,16 @@
 package com.bootdo.se.convert;
 
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.config.Constant;
 import com.bootdo.common.enumeration.*;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.OrderUtils;
 import com.bootdo.common.utils.ShiroUtils;
-import com.bootdo.common.utils.StringUtil;
 import com.bootdo.data.domain.AccountDO;
 import com.bootdo.data.domain.ConsumerDO;
-import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.data.domain.StockDO;
+import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.rp.domain.PointEntryDO;
 import com.bootdo.rp.domain.RPOrderDO;
 import com.bootdo.rp.domain.RPOrderEntryDO;
@@ -71,7 +71,7 @@ public class SEOrderConverter {
 
     public static SEOrderDO convertOrder(SEOrderVO orderVO, UserDO userDO, ConsumerDO consumerDO) {
         SEOrderDO orderDO = new SEOrderDO();
-        orderDO.setBillNo(StringUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoXS() : orderVO.getBillNo());
+        orderDO.setBillNo(StrUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoXS() : orderVO.getBillNo());
         orderDO.setBillType(BillType.XS_ORDER);
         orderDO.setBillDate(orderVO.getBillDate());
         orderDO.setConsumerId(orderVO.getConsumerId());
