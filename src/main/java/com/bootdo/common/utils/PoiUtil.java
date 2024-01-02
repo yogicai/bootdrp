@@ -2,14 +2,26 @@ package com.bootdo.common.utils;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
+import cn.afterturn.easypoi.excel.annotation.ExcelCollection;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import cn.afterturn.easypoi.excel.export.styler.ExcelExportStylerDefaultImpl;
+import cn.afterturn.easypoi.handler.inter.IExcelDataModel;
+import cn.afterturn.easypoi.handler.inter.IExcelModel;
+import cn.afterturn.easypoi.util.PoiValidationUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.log.Log;
+import com.bootdo.common.constants.OrderStatusCode;
+import com.bootdo.common.excel.ClassVerifyHandlerImpl;
+import com.bootdo.common.excel.IExcelDictHandlerImpl;
+import com.bootdo.common.exception.BusinessException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -23,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 简单导入导出工具类
@@ -143,22 +156,6 @@ public class PoiUtil {
     }
 
     /**
-     * 根据接收的Excel文件来导入Excel,并封装成实体类
-     *
-     * @param file       上传的文件
-     * @param pojoClass  Excel实体类
-     */
-    public static <T> List<T> importExcel(MultipartFile file, Class<T> pojoClass, ImportParams importParams ) {
-        List<T> list = new ArrayList<>();
-        try {
-            list = ExcelImportUtil.importExcel(file.getInputStream(), pojoClass, importParams);
-        } catch (Exception e) {
-            log.error(">>> 导入数据异常：{}", e.getMessage(), e);
-        }
-        return list;
-    }
-
-    /**
      * 生成workbook
      *
      * @param file       上传的文件
@@ -182,40 +179,108 @@ public class PoiUtil {
 
     /**
      * 根据接收的Excel文件来导入Excel,并封装成实体类
-     *
-     * @param file       上传的文件
-     * @param titleRows  表标题的行数
-     * @param headerRows 表头行数
-     * @param pojoClass  Excel实体类
      */
-    public static <T> List<T> importExcel(MultipartFile file, Integer titleRows, Integer headerRows, Class<T> pojoClass) {
-        if (ObjectUtil.isNull(file)) {
-            return null;
-        }
-        ImportParams params = new ImportParams();
+    public static <T extends IExcelDataModel & IExcelModel> List<T> importExcelMore(MultipartFile file, Integer titleRows, Integer headerRows, Class<T> pojoClass, boolean throwEx, Class<?>... verfiyGroup) {
+        ImportParams params = new InnerImportParams();
         params.setTitleRows(titleRows);
         params.setHeadRows(headerRows);
-        List<T> list = null;
+        params.setNeedVerify(true);
+        //非集合双表头导入bug，处理：1、非集合不要用双表头；2、设置导入参数verifyFileSplit=false(https://gitee.com/lemur/easypoi/issues/I1YJ6D)
+        params.setVerifyFileSplit(false);
+
+        ExcelImportResult<T> result = null;
         try {
-            list = ExcelImportUtil.importExcel(file.getInputStream(), pojoClass, params);
+            result = ExcelImportUtil.importExcelMore(file.getInputStream(), pojoClass, params);
         } catch (Exception e) {
-            log.error(">>> 导入数据异常：{}", e.getMessage());
+            log.error(">>> 导入数据异常：{}", e.getMessage(), e);
         }
-        return list;
+        //校验异常处理
+        Map<Integer, String> errorMsgMap = verifyExcelCollection(result, pojoClass, verfiyGroup);
+
+        if (CollUtil.isNotEmpty(errorMsgMap) && throwEx) {
+
+            String errorMsg = errorMsgMap.entrySet()
+                    .stream()
+                    .map(entry -> StrUtil.format("第{}行：{}！", entry.getKey(), entry.getValue()))
+                    .collect(Collectors.joining(StrUtil.LF));
+
+            throw new BusinessException(OrderStatusCode.ERROR, StrUtil.maxLength(errorMsg, 1000));
+        }
+        return ObjectUtil.isNotNull(result) ? result.getList() : Collections.emptyList();
     }
 
+    /**
+     * 校验子集合
+     */
+    private static <T extends IExcelDataModel & IExcelModel> Map<Integer, String> verifyExcelCollection(ExcelImportResult<T> result, Class<T> pojoClass, Class<?>... verfiyGroup) {
+        //校验异常信息 Map<行号, errorMsg>
+        Map<Integer, String> errorMsgMap = new HashMap<>();
+
+        if (ObjectUtil.isNotNull(result)) {
+            //合并结果集
+            List<T> resultList = CollUtil.unionAll(result.getFailList(), result.getList());
+            //校验异常信息 Map<行号, errorMsg>
+            errorMsgMap = result.getFailList().stream()
+                    .collect(Collectors.toMap(k -> k.getRowNum() + 1, v -> v.getErrorMsg(), (o, n) -> n, LinkedHashMap::new));
+            //excel行
+            Map<Integer, String> finalErrorMsgMap = errorMsgMap;
+
+            resultList.forEach(record -> {
+                //校验集合属性
+                BeanUtil.descForEach(pojoClass, action -> {
+                    if (action.getField().isAnnotationPresent(ExcelCollection.class)) {
+
+                        Object value = action.getValue(record);
+                        //子集校验
+                        if (value instanceof List) {
+                            List<?> collection = (List<?>) action.getValue(record);
+
+                            for (int i = 0; i < collection.size(); i++) {
+                                //excel行号
+                                int rowNum = record.getRowNum() + i;
+                                Object object = collection.get(i);
+                                String errorMsg = PoiValidationUtil.validation(object, verfiyGroup);
+                                //校验提示
+                                if (object instanceof IExcelModel && StrUtil.isNotBlank(errorMsg)) {
+                                    ((IExcelModel) object).setErrorMsg(errorMsg);
+                                }
+                                //行号
+                                if (object instanceof IExcelDataModel) {
+                                    ((IExcelDataModel) object).setRowNum(rowNum);
+                                }
+                                if (StrUtil.isNotBlank(errorMsg)) {
+                                    finalErrorMsgMap.compute(rowNum + 1, (key, oldValue) -> StrUtil.join(StrUtil.COMMA, StrUtil.nullToEmpty(oldValue), errorMsg));
+                                }
+                            }
+                        }
+
+                    }
+                });
+            });
+        }
+
+        return errorMsgMap;
+    }
 
     /**
-     * 表头自定义
+     * 导入自定义
+     */
+    public static class InnerImportParams extends ImportParams {
+        public InnerImportParams() {
+            super.setDictHandler(SpringUtil.getBean(IExcelDictHandlerImpl.class));
+            super.setVerifyHandler(SpringUtil.getBean(ClassVerifyHandlerImpl.class));
+        }
+    }
+
+    /**
+     * 导出自定义
      */
     public static class InnerExportParams extends ExportParams {
-
         public InnerExportParams() {
             super.setHeight((short) 8);
             super.setStyle(InnerExcelExportStylerDefaultImpl.class);
             super.setDictHandler(SpringUtil.getBean("IExcelDictHandlerImpl"));
         }
-
     }
 
 
