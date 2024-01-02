@@ -1,12 +1,12 @@
 package com.bootdo.wh.validator;
 
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.bootdo.common.constants.ErrorMessage;
 import com.bootdo.common.constants.OrderStatusCode;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.EnumCollection;
 import com.bootdo.common.exception.BusinessException;
-import com.bootdo.common.utils.MapUtils;
-import com.bootdo.common.utils.StringUtil;
 import com.bootdo.wh.controller.request.WHOrderVO;
 import com.bootdo.wh.dao.WHOrderDao;
 import com.bootdo.wh.domain.WHOrderDO;
@@ -31,7 +31,7 @@ public class WHOrderValidator {
         if (order.getBillDate() == null || order.getServiceType() == null) {
             throw new BusinessException(OrderStatusCode.ORDER_INVALID, ErrorMessage.PARAM_INVALID);
         }
-        if (StringUtil.isEmpty(order.getBillNo())) return;
+        if (StrUtil.isEmpty(order.getBillNo())) return;
         List<WHOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNo", order.getBillNo()));
         if (!CollectionUtils.isEmpty(orderDOList) && AuditStatus.YES.equals(orderDOList.get(0).getAuditStatus())) {
             throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "修改"));
@@ -39,8 +39,8 @@ public class WHOrderValidator {
     }
 
     public void validateAudit(Map<String, Object> params) {
-        if (CollectionUtils.isEmpty(MapUtils.getList(params, "billNos"))
-                || !EnumCollection.AUDIT_STATUS.contains(AuditStatus.fromValue(MapUtils.getString(params, "auditStatus")))) {
+        if (CollectionUtils.isEmpty(MapUtil.get(params, "billNos", List.class))
+                || !EnumCollection.AUDIT_STATUS.contains(AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus")))) {
             throw new BusinessException(OrderStatusCode.ORDER_INVALID, ErrorMessage.PARAM_INVALID);
         }
     }
