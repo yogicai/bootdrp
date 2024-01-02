@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 
+/**
+ * @author L
+ */
 @Configuration
 public class XssConfig{
 
@@ -15,8 +18,8 @@ public class XssConfig{
 	 * xss过滤拦截器
 	 */
 	@Bean
-	public FilterRegistrationBean xssFilterRegistrationBean() {
-		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+	public FilterRegistrationBean<XssFilter> xssFilterRegistrationBean() {
+		FilterRegistrationBean<XssFilter> filterRegistrationBean = new FilterRegistrationBean<>();
 		filterRegistrationBean.setFilter(new XssFilter());
 		filterRegistrationBean.setOrder(1);
 		filterRegistrationBean.setEnabled(true);

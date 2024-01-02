@@ -21,31 +21,33 @@ import com.bootdo.rp.domain.RPOrderSettleDO;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+/**
+ * @author L
+ */
 @Service
 public class OrderService {
-    @Autowired
+    @Resource
     private OrderDao orderDao;
-    @Autowired
+    @Resource
     private OrderEntryDao orderEntryDao;
-    @Autowired
+    @Resource
     private RPOrderDao rpOrderDao;
-    @Autowired
+    @Resource
     private RPOrderEntryDao rpOrderEntryDao;
-    @Autowired
+    @Resource
     private RPOrderSettleDao rpOrderSettleDao;
-    @Autowired
+    @Resource
     private AccountDao accountDao;
-    @Autowired
+    @Resource
     private CostAmountCalculator costAmountCalculator;
 
 

@@ -11,11 +11,11 @@ import com.bootdo.rp.domain.RPOrderDO;
 import com.bootdo.rp.service.RPOrderService;
 import com.bootdo.rp.validator.RPOrderValidator;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -25,14 +25,13 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-21 21:23:27
  */
-
 @Controller
 @RequestMapping("/rp/order")
 public class RPOrderController extends BaseController {
-    @Autowired
-    private RPOrderValidator orderValidator;
-    @Autowired
-    private RPOrderService orderService;
+    @Resource
+    private RPOrderValidator rpOrderValidator;
+    @Resource
+    private RPOrderService rpOrderService;
 
     @GetMapping()
     @RequiresPermissions("rp:order:order")
@@ -47,8 +46,8 @@ public class RPOrderController extends BaseController {
     public PageJQUtils list(@RequestParam Map<String, Object> params) {
         //查询列表数据
         QueryJQ query = new QueryJQ(params);
-        List<RPOrderDO> orderList = orderService.list(query);
-        int total = orderService.count(query);
+        List<RPOrderDO> orderList = rpOrderService.list(query);
+        int total = rpOrderService.count(query);
         int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
         return new PageJQUtils(orderList, totalPage, query.getPage(), total);
     }
@@ -62,7 +61,7 @@ public class RPOrderController extends BaseController {
     public void export(@RequestParam Map<String, Object> params) {
         //查询列表数据
         QueryJQ query = new QueryJQ(params, false);
-        List<RPOrderDO> orderList = orderService.list(query);
+        List<RPOrderDO> orderList = rpOrderService.list(query);
         PoiUtil.exportExcelWithStream("RPOrderResult.xls", RPOrderDO.class, orderList);
     }
 
@@ -74,8 +73,8 @@ public class RPOrderController extends BaseController {
     @ResponseBody
     @RequiresPermissions("rp:order:audit")
     public R audit(@RequestBody Map<String, Object> params) {
-        orderValidator.validateAudit(params);
-        orderService.audit(params);
+        rpOrderValidator.validateAudit(params);
+        rpOrderService.audit(params);
         return R.ok();
     }
 
@@ -87,8 +86,8 @@ public class RPOrderController extends BaseController {
     @ResponseBody
     @RequiresPermissions("rp:order:remove")
     public R remove(@RequestParam("billNos[]") List<String> billNos) {
-        orderValidator.validateRemove(billNos);
-        orderService.batchRemove(billNos);
+        rpOrderValidator.validateRemove(billNos);
+        rpOrderService.batchRemove(billNos);
         return R.ok();
     }
 }

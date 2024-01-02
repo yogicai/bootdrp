@@ -9,10 +9,10 @@ import com.bootdo.se.domain.SEOrderDO;
 import com.bootdo.se.service.SEOrderService;
 import com.bootdo.se.validator.SEOrderValidator;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -26,10 +26,10 @@ import java.util.Map;
 @Controller
 @RequestMapping("/se/order")
 public class SEOrderController {
-    @Autowired
-    private SEOrderValidator orderValidator;
-    @Autowired
-    private SEOrderService orderService;
+    @Resource
+    private SEOrderValidator seOrderValidator;
+    @Resource
+    private SEOrderService seOrderService;
 
     @GetMapping()
     @RequiresPermissions("se:order:order")
@@ -50,8 +50,8 @@ public class SEOrderController {
     public PageJQUtils list(@RequestParam Map<String, Object> params) {
         //查询列表数据
         QueryJQ query = new QueryJQ(params);
-        List<SEOrderDO> orderList = orderService.list(query);
-        int total = orderService.count(query);
+        List<SEOrderDO> orderList = seOrderService.list(query);
+        int total = seOrderService.count(query);
         int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
         return new PageJQUtils(orderList, totalPage, query.getPage(), total);
     }
@@ -65,7 +65,7 @@ public class SEOrderController {
     public void export(@RequestParam Map<String, Object> params) {
         //查询列表数据
         QueryJQ query = new QueryJQ(params, false);
-        List<SEOrderDO> orderList = orderService.list(query);
+        List<SEOrderDO> orderList = seOrderService.list(query);
         PoiUtil.exportExcelWithStream("SEOrderResult.xls", SEOrderDO.class, orderList);
     }
 
@@ -77,8 +77,8 @@ public class SEOrderController {
     @ResponseBody
     @RequiresPermissions("se:order:audit")
     public R audit(@RequestBody Map<String, Object> params) {
-        orderValidator.validateAudit(params);
-        orderService.audit(params);
+        seOrderValidator.validateAudit(params);
+        seOrderService.audit(params);
         return R.ok();
     }
 
@@ -90,8 +90,8 @@ public class SEOrderController {
     @ResponseBody
     @RequiresPermissions("se:order:remove")
     public R remove(@RequestParam("billNos[]") List<String> billNos) {
-        orderValidator.validateRemove(billNos);
-        orderService.batchRemove(billNos);
+        seOrderValidator.validateRemove(billNos);
+        seOrderService.batchRemove(billNos);
         return R.ok();
     }
 }

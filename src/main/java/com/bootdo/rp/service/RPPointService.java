@@ -6,18 +6,21 @@ import com.bootdo.data.domain.ConsumerDO;
 import com.bootdo.rp.dao.PointEntryDao;
 import com.bootdo.rp.domain.PointEntryDO;
 import org.apache.commons.lang.math.NumberUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
 
+/**
+ * @author L
+ */
 @Service
 public class RPPointService {
-	@Autowired
+	@Resource
 	private PointEntryDao pointEntryDao;
-    @Autowired
+    @Resource
     private ConsumerDao consumerDao;
 	
 	public PointEntryDO get(Integer id){

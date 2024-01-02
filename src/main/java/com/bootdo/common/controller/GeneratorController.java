@@ -1,18 +1,18 @@
 package com.bootdo.common.controller;
 
-import com.alibaba.fastjson.JSON;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.json.JSONUtil;
 import com.bootdo.common.service.GeneratorService;
 import com.bootdo.common.utils.GenUtils;
 import com.bootdo.common.utils.R;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,11 +20,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author L
+ */
 @RequestMapping("/common/generator")
 @Controller
 public class GeneratorController {
 	String prefix = "common/generator";
-	@Autowired
+	@Resource
 	GeneratorService generatorService;
 
 	@GetMapping()
@@ -49,20 +52,19 @@ public class GeneratorController {
 		response.addHeader("Content-Length", "" + data.length);
 		response.setContentType("application/octet-stream; charset=UTF-8");
 
-		IOUtils.write(data, response.getOutputStream());
+		IoUtil.write(response.getOutputStream(), true, data);
 	}
 
 	@RequestMapping("/batchCode")
 	public void batchCode(HttpServletRequest request, HttpServletResponse response, String tables) throws IOException {
-		String[] tableNames = new String[] {};
-		tableNames = JSON.parseArray(tables).toArray(tableNames);
+		String[] tableNames = JSONUtil.parseArray(tables).toArray(new String[0]);
 		byte[] data = generatorService.generatorCode(tableNames);
 		response.reset();
 		response.setHeader("Content-Disposition", "attachment; filename=\"bootdo.zip\"");
 		response.addHeader("Content-Length", "" + data.length);
 		response.setContentType("application/octet-stream; charset=UTF-8");
 
-		IOUtils.write(data, response.getOutputStream());
+		IoUtil.write(response.getOutputStream(), true, data);
 	}
 
 	@GetMapping("/edit")

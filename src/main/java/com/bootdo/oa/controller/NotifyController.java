@@ -1,6 +1,6 @@
 package com.bootdo.oa.controller;
 
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.utils.PageUtils;
 import com.bootdo.common.utils.Query;
@@ -10,11 +10,11 @@ import com.bootdo.oa.domain.NotifyRecordDO;
 import com.bootdo.oa.service.NotifyRecordService;
 import com.bootdo.oa.service.NotifyService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,13 +27,12 @@ import java.util.Map;
  * @email 1992lcg@163.com
  * @date 2017-10-05 17:11:16
  */
-
 @Controller
 @RequestMapping("/oa/notify")
 public class NotifyController extends BaseController {
-	@Autowired
+	@Resource
 	private NotifyService notifyService;
-	@Autowired
+	@Resource
 	private NotifyRecordService notifyRecordService;
 
 	@GetMapping()

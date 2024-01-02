@@ -18,25 +18,28 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
 
+/**
+ * @author L
+ */
 @Service
 public class WHOrderEntryService {
-    @Autowired
-    private WHOrderDao orderDao;
-    @Autowired
-    private WHOrderEntryDao orderEntryDao;
-    @Autowired
+    @Resource
+    private WHOrderDao whOrderDao;
+    @Resource
+    private WHOrderEntryDao whOrderEntryDao;
+    @Resource
     private ConsumerDao consumerDao;
-    @Autowired
+    @Resource
     private StockService stockService;
-    @Autowired
+    @Resource
     private ProductCostDao productCostDao;
 
     @Transactional(rollbackFor = Exception.class)
@@ -47,15 +50,15 @@ public class WHOrderEntryService {
         WHOrderDO orderDO = WHOrderConverter.convertOrder(orderVO, consumerDO);
         List<WHOrderEntryDO> orderEntryDOList = WHOrderConverter.convertOrderEntry(orderVO, orderDO, stockDOMap, costDOMap);
         //订单入库
-        orderDao.save(orderDO);
-        orderEntryDao.delete(ImmutableMap.of("billNo", orderDO.getBillNo()));
-        orderEntryDao.saveBatch(orderEntryDOList);
+        whOrderDao.save(orderDO);
+        whOrderEntryDao.delete(ImmutableMap.of("billNo", orderDO.getBillNo()));
+        whOrderEntryDao.saveBatch(orderEntryDOList);
         return orderDO;
     }
 
     public WHOrderVO getOrderVO(Map<String, Object> params) {
-        List<WHOrderDO> orderDOList = orderDao.list(params);
-        List<WHOrderEntryDO> orderEntryDOList = orderEntryDao.list(params);
+        List<WHOrderDO> orderDOList = whOrderDao.list(params);
+        List<WHOrderEntryDO> orderEntryDOList = whOrderEntryDao.list(params);
         if (CollectionUtils.isEmpty(orderDOList) || CollectionUtils.isEmpty(orderEntryDOList)) {
             return new WHOrderVO();
         }

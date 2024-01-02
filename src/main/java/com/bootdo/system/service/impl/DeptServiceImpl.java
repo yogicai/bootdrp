@@ -1,24 +1,25 @@
 package com.bootdo.system.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.bootdo.common.domain.Tree;
 import com.bootdo.common.utils.BuildTree;
 import com.bootdo.system.dao.DeptDao;
 import com.bootdo.system.domain.DeptDO;
 import com.bootdo.system.service.DeptService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
-
+/**
+ * @author L
+ */
 @Service
 public class DeptServiceImpl implements DeptService {
-	@Autowired
+	@Resource
 	private DeptDao sysDeptMapper;
 
 	@Override

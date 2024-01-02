@@ -11,12 +11,12 @@ import com.bootdo.common.utils.PageUtils;
 import com.bootdo.common.utils.Query;
 import com.bootdo.common.utils.R;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,11 +33,9 @@ import java.util.Map;
 @Controller
 @RequestMapping("/common/sysFile")
 public class FileController extends BaseController {
-
-	@Autowired
+	@Resource
 	private FileService sysFileService;
-
-	@Autowired
+	@Resource
 	private BootdoConfig bootdoConfig;
 
 	@GetMapping()

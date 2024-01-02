@@ -8,52 +8,55 @@ import com.bootdo.wh.dao.WHOrderEntryDao;
 import com.bootdo.wh.domain.WHOrderDO;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author L
+ */
 @Service
 public class WHOrderService {
-    @Autowired
-    private WHOrderDao orderDao;
-    @Autowired
-    private WHOrderEntryDao orderEntryDao;
-    @Autowired
+    @Resource
+    private WHOrderDao whOrderDao;
+    @Resource
+    private WHOrderEntryDao whOrderEntryDao;
+    @Resource
     private CostAmountCalculator costAmountCalculator;
 
     public WHOrderDO get(Integer id) {
-        return orderDao.get(id);
+        return whOrderDao.get(id);
     }
 
     public List<WHOrderDO> list(Map<String, Object> map) {
-        return orderDao.list(map);
+        return whOrderDao.list(map);
     }
 
     public int count(Map<String, Object> map) {
-        return orderDao.count(map);
+        return whOrderDao.count(map);
     }
 
     public int save(WHOrderDO order) {
-        return orderDao.save(order);
+        return whOrderDao.save(order);
     }
 
     public int update(WHOrderDO order) {
-        return orderDao.update(order);
+        return whOrderDao.update(order);
     }
 
     public int remove(Integer id) {
-        return orderDao.remove(id);
+        return whOrderDao.remove(id);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public int audit(Map<String, Object> params) {
         AuditStatus auditStatus = AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus"));
-        List<WHOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", MapUtil.get(params, "billNos", List.class)));
+        List<WHOrderDO> orderDOList = whOrderDao.list(ImmutableMap.of("billNos", MapUtil.get(params, "billNos", List.class)));
         //去除已经是审核（未审核）状态的订单
         List<WHOrderDO> orderDOList1 = orderDOList.stream()
                 .filter(orderDO -> !auditStatus.equals(orderDO.getAuditStatus())).collect(Collectors.toList());
@@ -61,7 +64,7 @@ public class WHOrderService {
         if (CollectionUtils.isNotEmpty(orderDOList1)) {
             for (WHOrderDO orderDO : orderDOList1) {
                 costAmountCalculator.calcWHBillCost(orderDO, auditStatus);
-                orderDao.audit(ImmutableMap.of("billNo", orderDO.getBillNo(), "auditStatus", auditStatus.name()));
+                whOrderDao.audit(ImmutableMap.of("billNo", orderDO.getBillNo(), "auditStatus", auditStatus.name()));
             }
         }
         return 1;
@@ -69,8 +72,8 @@ public class WHOrderService {
 
     @Transactional(rollbackFor = Exception.class)
     public int batchRemove(List<String> billNos) {
-        orderDao.delete(ImmutableMap.of("billNos", billNos));
-        orderEntryDao.delete(ImmutableMap.of("billNos", billNos));
+        whOrderDao.delete(ImmutableMap.of("billNos", billNos));
+        whOrderEntryDao.delete(ImmutableMap.of("billNos", billNos));
         return 1;
     }
 

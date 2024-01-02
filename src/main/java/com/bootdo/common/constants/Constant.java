@@ -1,4 +1,4 @@
-package com.bootdo.common.config;
+package com.bootdo.common.constants;
 
 /**
  * @author L

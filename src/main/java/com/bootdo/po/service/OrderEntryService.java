@@ -1,11 +1,7 @@
 package com.bootdo.po.service;
 
-
-import com.bootdo.common.enumeration.BillSource;
 import com.bootdo.common.utils.NumberUtils;
-import com.bootdo.data.dao.AccountDao;
 import com.bootdo.data.dao.VendorDao;
-import com.bootdo.data.domain.AccountDO;
 import com.bootdo.data.domain.StockDO;
 import com.bootdo.data.domain.VendorDO;
 import com.bootdo.data.service.StockService;
@@ -16,34 +12,28 @@ import com.bootdo.po.dao.OrderDao;
 import com.bootdo.po.dao.OrderEntryDao;
 import com.bootdo.po.domain.OrderDO;
 import com.bootdo.po.domain.OrderEntryDO;
-import com.bootdo.rp.convert.RPOrderConverter;
-import com.bootdo.rp.dao.RPOrderDao;
-import com.bootdo.rp.dao.RPOrderEntryDao;
-import com.bootdo.rp.dao.RPOrderSettleDao;
-import com.bootdo.rp.domain.RPOrderDO;
-import com.bootdo.rp.domain.RPOrderEntryDO;
-import com.bootdo.rp.domain.RPOrderSettleDO;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * @author L
+ */
 @Service
 public class OrderEntryService {
-    @Autowired
+    @Resource
     private OrderDao orderDao;
-    @Autowired
+    @Resource
     private OrderEntryDao orderEntryDao;
-    @Autowired
+    @Resource
     private VendorDao vendorDao;
-    @Autowired
+    @Resource
     private StockService stockService;
 
     @Transactional(rollbackFor = Exception.class)

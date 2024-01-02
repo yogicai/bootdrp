@@ -1,20 +1,20 @@
 package com.bootdo.data.service;
 
-import com.bootdo.data.service.ConsumerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.bootdo.data.dao.ConsumerDao;
+import com.bootdo.data.domain.ConsumerDO;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-import com.bootdo.data.dao.ConsumerDao;
-import com.bootdo.data.domain.ConsumerDO;
 
-
-
+/**
+ * @author L
+ */
 @Service
 public class ConsumerService {
-	@Autowired
+	@Resource
 	private ConsumerDao consumerDao;
 	
 	public ConsumerDO get(Integer id){

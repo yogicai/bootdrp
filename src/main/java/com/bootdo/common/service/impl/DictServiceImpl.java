@@ -9,17 +9,20 @@ import com.bootdo.data.domain.StockDO;
 import com.bootdo.system.domain.UserDO;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 
+/**
+ * @author L
+ */
 @Service
 public class DictServiceImpl implements DictService {
-    @Autowired
+    @Resource
     private DictDao dictDao;
-    @Autowired
+    @Resource
     private StockDao stockDao;
 
     @Override

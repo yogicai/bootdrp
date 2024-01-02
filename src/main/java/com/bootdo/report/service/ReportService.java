@@ -2,7 +2,7 @@ package com.bootdo.report.service;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.enumeration.InstituteType;
 import com.bootdo.common.utils.DateUtils;
 import com.bootdo.common.utils.R;

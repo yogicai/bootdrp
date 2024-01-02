@@ -2,7 +2,6 @@ package com.bootdo.common.exception.biz.assertion;
 
 import cn.hutool.json.JSONUtil;
 import com.bootdo.common.exception.biz.AbstractExceptionEnum;
-import com.bootdo.common.exception.biz.BizServiceException;
 
 import java.text.MessageFormat;
 import java.util.Arrays;

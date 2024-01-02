@@ -1,25 +1,29 @@
 package com.bootdo.system.controller;
 
 import com.bootdo.common.annotation.Log;
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.utils.R;
 import com.bootdo.system.domain.RoleDO;
 import com.bootdo.system.service.RoleService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * @author L
+ */
 @RequestMapping("/sys/role")
 @Controller
 public class RoleController extends BaseController {
-	String prefix = "system/role";
-	@Autowired
+	@Resource
 	RoleService roleService;
+
+	String prefix = "system/role";
 
 	@RequiresPermissions("sys:role:role")
 	@GetMapping()

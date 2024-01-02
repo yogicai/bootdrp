@@ -1,19 +1,21 @@
 package com.bootdo.data.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.bootdo.data.dao.AccountDao;
+import com.bootdo.data.domain.AccountDO;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-import com.bootdo.data.dao.AccountDao;
-import com.bootdo.data.domain.AccountDO;
 
 
-
+/**
+ * @author L
+ */
 @Service
 public class AccountService {
-	@Autowired
+	@Resource
 	private AccountDao accountDao;
 	
 	public AccountDO get(Integer id){

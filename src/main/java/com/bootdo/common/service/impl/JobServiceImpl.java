@@ -1,6 +1,6 @@
 package com.bootdo.common.service.impl;
 
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.dao.TaskDao;
 import com.bootdo.common.domain.ScheduleJob;
 import com.bootdo.common.domain.TaskDO;

@@ -23,42 +23,45 @@ import com.bootdo.system.domain.UserDO;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 
+/**
+ * @author L
+ */
 @Service
 public class RPOrderEntryService {
-    @Autowired
-    private RPOrderDao orderDao;
-    @Autowired
-    private RPOrderEntryDao orderEntryDao;
-    @Autowired
-    private RPOrderSettleDao orderSettleDao;
-    @Autowired
+    @Resource
+    private RPOrderDao rpOrderDao;
+    @Resource
+    private RPOrderEntryDao rpOrderEntryDao;
+    @Resource
+    private RPOrderSettleDao rpOrderSettleDao;
+    @Resource
     private ConsumerDao consumerDao;
-    @Autowired
+    @Resource
     private VendorDao vendorDao;
-    @Autowired
+    @Resource
     private UserDao userDao;
-    @Autowired
+    @Resource
     private AccountDao accountDao;
 
     public RPOrderEntryDO get(Integer id) {
-        return orderEntryDao.get(id);
+        return rpOrderEntryDao.get(id);
     }
 
     public List<RPOrderEntryDO> list(Map<String, Object> map) {
-        return orderEntryDao.list(map);
+        return rpOrderEntryDao.list(map);
     }
 
     public int count(Map<String, Object> map) {
-        return orderEntryDao.count(map);
+        return rpOrderEntryDao.count(map);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -84,20 +87,20 @@ public class RPOrderEntryService {
         List<RPOrderSettleDO> orderSettleDOList = RPOrderConverter.convertOrderSettle(orderVO, orderDO, RPOrderConverter.convertAccountMap(accountDOList));
 
         //订单入库
-        orderDao.save(orderDO);
+        rpOrderDao.save(orderDO);
         //收款结算明细入库
-        orderSettleDao.delete(ImmutableMap.of("billNo", orderDO.getBillNo()));
-        orderSettleDao.saveBatch(orderSettleDOList);
+        rpOrderSettleDao.delete(ImmutableMap.of("billNo", orderDO.getBillNo()));
+        rpOrderSettleDao.saveBatch(orderSettleDOList);
         //源单核销金额入库
-        orderEntryDao.delete(ImmutableMap.of("billNo", orderDO.getBillNo()));
-        orderEntryDao.saveBatch(orderEntryDOList);
+        rpOrderEntryDao.delete(ImmutableMap.of("billNo", orderDO.getBillNo()));
+        rpOrderEntryDao.saveBatch(orderEntryDOList);
         return orderDO;
     }
 
     public RPOrderVO getOrderVO(Map<String, Object> params) {
-        List<RPOrderDO> orderDOList = orderDao.list(params);
-        List<RPOrderEntryDO> orderEntryDOList = orderEntryDao.list(params);
-        List<RPOrderSettleDO> orderSettleDOList = orderSettleDao.list(params);
+        List<RPOrderDO> orderDOList = rpOrderDao.list(params);
+        List<RPOrderEntryDO> orderEntryDOList = rpOrderEntryDao.list(params);
+        List<RPOrderSettleDO> orderSettleDOList = rpOrderSettleDao.list(params);
         if (CollectionUtils.isEmpty(orderDOList)) {
             return new RPOrderVO();
         }

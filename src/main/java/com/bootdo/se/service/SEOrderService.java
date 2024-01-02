@@ -27,7 +27,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,48 +37,51 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author L
+ */
 @Service
 public class SEOrderService {
-    @Autowired
-    private SEOrderDao orderDao;
-    @Autowired
-    private SEOrderEntryDao orderEntryDao;
-    @Autowired
+    @Resource
+    private SEOrderDao seOrderDao;
+    @Resource
+    private SEOrderEntryDao seOrderEntryDao;
+    @Resource
     private PointEntryDao pointEntryDao;
-    @Autowired
+    @Resource
     private DictDao dictDao;
-    @Autowired
+    @Resource
     private RPOrderDao rpOrderDao;
-    @Autowired
+    @Resource
     private RPOrderEntryDao rpOrderEntryDao;
-    @Autowired
+    @Resource
     private RPOrderSettleDao rpOrderSettleDao;
-    @Autowired
+    @Resource
     private AccountDao accountDao;
     @Resource
     private CostAmountCalculator costAmountCalculator;
 
 
     public SEOrderDO get(Integer id) {
-        return orderDao.get(id);
+        return seOrderDao.get(id);
     }
 
     public List<SEOrderDO> list(Map<String, Object> map) {
-        return orderDao.list(map);
+        return seOrderDao.list(map);
     }
 
     public int count(Map<String, Object> map) {
-        return orderDao.count(map);
+        return seOrderDao.count(map);
     }
 
     public int save(SEOrderDO order) {
-        return orderDao.save(order);
+        return seOrderDao.save(order);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public int audit(Map<String, Object> params) {
         AuditStatus auditStatus = AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus"));
-        List<SEOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", MapUtil.get(params, "billNos", List.class)));
+        List<SEOrderDO> orderDOList = seOrderDao.list(ImmutableMap.of("billNos", MapUtil.get(params, "billNos", List.class)));
         //去除已经是审核（未审核）状态的订单
         List<SEOrderDO> orderDOList1 = orderDOList.stream()
                 .filter(orderDO ->!auditStatus.equals(orderDO.getAuditStatus())).collect(Collectors.toList());
@@ -89,7 +91,7 @@ public class SEOrderService {
             handlePoint(orderDOList1, auditStatus);
             handleRPOrder(orderDOList1, auditStatus);
         }
-        return orderDao.audit(params);
+        return seOrderDao.audit(params);
     }
 
     /**
@@ -150,13 +152,13 @@ public class SEOrderService {
     }
 
     public int remove(Integer id) {
-        return orderDao.remove(id);
+        return seOrderDao.remove(id);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public int batchRemove(List<String> billNos) {
-        orderDao.delete(ImmutableMap.of("billNos", billNos));
-        orderEntryDao.delete(ImmutableMap.of("billNos", billNos));
+        seOrderDao.delete(ImmutableMap.of("billNos", billNos));
+        seOrderEntryDao.delete(ImmutableMap.of("billNos", billNos));
         return 1;
     }
 

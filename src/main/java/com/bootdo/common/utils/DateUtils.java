@@ -1,7 +1,7 @@
 package com.bootdo.common.utils;
 
 import cn.hutool.core.util.StrUtil;
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.google.common.collect.Lists;
 
 import java.time.*;

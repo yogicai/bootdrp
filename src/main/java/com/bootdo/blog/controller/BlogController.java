@@ -5,19 +5,22 @@ import com.bootdo.blog.service.ContentService;
 import com.bootdo.common.utils.DateUtils;
 import com.bootdo.common.utils.PageUtils;
 import com.bootdo.common.utils.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author L
+ */
 @RequestMapping("/blog")
 @Controller
 public class BlogController {
-	@Autowired
+	@Resource
     ContentService bContentService;
 
 	@GetMapping()
@@ -46,6 +49,7 @@ public class BlogController {
 		model.addAttribute("gtmModified", DateUtils.format(bContentDO.getGtmModified()));
 		return "blog/index/post";
 	}
+
 	@GetMapping("/open/page/{categories}")
 	String about(@PathVariable("categories") String categories, Model model) {
 		Map<String, Object> map = new HashMap<>(16);

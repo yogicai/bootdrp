@@ -8,11 +8,11 @@ import com.bootdo.rp.domain.PointEntryDO;
 import com.bootdo.rp.service.RPPointService;
 import com.bootdo.rp.validator.RPPointValidator;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -22,14 +22,13 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-03-06 23:17:49
  */
-
 @Controller
 @RequestMapping("/rp/point")
 public class RPPointController {
-    @Autowired
-    private RPPointValidator pointValidator;
-    @Autowired
-    private RPPointService pointService;
+    @Resource
+    private RPPointValidator rpPointValidator;
+    @Resource
+    private RPPointService rpPointService;
 
 
     @GetMapping()
@@ -44,8 +43,8 @@ public class RPPointController {
     public PageJQUtils list(@RequestParam Map<String, Object> params) {
         //查询列表数据
         QueryJQ query = new QueryJQ(params);
-        List<PointEntryDO> orderList = pointService.list(query);
-        int total = pointService.count(query);
+        List<PointEntryDO> orderList = rpPointService.list(query);
+        int total = rpPointService.count(query);
         int totalPage = total / (query.getLimit() + 1) + 1;
         return new PageJQUtils(orderList, totalPage, query.getPage(), total);
     }
@@ -59,7 +58,7 @@ public class RPPointController {
     @GetMapping("/edit/{id}")
     @RequiresPermissions("rp:point:edit")
     public String edit(@PathVariable("id") Integer id, Model model) {
-        PointEntryDO pointEntry = pointService.get(id);
+        PointEntryDO pointEntry = rpPointService.get(id);
         model.addAttribute("pointEntry", pointEntry);
         return "rp/point/edit";
     }
@@ -72,8 +71,8 @@ public class RPPointController {
     @PostMapping("/save")
     @RequiresPermissions("rp:point:add")
     public R save(PointEntryDO pointEntry) {
-        pointValidator.validateSave(pointEntry);
-        if (pointService.save(pointEntry) > 0) {
+        rpPointValidator.validateSave(pointEntry);
+        if (rpPointService.save(pointEntry) > 0) {
             return R.ok();
         }
         return R.error();
@@ -87,8 +86,8 @@ public class RPPointController {
     @RequestMapping("/update")
     @RequiresPermissions("rp:point:edit")
     public R update(PointEntryDO pointEntry) {
-        pointValidator.validateSave(pointEntry);
-        pointService.update(pointEntry);
+        rpPointValidator.validateSave(pointEntry);
+        rpPointService.update(pointEntry);
         return R.ok();
     }
 
@@ -100,7 +99,7 @@ public class RPPointController {
     @ResponseBody
     @RequiresPermissions("rp:point:remove")
     public R remove(@RequestParam("ids[]") Integer[] ids) {
-        pointService.batchRemove(ids);
+        rpPointService.batchRemove(ids);
         return R.ok();
     }
 }

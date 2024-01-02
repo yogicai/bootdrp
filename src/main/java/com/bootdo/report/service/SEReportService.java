@@ -1,7 +1,7 @@
 package com.bootdo.report.service;
 
 import cn.hutool.core.map.MapUtil;
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.utils.DateUtils;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.common.utils.R;
@@ -45,9 +45,9 @@ public class SEReportService {
     private SEReportDao seReportDao;
 
     /** 饼图展示前十名 */
-    private final int topCount = 9;
+    public static final int TOP_COUNT = 9;
     /** 饼图展示前十名 */
-    private final String topName = "其他";
+    private static final String TOP_NAME = "其他";
     /** 12月份 */
     private final List<String> month_series = Lists.newArrayList("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月");
 
@@ -125,7 +125,7 @@ public class SEReportService {
         int count = 1;
         BigDecimal profitAmountOther = BigDecimal.ZERO, totalAmountOther = BigDecimal.ZERO;
         for (Map<String, Object> map : seList) {
-            if (count <= topCount) {
+            if (count <= TOP_COUNT) {
                 option.getLegend().getData().add(MapUtil.getStr(map, "name"));
                 option.getSeries().get(0).getData().add(new PieData(MapUtil.getStr(map, "name"), MapUtil.get(map, "totalAmount", BigDecimal.class, BigDecimal.ZERO)));
                 option.getSeries().get(1).getData().add(new PieData(MapUtil.getStr(map, "name"), MapUtil.get(map, "profitAmount", BigDecimal.class, BigDecimal.ZERO)));
@@ -133,11 +133,12 @@ public class SEReportService {
                 profitAmountOther = NumberUtils.add(profitAmountOther, MapUtil.get(map, "totalAmount", BigDecimal.class, BigDecimal.ZERO));
                 totalAmountOther = NumberUtils.add(totalAmountOther, MapUtil.get(map, "profitAmount", BigDecimal.class, BigDecimal.ZERO));
             }
+            count++;
         }
-        if (topCount < seList.size()) {
-            option.getLegend().getData().add(topName);
-            option.getSeries().get(0).getData().add(new PieData(topName, profitAmountOther));
-            option.getSeries().get(1).getData().add(new PieData(topName, totalAmountOther));
+        if (TOP_COUNT < seList.size()) {
+            option.getLegend().getData().add(TOP_NAME);
+            option.getSeries().get(0).getData().add(new PieData(TOP_NAME, profitAmountOther));
+            option.getSeries().get(1).getData().add(new PieData(TOP_NAME, totalAmountOther));
         }
         return option;
     }
@@ -187,9 +188,9 @@ public class SEReportService {
         //销售单历史数据
         List<Map<String, Object>> seList = seReportDao.pHisPBillTrend(params);
 
-        TreeSet yearSet = new TreeSet();
-        MultiKeyMap<String, Map> multiKeyMap = new MultiKeyMap();
-        seList.stream().forEach(m -> {
+        TreeSet<String> yearSet = new TreeSet<>();
+        MultiKeyMap<String, Map<String, Object>> multiKeyMap = new MultiKeyMap<>();
+        seList.forEach(m -> {
             multiKeyMap.put(MapUtil.getStr(m, "otime"), MapUtil.getStr(m, "time"), m);
             yearSet.add(MapUtil.getStr(m, "otime"));
         });
@@ -201,7 +202,7 @@ public class SEReportService {
         IntStream.rangeClosed(0, yearList.size() -1).forEach(i -> {
             IntStream.rangeClosed(1, 12).forEach(m -> {
                 String year = yearList.get(i);
-                double value = MapUtil.getDouble(multiKeyMap.get(year, String.valueOf(m)), type.getValue());
+                double value = MapUtil.getDouble(multiKeyMap.get(year, String.valueOf(m)), type.getValue(), 0.0);
                 option.getSeries().get(i).getData().add(value);
             });
 
@@ -214,7 +215,7 @@ public class SEReportService {
         option.getTitle().setText(type.getText());
         option.getxAxis().get(0).getData().addAll(month_series);
         //销售单Series最大值
-        double maxYAxis = option.getSeries().stream().flatMap(s -> s.getData().stream()).mapToDouble(s -> Double.valueOf(s.toString())).max().getAsDouble();
+        double maxYAxis = option.getSeries().stream().flatMap(s -> s.getData().stream()).mapToDouble(s -> Double.parseDouble(s.toString())).max().getAsDouble();
         //设置图表Y轴坐标
         option.getyAxis().get(0).setMax(NumberUtils.roundIntervalCeil(BigDecimal.valueOf(maxYAxis), 4, 5));
         option.getyAxis().get(0).setInterval(NumberUtils.roundInterval(BigDecimal.valueOf(maxYAxis), 4));

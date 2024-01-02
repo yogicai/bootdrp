@@ -5,13 +5,13 @@ import cn.hutool.core.util.ObjectUtil;
 import com.bootdo.common.enumeration.BillSource;
 import com.bootdo.common.utils.NumberUtils;
 import com.bootdo.data.dao.ConsumerDao;
-import com.bootdo.engage.dao.ProductCostDao;
 import com.bootdo.data.dao.ProductDao;
 import com.bootdo.data.domain.ConsumerDO;
-import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.data.domain.ProductDO;
 import com.bootdo.data.domain.StockDO;
 import com.bootdo.data.service.StockService;
+import com.bootdo.engage.dao.ProductCostDao;
+import com.bootdo.engage.domain.ProductCostDO;
 import com.bootdo.se.controller.request.SEOrderEntryVO;
 import com.bootdo.se.controller.request.SEOrderVO;
 import com.bootdo.se.convert.SEOrderConverter;
@@ -25,10 +25,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -36,19 +36,19 @@ import java.util.Map;
 
 @Service
 public class SEOrderEntryService {
-    @Autowired
-    private SEOrderDao orderDao;
-    @Autowired
-    private SEOrderEntryDao orderEntryDao;
-    @Autowired
+    @Resource
+    private SEOrderDao seOrderDao;
+    @Resource
+    private SEOrderEntryDao seOrderEntryDao;
+    @Resource
     private ConsumerDao consumerDao;
-    @Autowired
+    @Resource
     private UserDao userDao;
-    @Autowired
+    @Resource
     private StockService stockService;
-    @Autowired
+    @Resource
     private ProductDao productDao;
-    @Autowired
+    @Resource
     private ProductCostDao productCostDao;
 
     @Transactional(rollbackFor = Exception.class)
@@ -61,15 +61,15 @@ public class SEOrderEntryService {
         SEOrderDO orderDO = SEOrderConverter.convertOrder(orderVO, userDO, consumerDO);
         List<SEOrderEntryDO> orderEntryDOList = SEOrderConverter.convertOrderEntry(orderVO, orderDO, stockDOMap, costDOMap, purchaseMap);
         //订单入库
-        orderDao.save(orderDO);
-        orderEntryDao.delete(ImmutableMap.of("billNo", orderDO.getBillNo()));
-        orderEntryDao.saveBatch(orderEntryDOList);
+        seOrderDao.save(orderDO);
+        seOrderEntryDao.delete(ImmutableMap.of("billNo", orderDO.getBillNo()));
+        seOrderEntryDao.saveBatch(orderEntryDOList);
         return orderDO;
     }
 
     public SEOrderVO getOrderVO(Map<String, Object> params) {
-        List<SEOrderDO> orderDOList = orderDao.list(params);
-        List<SEOrderEntryDO> orderEntryDOList = orderEntryDao.list(params);
+        List<SEOrderDO> orderDOList = seOrderDao.list(params);
+        List<SEOrderEntryDO> orderEntryDOList = seOrderEntryDao.list(params);
         if (CollectionUtils.isEmpty(orderDOList) || CollectionUtils.isEmpty(orderEntryDOList)) {
             return new SEOrderVO();
         }
@@ -135,8 +135,8 @@ public class SEOrderEntryService {
         for (SEOrderEntryVO entryVO : entryVOList) {
             entryNos.add(entryVO.getEntryId());
         }
-        List<ProductDO> ProductDOList = productDao.list(ImmutableMap.of("nos", entryNos));
-        for (ProductDO productDO : ProductDOList) {
+        List<ProductDO> productDOList = productDao.list(ImmutableMap.of("nos", entryNos));
+        for (ProductDO productDO : productDOList) {
             result.put(productDO.getNo().toString(), productDO.getPurchasePrice());
         }
         return result;

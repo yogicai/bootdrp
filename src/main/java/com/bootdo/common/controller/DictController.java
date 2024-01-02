@@ -1,22 +1,21 @@
 package com.bootdo.common.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.bootdo.common.enumeration.EnumCollection;
-import com.bootdo.common.config.Constant;
+import cn.hutool.json.JSONUtil;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.domain.DictDO;
+import com.bootdo.common.enumeration.EnumCollection;
 import com.bootdo.common.service.DictService;
 import com.bootdo.common.utils.PageUtils;
 import com.bootdo.common.utils.Query;
 import com.bootdo.common.utils.R;
 import com.google.common.collect.ImmutableMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +27,10 @@ import java.util.Map;
  * @email 1992lcg@163.com
  * @date 2017-09-29 18:28:07
  */
-
 @Controller
 @RequestMapping("/common/sysDict")
 public class DictController extends BaseController {
-	@Autowired
+	@Resource
 	private DictService sysDictService;
 
 	@GetMapping()
@@ -190,7 +188,7 @@ public class DictController extends BaseController {
     @ResponseBody
     @GetMapping("/listEnum/{types}")
     public String listEnum(@PathVariable("types") String types) {
-        return JSON.toJSONString(EnumCollection.listEnum(), SerializerFeature.WriteEnumUsingToString).replace("\"{\"", "{\"").replace("\"}\"", "\"}");
+        return JSONUtil.toJsonStr(EnumCollection.listEnum());
     }
 
 }

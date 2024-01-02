@@ -1,20 +1,20 @@
 package com.bootdo.data.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.bootdo.data.dao.VendorDao;
+import com.bootdo.data.domain.VendorDO;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-import com.bootdo.data.dao.VendorDao;
-import com.bootdo.data.domain.VendorDO;
-import com.bootdo.data.service.VendorService;
 
-
-
+/**
+ * @author L
+ */
 @Service
 public class VendorService {
-	@Autowired
+	@Resource
 	private VendorDao vendorDao;
 	
 	public VendorDO get(Integer id){

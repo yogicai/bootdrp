@@ -1,7 +1,7 @@
 package com.bootdo.report.controller;
 
 import cn.hutool.core.map.MapUtil;
-import com.alibaba.fastjson.JSON;
+import cn.hutool.json.JSONUtil;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.utils.PoiUtil;
 import com.bootdo.common.utils.R;
@@ -22,7 +22,6 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
-
 @Controller
 @RequestMapping("/report")
 public class ReportController extends BaseController {
@@ -57,7 +56,7 @@ public class ReportController extends BaseController {
     @RequiresPermissions("report:recon:recon")
     public void sReconVCExport(@RequestParam Map<String, Object> params, Model model) {
         R r = reportService.sRecon(params);
-        List<SReconResult> result = JSON.parseArray(JSON.toJSONString(r.get("result")), SReconResult.class);
+        List<SReconResult> result = JSONUtil.toList(JSONUtil.toJsonStr(r.get("result")), SReconResult.class);
         PoiUtil.exportExcelWithStream("SReconResult.xls", SReconResult.class, result);
     }
 

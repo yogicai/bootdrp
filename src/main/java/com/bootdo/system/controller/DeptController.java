@@ -1,6 +1,6 @@
 package com.bootdo.system.controller;
 
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.domain.Tree;
 import com.bootdo.common.utils.R;
@@ -8,11 +8,11 @@ import com.bootdo.system.domain.DeptDO;
 import com.bootdo.system.service.DeptService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +28,9 @@ import java.util.Map;
 @Controller
 @RequestMapping("/system/sysDept")
 public class DeptController extends BaseController {
-	private String prefix = "system/dept";
-	@Autowired
+	@Resource
 	private DeptService sysDeptService;
+	private String prefix = "system/dept";
 
 	@GetMapping()
 	@RequiresPermissions("system:sysDept:sysDept")
@@ -39,7 +39,6 @@ public class DeptController extends BaseController {
 	}
 
 	@ApiOperation(value="获取部门列表", notes="")
-//	@RequestMapping(value={""})
 	@ResponseBody
 	@GetMapping("/list")
 	@RequiresPermissions("system:sysDept:sysDept")
@@ -149,7 +148,7 @@ public class DeptController extends BaseController {
 	@GetMapping("/tree")
 	@ResponseBody
 	public Tree<DeptDO> tree() {
-		Tree<DeptDO> tree = new Tree<DeptDO>();
+		Tree<DeptDO> tree = new Tree<>();
 		tree = sysDeptService.getTree();
 		return tree;
 	}

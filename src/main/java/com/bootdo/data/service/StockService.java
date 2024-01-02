@@ -1,20 +1,21 @@
 package com.bootdo.data.service;
 
+import com.bootdo.data.dao.StockDao;
+import com.bootdo.data.domain.StockDO;
 import com.google.common.collect.Maps;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-import com.bootdo.data.dao.StockDao;
-import com.bootdo.data.domain.StockDO;
 
-
-
+/**
+ * @author L
+ */
 @Service
 public class StockService {
-	@Autowired
+	@Resource
 	private StockDao stockDao;
 	
 	public StockDO get(Integer id){

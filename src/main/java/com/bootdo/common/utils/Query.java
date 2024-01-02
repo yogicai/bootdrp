@@ -2,7 +2,6 @@ package com.bootdo.common.utils;
 
 import cn.hutool.core.map.MapUtil;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,7 +10,6 @@ import java.util.Map;
  * 查询参数
  * @author L
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 public class Query extends LinkedHashMap<String, Object> {
 
@@ -27,7 +25,7 @@ public class Query extends LinkedHashMap<String, Object> {
 		this.start = DateUtils.getDayBegin(MapUtil.getStr(params, "start"));
 		this.end = DateUtils.getDayEnd(MapUtil.getStr(params, "end"));
 		// 分页参数
-		this.offset = MapUtil.getInt(params, "offset");
+		this.offset = MapUtil.getInt(params, "offset", 0);
 		this.limit = MapUtil.getInt(params, "limit", 10);
 
 		this.put("start", start);

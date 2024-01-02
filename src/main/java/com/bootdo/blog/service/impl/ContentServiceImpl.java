@@ -1,20 +1,21 @@
 package com.bootdo.blog.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-
 import com.bootdo.blog.dao.ContentDao;
 import com.bootdo.blog.domain.ContentDO;
 import com.bootdo.blog.service.ContentService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 
-
+/**
+ * @author L
+ */
 @Service
 public class ContentServiceImpl implements ContentService {
-	@Autowired
+	@Resource
 	private ContentDao bContentMapper;
 	
 	@Override

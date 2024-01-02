@@ -3,6 +3,9 @@ package com.bootdo.common.utils;
 import com.bootdo.common.domain.ScheduleJob;
 import com.bootdo.common.domain.TaskDO;
 
+/**
+ * @author L
+ */
 public class ScheduleJobUtils {
 	public static ScheduleJob entityToData(TaskDO scheduleJobEntity) {
 		ScheduleJob scheduleJob = new ScheduleJob();

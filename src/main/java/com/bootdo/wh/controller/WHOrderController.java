@@ -11,11 +11,11 @@ import com.bootdo.wh.domain.WHOrderDO;
 import com.bootdo.wh.service.WHOrderService;
 import com.bootdo.wh.validator.WHOrderValidator;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -29,10 +29,10 @@ import java.util.Map;
 @Controller
 @RequestMapping("/wh/order")
 public class WHOrderController extends BaseController {
-    @Autowired
-    private WHOrderValidator orderValidator;
-    @Autowired
-    private WHOrderService orderService;
+    @Resource
+    private WHOrderValidator whOrderValidator;
+    @Resource
+    private WHOrderService whOrderService;
 
     /**
      * 左侧菜单单据列表页URL
@@ -53,8 +53,8 @@ public class WHOrderController extends BaseController {
     public PageJQUtils list(@RequestParam Map<String, Object> params) {
         //查询列表数据
         QueryJQ query = new QueryJQ(params);
-        List<WHOrderDO> orderList = orderService.list(query);
-        int total = orderService.count(query);
+        List<WHOrderDO> orderList = whOrderService.list(query);
+        int total = whOrderService.count(query);
         int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
         return new PageJQUtils(orderList, totalPage, query.getPage(), total);
     }
@@ -68,7 +68,7 @@ public class WHOrderController extends BaseController {
     public void export(@RequestParam Map<String, Object> params) {
         //查询列表数据
         QueryJQ query = new QueryJQ(params, false);
-        List<WHOrderDO> orderList = orderService.list(query);
+        List<WHOrderDO> orderList = whOrderService.list(query);
         PoiUtil.exportExcelWithStream("WHOrderResult.xls", WHOrderDO.class, orderList);
     }
 
@@ -80,8 +80,8 @@ public class WHOrderController extends BaseController {
     @ResponseBody
     @RequiresPermissions("wh:order:audit")
     public R audit(@RequestBody Map<String, Object> params) {
-        orderValidator.validateAudit(params);
-        orderService.audit(params);
+        whOrderValidator.validateAudit(params);
+        whOrderService.audit(params);
         return R.ok();
     }
 
@@ -93,8 +93,8 @@ public class WHOrderController extends BaseController {
     @ResponseBody
     @RequiresPermissions("wh:order:remove")
     public R remove(@RequestParam("billNos[]") List<String> billNos) {
-        orderValidator.validateRemove(billNos);
-        orderService.batchRemove(billNos);
+        whOrderValidator.validateRemove(billNos);
+        whOrderService.batchRemove(billNos);
         return R.ok();
     }
 

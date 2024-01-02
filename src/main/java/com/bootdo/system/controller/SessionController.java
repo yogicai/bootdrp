@@ -4,19 +4,22 @@ import com.bootdo.common.utils.R;
 import com.bootdo.system.domain.UserOnline;
 import com.bootdo.system.service.SessionService;
 import org.apache.shiro.session.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author L
+ */
 @RequestMapping("/sys/online")
 @Controller
 public class SessionController {
-	@Autowired
+	@Resource
 	SessionService sessionService;
 
 	@GetMapping()
@@ -37,7 +40,6 @@ public class SessionController {
 			sessionService.forceLogout(sessionId);
 			return R.ok();
 		} catch (Exception e) {
-			e.printStackTrace();
 			return R.error();
 		}
 

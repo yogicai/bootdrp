@@ -1,15 +1,15 @@
 package com.bootdo.common.utils;
 
 
-import com.bootdo.common.config.Constant;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.domain.ColumnDO;
 import com.bootdo.common.domain.TableDO;
+import com.bootdo.common.exception.biz.assertion.BizServiceException;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -17,6 +17,7 @@ import org.apache.velocity.app.Velocity;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -52,8 +53,7 @@ public class GenUtils {
      */
 
 
-    public static void generatorCode(Map<String, String> table,
-                                     List<Map<String, String>> columns, ZipOutputStream zip) {
+    public static void generatorCode(Map<String, String> table, List<Map<String, String>> columns, ZipOutputStream zip) {
         //配置信息
         Configuration config = getConfig();
         //表信息
@@ -63,7 +63,7 @@ public class GenUtils {
         //表名转换成Java类名
         String className = tableToJava(tableDO.getTableName(), config.getString("tablePrefix"), config.getString("autoRemovePre"));
         tableDO.setClassName(className);
-        tableDO.setClassname(StringUtils.uncapitalize(className));
+        tableDO.setClassname(StrUtil.lowerFirst(className));
 
         //列信息
         List<ColumnDO> columsList = new ArrayList<>();
@@ -77,7 +77,7 @@ public class GenUtils {
             //列名转换成Java属性名
             String attrName = columnToJava(columnDO.getColumnName());
             columnDO.setAttrName(attrName);
-            columnDO.setAttrname(StringUtils.uncapitalize(attrName));
+            columnDO.setAttrname(StrUtil.lowerFirst(attrName));
 
             //列的数据类型，转换成Java类型
             String attrType = config.getString(columnDO.getDataType(), "unknowType");
@@ -128,21 +128,19 @@ public class GenUtils {
             try {
                 //添加到zip
                 zip.putNextEntry(new ZipEntry(getFileName(template, tableDO.getClassname(), tableDO.getClassName(), config.getString("package").substring(config.getString("package").lastIndexOf(".") + 1))));
-                IOUtils.write(sw.toString(), zip, "UTF-8");
-                IOUtils.closeQuietly(sw);
+                IoUtil.write(zip, StandardCharsets.UTF_8, false, sw.toString());
                 zip.closeEntry();
             } catch (IOException e) {
-                throw new BDException("渲染模板失败，表名：" + tableDO.getTableName(), e);
+                throw new BizServiceException("渲染模板失败，表名：" + tableDO.getTableName());
             }
         }
     }
-
 
     /**
      * 列名转换成Java属性名
      */
     public static String columnToJava(String columnName) {
-        return WordUtils.capitalizeFully(columnName, new char[]{'_'}).replace("_", "");
+        return StrUtil.toCamelCase(columnName);
     }
 
     /**
@@ -152,7 +150,7 @@ public class GenUtils {
         if (Constant.AUTO_REOMVE_PRE.equals(autoRemovePre)) {
             tableName = tableName.substring(tableName.indexOf("_") + 1);
         }
-        if (StringUtils.isNotBlank(tablePrefix)) {
+        if (StrUtil.isNotBlank(tablePrefix)) {
             tableName = tableName.replace(tablePrefix, "");
         }
 
@@ -166,7 +164,7 @@ public class GenUtils {
         try {
             return new PropertiesConfiguration("generator.properties");
         } catch (ConfigurationException e) {
-            throw new BDException("获取配置文件失败，", e);
+            throw new BizServiceException("获取配置文件失败，");
         }
     }
 
@@ -176,7 +174,7 @@ public class GenUtils {
     public static String getFileName(String template, String classname, String className, String packageName) {
         String packagePath = "main" + File.separator + "java" + File.separator;
         //String modulesname=config.getString("packageName");
-        if (StringUtils.isNotBlank(packageName)) {
+        if (StrUtil.isNotBlank(packageName)) {
             packagePath += packageName.replace(".", File.separator) + File.separator;
         }
 

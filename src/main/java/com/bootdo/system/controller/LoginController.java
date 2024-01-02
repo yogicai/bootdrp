@@ -14,24 +14,23 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * @author L
+ */
 @Controller
 public class LoginController extends BaseController {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
+	@Resource
 	MenuService menuService;
-	@Autowired
+	@Resource
 	FileService fileService;
 	@GetMapping({ "/", "" })
 	String welcome(Model model) {

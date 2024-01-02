@@ -1,22 +1,24 @@
 package com.bootdo.common.service.impl;
 
+import cn.hutool.core.io.IoUtil;
+import com.bootdo.common.dao.GeneratorMapper;
+import com.bootdo.common.service.GeneratorService;
+import com.bootdo.common.utils.GenUtils;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import com.bootdo.common.dao.GeneratorMapper;
-import com.bootdo.common.service.GeneratorService;
-import com.bootdo.common.utils.GenUtils;
-
-
+/**
+ * @author L
+ */
 @Service
 public class GeneratorServiceImpl implements GeneratorService {
-	@Autowired
+	@Resource
 	GeneratorMapper generatorMapper;
 
 	@Override
@@ -37,7 +39,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 			//生成代码
 			GenUtils.generatorCode(table, columns, zip);
 		}
-		IOUtils.closeQuietly(zip);
+		IoUtil.close(zip);
 		return outputStream.toByteArray();
 	}
 

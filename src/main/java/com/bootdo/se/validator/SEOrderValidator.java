@@ -2,12 +2,12 @@ package com.bootdo.se.validator;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSON;
+import cn.hutool.json.JSONUtil;
 import com.bootdo.common.constants.ErrorMessage;
 import com.bootdo.common.constants.OrderStatusCode;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.EnumCollection;
-import com.bootdo.common.exception.BusinessException;
+import com.bootdo.common.exception.biz.assertion.BizServiceException;
 import com.bootdo.rp.dao.RPOrderDao;
 import com.bootdo.rp.domain.RPOrderDO;
 import com.bootdo.se.controller.request.SEOrderVO;
@@ -16,9 +16,9 @@ import com.bootdo.se.domain.SEOrderDO;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,26 +29,28 @@ import java.util.Set;
  */
 @Service
 public class SEOrderValidator {
-    @Autowired
-    private SEOrderDao orderDao;
-    @Autowired
+    @Resource
+    private SEOrderDao seOrderDao;
+    @Resource
     private RPOrderDao rpOrderDao;
 
     public void validateSave(SEOrderVO order) {
         if (order.getBillDate() == null || order.getConsumerId() == null) {
-            throw new BusinessException(OrderStatusCode.ORDER_INVALID, ErrorMessage.PARAM_INVALID);
+            throw new BizServiceException(OrderStatusCode.ORDER_INVALID, ErrorMessage.PARAM_INVALID);
         }
-        if (StrUtil.isEmpty(order.getBillNo())) return;
-        List<SEOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNo", order.getBillNo()));
+        if (StrUtil.isEmpty(order.getBillNo())) {
+            return;
+        }
+        List<SEOrderDO> orderDOList = seOrderDao.list(ImmutableMap.of("billNo", order.getBillNo()));
         if (!CollectionUtils.isEmpty(orderDOList) && AuditStatus.YES.equals(orderDOList.get(0).getAuditStatus())) {
-            throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "修改"));
+            throw new BizServiceException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "修改"));
         }
     }
 
     public void validateAudit(Map<String, Object> params) {
         if (CollectionUtils.isEmpty(MapUtil.get(params, "billNos", List.class))
                 || !EnumCollection.AUDIT_STATUS.contains(AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus")))) {
-            throw new BusinessException(OrderStatusCode.ORDER_INVALID, ErrorMessage.PARAM_INVALID);
+            throw new BizServiceException(OrderStatusCode.ORDER_INVALID, ErrorMessage.PARAM_INVALID);
         }
         AuditStatus auditStatus = AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus"));
         if (AuditStatus.NO.equals(auditStatus)) {
@@ -60,17 +62,19 @@ public class SEOrderValidator {
                 }
             }
             if (!billNoSet.isEmpty()) {
-                throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.CW_ORDER_AUDIT, "收款单", JSON.toJSONString(billNoSet)));
+                throw new BizServiceException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.CW_ORDER_AUDIT, "收款单", JSONUtil.toJsonStr((billNoSet))));
             }
         }
     }
 
     public void validateRemove(List<String> billNos) {
-        if (CollectionUtils.isEmpty(billNos)) return;
-        List<SEOrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", billNos));
+        if (CollectionUtils.isEmpty(billNos)) {
+            return;
+        }
+        List<SEOrderDO> orderDOList = seOrderDao.list(ImmutableMap.of("billNos", billNos));
         for (SEOrderDO orderDO : orderDOList) {
             if (AuditStatus.YES.equals(orderDO.getAuditStatus())) {
-                throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "删除"));
+                throw new BizServiceException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "删除"));
             }
         }
         List<RPOrderDO> rpOrderDOList = rpOrderDao.list(ImmutableMap.of("billNos", billNos));
@@ -79,7 +83,7 @@ public class SEOrderValidator {
             for (RPOrderDO rpOrderDO : rpOrderDOList) {
                 billNoSet.add(rpOrderDO.getBillNo());
             }
-            throw new BusinessException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.CW_ORDER_REMOVE, "收款单", JSON.toJSONString(billNoSet)));
+            throw new BizServiceException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.CW_ORDER_REMOVE, "收款单", JSONUtil.toJsonStr(billNoSet)));
         }
     }
 

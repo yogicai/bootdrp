@@ -1,7 +1,7 @@
 package com.bootdo.po.convert;
 
 import cn.hutool.core.util.StrUtil;
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.BillSource;
 import com.bootdo.common.enumeration.BillType;

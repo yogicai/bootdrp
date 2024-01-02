@@ -1,7 +1,7 @@
 package com.bootdo.engage.service;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.enumeration.CostType;
 import com.bootdo.common.utils.DateUtils;
 import com.bootdo.common.utils.ShiroUtils;

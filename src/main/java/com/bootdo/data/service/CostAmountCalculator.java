@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.enumeration.AuditStatus;
 import com.bootdo.common.enumeration.BillType;
 import com.bootdo.common.enumeration.CostType;
@@ -28,9 +28,9 @@ import com.bootdo.wh.domain.WHOrderEntryDO;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.EnumSet;
 import java.util.List;
@@ -39,19 +39,22 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author L
+ */
 @Service
 public class CostAmountCalculator {
-    @Autowired
+    @Resource
     private ProductCostDao productCostDao;
-    @Autowired
+    @Resource
     private OrderEntryDao orderEntryDao;
-    @Autowired
+    @Resource
     private SEOrderEntryDao seOrderEntryDao;
-    @Autowired
+    @Resource
     private WHOrderEntryDao whOrderEntryDao;
-    @Autowired
+    @Resource
     private ProductBalanceDao whReportDao;
-    @Autowired
+    @Resource
     private ProductDao productDao;
 
 

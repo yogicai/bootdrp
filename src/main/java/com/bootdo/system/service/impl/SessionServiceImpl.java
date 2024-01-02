@@ -8,9 +8,9 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.support.DefaultSubjectContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.Map;
  */
 @Service
 public class SessionServiceImpl implements SessionService {
-	@Autowired
+	@Resource
 	private SessionDAO sessionDAO;
 
 	@Override

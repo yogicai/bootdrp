@@ -21,7 +21,7 @@ import cn.hutool.log.Log;
 import com.bootdo.common.constants.OrderStatusCode;
 import com.bootdo.common.excel.ClassVerifyHandlerImpl;
 import com.bootdo.common.excel.IExcelDictHandlerImpl;
-import com.bootdo.common.exception.BusinessException;
+import com.bootdo.common.exception.biz.assertion.BizServiceException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -204,7 +204,7 @@ public class PoiUtil {
                     .map(entry -> StrUtil.format("第{}行：{}！", entry.getKey(), entry.getValue()))
                     .collect(Collectors.joining(StrUtil.LF));
 
-            throw new BusinessException(OrderStatusCode.ERROR, StrUtil.maxLength(errorMsg, 1000));
+            throw new BizServiceException(OrderStatusCode.ERROR, StrUtil.maxLength(errorMsg, 1000));
         }
         return ObjectUtil.isNotNull(result) ? result.getList() : Collections.emptyList();
     }

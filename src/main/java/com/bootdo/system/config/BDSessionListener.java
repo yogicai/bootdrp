@@ -1,10 +1,13 @@
 package com.bootdo.system.config;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.SessionListener;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+/**
+ * @author L
+ */
 public class BDSessionListener implements SessionListener {
 
 	private final AtomicInteger sessionCount = new AtomicInteger(0);

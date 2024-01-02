@@ -9,17 +9,20 @@ import com.bootdo.data.dao.ProductDao;
 import com.bootdo.data.domain.CategoryDO;
 import com.bootdo.data.domain.ProductDO;
 import com.google.common.collect.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 
+/**
+ * @author L
+ */
 @Service
 public class CategoryService {
-    @Autowired
+    @Resource
     private CategoryDao categoryDao;
-    @Autowired
+    @Resource
     private ProductDao productDao;
 
     public CategoryDO get(Long categoryId) {
@@ -52,8 +55,8 @@ public class CategoryService {
 
     public Tree<CategoryDO> getTree(Map<String, Object> params) {
         List<Tree<CategoryDO>> trees = new ArrayList<Tree<CategoryDO>>();
-        List<CategoryDO> categoryDOS = categoryDao.list(params);
-        for (CategoryDO categoryDO : categoryDOS) {
+        List<CategoryDO> categoryDOList = categoryDao.list(params);
+        for (CategoryDO categoryDO : categoryDOList) {
             Tree<CategoryDO> tree = new Tree<CategoryDO>();
             tree.setId(categoryDO.getCategoryId().toString());
             tree.setParentId(categoryDO.getParentId().toString());
@@ -71,10 +74,10 @@ public class CategoryService {
         return t;
     }
 
-    public List<AsyncTree> getAsyncTree(Map<String, Object> params) {
-        List<AsyncTree> trees = new ArrayList<>();
-        List<CategoryDO> categoryDOS = categoryDao.list(params);
-        for (CategoryDO categoryDO : categoryDOS) {
+    public List<AsyncTree<CategoryDO>> getAsyncTree(Map<String, Object> params) {
+        List<AsyncTree<CategoryDO>> trees = new ArrayList<>();
+        List<CategoryDO> categoryDOList = categoryDao.list(params);
+        for (CategoryDO categoryDO : categoryDOList) {
             AsyncTree<CategoryDO> tree = new AsyncTree<>();
             tree.setId(categoryDO.getCategoryId().toString());
             tree.setParentId(categoryDO.getParentId().toString());
@@ -85,8 +88,8 @@ public class CategoryService {
         return BuildTree.buildAsync(trees);
     }
 
-    public List<AsyncTree> getAsyncTreeLeaf(Map<String, Object> params) {
-        List<AsyncTree> nodeList = Lists.newArrayList();
+    public List<AsyncTree<CategoryDO>> getAsyncTreeLeaf(Map<String, Object> params) {
+        List<AsyncTree<CategoryDO>> nodeList = Lists.newArrayList();
         List<ProductDO> productDOList = productDao.list(ImmutableMap.of("type", MapUtil.getStr(params, "id")));
         for (ProductDO productDO : productDOList) {
             AsyncTree<CategoryDO> tree = new AsyncTree<>();
@@ -112,13 +115,13 @@ public class CategoryService {
         return listTree;
     }
 
-    public Map<String, List<Tree<Map>>> listTreeData(Map<String, Object> params) {
-        List<Tree<Map>> trees = new ArrayList<Tree<Map>>();
-        List<Map> categoryData = categoryDao.listTreeData(params);
+    public Map<String, List<Tree<Object>>> listTreeData(Map<String, Object> params) {
+        List<Tree<Object>> trees = new ArrayList<>();
+        List<Map<String, Object>> categoryData = categoryDao.listTreeData(params);
 
         Set<String> categorySet = Sets.newHashSet();
-        for (Map map : categoryData) {
-            Tree<Map> tree = new Tree<Map>();
+        for (Map<String, Object> map : categoryData) {
+            Tree<Object> tree = new Tree<>();
             if (categorySet.add(MapUtil.getStr(map, "categoryId"))) {
                 tree.setId(MapUtil.getStr(map, "categoryId"));
                 tree.setParentId("0");
@@ -128,7 +131,7 @@ public class CategoryService {
                 tree.setAttributes(attributes);
                 trees.add(tree);
             }
-            tree = new Tree<Map>();
+            tree = new Tree<>();
             tree.setId(MapUtil.getStr(map, "dataId"));
             tree.setParentId(MapUtil.getStr(map, "categoryId"));
             tree.setText(MapUtil.getStr(map, "dataName"));
@@ -139,9 +142,9 @@ public class CategoryService {
         }
 
         // 默认顶级菜单为０，根据数据库实际情况调整
-        List<Tree<Map>> treeList = BuildTree.buildList(trees, ImmutableSet.of("0"));
-        Map<String, List<Tree<Map>>> listTree = Maps.newHashMap();
-        for (Tree<Map> node : treeList) {
+        List<Tree<Object>> treeList = BuildTree.buildList(trees, ImmutableSet.of("0"));
+        Map<String, List<Tree<Object>>> listTree = Maps.newHashMap();
+        for (Tree<Object> node : treeList) {
             String type = MapUtil.getStr(node.getAttributes(), "type");
             if (!listTree.containsKey(type)) {
                 listTree.put(type, new ArrayList<>());

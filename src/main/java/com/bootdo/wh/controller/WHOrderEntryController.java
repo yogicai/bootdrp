@@ -9,11 +9,11 @@ import com.bootdo.wh.service.WHOrderEntryService;
 import com.bootdo.wh.validator.WHOrderValidator;
 import com.google.common.collect.ImmutableMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -26,10 +26,10 @@ import java.util.Map;
 @Controller
 @RequestMapping("/wh/entry")
 public class WHOrderEntryController {
-    @Autowired
-    private WHOrderValidator orderValidator;
-    @Autowired
-    private WHOrderEntryService orderEntryService;
+    @Resource
+    private WHOrderValidator whOrderValidator;
+    @Resource
+    private WHOrderEntryService whOrderEntryService;
 
     /**
      * 左侧菜单单据详情页URL
@@ -49,8 +49,8 @@ public class WHOrderEntryController {
     @PostMapping("/save")
     @RequiresPermissions("se:entry:add")
     public R save(@RequestBody WHOrderVO order) {
-        orderValidator.validateSave(order);
-        WHOrderDO orderDO = orderEntryService.save(order);
+        whOrderValidator.validateSave(order);
+        WHOrderDO orderDO = whOrderEntryService.save(order);
         return R.ok(ImmutableMap.of("billNo", orderDO.getBillNo()));
     }
 
@@ -80,7 +80,7 @@ public class WHOrderEntryController {
     @RequiresPermissions("wh:order:remove")
     public R get(@RequestParam Map<String, Object> params) {
         //查询列表数据
-        WHOrderVO orderVO = orderEntryService.getOrderVO(params);
+        WHOrderVO orderVO = whOrderEntryService.getOrderVO(params);
         return R.ok().put("order", orderVO);
     }
 }

@@ -10,13 +10,10 @@ package com.bootdo.common.constants;
  */
 public class OrderStatusCode {
 
-    public static final String SUCCESSFUL = "0000";
-    public static final String SUCCESS_MSG = "success";
-    public static final String TIME_OUT = "70000000";
-    public static final String ERROR = "2000";
-    public static final String ORDER_INVALID = "70010000";
-    public static final String ORDER_PROCESS = "70010100";
+    public static final Integer ERROR = 500;
+    public static final Integer ORDER_INVALID = 70010000;
+    public static final Integer ORDER_PROCESS = 70010100;
 
-    public static final String DATA_INVALID = "70020000";
+    public static final Integer DATA_INVALID = 70020000;
 
 }

@@ -21,10 +21,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.EnumSet;
 import java.util.List;
@@ -34,15 +34,15 @@ import java.util.Set;
 
 @Service
 public class RPOrderService {
-    @Autowired
+    @Resource
     private OrderDao orderDao;
-    @Autowired
+    @Resource
     private SEOrderDao seOrderDao;
-    @Autowired
+    @Resource
     private RPOrderDao rpOrderDao;
-    @Autowired
+    @Resource
     private RPOrderEntryDao rpOrderEntryDao;
-    @Autowired
+    @Resource
     private RPOrderSettleDao rpOrderSettleDao;
 
     private final EnumSet<BillType> poBillSet = EnumSet.of(BillType.CG_ORDER, BillType.TH_ORDER);

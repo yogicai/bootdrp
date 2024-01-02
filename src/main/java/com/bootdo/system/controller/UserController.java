@@ -1,7 +1,7 @@
 package com.bootdo.system.controller;
 
 import com.bootdo.common.annotation.Log;
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.domain.Tree;
 import com.bootdo.common.service.DictService;
@@ -16,28 +16,34 @@ import com.bootdo.system.service.RoleService;
 import com.bootdo.system.service.UserService;
 import com.bootdo.system.vo.UserVO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author L
+ */
 @RequestMapping("/sys/user")
 @Controller
 public class UserController extends BaseController {
-	private String prefix="system/user"  ;
-	@Autowired
+	@Resource
 	UserService userService;
-	@Autowired
+	@Resource
 	RoleService roleService;
-	@Autowired
+	@Resource
 	DictService dictService;
+
+	private String prefix="system/user"  ;
+
+
 	@RequiresPermissions("sys:user:user")
 	@GetMapping("")
 	String user(Model model) {

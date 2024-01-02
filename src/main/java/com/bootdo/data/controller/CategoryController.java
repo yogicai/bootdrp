@@ -1,7 +1,7 @@
 package com.bootdo.data.controller;
 
 import cn.hutool.core.map.MapUtil;
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.domain.AsyncTree;
 import com.bootdo.common.domain.Tree;
 import com.bootdo.common.utils.Query;
@@ -147,7 +147,7 @@ public class CategoryController {
      */
     @GetMapping("/listTreeData/{types}")
     @ResponseBody
-    public Map<String, List<Tree<Map>>> listTreeData(@PathVariable("types") String types) {
+    public Map<String, List<Tree<Object>>> listTreeData(@PathVariable("types") String types) {
         // 查询列表数据
         return categoryService.listTreeData(ImmutableMap.of("types", StringUtils.split(types, ","), "status", 1));
     }
@@ -158,7 +158,7 @@ public class CategoryController {
      */
     @GetMapping("/productTree")
     @ResponseBody
-    public List<AsyncTree> productTree(@RequestParam Map<String, Object> params) {
+    public List<AsyncTree<CategoryDO>> productTree(@RequestParam Map<String, Object> params) {
         String id = MapUtil.getStr(params, "id");
         if ("#".equals(id)) {
             return categoryService.getAsyncTree(params);

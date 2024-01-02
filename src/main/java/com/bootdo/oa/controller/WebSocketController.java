@@ -16,10 +16,10 @@
 //
 //@Controller
 //public class WebSocketController {
-//	@Autowired
+//	@Resource
 //	SimpMessagingTemplate template;
 //
-//	@Autowired
+//	@Resource
 //	WelcomeTask welcomeTask;
 //
 //	@MessageMapping("/welcome") // 浏览器发送请求通过@messageMapping 映射/welcome 这个地址。

@@ -1,12 +1,14 @@
 package com.bootdo.common.utils;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.NumberUtil;
 import com.bootdo.common.domain.AsyncTree;
 import com.bootdo.common.domain.Tree;
 
 import java.util.*;
 
+/**
+ * @author L
+ */
 public class BuildTree {
 
 	public static <T> Tree<T> build(List<Tree<T>> nodes) {
@@ -14,7 +16,7 @@ public class BuildTree {
 		if (nodes == null) {
 			return null;
 		}
-		List<Tree<T>> topNodes = new ArrayList<Tree<T>>();
+		List<Tree<T>> topNodes = new ArrayList<>();
 
 		for (Tree<T> children : nodes) {
 
@@ -30,7 +32,7 @@ public class BuildTree {
 				if (id != null && id.equals(pid)) {
 					parent.getChildren().add(children);
 					children.setHasParent(true);
-					parent.setChildren(true);
+					parent.setHasChildren(true);
 					continue;
 				}
 			}
@@ -44,7 +46,7 @@ public class BuildTree {
 			root.setId("-1");
 			root.setParentId("");
 			root.setHasParent(false);
-			root.setChildren(true);
+			root.setHasChildren(true);
 			root.setChecked(true);
 			root.setChildren(topNodes);
 			root.setText("顶级节点");
@@ -56,18 +58,20 @@ public class BuildTree {
 		return root;
 	}
 
-    public static List<AsyncTree> buildAsync(List<AsyncTree> nodes) {
-        if (nodes == null) return null;
-        List<AsyncTree> topNodes = new ArrayList<>();
-        for (AsyncTree parent : nodes) {
+    public static  <T> List<AsyncTree<T>> buildAsync(List<AsyncTree<T>> nodes) {
+        if (nodes == null) {
+            return null;
+        }
+        List<AsyncTree<T>> topNodes = new ArrayList<>();
+        for (AsyncTree<T> parent : nodes) {
             String pid = parent.getParentId();
             if (pid == null || "0".equals(pid)) {
                 topNodes.add(parent);
             }
             boolean leafNode = true;
             String id = parent.getId();
-            List<AsyncTree> childList = new ArrayList<>();
-            for (AsyncTree children : nodes) {
+            List<AsyncTree<T>> childList = new ArrayList<>();
+            for (AsyncTree<T> children : nodes) {
                 String cPid = children.getParentId();
                 if (id != null && id.equals(cPid)) {
                     childList.add(children);
@@ -103,7 +107,7 @@ public class BuildTree {
 				if (id != null && id.equals(pid)) {
 					parent.getChildren().add(children);
 					children.setHasParent(true);
-					parent.setChildren(true);
+					parent.setHasChildren(true);
 
 					continue;
 				}
@@ -112,7 +116,7 @@ public class BuildTree {
 		}
 
 		CollectionUtil.sort(topNodes, Comparator.comparing(tree -> NumberUtils.toInt(tree.getId())));
-		topNodes.stream().forEach(tree -> tree.getChildren().sort(Comparator.comparing(t -> NumberUtils.toInt(t.getId()))));
+		topNodes.forEach(tree -> tree.getChildren().sort(Comparator.comparing(t -> NumberUtils.toInt(t.getId()))));
 
 		return topNodes;
 	}
@@ -132,7 +136,7 @@ public class BuildTree {
                 String pid = children.getParentId();
                 if (pid != null && pid.equals(id) && parent.getType().equals(children.getType())) {
                     parent.getChildren().add(children);
-                    parent.setChildren(true);
+                    parent.setHasChildren(true);
                     children.setHasParent(true);
                 }
             }

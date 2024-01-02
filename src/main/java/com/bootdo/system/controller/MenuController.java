@@ -1,26 +1,30 @@
 package com.bootdo.system.controller;
 
 import com.bootdo.common.annotation.Log;
-import com.bootdo.common.config.Constant;
+import com.bootdo.common.constants.Constant;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.domain.Tree;
 import com.bootdo.common.utils.R;
 import com.bootdo.system.domain.MenuDO;
 import com.bootdo.system.service.MenuService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * @author L
+ */
 @RequestMapping("/sys/menu")
 @Controller
 public class MenuController extends BaseController {
-	String prefix = "system/menu";
-	@Autowired
+	@Resource
 	MenuService menuService;
+
+	String prefix = "system/menu";
 
 	@RequiresPermissions("sys:menu:menu")
 	@GetMapping()

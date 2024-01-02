@@ -10,11 +10,11 @@ import com.bootdo.rp.service.RPOrderEntryService;
 import com.bootdo.rp.validator.RPOrderValidator;
 import com.google.common.collect.ImmutableMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -23,14 +23,13 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-21 21:23:27
  */
-
 @Controller
 @RequestMapping("/rp/entry")
 public class RPOrderEntryController {
-    @Autowired
-    private RPOrderValidator orderValidator;
-    @Autowired
-    private RPOrderEntryService orderEntryService;
+    @Resource
+    private RPOrderValidator rpOrderValidator;
+    @Resource
+    private RPOrderEntryService rpOrderEntryService;
 
     @GetMapping()
     @RequiresPermissions("rp:entry:entry")
@@ -48,7 +47,7 @@ public class RPOrderEntryController {
     @GetMapping("/edit/{id}")
     @RequiresPermissions("rp:entry:edit")
     public String edit(@PathVariable("id") Integer id, Model model) {
-        RPOrderEntryDO orderEntry = orderEntryService.get(id);
+        RPOrderEntryDO orderEntry = rpOrderEntryService.get(id);
         model.addAttribute("entry", orderEntry);
         return "rp/entry/edit";
     }
@@ -61,8 +60,8 @@ public class RPOrderEntryController {
     @PostMapping("/save")
     @RequiresPermissions("rp:entry:add")
     public R save(@RequestBody RPOrderVO order) {
-        orderValidator.validateSave(order);
-        RPOrderDO orderDO = orderEntryService.save(order);
+        rpOrderValidator.validateSave(order);
+        RPOrderDO orderDO = rpOrderEntryService.save(order);
         return R.ok(ImmutableMap.of("billNo", orderDO.getBillNo()));
     }
 
@@ -71,7 +70,7 @@ public class RPOrderEntryController {
     @RequiresPermissions("rp:order:order")
     public R get(@RequestParam Map<String, Object> params) {
         //查询列表数据
-        RPOrderVO orderVO = orderEntryService.getOrderVO(params);
+        RPOrderVO orderVO = rpOrderEntryService.getOrderVO(params);
         return R.ok().put("order", orderVO);
     }
 }

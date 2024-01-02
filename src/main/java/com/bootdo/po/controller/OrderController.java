@@ -11,11 +11,11 @@ import com.bootdo.po.domain.OrderDO;
 import com.bootdo.po.service.OrderService;
 import com.bootdo.po.validator.OrderValidator;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -25,13 +25,12 @@ import java.util.Map;
  * @author yogiCai
  * @date 2017-11-28 21:30:03
  */
-
 @Controller
 @RequestMapping("/po/order")
 public class OrderController extends BaseController {
-    @Autowired
+    @Resource
     private OrderValidator orderValidator;
-    @Autowired
+    @Resource
     private OrderService orderService;
 
     @GetMapping()

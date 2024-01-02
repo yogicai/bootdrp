@@ -8,10 +8,10 @@ import com.bootdo.se.service.SEOrderEntryService;
 import com.bootdo.se.validator.SEOrderValidator;
 import com.google.common.collect.ImmutableMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -24,10 +24,10 @@ import java.util.Map;
 @Controller
 @RequestMapping("/se/entry")
 public class SEOrderEntryController {
-    @Autowired
-    private SEOrderValidator orderValidator;
-    @Autowired
-    private SEOrderEntryService orderEntryService;
+    @Resource
+    private SEOrderValidator seOrderValidator;
+    @Resource
+    private SEOrderEntryService seOrderEntryService;
 
     @GetMapping()
     @RequiresPermissions("se:entry:entry")
@@ -43,8 +43,8 @@ public class SEOrderEntryController {
     @PostMapping("/save")
     @RequiresPermissions("se:entry:add")
     public R save(@RequestBody SEOrderVO order) {
-        orderValidator.validateSave(order);
-        SEOrderDO orderDO = orderEntryService.save(order);
+        seOrderValidator.validateSave(order);
+        SEOrderDO orderDO = seOrderEntryService.save(order);
         return R.ok(ImmutableMap.of("billNo", orderDO.getBillNo()));
     }
 
@@ -70,7 +70,7 @@ public class SEOrderEntryController {
     @RequiresPermissions("se:order:order")
     public R get(@RequestParam Map<String, Object> params) {
         //查询列表数据
-        SEOrderVO orderVO = orderEntryService.getOrderVO(params);
+        SEOrderVO orderVO = seOrderEntryService.getOrderVO(params);
         return R.ok().put("order", orderVO);
     }
 }

@@ -5,9 +5,9 @@ import com.bootdo.data.dao.ProductDao;
 import com.bootdo.data.domain.ProductDO;
 import com.bootdo.engage.dao.ProductCostDao;
 import com.bootdo.engage.domain.ProductCostDO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +15,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author L
+ */
 @Service
 public class ProductService {
-	@Autowired
+	@Resource
 	private ProductDao productDao;
-	@Autowired
+	@Resource
 	private ProductCostDao productCostDao;
 	
 	public ProductDO get(Integer id){

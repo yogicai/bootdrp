@@ -18,7 +18,7 @@ public interface CategoryDao {
 	
 	List<CategoryDO> list(Map<String, Object> map);
 
-    List<Map> listTreeData(Map<String, Object> map);
+    List<Map<String, Object>> listTreeData(Map<String, Object> map);
 	
 	int count(Map<String, Object> map);
 	
