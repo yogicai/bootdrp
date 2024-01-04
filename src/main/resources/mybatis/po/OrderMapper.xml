@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.bootdo.po.dao.OrderDao">
+<mapper namespace="com.bootdo.modular.po.dao.OrderDao">
 
     <sql id="whereSql">
         <where>
@@ -52,11 +52,11 @@
         </if>
     </sql>
 
-    <select id="get" resultType="com.bootdo.po.domain.OrderDO">
+    <select id="get" resultType="com.bootdo.modular.po.domain.OrderDO">
         select `id`,`bill_date`,`bill_no`,`bill_type`,`vendor_id`,`vendor_name`,`total_qty`,`entry_amount`,`final_amount`,`payment_amount`,`total_amount`,`discount_amount`,`discount_rate`,`purchase_fee`,`status`,`settle_account`,`biller_id`,`audit_status`,`remark`,`create_time`,`update_time` from po_order where id = #{value}
     </select>
 
-    <select id="list" resultType="com.bootdo.po.domain.OrderDO">
+    <select id="list" resultType="com.bootdo.modular.po.domain.OrderDO">
         select `id`,`bill_date`,`bill_no`,`bill_type`,`vendor_id`,`vendor_name`,`total_qty`,`entry_amount`,`final_amount`,`payment_amount`,`total_amount`,`discount_amount`,`discount_rate`,`purchase_fee`,`status`,`settle_account`,`biller_id`,`audit_status`,`remark`,`create_time`,`update_time` from po_order
         <include refid="whereSql"/>
         <include refid="pageSql"/>
@@ -67,7 +67,7 @@
         <include refid="whereSql"/>
     </select>
 	 
-	<insert id="save" parameterType="com.bootdo.po.domain.OrderDO" useGeneratedKeys="true" keyProperty="id">
+	<insert id="save" parameterType="com.bootdo.modular.po.domain.OrderDO" useGeneratedKeys="true" keyProperty="id">
 		insert into po_order
 		(
             `bill_date`,`bill_no`,`bill_type`,`vendor_id`,`vendor_name`,`total_qty`,`entry_amount`,`final_amount`,`payment_amount`,`total_amount`,`discount_amount`,

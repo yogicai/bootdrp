@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.bootdo.rp.dao.RPOrderEntryDao">
+<mapper namespace="com.bootdo.modular.rp.dao.RPOrderEntryDao">
 
-	<select id="get" resultType="com.bootdo.rp.domain.RPOrderEntryDO">
+	<select id="get" resultType="com.bootdo.modular.rp.domain.RPOrderEntryDO">
 		select `id`,`bill_no`,`src_bill_date`,`src_bill_type`,`src_bill_no`,`src_total_amount`,`src_payment_amount`,`check_amount`,`create_time`,`update_time` from rp_order_entry where id = #{value}
 	</select>
 
-	<select id="list" resultType="com.bootdo.rp.domain.RPOrderEntryDO">
+	<select id="list" resultType="com.bootdo.modular.rp.domain.RPOrderEntryDO">
 		select `id`,`bill_no`,`src_bill_date`,`src_bill_type`,`src_bill_no`,`src_total_amount`,`src_payment_amount`,`check_amount`,`create_time`,`update_time` from rp_order_entry
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
@@ -55,7 +55,7 @@
 		  		</where>
 	</select>
 	 
-	<insert id="save" parameterType="com.bootdo.rp.domain.RPOrderEntryDO" useGeneratedKeys="true" keyProperty="id">
+	<insert id="save" parameterType="com.bootdo.modular.rp.domain.RPOrderEntryDO" useGeneratedKeys="true" keyProperty="id">
 		insert into rp_order_entry
 		(
             `bill_no`,`src_bill_date`,`src_bill_type`,`src_bill_no`,`src_total_amount`,
@@ -84,7 +84,7 @@
     </insert>
 
 
-	<update id="update" parameterType="com.bootdo.rp.domain.RPOrderEntryDO">
+	<update id="update" parameterType="com.bootdo.modular.rp.domain.RPOrderEntryDO">
 		update rp_order_entry 
 		<set>
 			<if test="billNo != null">`bill_no` = #{billNo}, </if>

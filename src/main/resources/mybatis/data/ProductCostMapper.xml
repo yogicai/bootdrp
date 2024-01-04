@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.bootdo.engage.dao.ProductCostDao">
+<mapper namespace="com.bootdo.modular.engage.dao.ProductCostDao">
 
-	<select id="get" resultType="com.bootdo.engage.domain.ProductCostDO">
+	<select id="get" resultType="com.bootdo.modular.engage.domain.ProductCostDO">
 		select `id`,`product_no`,`entry_price`,`entry_qty`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost where id = #{value}
 	</select>
 
-	<select id="list" resultType="com.bootdo.engage.domain.ProductCostDO">
+	<select id="list" resultType="com.bootdo.modular.engage.domain.ProductCostDO">
 		select `id`,`product_no`,`entry_price`,`entry_qty`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost
 		<where>
 			<if test="id != null and id != ''">and id = #{id}</if>
@@ -33,7 +33,7 @@
 		</if>
 	</select>
 
-    <select id="listLate" resultType="com.bootdo.engage.domain.ProductCostDO">
+    <select id="listLate" resultType="com.bootdo.modular.engage.domain.ProductCostDO">
         select `id`,`product_no`,`entry_price`,`entry_qty`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`,`create_time`,`update_time` from data_product_cost
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             <if test="productNo != null and productNo != ''"> and product_no = #{productNo} </if>
@@ -70,7 +70,7 @@
 		</where>
 	</select>
 
-	<select id="costList" resultType="com.bootdo.engage.domain.ProductCostDO">
+	<select id="costList" resultType="com.bootdo.modular.engage.domain.ProductCostDO">
 		select
 		    a.*, b.name as product_name, b.type as product_type
 		from
@@ -120,7 +120,7 @@
 		</where>
 	</select>
 	 
-	<insert id="save" parameterType="com.bootdo.engage.domain.ProductCostDO" useGeneratedKeys="true" keyProperty="id">
+	<insert id="save" parameterType="com.bootdo.modular.engage.domain.ProductCostDO" useGeneratedKeys="true" keyProperty="id">
 		insert into data_product_cost
 		(
           `product_no`,`entry_price`,`entry_qty`,`cost_price`,`cost_qty`,`cost_balance`,`cost_amount`,`cost_date`,`cost_type`,`relate_no`,`remark`
@@ -144,7 +144,7 @@
         </foreach >
     </insert>
 
-	<update id="update" parameterType="com.bootdo.engage.domain.ProductCostDO">
+	<update id="update" parameterType="com.bootdo.modular.engage.domain.ProductCostDO">
 		update data_product_cost 
 		<set>
 			<if test="productNo != null">`product_no` = #{productNo}, </if>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bootdo.cashier.dao.RecordDao">
+<mapper namespace="com.bootdo.modular.cashier.dao.RecordDao">
 
     <sql id="whereSql">
         <where>
@@ -43,13 +43,13 @@
     </sql>
 
     <!--查询单个-->
-    <select id="get" resultType="com.bootdo.cashier.domain.RecordDO">
+    <select id="get" resultType="com.bootdo.modular.cashier.domain.RecordDO">
         select id, nick, account, type, trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, cost_type, source, update_time
         from cashier_record where id = #{id}
     </select>
 
     <!--查询指定行数据-->
-    <select id="list" resultType="com.bootdo.cashier.domain.RecordDO">
+    <select id="list" resultType="com.bootdo.modular.cashier.domain.RecordDO">
         select
         id, nick, account, type, trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, cost_type, source, update_time
         from cashier_record
@@ -207,7 +207,7 @@
         </foreach>
     </delete>
 
-    <select id="multiSelect" resultType="com.bootdo.cashier.domain.RecordDO">
+    <select id="multiSelect" resultType="com.bootdo.modular.cashier.domain.RecordDO">
         select distinct cr.type, cr.account, cr.pay_status, cr.pay_direct, cr.trade_class, cr.source, cr.cost_type
         from cashier_record cr
         <include refid="whereSql"/>

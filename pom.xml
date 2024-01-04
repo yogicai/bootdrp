@@ -24,7 +24,6 @@
         <commons.collections.version>4.4</commons.collections.version>
         <commons.configuration.version>1.10</commons.configuration.version>
         <mybatis.plus.version>3.5.3.1</mybatis.plus.version>
-        <mybatis.version>3.5.10</mybatis.version>
         <mysql.version>8.0.28</mysql.version>
         <druid.version>1.2.9</druid.version>
         <knife4j.version>2.0.8</knife4j.version>
@@ -82,12 +81,7 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatis.plus.version}</version>
         </dependency>
-        <!--mybatis -->
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>${mybatis.version}</version>
-        </dependency>
+
         <!-- mysql -->
         <dependency>
             <groupId>mysql</groupId>
@@ -203,27 +197,4 @@
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>public</id>
-            <name>aliyun nexus</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>public</id>
-            <name>aliyun nexus</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 </project>

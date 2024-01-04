@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.bootdo.engage.dao.ProductBalanceDao">
+<mapper namespace="com.bootdo.modular.engage.dao.ProductBalanceDao">
 
     <select id="pBalance" resultType="java.util.Map">
         SELECT
@@ -85,7 +85,7 @@
             <include refid="whereSql"/>
     </sql>
 
-    <select id="pBalanceEntry" resultType="com.bootdo.engage.controller.response.EntryBalanceResult">
+    <select id="pBalanceEntry" resultType="com.bootdo.modular.engage.controller.response.EntryBalanceResult">
         <include refid="selectSql"/>
         <choose>
             <when test="sort != null and sort.trim() != ''">order by ${sort} ${order}, bill_date desc</when>

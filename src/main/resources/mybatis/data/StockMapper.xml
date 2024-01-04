@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.bootdo.data.dao.StockDao">
+<mapper namespace="com.bootdo.modular.data.dao.StockDao">
 
-	<select id="get" resultType="com.bootdo.data.domain.StockDO">
+	<select id="get" resultType="com.bootdo.modular.data.domain.StockDO">
 		select `id`,`stock_no`,`stock_name`,`stock_address`,`status`,`create_time`,`update_time` from data_stock where id = #{value}
 	</select>
 
-	<select id="list" resultType="com.bootdo.data.domain.StockDO">
+	<select id="list" resultType="com.bootdo.modular.data.domain.StockDO">
 		select `id`,`stock_no`,`stock_name`,`stock_address`,`status`,`create_time`,`update_time` from data_stock
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
@@ -51,7 +51,7 @@
          </where>
 	</select>
 	 
-	<insert id="save" parameterType="com.bootdo.data.domain.StockDO" useGeneratedKeys="true" keyProperty="id">
+	<insert id="save" parameterType="com.bootdo.modular.data.domain.StockDO" useGeneratedKeys="true" keyProperty="id">
 		insert into data_stock
 		(
 			`stock_no`, 
@@ -68,7 +68,7 @@
 		)
 	</insert>
 	 
-	<update id="update" parameterType="com.bootdo.data.domain.StockDO">
+	<update id="update" parameterType="com.bootdo.modular.data.domain.StockDO">
 		update data_stock 
 		<set>
 			<if test="stockNo != null">`stock_no` = #{stockNo}, </if>

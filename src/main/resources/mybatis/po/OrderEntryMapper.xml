@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.bootdo.po.dao.OrderEntryDao">
+<mapper namespace="com.bootdo.modular.po.dao.OrderEntryDao">
 
-	<select id="get" resultType="com.bootdo.po.domain.OrderEntryDO">
+	<select id="get" resultType="com.bootdo.modular.po.domain.OrderEntryDO">
 		select `id`,`bill_no`,`entry_id`,`entry_name`,`entry_unit`,`entry_price`,`stock_no`,`stock_name`,`total_qty`,`entry_amount`,`discount_amount`,`discount_rate`,`purchase_fee`,`total_amount`,`remark`,`request_bill_no`,`create_time`,`update_time` from po_order_entry where id = #{value}
 	</select>
 
-	<select id="list" resultType="com.bootdo.po.domain.OrderEntryDO">
+	<select id="list" resultType="com.bootdo.modular.po.domain.OrderEntryDO">
 		select `id`,`bill_no`,`entry_id`,`entry_name`,`entry_unit`,`entry_price`,`stock_no`,`stock_name`,`total_qty`,`entry_amount`,`discount_amount`,`discount_rate`,`purchase_fee`,`total_amount`,`remark`,`request_bill_no`,`create_time`,`update_time` from po_order_entry
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
@@ -69,7 +69,7 @@
 		  		</where>
 	</select>
 	 
-	<insert id="save" parameterType="com.bootdo.po.domain.OrderEntryDO" useGeneratedKeys="true" keyProperty="id">
+	<insert id="save" parameterType="com.bootdo.modular.po.domain.OrderEntryDO" useGeneratedKeys="true" keyProperty="id">
 		insert into po_order_entry
 		(
             `bill_no`,`entry_id`,`entry_name`,`entry_unit`,`entry_price`, `stock_no`, `stock_name`, `total_qty`,`entry_amount`,`discount_amount`,
@@ -121,7 +121,7 @@
     </insert>
 
 
-	<update id="update" parameterType="com.bootdo.po.domain.OrderEntryDO">
+	<update id="update" parameterType="com.bootdo.modular.po.domain.OrderEntryDO">
 		update po_order_entry 
 		<set>
 			<if test="billNo != null">`bill_no` = #{billNo}, </if>

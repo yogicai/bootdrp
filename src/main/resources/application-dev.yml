@@ -32,13 +32,6 @@ spring:
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
     # 合并多个DruidDataSource的监控数据
     #useGlobalDataSourceStat: true
-  jpa:
-    database: MYSQL
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-      dialect: org.hibernate.dialect.MySQL5Dialect
 configure:
     cdn:
 #      echarts: https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js

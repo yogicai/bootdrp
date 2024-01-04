@@ -1,41 +1,27 @@
+#服务配置
 server:
-  # context-path: /myboot
-  session-timeout: 1800
-  tomcat:
-    max-threads: 1000
-    min-spare-threads: 30
   port: 80
   uri-encoding: utf-8
-security:
-  basic:
-    enabled: false
+  max-http-header-size: 10240
+
+#spring相关配置
 spring:
-  aop:
-    proxy-target-class: true
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-request-size: 30MB
+      max-file-size: 30MB
   thymeleaf:
     mode: LEGACYHTML5
     cache: false
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
-  profiles: 
-    active: dev
-  http:
-    multipart:
-      max-file-size: 30Mb
-      max-request-size: 30Mb
-  devtools:
-    restart:
-      enabled: false
-#mybatis:
-#  configuration:
-#    map-underscore-to-camel-case: true
-#  mapper-locations: mybatis/**/*Mapper.xml
-#  typeAliasesPackage: com.bootdo.**.domain
 
 #mybaits相关配置
 mybatis-plus:
-  mapper-locations: mybatis/**/*Mapper.xml, classpath:/META-INF/modeler-mybatis-mappings/*.xml
+  mapper-locations: classpath*:mybatis/**/*Mapper.xml, classpath:/META-INF/modeler-mybatis-mappings/*.xml
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: true
