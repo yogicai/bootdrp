@@ -9,12 +9,12 @@
 
 	<select id="list" resultType="com.bootdo.modular.system.domain.FileDO">
 		select `id`,`type`,`url`,`create_date` from sys_file
-        <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="type != null and type != ''"> and type = #{type} </if>
-		  		  <if test="url != null and url != ''"> and url = #{url} </if>
-		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
-		  		</where>
+		<where>
+			<if test="id != null and id != ''">and id = #{id}</if>
+			<if test="type != null and type != ''">and type = #{type}</if>
+			<if test="url != null and url != ''">and url = #{url}</if>
+			<if test="createDate != null and createDate != ''">and create_date = #{createDate}</if>
+		</where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
                 order by ${sort} ${order}
@@ -27,15 +27,15 @@
 			limit #{offset}, #{limit}
 		</if>
 	</select>
-	
- 	<select id="count" resultType="int">
+
+	<select id="count" resultType="int">
 		select count(*) from sys_file
-		 <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="type != null and type != ''"> and type = #{type} </if>
-		  		  <if test="url != null and url != ''"> and url = #{url} </if>
-		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
-		  		</where>
+		<where>
+			<if test="id != null and id != ''">and id = #{id}</if>
+			<if test="type != null and type != ''">and type = #{type}</if>
+			<if test="url != null and url != ''">and url = #{url}</if>
+			<if test="createDate != null and createDate != ''">and create_date = #{createDate}</if>
+		</where>
 	</select>
 	 
 	<insert id="save" parameterType="com.bootdo.modular.system.domain.FileDO" useGeneratedKeys="true" keyProperty="id">

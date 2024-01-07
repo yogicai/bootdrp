@@ -9,16 +9,17 @@
 
 	<select id="list" resultType="com.bootdo.modular.data.domain.CategoryDO">
 		select `category_id`,`parent_id`,`name`,`order_num`,`type`,`status` from data_category a
-        <where>  
-		  		  <if test="categoryId != null and categoryId != ''"> and category_id = #{categoryId} </if>
-		  		  <if test="parentId != null and parentId != ''"> and parent_id = #{parentId} </if>
-		  		  <if test="name != null and name != ''"> and name = #{name} </if>
-		  		  <if test="orderNum != null and orderNum != ''"> and order_num = #{orderNum} </if>
-		  		  <if test="type != null and type != ''"> and type = #{type} </if>
-		  		  <if test="status != null and status != ''"> and status = #{status} </if>
-                  <if test="leaf != null and status == true"> and NOT EXISTS (SELECT 1 FROM data_category b WHERE a.`category_id` = b.`parent_id`) } </if>
-                  <if test="types != null and types != ''"> and type in <foreach item="type" collection="types" open="(" separator="," close=")"> #{type} </foreach> </if>
-                </where>
+		<where>
+			<if test="categoryId != null and categoryId != ''">and category_id = #{categoryId}</if>
+			<if test="parentId != null and parentId != ''">and parent_id = #{parentId}</if>
+			<if test="name != null and name != ''">and name = #{name}</if>
+			<if test="orderNum != null and orderNum != ''">and order_num = #{orderNum}</if>
+			<if test="type != null and type != ''">and type = #{type}</if>
+			<if test="status != null and status != ''">and status = #{status}</if>
+			<if test="leaf != null and status == true">and NOT EXISTS (SELECT 1 FROM data_category b WHERE a.`category_id` = b.`parent_id`) }</if>
+			<if test="types != null and types != ''">and type in <foreach item="type" collection="types" open="(" separator="," close=")">#{type}</foreach>
+			</if>
+		</where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
                 order by ${sort} ${order}
@@ -66,16 +67,16 @@
         </if>
     </select>
 
- 	<select id="count" resultType="int">
+	<select id="count" resultType="int">
 		select count(*) from data_category
-		 <where>  
-		  		  <if test="categoryId != null and categoryId != ''"> and categoryId = #{categoryId} </if>
-		  		  <if test="parentId != null and parentId != ''"> and parentId = #{parentId} </if>
-		  		  <if test="name != null and name != ''"> and name = #{name} </if>
-		  		  <if test="orderNum != null and orderNum != ''"> and orderNum = #{orderNum} </if>
-		  		  <if test="type != null and type != ''"> and type = #{type} </if>
-		  		  <if test="status != null and status != ''"> and status = #{status} </if>
-		  		</where>
+		<where>
+			<if test="categoryId != null and categoryId != ''">and categoryId = #{categoryId}</if>
+			<if test="parentId != null and parentId != ''">and parentId = #{parentId}</if>
+			<if test="name != null and name != ''">and name = #{name}</if>
+			<if test="orderNum != null and orderNum != ''">and orderNum = #{orderNum}</if>
+			<if test="type != null and type != ''">and type = #{type}</if>
+			<if test="status != null and status != ''">and status = #{status}</if>
+		</where>
 	</select>
 	 
 	<insert id="save" parameterType="com.bootdo.modular.data.domain.CategoryDO" useGeneratedKeys="true" keyProperty="categoryId">

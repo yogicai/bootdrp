@@ -36,8 +36,8 @@
 			limit #{offset}, #{limit}
 		</if>
 	</select>
-	
- 	<select id="count" resultType="int">
+
+	<select id="count" resultType="int">
 		select count(*) from data_consumer
 		 <where>  
             <if test="id != null and id != ''"> and id = #{id} </if>

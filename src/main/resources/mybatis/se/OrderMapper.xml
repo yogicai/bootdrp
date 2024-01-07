@@ -89,55 +89,38 @@
         expense_fee= VALUES(expense_fee),total_amount= VALUES(total_amount),status= VALUES(status),settle_account= VALUES(settle_account),biller_id= VALUES(biller_id),biller_name= VALUES(biller_name),audit_status= VALUES(audit_status),bill_source= VALUES(bill_source),remark= VALUES(remark)
     </insert>
 
-    <insert id="saveOrUpdate" parameterType="java.util.List">
-        insert into po_order
-        (
-        `bill_date`, `bill_no`, `bill_type`, `consumer_id`,`consumer_name`,`total_qty`, `cost_amount`, `entry_amount`, `discount_amount`, `discount_rate`, `purchase_fee`,
-        `final_amount`, `payment_amount`, `expense_fee`, `total_amount`, `status`, `settle_account`, `biller_id`, `biller_name`, `bill_source`, `audit_status`, `remark`
-        ) values
-        <foreach collection="list" item="item" index="index" separator=",">
-            (
-            #{billDate}, #{billNo}, #{billType}, #{consumerId},#{consumerName},#{totalQty}, #{costAmount}, #{entryAmount}, #{discountAmount}, #{discountRate}, #{purchaseFee},
-            #{finalAmount}, #{paymentAmount}, #{expenseFee}, #{totalAmount}, #{status}, #{settleAccount}, #{billerId}, #{billerName}, #{billSource}, #{auditStatus}, #{remark}
-            )
-        </foreach>
-        ON DUPLICATE KEY UPDATE
-        bill_date= VALUES(bill_date),bill_type= VALUES(bill_type),consumer_id= VALUES(consumer_id),consumer_name= VALUES(consumer_name),total_qty= VALUES(total_qty),cost_amount= VALUES(cost_amount),entry_amount= VALUES(entry_amount),
-        discount_amount= VALUES(discount_amount),discount_rate= VALUES(discount_rate),purchase_fee= VALUES(purchase_fee),final_amount= VALUES(final_amount),payment_amount= VALUES(payment_amount),
-        expense_fee= VALUES(expense_fee),total_amount= VALUES(total_amount),status= VALUES(status),settle_account= VALUES(settle_account),biller_id= VALUES(biller_id),biller_name= VALUES(biller_name),audit_status= VALUES(audit_status),bill_source= VALUES(bill_source),remark= VALUES(remark)
-    </insert>
-	 
-	<update id="update" parameterType="com.bootdo.modular.se.domain.SEOrderDO">
-		update se_order 
-		<set>
-			<if test="billDate != null">`bill_date` = #{billDate}, </if>
-			<if test="billNo != null">`bill_no` = #{billNo}, </if>
-			<if test="billType != null">`bill_type` = #{billType}, </if>
-			<if test="consumerId != null">`consumer_id` = #{consumerId}, </if>
-			<if test="consumerName != null">`consumer_name` = #{consumerName}, </if>
-			<if test="totalQty != null">`total_qty` = #{totalQty}, </if>
-            <if test="costAmount != null">`cost_amount` = #{costAmount}, </if>
-			<if test="entryAmount != null">`entry_amount` = #{entryAmount}, </if>
-			<if test="discountAmount != null">`discount_amount` = #{discountAmount}, </if>
-			<if test="discountRate != null">`discount_rate` = #{discountRate}, </if>
-			<if test="purchaseFee != null">`purchase_fee` = #{purchaseFee}, </if>
-			<if test="finalAmount != null">`final_amount` = #{finalAmount}, </if>
-			<if test="paymentAmount != null">`payment_amount` = #{paymentAmount}, </if>
-            <if test="expenseFee != null">`expense_fee` = #{expenseFee}, </if>
-			<if test="totalAmount != null">`total_amount` = #{totalAmount}, </if>
-			<if test="status != null">`status` = #{status}, </if>
-			<if test="settleAccount != null">`settle_account` = #{settleAccount}, </if>
-			<if test="billerId != null">`biller_id` = #{billerId}, </if>
-			<if test="billerName != null">`biller_name` = #{billerName}, </if>
-			<if test="billSource != null">`bill_source` = #{billSource}, </if>
-			<if test="auditStatus != null">`audit_status` = #{auditStatus}, </if>
-			<if test="remark != null">`remark` = #{remark}</if>
-		</set>
+
+    <update id="update" parameterType="com.bootdo.modular.se.domain.SEOrderDO">
+        update se_order
+        <set>
+            <if test="billDate != null">`bill_date` = #{billDate},</if>
+            <if test="billNo != null">`bill_no` = #{billNo},</if>
+            <if test="billType != null">`bill_type` = #{billType},</if>
+            <if test="consumerId != null">`consumer_id` = #{consumerId},</if>
+            <if test="consumerName != null">`consumer_name` = #{consumerName},</if>
+            <if test="totalQty != null">`total_qty` = #{totalQty},</if>
+            <if test="costAmount != null">`cost_amount` = #{costAmount},</if>
+            <if test="entryAmount != null">`entry_amount` = #{entryAmount},</if>
+            <if test="discountAmount != null">`discount_amount` = #{discountAmount},</if>
+            <if test="discountRate != null">`discount_rate` = #{discountRate},</if>
+            <if test="purchaseFee != null">`purchase_fee` = #{purchaseFee},</if>
+            <if test="finalAmount != null">`final_amount` = #{finalAmount},</if>
+            <if test="paymentAmount != null">`payment_amount` = #{paymentAmount},</if>
+            <if test="expenseFee != null">`expense_fee` = #{expenseFee},</if>
+            <if test="totalAmount != null">`total_amount` = #{totalAmount},</if>
+            <if test="status != null">`status` = #{status},</if>
+            <if test="settleAccount != null">`settle_account` = #{settleAccount},</if>
+            <if test="billerId != null">`biller_id` = #{billerId},</if>
+            <if test="billerName != null">`biller_name` = #{billerName},</if>
+            <if test="billSource != null">`bill_source` = #{billSource},</if>
+            <if test="auditStatus != null">`audit_status` = #{auditStatus},</if>
+            <if test="remark != null">`remark` = #{remark}</if>
+        </set>
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             <if test="cId != null and cId != ''">and id = #{cId}</if>
             <if test="cBillNo != null and cBillNo != ''">and bill_no =#{cBillNo}</if>
         </trim>
-	</update>
+    </update>
 
     <update id="audit">
         update se_order
@@ -158,16 +141,20 @@
         </trim>
     </update>
 
-	<delete id="remove">
-		delete from se_order where id = #{value}
-	</delete>
-	
-	<delete id="batchRemove">
-		delete from se_order where id in 
-		<foreach item="id" collection="array" open="(" separator="," close=")">
-			#{id}
-		</foreach>
-	</delete>
+    <delete id="remove">
+        DELETE
+        FROM
+            se_order
+        WHERE
+            id = #{value}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from se_order where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 
     <delete id="delete">
         delete from se_order

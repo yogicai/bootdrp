@@ -66,23 +66,23 @@
         select count(*) from po_order
         <include refid="whereSql"/>
     </select>
-	 
-	<insert id="save" parameterType="com.bootdo.modular.po.domain.OrderDO" useGeneratedKeys="true" keyProperty="id">
-		insert into po_order
-		(
+
+    <insert id="save" parameterType="com.bootdo.modular.po.domain.OrderDO" useGeneratedKeys="true" keyProperty="id">
+        insert into po_order
+        (
             `bill_date`,`bill_no`,`bill_type`,`vendor_id`,`vendor_name`,`total_qty`,`entry_amount`,`final_amount`,`payment_amount`,`total_amount`,`discount_amount`,
             `discount_rate`,`purchase_fee`,`status`,`settle_account`,`biller_id`,`audit_status`,`remark`
-		)
-		values
-		(
+        )
+        values
+        (
             #{billDate},#{billNo},#{billType},#{vendorId},#{vendorName},#{totalQty},#{entryAmount},#{finalAmount},#{paymentAmount},#{totalAmount},#{discountAmount},
             #{discountRate},#{purchaseFee},#{status},#{settleAccount},#{billerId},#{auditStatus},#{remark}
-		)
-		ON DUPLICATE KEY UPDATE
+        )
+        ON DUPLICATE KEY UPDATE
         bill_date= VALUES(bill_date),bill_type= VALUES(bill_type),vendor_id= VALUES(vendor_id),vendor_name= VALUES(vendor_name),total_qty= VALUES(total_qty),entry_amount= VALUES(entry_amount),
         discount_amount= VALUES(discount_amount),discount_rate= VALUES(discount_rate),purchase_fee= VALUES(purchase_fee),final_amount= VALUES(final_amount),payment_amount= VALUES(payment_amount),
         total_amount= VALUES(total_amount),status= VALUES(status),settle_account= VALUES(settle_account),biller_id= VALUES(biller_id),audit_status= VALUES(audit_status),remark= VALUES(remark)
-	</insert>
+        </insert>
 
     <insert id="saveOrUpdate" parameterType="java.util.List">
         insert into po_order
@@ -102,34 +102,34 @@
         total_amount= VALUES(total_amount),status= VALUES(status),settle_account= VALUES(settle_account),biller_id= VALUES(biller_id),audit_status= VALUES(audit_status),remark= VALUES(remark)
     </insert>
 
-	<update id="update">
-		update po_order 
-		<set>
-			<if test="billDate != null">`bill_date` = #{billDate}, </if>
-			<if test="billNo != null">`bill_no` = #{billNo}, </if>
-			<if test="billType != null">`bill_type` = #{billType}, </if>
-			<if test="vendorId != null">`vendor_id` = #{vendorId}, </if>
-            <if test="vendorName != null">`vendor_name` = #{vendorName}, </if>
-			<if test="totalQty != null">`total_qty` = #{totalQty}, </if>
-			<if test="entryAmount != null">`entryAmount` = #{entryAmount}, </if>
-			<if test="finalAmount != null">`final_amount` = #{finalAmount}, </if>
-            <if test="paymentAmount != null">`payment_amount` = #{paymentAmount}, </if>
-			<if test="discountAmount != null">`discount_amount` = #{discountAmount}, </if>
-			<if test="discountRate != null">`discount_rate` = #{discountRate}, </if>
-			<if test="purchaseFee != null">`purchase_fee` = #{purchaseFee}, </if>
-			<if test="status != null">`status` = #{status}, </if>
-			<if test="settleAccount != null">`settle_account` = #{settleAccount}, </if>
-			<if test="billerId != null">`biller_id` = #{billerId}, </if>
-			<if test="auditStatus != null">`audit_status` = #{auditStatus}, </if>
-			<if test="remark != null">`remark` = #{remark}, </if>
-			<if test="createTime != null">`create_time` = #{createTime}, </if>
-			<if test="updateTime != null">`update_time` = #{updateTime}</if>
-		</set>
+    <update id="update">
+        update po_order
+        <set>
+            <if test="billDate != null">`bill_date` = #{billDate},</if>
+            <if test="billNo != null">`bill_no` = #{billNo},</if>
+            <if test="billType != null">`bill_type` = #{billType},</if>
+            <if test="vendorId != null">`vendor_id` = #{vendorId},</if>
+            <if test="vendorName != null">`vendor_name` = #{vendorName},</if>
+            <if test="totalQty != null">`total_qty` = #{totalQty},</if>
+            <if test="entryAmount != null">`entryAmount` = #{entryAmount},</if>
+            <if test="finalAmount != null">`final_amount` = #{finalAmount},</if>
+            <if test="paymentAmount != null">`payment_amount` = #{paymentAmount},</if>
+            <if test="discountAmount != null">`discount_amount` = #{discountAmount},</if>
+            <if test="discountRate != null">`discount_rate` = #{discountRate},</if>
+            <if test="purchaseFee != null">`purchase_fee` = #{purchaseFee},</if>
+            <if test="status != null">`status` = #{status},</if>
+            <if test="settleAccount != null">`settle_account` = #{settleAccount},</if>
+            <if test="billerId != null">`biller_id` = #{billerId},</if>
+            <if test="auditStatus != null">`audit_status` = #{auditStatus},</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="updateTime != null">`update_time` = #{updateTime}</if>
+        </set>
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             <if test="cId != null and cId != ''">and id = #{cId}</if>
             <if test="cBillNo != null and cBillNo != ''">and bill_no =#{cBillNo}</if>
         </trim>
-	</update>
+    </update>
 
     <update id="audit">
         update po_order
@@ -150,16 +150,16 @@
         </trim>
     </update>
 
-	<delete id="remove">
-		delete from po_order where id = #{value}
-	</delete>
-	
-	<delete id="batchRemove">
-		delete from po_order where id in 
-		<foreach item="id" collection="array" open="(" separator="," close=")">
-			#{id}
-		</foreach>
-	</delete>
+    <delete id="remove">
+        delete from po_order where id = #{value}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from po_order where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 
     <delete id="delete">
         delete from po_order

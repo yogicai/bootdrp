@@ -9,18 +9,18 @@
 
 	<select id="list" resultType="com.bootdo.modular.data.domain.StockDO">
 		select `id`,`stock_no`,`stock_name`,`stock_address`,`status`,`create_time`,`update_time` from data_stock
-        <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="stockNo != null and stockNo != ''"> and stock_no = #{stockNo} </if>
-		  		  <if test="stockName != null and stockName != ''"> and stock_name = #{stockName} </if>
-		  		  <if test="stockAddress != null and stockAddress != ''"> and stock_address = #{stockAddress} </if>
-		  		  <if test="status != null and status != ''"> and status = #{status} </if>
-		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
-		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
-                  <if test="searchText != null and searchText != ''"> and ( stock_no like '%${searchText}%' or  stock_name like '%${searchText}%')</if>
-                  <if test="start != null and start != ''"> and create_time >= #{start} </if>
-                  <if test="end != null and end != ''"> <![CDATA[ and create_time <= #{end} ]]> </if>
-        </where>
+		<where>
+			<if test="id != null and id != ''">and id = #{id}</if>
+			<if test="stockNo != null and stockNo != ''">and stock_no = #{stockNo}</if>
+			<if test="stockName != null and stockName != ''">and stock_name = #{stockName}</if>
+			<if test="stockAddress != null and stockAddress != ''">and stock_address = #{stockAddress}</if>
+			<if test="status != null and status != ''">and status = #{status}</if>
+			<if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+			<if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+			<if test="searchText != null and searchText != ''">and ( stock_no like '%${searchText}%' or stock_name like '%${searchText}%')</if>
+			<if test="start != null and start != ''">and create_time >= #{start}</if>
+			<if test="end != null and end != ''"> <![CDATA[ and create_time <= #{end} ]]> </if>
+		</where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
                 order by ${sort} ${order}
@@ -34,7 +34,7 @@
 		</if>
 	</select>
 
- 	<select id="count" resultType="int">
+	<select id="count" resultType="int">
 		select count(*) from data_stock
 		 <where>  
             <if test="id != null and id != ''"> and id = #{id} </if>

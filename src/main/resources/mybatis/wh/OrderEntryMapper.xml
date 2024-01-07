@@ -9,26 +9,26 @@
 
 	<select id="list" resultType="com.bootdo.modular.wh.domain.WHOrderEntryDO">
 		select `id`,`bill_no`,`entry_id`,`entry_name`,`entry_barcode`,`entry_unit`,`entry_price`,`cost_price`,`stock_no`,`stock_name`,`total_qty`,`entry_amount`,`create_time`,`update_time` from wh_order_entry
-        <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
-		  		  <if test="entryId != null and entryId != ''"> and entry_id = #{entryId} </if>
-		  		  <if test="entryName != null and entryName != ''"> and entry_name = #{entryName} </if>
-		  		  <if test="entryBarcode != null and entryBarcode != ''"> and entry_barcode = #{entryBarcode} </if>
-		  		  <if test="entryUnit != null and entryUnit != ''"> and entry_unit = #{entryUnit} </if>
-		  		  <if test="entryPrice != null and entryPrice != ''"> and entry_price = #{entryPrice} </if>
-		  		  <if test="stockNo != null and stockNo != ''"> and stock_no = #{stockNo} </if>
-		  		  <if test="stockName != null and stockName != ''"> and stock_name = #{stockName} </if>
-		  		  <if test="totalQty != null and totalQty != ''"> and total_qty = #{totalQty} </if>
-		  		  <if test="entryAmount != null and entryAmount != ''"> and entry_amount = #{entryAmount} </if>
-		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
-		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
-                  <if test="billNos != null and billNos.size()>0"> and bill_no in
-                      <foreach collection="billNos" index="index" item="item" open="(" separator="," close=")">
-                          #{item}
-                      </foreach>
-                  </if>
-		  		</where>
+		<where>
+			<if test="id != null and id != ''">and id = #{id}</if>
+			<if test="billNo != null and billNo != ''">and bill_no = #{billNo}</if>
+			<if test="entryId != null and entryId != ''">and entry_id = #{entryId}</if>
+			<if test="entryName != null and entryName != ''">and entry_name = #{entryName}</if>
+			<if test="entryBarcode != null and entryBarcode != ''">and entry_barcode = #{entryBarcode}</if>
+			<if test="entryUnit != null and entryUnit != ''">and entry_unit = #{entryUnit}</if>
+			<if test="entryPrice != null and entryPrice != ''">and entry_price = #{entryPrice}</if>
+			<if test="stockNo != null and stockNo != ''">and stock_no = #{stockNo}</if>
+			<if test="stockName != null and stockName != ''">and stock_name = #{stockName}</if>
+			<if test="totalQty != null and totalQty != ''">and total_qty = #{totalQty}</if>
+			<if test="entryAmount != null and entryAmount != ''">and entry_amount = #{entryAmount}</if>
+			<if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+			<if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+			<if test="billNos != null and billNos.size()>0">and bill_no in
+				<foreach collection="billNos" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
                 order by ${sort} ${order}
@@ -41,24 +41,24 @@
 			limit #{offset}, #{limit}
 		</if>
 	</select>
-	
- 	<select id="count" resultType="int">
+
+	<select id="count" resultType="int">
 		select count(*) from wh_order_entry
-		 <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
-		  		  <if test="entryId != null and entryId != ''"> and entry_id = #{entryId} </if>
-		  		  <if test="entryName != null and entryName != ''"> and entry_name = #{entryName} </if>
-		  		  <if test="entryBarcode != null and entryBarcode != ''"> and entry_barcode = #{entryBarcode} </if>
-		  		  <if test="entryUnit != null and entryUnit != ''"> and entry_unit = #{entryUnit} </if>
-		  		  <if test="entryPrice != null and entryPrice != ''"> and entry_price = #{entryPrice} </if>
-		  		  <if test="stockNo != null and stockNo != ''"> and stock_no = #{stockNo} </if>
-		  		  <if test="stockName != null and stockName != ''"> and stock_name = #{stockName} </if>
-		  		  <if test="totalQty != null and totalQty != ''"> and total_qty = #{totalQty} </if>
-		  		  <if test="entryAmount != null and entryAmount != ''"> and entry_amount = #{entryAmount} </if>
-		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
-		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
-		  		</where>
+		<where>
+			<if test="id != null and id != ''">and id = #{id}</if>
+			<if test="billNo != null and billNo != ''">and bill_no = #{billNo}</if>
+			<if test="entryId != null and entryId != ''">and entry_id = #{entryId}</if>
+			<if test="entryName != null and entryName != ''">and entry_name = #{entryName}</if>
+			<if test="entryBarcode != null and entryBarcode != ''">and entry_barcode = #{entryBarcode}</if>
+			<if test="entryUnit != null and entryUnit != ''">and entry_unit = #{entryUnit}</if>
+			<if test="entryPrice != null and entryPrice != ''">and entry_price = #{entryPrice}</if>
+			<if test="stockNo != null and stockNo != ''">and stock_no = #{stockNo}</if>
+			<if test="stockName != null and stockName != ''">and stock_name = #{stockName}</if>
+			<if test="totalQty != null and totalQty != ''">and total_qty = #{totalQty}</if>
+			<if test="entryAmount != null and entryAmount != ''">and entry_amount = #{entryAmount}</if>
+			<if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+			<if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+		</where>
 	</select>
 	 
 	<insert id="save" parameterType="com.bootdo.modular.wh.domain.WHOrderEntryDO" useGeneratedKeys="true" keyProperty="id">

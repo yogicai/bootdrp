@@ -9,21 +9,21 @@
 
 	<select id="list" resultType="com.bootdo.modular.rp.domain.RPOrderSettleDO">
 		select `id`,`bill_no`,`settle_account`,`settle_name`,`payment_amount`,`remark`,`create_time`,`update_time` from rp_order_settle
-        <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
-		  		  <if test="settleAccount != null and settleAccount != ''"> and settle_account = #{settleAccount} </if>
-                  <if test="settleName != null and settleName != ''"> and settle_name = #{settleName} </if>
-		  		  <if test="paymentAmount != null and paymentAmount != ''"> and payment_amount = #{paymentAmount} </if>
-		  		  <if test="remark != null and remark != ''"> and remark = #{remark} </if>
-		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
-		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
-                  <if test="billNos != null and billNos.size()>0"> and bill_no in
-                      <foreach collection="billNos" index="index" item="item" open="(" separator="," close=")">
-                          #{item}
-                      </foreach>
-                  </if>
-		  		</where>
+		<where>
+			<if test="id != null and id != ''">and id = #{id}</if>
+			<if test="billNo != null and billNo != ''">and bill_no = #{billNo}</if>
+			<if test="settleAccount != null and settleAccount != ''">and settle_account = #{settleAccount}</if>
+			<if test="settleName != null and settleName != ''">and settle_name = #{settleName}</if>
+			<if test="paymentAmount != null and paymentAmount != ''">and payment_amount = #{paymentAmount}</if>
+			<if test="remark != null and remark != ''">and remark = #{remark}</if>
+			<if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+			<if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+			<if test="billNos != null and billNos.size()>0">and bill_no in
+				<foreach collection="billNos" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
                 order by ${sort} ${order}
@@ -37,18 +37,18 @@
 		</if>
 	</select>
 	
- 	<select id="count" resultType="int">
+    <select id="count" resultType="int">
 		select count(*) from rp_order_settle
-		 <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
-		  		  <if test="settleAccount != null and settleAccount != ''"> and settle_account = #{settleAccount} </if>
-                  <if test="settleName != null and settleName != ''"> and settle_name = #{settleName} </if>
-		  		  <if test="paymentAmount != null and paymentAmount != ''"> and payment_amount = #{paymentAmount} </if>
-		  		  <if test="remark != null and remark != ''"> and remark = #{remark} </if>
-		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
-		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
-		  		</where>
+		<where>
+			<if test="id != null and id != ''">and id = #{id}</if>
+			<if test="billNo != null and billNo != ''">and bill_no = #{billNo}</if>
+			<if test="settleAccount != null and settleAccount != ''">and settle_account = #{settleAccount}</if>
+			<if test="settleName != null and settleName != ''">and settle_name = #{settleName}</if>
+			<if test="paymentAmount != null and paymentAmount != ''">and payment_amount = #{paymentAmount}</if>
+			<if test="remark != null and remark != ''">and remark = #{remark}</if>
+			<if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+			<if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+		</where>
 	</select>
 	 
 	<insert id="save" parameterType="com.bootdo.modular.rp.domain.RPOrderSettleDO" useGeneratedKeys="true" keyProperty="id">

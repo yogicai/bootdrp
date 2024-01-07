@@ -9,26 +9,26 @@
 
 	<select id="list" resultType="com.bootdo.modular.system.domain.ContentDO">
 		select `cid`,`title`,`slug`,`created`,`modified`,`content`,`type`,`tags`,`categories`,`hits`,`comments_num`,`allow_comment`,`allow_ping`,`allow_feed`,`status`,`author`,`gtm_create`,`gtm_modified` from blog_content
-        <where>  
-		  		  <if test="cid != null and cid != ''"> and cid = #{cid} </if>
-		  		  <if test="title != null and title != ''"> and title = #{title} </if>
-		  		  <if test="slug != null and slug != ''"> and slug = #{slug} </if>
-		  		  <if test="created != null and created != ''"> and created = #{created} </if>
-		  		  <if test="modified != null and modified != ''"> and modified = #{modified} </if>
-		  		  <if test="content != null and content != ''"> and content = #{content} </if>
-		  		  <if test="type != null and type != ''"> and type = #{type} </if>
-		  		  <if test="tags != null and tags != ''"> and tags = #{tags} </if>
-		  		  <if test="categories != null and categories != ''"> and categories = #{categories} </if>
-		  		  <if test="hits != null and hits != ''"> and hits = #{hits} </if>
-		  		  <if test="commentsNum != null and commentsNum != ''"> and comments_num = #{commentsNum} </if>
-		  		  <if test="allowComment != null and allowComment != ''"> and allow_comment = #{allowComment} </if>
-		  		  <if test="allowPing != null and allowPing != ''"> and allow_ping = #{allowPing} </if>
-		  		  <if test="allowFeed != null and allowFeed != ''"> and allow_feed = #{allowFeed} </if>
-		  		  <if test="status != null and status != ''"> and status = #{status} </if>
-		  		  <if test="author != null and author != ''"> and author = #{author} </if>
-		  		  <if test="gtmCreate != null and gtmCreate != ''"> and gtm_create = #{gtmCreate} </if>
-		  		  <if test="gtmModified != null and gtmModified != ''"> and gtm_modified = #{gtmModified} </if>
-		  		</where>
+		<where>
+			<if test="cid != null and cid != ''">and cid = #{cid}</if>
+			<if test="title != null and title != ''">and title = #{title}</if>
+			<if test="slug != null and slug != ''">and slug = #{slug}</if>
+			<if test="created != null and created != ''">and created = #{created}</if>
+			<if test="modified != null and modified != ''">and modified = #{modified}</if>
+			<if test="content != null and content != ''">and content = #{content}</if>
+			<if test="type != null and type != ''">and type = #{type}</if>
+			<if test="tags != null and tags != ''">and tags = #{tags}</if>
+			<if test="categories != null and categories != ''">and categories = #{categories}</if>
+			<if test="hits != null and hits != ''">and hits = #{hits}</if>
+			<if test="commentsNum != null and commentsNum != ''">and comments_num = #{commentsNum}</if>
+			<if test="allowComment != null and allowComment != ''">and allow_comment = #{allowComment}</if>
+			<if test="allowPing != null and allowPing != ''">and allow_ping = #{allowPing}</if>
+			<if test="allowFeed != null and allowFeed != ''">and allow_feed = #{allowFeed}</if>
+			<if test="status != null and status != ''">and status = #{status}</if>
+			<if test="author != null and author != ''">and author = #{author}</if>
+			<if test="gtmCreate != null and gtmCreate != ''">and gtm_create = #{gtmCreate}</if>
+			<if test="gtmModified != null and gtmModified != ''">and gtm_modified = #{gtmModified}</if>
+		</where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
                 order by ${sort} ${order}
@@ -42,28 +42,28 @@
 		</if>
 	</select>
 	
- 	<select id="count" resultType="int">
+    <select id="count" resultType="int">
 		select count(*) from blog_content
-		 <where>  
-		  		  <if test="cid != null and cid != ''"> and cid = #{cid} </if>
-		  		  <if test="title != null and title != ''"> and title = #{title} </if>
-		  		  <if test="slug != null and slug != ''"> and slug = #{slug} </if>
-		  		  <if test="created != null and created != ''"> and created = #{created} </if>
-		  		  <if test="modified != null and modified != ''"> and modified = #{modified} </if>
-		  		  <if test="content != null and content != ''"> and content = #{content} </if>
-		  		  <if test="type != null and type != ''"> and type = #{type} </if>
-		  		  <if test="tags != null and tags != ''"> and tags = #{tags} </if>
-		  		  <if test="categories != null and categories != ''"> and categories = #{categories} </if>
-		  		  <if test="hits != null and hits != ''"> and hits = #{hits} </if>
-		  		  <if test="commentsNum != null and commentsNum != ''"> and comments_num = #{commentsNum} </if>
-		  		  <if test="allowComment != null and allowComment != ''"> and allow_comment = #{allowComment} </if>
-		  		  <if test="allowPing != null and allowPing != ''"> and allow_ping = #{allowPing} </if>
-		  		  <if test="allowFeed != null and allowFeed != ''"> and allow_feed = #{allowFeed} </if>
-		  		  <if test="status != null and status != ''"> and status = #{status} </if>
-		  		  <if test="author != null and author != ''"> and author = #{author} </if>
-		  		  <if test="gtmCreate != null and gtmCreate != ''"> and gtm_create = #{gtmCreate} </if>
-		  		  <if test="gtmModified != null and gtmModified != ''"> and gtm_modified = #{gtmModified} </if>
-		  		</where>
+		<where>
+			<if test="cid != null and cid != ''">and cid = #{cid}</if>
+			<if test="title != null and title != ''">and title = #{title}</if>
+			<if test="slug != null and slug != ''">and slug = #{slug}</if>
+			<if test="created != null and created != ''">and created = #{created}</if>
+			<if test="modified != null and modified != ''">and modified = #{modified}</if>
+			<if test="content != null and content != ''">and content = #{content}</if>
+			<if test="type != null and type != ''">and type = #{type}</if>
+			<if test="tags != null and tags != ''">and tags = #{tags}</if>
+			<if test="categories != null and categories != ''">and categories = #{categories}</if>
+			<if test="hits != null and hits != ''">and hits = #{hits}</if>
+			<if test="commentsNum != null and commentsNum != ''">and comments_num = #{commentsNum}</if>
+			<if test="allowComment != null and allowComment != ''">and allow_comment = #{allowComment}</if>
+			<if test="allowPing != null and allowPing != ''">and allow_ping = #{allowPing}</if>
+			<if test="allowFeed != null and allowFeed != ''">and allow_feed = #{allowFeed}</if>
+			<if test="status != null and status != ''">and status = #{status}</if>
+			<if test="author != null and author != ''">and author = #{author}</if>
+			<if test="gtmCreate != null and gtmCreate != ''">and gtm_create = #{gtmCreate}</if>
+			<if test="gtmModified != null and gtmModified != ''">and gtm_modified = #{gtmModified}</if>
+		</where>
 	</select>
 	 
 	<insert id="save" parameterType="com.bootdo.modular.system.domain.ContentDO" useGeneratedKeys="true" keyProperty="cid">

@@ -40,14 +40,14 @@
         </choose>
     </select>
 
- 	<select id="pBillTrendPie" resultType="java.util.Map">
+    <select id="pBillTrendPie" resultType="java.util.Map">
         SELECT dp.`type`, dc.`name`, COUNT(DISTINCT so.`bill_no`) as count, ROUND(SUM( (se.`entry_price` - se.`cost_price`) * se.`total_qty`), 2) AS profitAmount, SUM(se.`total_amount`) as totalAmount FROM se_order so LEFT JOIN se_order_entry se ON so.`bill_no`=se.`bill_no` LEFT JOIN data_product dp ON se.`entry_id`=dp.`no` LEFT JOIN data_category dc ON dp.`type` =dc.`category_id`
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             so.`audit_status`='YES'
             <if test="billDate != null and billDate != ''"> and so.bill_date >= #{billDate} </if>
         </trim>
         GROUP BY dp.`type` ORDER BY totalAmount DESC
-	</select>
+    </select>
 
     <select id="pCashTrend" resultType="java.util.Map">
         SELECT
