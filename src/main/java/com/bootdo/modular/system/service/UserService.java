@@ -3,7 +3,7 @@ package com.bootdo.modular.system.service;
 import com.bootdo.core.pojo.node.Tree;
 import com.bootdo.modular.system.domain.DeptDO;
 import com.bootdo.modular.system.domain.UserDO;
-import com.bootdo.modular.system.controller.response.UserVO;
+import com.bootdo.modular.system.result.UserVO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

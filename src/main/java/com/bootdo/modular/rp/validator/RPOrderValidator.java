@@ -16,7 +16,7 @@ import com.bootdo.modular.rp.dao.RPOrderDao;
 import com.bootdo.modular.rp.dao.RPOrderEntryDao;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.domain.RPOrderEntryDO;
-import com.bootdo.modular.rp.controller.request.RPOrderVO;
+import com.bootdo.modular.rp.param.RPOrderVO;
 import com.bootdo.modular.se.dao.SEOrderDao;
 import com.bootdo.modular.se.domain.SEOrderDO;
 import com.google.common.collect.ImmutableMap;

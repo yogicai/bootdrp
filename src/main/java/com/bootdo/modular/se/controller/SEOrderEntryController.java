@@ -2,7 +2,7 @@ package com.bootdo.modular.se.controller;
 
 import com.bootdo.core.annotation.Log;
 import com.bootdo.core.pojo.response.R;
-import com.bootdo.modular.se.controller.request.SEOrderVO;
+import com.bootdo.modular.se.param.SEOrderVO;
 import com.bootdo.modular.se.domain.SEOrderDO;
 import com.bootdo.modular.se.service.SEOrderEntryService;
 import com.bootdo.modular.se.validator.SEOrderValidator;

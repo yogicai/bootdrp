@@ -9,7 +9,7 @@ import com.bootdo.modular.system.domain.RoleDO;
 import com.bootdo.modular.system.domain.UserDO;
 import com.bootdo.modular.system.service.RoleService;
 import com.bootdo.modular.system.service.UserService;
-import com.bootdo.modular.system.controller.response.UserVO;
+import com.bootdo.modular.system.result.UserVO;
 import com.bootdo.modular.system.service.DictService;
 import com.bootdo.core.utils.MD5Utils;
 import com.bootdo.core.pojo.request.Query;

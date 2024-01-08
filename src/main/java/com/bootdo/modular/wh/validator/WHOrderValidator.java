@@ -8,7 +8,7 @@ import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.EnumCollection;
 import com.bootdo.core.exception.assertion.BizServiceException;
 import com.bootdo.modular.wh.dao.WHOrderDao;
-import com.bootdo.modular.wh.controller.request.WHOrderVO;
+import com.bootdo.modular.wh.param.WHOrderVO;
 import com.bootdo.modular.wh.domain.WHOrderDO;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.collections.CollectionUtils;

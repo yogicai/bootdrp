@@ -1,8 +1,8 @@
 package com.bootdo.modular.system.controller;
 
 import com.bootdo.core.pojo.response.R;
-import com.bootdo.modular.system.controller.request.Message;
-import com.bootdo.modular.system.controller.response.Response;
+import com.bootdo.modular.system.param.Message;
+import com.bootdo.modular.system.result.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;

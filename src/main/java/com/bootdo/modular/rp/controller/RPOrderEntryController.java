@@ -6,7 +6,7 @@ import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.domain.RPOrderEntryDO;
 import com.bootdo.modular.rp.service.RPOrderEntryService;
-import com.bootdo.modular.rp.controller.request.RPOrderVO;
+import com.bootdo.modular.rp.param.RPOrderVO;
 import com.bootdo.modular.rp.validator.RPOrderValidator;
 import com.google.common.collect.ImmutableMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;

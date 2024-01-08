@@ -1,7 +1,7 @@
 package com.bootdo.modular.cashier.controller;
 
 import cn.hutool.core.map.MapUtil;
-import com.bootdo.modular.cashier.controller.response.MultiSelect;
+import com.bootdo.modular.cashier.result.MultiSelect;
 import com.bootdo.modular.cashier.domain.RecordDO;
 import com.bootdo.modular.cashier.service.RecordService;
 import com.bootdo.core.annotation.Log;

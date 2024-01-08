@@ -3,7 +3,7 @@ package com.bootdo.modular.wh.controller;
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.Log;
 import com.bootdo.core.pojo.response.R;
-import com.bootdo.modular.wh.controller.request.WHOrderVO;
+import com.bootdo.modular.wh.param.WHOrderVO;
 import com.bootdo.modular.wh.domain.WHOrderDO;
 import com.bootdo.modular.wh.service.WHOrderEntryService;
 import com.bootdo.modular.wh.validator.WHOrderValidator;

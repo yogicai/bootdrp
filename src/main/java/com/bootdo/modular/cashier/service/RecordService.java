@@ -7,7 +7,7 @@ import cn.hutool.core.text.csv.CsvData;
 import cn.hutool.core.text.csv.CsvUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
-import com.bootdo.modular.cashier.controller.response.MultiSelect;
+import com.bootdo.modular.cashier.result.MultiSelect;
 import com.bootdo.modular.cashier.dao.RecordDao;
 import com.bootdo.modular.cashier.domain.RecordDO;
 import org.springframework.stereotype.Service;

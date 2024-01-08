@@ -8,7 +8,7 @@ import com.bootdo.core.consts.OrderStatusCode;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.EnumCollection;
 import com.bootdo.core.exception.assertion.BizServiceException;
-import com.bootdo.modular.po.controller.request.OrderVO;
+import com.bootdo.modular.po.param.OrderVO;
 import com.bootdo.modular.po.dao.OrderDao;
 import com.bootdo.modular.po.domain.OrderDO;
 import com.bootdo.modular.rp.dao.RPOrderDao;

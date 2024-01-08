@@ -12,7 +12,7 @@ import com.bootdo.modular.system.domain.DeptDO;
 import com.bootdo.modular.system.domain.UserDO;
 import com.bootdo.modular.system.domain.UserRoleDO;
 import com.bootdo.modular.system.service.UserService;
-import com.bootdo.modular.system.controller.response.UserVO;
+import com.bootdo.modular.system.result.UserVO;
 import com.bootdo.modular.system.domain.FileDO;
 import com.bootdo.core.pojo.node.Tree;
 import com.bootdo.modular.system.service.FileService;

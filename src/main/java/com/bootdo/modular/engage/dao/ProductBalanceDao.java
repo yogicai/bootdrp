@@ -1,6 +1,6 @@
 package com.bootdo.modular.engage.dao;
 
-import com.bootdo.modular.engage.controller.response.EntryBalanceResult;
+import com.bootdo.modular.engage.result.EntryBalanceResult;
 
 import java.util.List;
 import java.util.Map;

@@ -85,7 +85,7 @@
             <include refid="whereSql"/>
     </sql>
 
-    <select id="pBalanceEntry" resultType="com.bootdo.modular.engage.controller.response.EntryBalanceResult">
+    <select id="pBalanceEntry" resultType="com.bootdo.modular.engage.result.EntryBalanceResult">
         <include refid="selectSql"/>
         <choose>
             <when test="sort != null and sort.trim() != ''">order by ${sort} ${order}, bill_date desc</when>

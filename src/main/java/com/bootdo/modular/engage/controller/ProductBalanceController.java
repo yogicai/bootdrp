@@ -1,16 +1,16 @@
 package com.bootdo.modular.engage.controller;
 
 import cn.hutool.core.map.MapUtil;
-import com.bootdo.modular.engage.controller.response.BalanceResult;
+import com.bootdo.modular.engage.result.BalanceResult;
 import com.bootdo.modular.engage.service.ProductBalanceService;
 import com.bootdo.modular.system.controller.BaseController;
-import com.bootdo.modular.wh.controller.response.WHProductInfo;
+import com.bootdo.modular.wh.result.WHProductInfo;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.core.pojo.request.QueryJQ;
 import com.bootdo.core.pojo.response.R;
-import com.bootdo.modular.engage.controller.request.BalanceAdjustParam;
-import com.bootdo.modular.engage.controller.response.EntryBalanceResult;
+import com.bootdo.modular.engage.param.BalanceAdjustParam;
+import com.bootdo.modular.engage.result.EntryBalanceResult;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

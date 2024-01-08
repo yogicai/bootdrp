@@ -2,7 +2,7 @@ package com.bootdo.modular.report.controller;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONUtil;
-import com.bootdo.modular.report.controller.response.SReconResult;
+import com.bootdo.modular.report.result.SReconResult;
 import com.bootdo.modular.system.controller.BaseController;
 import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.core.pojo.response.R;

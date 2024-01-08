@@ -1,6 +1,6 @@
 package com.bootdo.modular.timer.tasks;
 
-import com.bootdo.modular.system.controller.response.Response;
+import com.bootdo.modular.system.result.Response;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
