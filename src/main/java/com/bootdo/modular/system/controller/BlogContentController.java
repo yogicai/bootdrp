@@ -32,7 +32,7 @@ public class BlogContentController extends BaseController {
 	@GetMapping()
 	@RequiresPermissions("blog:bContent:bContent")
 	String bContent() {
-		return "blog/bContent/bContent";
+		return "system/blog/bContent/bContent";
 	}
 
 	@ResponseBody
@@ -49,7 +49,7 @@ public class BlogContentController extends BaseController {
 	@GetMapping("/add")
 	@RequiresPermissions("blog:bContent:add")
 	String add() {
-		return "blog/bContent/add";
+		return "system/blog/bContent/add";
 	}
 
 	@GetMapping("/edit/{cid}")
@@ -57,7 +57,7 @@ public class BlogContentController extends BaseController {
 	String edit(@PathVariable("cid") Long cid, Model model) {
 		ContentDO bContentDO = bBlogContentService.get(cid);
 		model.addAttribute("bContent", bContentDO);
-		return "blog/bContent/edit";
+		return "system/blog/bContent/edit";
 	}
 
 	/**

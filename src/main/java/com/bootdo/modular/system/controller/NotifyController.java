@@ -37,7 +37,7 @@ public class NotifyController extends BaseController {
 	@GetMapping()
 	@RequiresPermissions("oa:notify:notify")
 	String oaNotify() {
-		return "oa/notify/notify";
+		return "system/notify/notify";
 	}
 
 	@ResponseBody
@@ -55,7 +55,7 @@ public class NotifyController extends BaseController {
 	@GetMapping("/add")
 	@RequiresPermissions("oa:notify:add")
 	String add() {
-		return "oa/notify/add";
+		return "system/notify/add";
 	}
 
 	@GetMapping("/edit/{id}")
@@ -63,7 +63,7 @@ public class NotifyController extends BaseController {
 	String edit(@PathVariable("id") Long id, Model model) {
 		NotifyDO notify = notifyService.get(id);
 		model.addAttribute("notify", notify);
-		return "oa/notify/edit";
+		return "system/notify/edit";
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class NotifyController extends BaseController {
 
 	@GetMapping("/selfNotify")
 	String selefNotify() {
-		return "oa/notify/selfNotify";
+		return "system/notify/selfNotify";
 	}
 
 	@ResponseBody
@@ -165,6 +165,6 @@ public class NotifyController extends BaseController {
 		notifyRecordDO.setIsRead(Constant.OA_NOTIFY_READ_YES);
 		notifyRecordService.changeRead(notifyRecordDO);
 		model.addAttribute("notify", notify);
-		return "oa/notify/read";
+		return "system/notify/read";
 	}
 }

@@ -25,7 +25,7 @@ public class BlogController {
 
 	@GetMapping()
 	String blog() {
-		return "blog/index/main";
+		return "system/blog/index/main";
 	}
 
 	@ResponseBody
@@ -47,7 +47,7 @@ public class BlogController {
 		ContentDO bContentDO = blogContentService.get(cid);
 		model.addAttribute("bContent", bContentDO);
 		model.addAttribute("gtmModified", DateUtils.format(bContentDO.getGtmModified()));
-		return "blog/index/post";
+		return "system/blog/index/post";
 	}
 
 	@GetMapping("/open/page/{categories}")
@@ -56,6 +56,6 @@ public class BlogController {
 		map.put("categories", categories);
 		ContentDO bContentDO = blogContentService.list(map).get(0);
 		model.addAttribute("bContent", bContentDO);
-		return "blog/index/post";
+		return "system/blog/index/post";
 	}
 }

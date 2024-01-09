@@ -28,7 +28,7 @@ public class JobController extends BaseController{
 
 	@GetMapping()
 	String taskScheduleJob() {
-		return "common/job/job";
+		return "system/job/job";
 	}
 
 	@ResponseBody
@@ -44,14 +44,14 @@ public class JobController extends BaseController{
 
 	@GetMapping("/add")
 	String add() {
-		return "common/job/add";
+		return "system/job/add";
 	}
 
 	@GetMapping("/edit/{id}")
 	String edit(@PathVariable("id") Long id, Model model) {
 		TaskDO job = taskScheduleJobService.get(id);
 		model.addAttribute("job", job);
-		return "common/job/edit";
+		return "system/job/edit";
 	}
 
 	/**

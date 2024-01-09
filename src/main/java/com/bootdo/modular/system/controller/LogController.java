@@ -20,7 +20,7 @@ import java.util.Map;
 public class LogController {
 	@Resource
     LogService logService;
-	String prefix = "common/log";
+	String prefix = "system/log";
 
 	@GetMapping()
 	String log() {

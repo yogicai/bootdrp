@@ -42,7 +42,7 @@ public class FileController extends BaseController {
 	@RequiresPermissions("common:sysFile:sysFile")
 	String sysFile(Model model) {
 		Map<String, Object> params = new HashMap<>(16);
-		return "common/file/file";
+		return "system/file/file";
 	}
 
 	@ResponseBody

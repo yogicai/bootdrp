@@ -36,7 +36,7 @@ public class DictController extends BaseController {
 	@GetMapping()
 	@RequiresPermissions("common:sysDict:sysDict")
 	String sysDict() {
-		return "common/sysDict/sysDict";
+		return "system/dict/sysDict";
 	}
 
 	@ResponseBody
@@ -54,7 +54,7 @@ public class DictController extends BaseController {
 	@GetMapping("/add")
 	@RequiresPermissions("common:sysDict:add")
 	String add() {
-		return "common/sysDict/add";
+		return "system/dict/add";
 	}
 
 	@GetMapping("/edit/{id}")
@@ -62,7 +62,7 @@ public class DictController extends BaseController {
 	String edit(@PathVariable("id") Long id, Model model) {
 		DictDO sysDict = sysDictService.get(id);
 		model.addAttribute("sysDict", sysDict);
-		return "common/sysDict/edit";
+		return "system/dict/edit";
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class DictController extends BaseController {
 	String addD(Model model, @PathVariable("type") String type, @PathVariable("description") String description) {
 		model.addAttribute("type", type);
 		model.addAttribute("description", description);
-		return "common/sysDict/add";
+		return "system/dict/add";
 	}
 
 	@ResponseBody

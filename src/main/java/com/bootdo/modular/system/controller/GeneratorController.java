@@ -26,7 +26,7 @@ import java.util.Map;
 @RequestMapping("/common/generator")
 @Controller
 public class GeneratorController {
-	String prefix = "common/generator";
+	String prefix = "system/generator";
 	@Resource
     GeneratorService generatorService;
 
