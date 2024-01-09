@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @Component
 public class ExcelDictHandlerImpl implements IExcelDictHandler {
     @Resource
-    private DictService sysDictService;
+    private DictService dictService;
     @Resource
     private CategoryService categoryService;
     private Map<String, List<DictDO>> listDic = new HashMap<>();
@@ -43,7 +43,7 @@ public class ExcelDictHandlerImpl implements IExcelDictHandler {
     @PostConstruct
     public void init() {
         //字典
-        listDic = sysDictService.lists(null);
+        listDic = dictService.lists(null);
         //类目管理
         Map<String, List<CategoryDO>> listCategory = categoryService.lists(null);
         listCategory.forEach((key, value) -> {
