@@ -1,9 +1,9 @@
 package com.bootdo.config;
 
+import cn.hutool.core.util.ClassUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
@@ -27,8 +27,17 @@ public class Swagger2Config {
                 .apiInfo(apiInfo())
                 .groupName("系统模块")
                 .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("com.bootdo.modular.system"))
+                .build();
+    }
+
+    @Bean
+    public Docket bizApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo())
+                .groupName("业务模块")
+                .select()
+                .apis( input -> !ClassUtil.getPackage(input.declaringClass()).startsWith("com.bootdo.modular.system"))
                 .build();
     }
 

@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerIntercep
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.bootdo.core.mybatis.dbid.SnowyDatabaseIdProvider;
 import com.bootdo.core.mybatis.fieldfill.CustomMetaObjectHandler;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
  * @date 2020/3/18 10:49
  */
 @Configuration
-@MapperScan(basePackages = {"com.bootdo.**.dao"})
 public class MyBatisConfig {
 
     /**

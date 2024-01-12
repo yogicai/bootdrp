@@ -1,11 +1,14 @@
 package com.bootdo.core.pojo.response;
 
+import lombok.Data;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author L
  */
+@Data
 public class R extends HashMap<String, Object> {
 
 	public R() {
@@ -34,6 +37,12 @@ public class R extends HashMap<String, Object> {
         r.put("msg", msg);
         return r;
     }
+
+	public static R ok(Object data) {
+		R r = new R();
+		r.put("data", data);
+		return r;
+	}
 
 	public static R ok(String msg) {
 		R r = new R();
