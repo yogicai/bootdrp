@@ -6,6 +6,7 @@ import cn.afterturn.easypoi.excel.annotation.ExcelCollection;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
+import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import cn.afterturn.easypoi.excel.export.styler.ExcelExportStylerDefaultImpl;
 import cn.afterturn.easypoi.handler.inter.IExcelDataModel;
@@ -17,7 +18,6 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hutool.log.Log;
 import com.bootdo.core.consts.OrderStatusCode;
 import com.bootdo.core.excel.ClassExcelVerifyHandler;
 import com.bootdo.core.excel.ExcelDictHandlerImpl;
@@ -277,9 +277,9 @@ public class PoiUtil {
      */
     public static class InnerExportParams extends ExportParams {
         public InnerExportParams() {
-            super.setHeight((short) 8);
+            super.setHeight((short) 6);
             super.setStyle(InnerExcelExportStylerDefaultImpl.class);
-            super.setDictHandler(SpringUtil.getBean("IExcelDictHandlerImpl"));
+            super.setDictHandler(SpringUtil.getBean(ExcelDictHandlerImpl.class));
         }
     }
 
@@ -289,8 +289,11 @@ public class PoiUtil {
      */
     public static class InnerExcelExportStylerDefaultImpl extends ExcelExportStylerDefaultImpl {
 
+        private CellStyle moneyCellStyle;
+
         public InnerExcelExportStylerDefaultImpl(Workbook workbook) {
             super(workbook);
+            createMoneyCellStyler();
         }
 
         @Override
@@ -308,6 +311,22 @@ public class PoiUtil {
             titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
             titleStyle.setWrapText(true);
             return titleStyle;
+        }
+
+        @Override
+        public CellStyle getStyles(boolean noneStyler, ExcelExportEntity entity) {
+            //小数类型都设置成 千分位格式
+            if (entity != null && entity.getType() == 10 && StrUtil.endWith(entity.getNumFormat(), "0.00")) {
+                return moneyCellStyle;
+            }
+            return super.getStyles(noneStyler, entity);
+        }
+
+        private void createMoneyCellStyler() {
+            moneyCellStyle = workbook.createCellStyle();
+            moneyCellStyle.setAlignment(HorizontalAlignment.RIGHT);
+            moneyCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            moneyCellStyle.setDataFormat((short) BuiltinFormats.getBuiltinFormat("#,##0.00"));
         }
     }
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bootdo.modular.cashier.dao.SalaryDao">
+
+    <!-- 年工资汇总 -->
+    <select id="salaryRecordList" resultType="com.bootdo.modular.cashier.result.JournalGeneralResult$SalaryRecord">
+        SELECT
+            DATE_FORMAT(a.date, '%Y') AS year,
+            SUM(a.total_amount)       AS totalAmount
+        FROM
+            cashier_salary a
+        GROUP BY
+            DATE_FORMAT(a.date, '%Y')
+    </select>
+
+</mapper>

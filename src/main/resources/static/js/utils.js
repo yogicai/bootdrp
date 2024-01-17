@@ -452,7 +452,7 @@
     *  bootStrap封装
     * ======================================================================== */
     Utils.prototype.createDatePicker = function createDatePicker(elem, opt, defaultValue) {
-        var _date = $('#' + elem).datepicker(
+        let _date = $('#' + elem).datepicker(
             $.extend({}, {
                 language: "zh-CN",
                 todayBtn: "linked",
@@ -485,7 +485,22 @@
         return _date;
     };
 
-
+    Utils.prototype.createDateTimePicker = function createDateTimePicker(elem, opt, defaultValue) {
+        let _date = $('#' + elem).datetimepicker(
+            $.extend({}, {
+                language: "zh-CN",
+                format: "yyyy-mm-dd hh:ii:ss",
+                todayBtn: "linked",
+                autoclose: true,
+                clearBtn: true,
+                todayHighlight: true
+            }, opt)
+        );
+        if (defaultValue) {
+            _date.datepicker('setDate', defaultValue);
+        }
+        return _date;
+    };
 
     /* ========================================================================
     *  报表模块展示订单明细列表(只适用于采购单、销售单)
@@ -544,6 +559,39 @@
         aEle.click(); // 设置点击事件;
     };
 
+    //文件下载
+    Utils.prototype.downloadAjax = function downloadAjax(url, fileName) {
+        let loadIndex = layer.load();
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.responseType = "blob";
+        xhr.onprogress = function (event) {
+            if (event.lengthComputable) {
+            }
+        };
+        xhr.onload = function (oEvent) {
+            try {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let contentDisposition = xhr.getResponseHeader('content-disposition');
+                    let pattern = new RegExp('filename=([^;]+\\.[^\\.;]+);*');
+                    let result = pattern.exec(contentDisposition);
+                    let filename = result[1];
+                    let href = URL.createObjectURL(xhr.response);
+                    let link = document.createElement('a');
+                    link.href = href;
+                    link.download = decodeURI(filename.replace(/^["](.*)["]$/g, '$1'));
+                    link.click();
+                    URL.revokeObjectURL(href)
+                }
+            } catch (e) {
+
+            } finally {
+                layer.close(loadIndex);
+            }
+        }
+        xhr.send();
+    };
 
     /* ========================================================================
     *  javascript 原生对象功能扩展

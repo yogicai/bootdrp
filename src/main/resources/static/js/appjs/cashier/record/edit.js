@@ -2,7 +2,7 @@ let costTypeEle = $("#costType");
 $().ready(function() {
 	validateRule();
 	initData();
-	utils.createDatePicker('tradeTime');
+	utils.createDateTimePicker('tradeTime');
 });
 
 $.validator.setDefaults({
@@ -26,7 +26,7 @@ function update() {
 			parent.layer.alert("Connection error");
 		},
 		success : function(data) {
-			if (data.code == 0) {
+			if (data.code === 0) {
 				parent.layer.msg("操作成功");
 				parent.reLoad();
 				let index = parent.layer.getFrameIndex(window.name); // 获取窗口索引

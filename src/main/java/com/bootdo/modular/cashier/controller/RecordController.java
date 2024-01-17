@@ -9,6 +9,7 @@ import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.core.pojo.request.QueryJQ;
 import com.bootdo.core.pojo.response.R;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +26,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-07-14 22:31:58
  */
-
+@Api(tags="日记账明细")
 @Controller
 @RequestMapping("/cashier/record")
 public class RecordController {

@@ -3,77 +3,98 @@
 
 <mapper namespace="com.bootdo.modular.cashier.dao.JournalDao">
 
-	<select id="get" resultType="com.bootdo.modular.cashier.domain.JournalDO">
-		select `id`,`date`,`digest`,`debit`,`credit`,`balance`,`account`,`remark`,`create_time`,`update_time` from cashier_journal where id = #{value}
-	</select>
+    <!-- 年经营现金流 -->
+    <select id="generalFlowYear" resultType="com.bootdo.modular.cashier.result.JournalGeneralResult$OperateItem">
+        SELECT
+            DATE_FORMAT(a.bill_date, '%Y')             as year,
+            count(1)                                   as totalQty,
+            sum(a.total_amount)                        as totalAmount,
+            sum(a.payment_amount)                      as paymentAmount,
+            sum(a.cost_amount)                         as costAmount,
+            sum(a.`total_amount` - a.`payment_amount`) AS debtAmount,
+            sum(a.`payment_amount` - a.`cost_amount`)  AS netAmount,
+            sum(a.`total_amount` - a.`cost_amount`)    AS profitAmount
+        FROM
+            se_order a
+        <where>
+            <if test="param.start != null and param.end != null">
+                and bill_date >= #{param.start} and bill_date <![CDATA[ <= ]]> #{param.end}
+            </if>
+            and audit_status = 'YES'
+            and a.total_amount - a.cost_amount > 0
+        </where>
+        GROUP BY
+            DATE_FORMAT(a.bill_date, '%Y')
+    </select>
 
-	<select id="list" resultType="com.bootdo.modular.cashier.domain.JournalDO">
-		select `id`,`date`,`digest`,`debit`,`credit`,`balance`,`account`,`remark`,`create_time`,`update_time` from cashier_journal
-		<where>
-			<if test="id != null and id != ''">and id = #{id}</if>
-			<if test="date != null and date != ''">and date = #{date}</if>
-			<if test="digest != null and digest != ''">and digest = #{digest}</if>
-			<if test="debit != null and debit != ''">and debit = #{debit}</if>
-			<if test="credit != null and credit != ''">and credit = #{credit}</if>
-			<if test="balance != null and balance != ''">and balance = #{balance}</if>
-			<if test="account != null and account != ''">and account = #{account}</if>
-			<if test="remark != null and remark != ''">and remark = #{remark}</if>
-			<if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
-			<if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
-			<if test="start != null and start != ''">and date >= #{start}</if>
-			<if test="end != null and end != ''"> <![CDATA[ and date <= #{end} ]]> </if>
-			<if test="searchText != null and searchText != ''">and ( digest like '%${searchText}%' or debit like '%${searchText}%' or credit like '%${searchText}%')</if>
-		</where>
-        <choose>
-            <when test="sort != null and sort.trim() != ''">
-                order by ${sort} ${order}
-            </when>
-			<otherwise>
-                order by id desc
-			</otherwise>
-        </choose>
-		<if test="offset != null and limit != null">
-			limit #{offset}, #{limit}
-		</if>
-	</select>
-	
+    <!-- 月经营现金流 -->
+    <select id="generalFlowMonth" resultType="com.bootdo.modular.cashier.result.JournalGeneralResult$OperateMonthItem">
+        SELECT
+            DATE_FORMAT(a.bill_date, '%Y-%m')          as year,
+            count(1)                                   as billCount,
+            sum(a.total_qty)                           as totalQty,
+            sum(a.total_amount)                        as totalAmount,
+            sum(a.payment_amount)                      as paymentAmount,
+            sum(a.cost_amount)                         as costAmount,
+            sum(a.`total_amount` - a.`payment_amount`) AS debtAmount,
+            sum(a.`payment_amount` - a.`cost_amount`)  AS netAmount,
+            sum(a.`total_amount` - a.`cost_amount`)    AS profitAmount
+        FROM
+            se_order a
+        <where>
+            <if test="param.start != null and param.end != null">
+                and bill_date >= #{param.start} and bill_date <![CDATA[ <= ]]> #{param.end}
+            </if>
+            and audit_status = 'YES'
+            and a.total_amount - a.cost_amount > 0
+        </where>
+        GROUP BY
+            DATE_FORMAT(a.bill_date, '%Y-%m')
+    </select>
 
-	<insert id="save" parameterType="com.bootdo.modular.cashier.domain.JournalDO" useGeneratedKeys="true" keyProperty="id">
-		insert into cashier_journal
-		(
-			`date`,`digest`,`debit`,`credit`,`balance`,`account`,`remark`
-		)
-		values
-		(
-			#{date}, #{digest}, #{debit}, #{credit}, #{balance},#{account},#{remark}
-		)
-		ON DUPLICATE KEY UPDATE
-        date= VALUES(date),digest= VALUES(digest),debit= VALUES(debit),credit= VALUES(credit),balance= VALUES(balance),account= VALUES(account),remark= VALUES(remark)
-	</insert>
+    <!-- 账户现金流水 -->
+    <select id="flowRecordList" resultType="java.util.Map">
+        SELECT
+            DATE_FORMAT(a.trade_time, '%Y') as year,
+            account,
+            cost_type                       as costType,
+            sum(pay_amount)                 as payAmount
+        FROM
+            cashier_record a
+        <where>
+            <if test="param.start != null and param.end != null">
+                and trade_time >= #{param.start} and trade_time <![CDATA[ <= ]]> #{param.end}
+            </if>
+            and cost_type != '/' and pay_status not like '%退%'
+        </where>
+        GROUP BY
+            DATE_FORMAT(a.trade_time, '%Y'), account, cost_type
+    </select>
 
-    <update id="update" parameterType="com.bootdo.modular.cashier.domain.JournalDO">
-        update cashier_journal
-        <set>
-            <if test="date != null">`date` = #{date}, </if>
-            <if test="digest != null">`digest` = #{digest}, </if>
-            <if test="debit != null">`debit` = #{debit}, </if>
-            <if test="credit != null">`credit` = #{credit}, </if>
-            <if test="balance != null">`balance` = #{balance}, </if>
-            <if test="account != null">`account` = #{account}, </if>
-            <if test="remark != null">`remark` = #{remark} </if>
-        </set>
-        where id = #{id}
-    </update>
-
-	<delete id="remove">
-		delete from cashier_journal where id = #{value}
-	</delete>
-
-    <delete id="batchRemove">
-        delete from cashier_journal where id in
-        <foreach item="id" collection="array" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </delete>
+    <!-- 欠款明细 -->
+    <select id="debtRecordList" resultType="com.bootdo.modular.cashier.result.JournalGeneralResult$DebtItem">
+        SELECT
+            a.`consumer_id`                                                                                         AS instituteId,
+            a.`consumer_name`                                                                                       AS instituteName,
+            CONCAT(DATE_FORMAT(MIN(a.`bill_date`), '%Y-%m-%d'), ' - ', DATE_FORMAT(MAX(a.`bill_date`), '%Y-%m-%d')) AS billRegion,
+            SUM(a.`total_amount`)                                                                                   AS totalAmount,
+            SUM(a.`payment_amount`)                                                                                 AS paymentAmount,
+            SUM(a.`total_amount`) - SUM(a.`payment_amount`)                                                         AS debtAmount,
+            SUM(a.`cost_amount`)                                                                                    AS costAmount,
+            SUM(a.`total_amount`) - SUM(a.`cost_amount`)                                                            AS profitAmount,
+            count(1)                                                                                                AS billCount
+        FROM
+            se_order a
+        <where>
+            <if test="param.start != null and param.end != null">
+                and bill_date >= #{param.start} and bill_date <![CDATA[ <= ]]> #{param.end}
+            </if>
+            and audit_status = 'YES'
+        </where>
+        GROUP BY
+            consumer_id
+        ORDER BY
+            debtAmount DESC;
+    </select>
 
 </mapper>

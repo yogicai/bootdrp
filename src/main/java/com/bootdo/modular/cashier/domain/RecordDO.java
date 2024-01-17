@@ -69,7 +69,7 @@ public class RecordDO implements Serializable {
     /**
      * 金额(元)
      */
-    @Excel(name = "金额(元)", numFormat = "#,##0.00")
+    @Excel(name = "金额(元)", numFormat = "#,##0.00", type = 10)
     private Double payAmount;
     /**
      * 收/支
@@ -94,7 +94,7 @@ public class RecordDO implements Serializable {
     /**
      * 备注
      */
-    @Excel(name = "备注")
+    @Excel(name = "备注", width = 20)
     private String remark;
     /**
      * 数据来源：对账导入 手工录入

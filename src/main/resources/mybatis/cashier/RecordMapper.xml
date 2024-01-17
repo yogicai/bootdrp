@@ -23,8 +23,8 @@
             <if test="costType != null and costType != ''"> and cost_type in <foreach collection="costType.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
             <if test="source != null and source != ''"> and source = #{source} </if>
             <if test="updateTime != null"> and update_time = #{updateTime} </if>
-            <if test="start != null and start != ''"> and trade_time >= #{start} </if>
-            <if test="end != null and end != ''"> <![CDATA[ and trade_time <= #{end} ]]> </if>
+            <if test="start != null"> and trade_time >= #{start} </if>
+            <if test="end != null"> <![CDATA[ and trade_time <= #{end} ]]> </if>
             <if test="searchText != null and searchText != ''"> and ( nick like '%${searchText}%' or account like '%${searchText}%' or type like '%${searchText}%' or tradeGoods like '%${tradeGoods}%')</if>
         </where>
     </sql>
