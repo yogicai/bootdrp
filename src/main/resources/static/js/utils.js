@@ -561,7 +561,7 @@
 
     //文件下载
     Utils.prototype.downloadAjax = function downloadAjax(url, fileName) {
-        let loadIndex = layer.load();
+        let loadIndex = layer.load(1, {shadeClose: false, title: '加载中..', shade: [0.5, '#000']});
         let xhr = new XMLHttpRequest();
         xhr.open('GET', url);
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

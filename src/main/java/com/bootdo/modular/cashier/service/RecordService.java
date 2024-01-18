@@ -160,7 +160,7 @@ public class RecordService {
 				boolean b = matcher.matches();
 				param.put("start", b ? matcher.group(1) : StrUtil.EMPTY);
 				param.put("end",  b ? matcher.group(2) : StrUtil.EMPTY);
-			} else if (row.getOriginalLineNumber() >= 18) {
+			} else if (row.getOriginalLineNumber() >= 17) {
 				RecordDO recordDO = new RecordDO();
 				recordDO.setType("微信");
 				recordDO.setTradeTime(DateUtil.parse(row.get(0)));

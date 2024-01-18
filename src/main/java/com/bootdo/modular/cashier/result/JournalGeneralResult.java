@@ -137,6 +137,9 @@ public class JournalGeneralResult {
 
     /**
      * 月销售情况
+     * 标记图表：
+     * 1、X轴数据：DataTypeEnum.CONST_CHART_CATEGORY
+     * 2、Y轴数据：DataTypeEnum.CONST_CHART_DATA
      */
     @Data
     public static class OperateMonthItem {
@@ -144,17 +147,17 @@ public class JournalGeneralResult {
         private String year;
         @Excel(name = "销售数量", numFormat = "0", type = 10, orderNum = "1")
         private Integer totalQty;
-        @Excel(name = "营业额", numFormat = "0.00", type = 10, orderNum = "2", dict = DataTypeEnum.CONST_CHART_DATA)
+        @Excel(name = "营业额", numFormat = "0.00", type = 10, width = 12,  orderNum = "2", dict = DataTypeEnum.CONST_CHART_DATA)
         private BigDecimal totalAmount;
-        @Excel(name = "收款", numFormat = "0.00", type = 10, orderNum = "3", dict = DataTypeEnum.CONST_CHART_DATA)
+        @Excel(name = "收款", numFormat = "0.00", type = 10, width = 12, orderNum = "3", dict = DataTypeEnum.CONST_CHART_DATA)
         private BigDecimal paymentAmount;
-        @Excel(name = "成本", numFormat = "0.00", type = 10, orderNum = "4", dict = DataTypeEnum.CONST_CHART_DATA)
+        @Excel(name = "成本", numFormat = "0.00", type = 10, width = 12, orderNum = "4", dict = DataTypeEnum.CONST_CHART_DATA)
         private BigDecimal costAmount;
-        @Excel(name = "欠款", numFormat = "0.00", type = 10, orderNum = "5")
+        @Excel(name = "欠款", numFormat = "0.00", type = 10, width = 12, orderNum = "5")
         private BigDecimal debtAmount;
-        @Excel(name = "毛利", numFormat = "0.00", type = 10, orderNum = "6")
+        @Excel(name = "毛利", numFormat = "0.00", type = 10, width = 12, orderNum = "6")
         private BigDecimal profitAmount;
-        @Excel(name = "已实现利润", numFormat = "0.00", type = 10, orderNum = "7", dict = DataTypeEnum.CONST_CHART_DATA)
+        @Excel(name = "已实现利润", numFormat = "0.00", type = 10, width = 12, orderNum = "7", dict = DataTypeEnum.CONST_CHART_DATA)
         private BigDecimal netAmount;
         @Excel(name = "订单数", numFormat = "0", type = 10, width = 8, orderNum = "8")
         private Integer billCount;
@@ -167,21 +170,21 @@ public class JournalGeneralResult {
     public static class DebtItem {
         @Excel(name = "用户")
         private String instituteId;
-        @Excel(name = "用户名")
+        @Excel(name = "用户名", width = 15)
         private String instituteName;
-        @Excel(name = "单据日期")
+        @Excel(name = "单据日期", width = 25)
         private String billRegion;
-        @Excel(name = "营业额", numFormat = "0.00", type = 10)
+        @Excel(name = "营业额", numFormat = "0.00", type = 10, width = 12)
         private BigDecimal totalAmount;
-        @Excel(name = "成本", numFormat = "0.00", type = 10)
+        @Excel(name = "成本", numFormat = "0.00", type = 10, width = 12)
         private BigDecimal costAmount;
-        @Excel(name = "收款", numFormat = "0.00", type = 10)
+        @Excel(name = "收款", numFormat = "0.00", type = 10, width = 12)
         private BigDecimal paymentAmount;
-        @Excel(name = "欠款", numFormat = "0.00", type = 10)
+        @Excel(name = "欠款", numFormat = "0.00", type = 10, width = 12)
         private BigDecimal debtAmount;
-        @Excel(name = "毛利", numFormat = "0.00", type = 10)
+        @Excel(name = "毛利", numFormat = "0.00", type = 10, width = 12)
         private BigDecimal profitAmount;
-        @Excel(name = "订单数", numFormat = "0", type = 8, width = 12)
+        @Excel(name = "订单数", numFormat = "0", type = 10, width = 8)
         private Integer billCount;
     }
 
@@ -192,7 +195,7 @@ public class JournalGeneralResult {
     public static class SalaryRecord {
         @Excel(name = "年份")
         private String year;
-        @Excel(name = "营业额", numFormat = "0.00", type = 10)
+        @Excel(name = "工资金额", numFormat = "0.00", type = 10)
         private BigDecimal totalAmount;
     }
 

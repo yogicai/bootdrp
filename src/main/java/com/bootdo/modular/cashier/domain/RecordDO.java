@@ -34,7 +34,7 @@ public class RecordDO implements Serializable {
     /**
      * 交易时间
      */
-    @Excel(name = "交易时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+    @Excel(name = "交易时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
     private Date tradeTime;
     /**
      * 交易分类
@@ -104,7 +104,7 @@ public class RecordDO implements Serializable {
     /**
      * 更新时间
      */
-    @Excel(name = "更新时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+    @Excel(name = "更新时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
     private Date updateTime;
 
     /**
