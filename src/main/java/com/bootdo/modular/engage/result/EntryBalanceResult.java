@@ -45,10 +45,10 @@ public class EntryBalanceResult {
     @Excel(name = "库存变更")
     private BigDecimal totalQty;
     /** 创建时间 */
-    @Excel(name = "创建时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+    @Excel(name = "创建时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
     private Date createTime;
     /** 修改时间 */
-    @Excel(name = "修改时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+    @Excel(name = "修改时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
     private Date updateTime;
 
 }

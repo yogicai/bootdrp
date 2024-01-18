@@ -1,14 +1,12 @@
 package com.bootdo.modular.cashier.controller;
 
-import cn.hutool.core.map.MapUtil;
-import com.bootdo.modular.cashier.result.MultiSelect;
-import com.bootdo.modular.cashier.domain.RecordDO;
-import com.bootdo.modular.cashier.service.RecordService;
 import com.bootdo.core.annotation.Log;
-import com.bootdo.core.pojo.response.PageJQ;
-import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.core.pojo.request.QueryJQ;
+import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
+import com.bootdo.modular.cashier.domain.RecordDO;
+import com.bootdo.modular.cashier.result.MultiSelect;
+import com.bootdo.modular.cashier.service.RecordService;
 import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
@@ -26,7 +24,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-07-14 22:31:58
  */
-@Api(tags="日记账明细")
+@Api(tags = "日记账明细")
 @Controller
 @RequestMapping("/cashier/record")
 public class RecordController {
@@ -40,35 +38,17 @@ public class RecordController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/list")
-    @RequiresPermissions("cashier:record:record")
-    public PageJQ listP(@RequestBody Map<String, Object> params) {
-        return list(params);
-    }
-
-    @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("cashier:record:record")
     public PageJQ list(@RequestParam Map<String, Object> params) {
-        //查询列表数据
-        QueryJQ query = new QueryJQ(params);
-        List<RecordDO> orderList = recordService.list(query);
-        Map<String, Object> map = recordService.selectSum(query);
-        int total = MapUtil.getInt(map, "totalCount", 0);
-        int totalSum = MapUtil.getInt(map, "totalAmount", 0);
-        int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
-        return new PageJQ(orderList, totalPage, query.getPage(), total,totalSum);
+        return recordService.page(new QueryJQ(params));
     }
 
-    /**
-     * 导出
-     */
     @ResponseBody
     @GetMapping("/export")
     @RequiresPermissions("cashier:record:record")
-    public void sReconVCExport(@RequestParam Map<String, Object> params, Model model) {
-        List<RecordDO> orderList = recordService.list(params);
-        PoiUtil.exportExcelWithStream("TradeRecord.xls", RecordDO.class, orderList);
+    public void export(@RequestParam Map<String, Object> params) {
+        recordService.export(params);
     }
 
     @GetMapping("/add")
@@ -81,52 +61,34 @@ public class RecordController {
     @GetMapping("/edit/{id}")
     @RequiresPermissions("cashier:record:record")
     public String edit(@PathVariable("id") Integer id, Model model) {
-        RecordDO recordDO = recordService.get(id);
+        RecordDO recordDO = recordService.getById(id);
         model.addAttribute("record", recordDO);
         return "cashier/record/edit";
     }
 
-    /**
-     * 修改
-     */
     @ResponseBody
     @RequestMapping("/update")
     @RequiresPermissions("cashier:record:record")
     public R update(RecordDO recordDO) {
-        recordService.update(recordDO);
-        return R.ok();
+        return R.ok(recordService.updateById(recordDO));
     }
 
-    /**
-     * 保存
-     */
-    @Log("新增-修改日记账")
+    @Log("新增日记账")
     @ResponseBody
     @PostMapping("/save")
     @RequiresPermissions("cashier:record:record")
     public R save(RecordDO recordDO) {
-        if (recordService.save(recordDO.toManualRecord()) > 0) {
-            return R.ok();
-        }
-        return R.error();
+        return R.ok(recordService.save(recordDO.toManualRecord()));
     }
 
-
-    /**
-     * 删除
-     */
     @Log("删除日记账")
     @PostMapping("/remove")
     @ResponseBody
     @RequiresPermissions("cashier:record:record")
-    public R remove(@RequestParam("ids[]") Integer[] ids) {
-        recordService.batchRemove(ids);
-        return R.ok();
+    public R remove(@RequestParam("ids[]") List<Long> ids) {
+        return R.ok(recordService.removeByIds(ids));
     }
 
-    /**
-     * 导入日记账
-     */
     @Log("导入日记账")
     @PostMapping("/importCsv")
     @ResponseBody
@@ -136,9 +98,6 @@ public class RecordController {
         return R.ok();
     }
 
-    /**
-     * 多选搜索条件
-     */
     @GetMapping("/multiSelect")
     @ResponseBody
     @RequiresPermissions("cashier:record:record")

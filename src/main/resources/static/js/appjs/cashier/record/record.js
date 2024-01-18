@@ -2,8 +2,6 @@ let prefix = "/cashier/record";
 let dataForm;
 let tableGrid;
 let recordDate;
-let recordDateS;
-let recordDateE;
 let loading;
 $(function() {
     dataForm = $("#search");
@@ -22,17 +20,13 @@ function initMultiSelect() {
 
 function load() {
     recordDate = utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-    recordDateS= recordDate.data("datepicker").pickers[0];
-    recordDateE= recordDate.data("datepicker").pickers[1];
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
-
-    dataForm  = $('#search');
 
     tableGrid = $("#table_list").jqGrid({
         url: prefix + "/list",
         datatype: "json",
-        postData: $.extend({}, dataForm.serializeObject(), {'start' : recordDateS.getDate().format('yyyy-MM-dd'), 'end' : recordDateE.getDate().format('yyyy-MM-dd')}),
+        postData: dataForm.serializeObject(),
         height: window.innerHeight - 210,
         autowidth: true,
         shrinkToFit: true,
@@ -237,5 +231,5 @@ function remove() {
 function exportExcel() {
     let queryParam = dataForm.serialize();
     let url = prefix + "/export?" + queryParam //下载地址
-    utils.download(url ,'TradeRecord.xls')
+    utils.downloadAjax(url ,'TradeRecord.xls')
 }

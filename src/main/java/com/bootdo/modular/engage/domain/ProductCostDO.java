@@ -49,7 +49,7 @@ public class ProductCostDO implements Serializable {
     @Excel(name = "商品成本", numFormat = "#,##0.00", width = 15)
     private BigDecimal costAmount;
     /** 估算时间 */
-    @Excel(name = "估算时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+    @Excel(name = "估算时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
     private Date costDate;
     /** 成本类型 */
     @Excel(name = "成本类型", dict = "COST_TYPE", width = 15)
@@ -61,10 +61,10 @@ public class ProductCostDO implements Serializable {
     @Excel(name = "备注", width = 25)
     private String remark;
     /** 创建时间 */
-    @Excel(name = "创建时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+    @Excel(name = "创建时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
     private Date createTime;
     /** 修改时间 */
-    @Excel(name = "修改时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+    @Excel(name = "修改时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
     private Date updateTime;
 
 }

@@ -122,13 +122,13 @@ public class RPOrderDO {
 	/**
 	 * 创建时间
 	 */
-	@Excel(name = "创建时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+	@Excel(name = "创建时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
 	private Date createTime;
 
 	/**
 	 * 修改时间
 	 */
-	@Excel(name = "修改时间", exportFormat = "yyyy-MM-dd hh:mm:ss", width = 20)
+	@Excel(name = "修改时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
 	private Date updateTime;
 
 	private final List<RPOrderEntryDO> entryDOList = Lists.newArrayList();

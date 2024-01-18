@@ -1,9 +1,10 @@
 package com.bootdo.modular.cashier.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,8 +13,9 @@ import java.util.Date;
  * @author makejava
  * @since 2022-06-22 13:21:49
  */
+@TableName(value ="cashier_record")
 @Data
-public class RecordDO implements Serializable {
+public class RecordDO extends BaseEntity {
 
     private Long id;
     /**
@@ -101,11 +103,6 @@ public class RecordDO implements Serializable {
      */
     @Excel(name = "数据来源")
     private String source;
-    /**
-     * 更新时间
-     */
-    @Excel(name = "更新时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
-    private Date updateTime;
 
     /**
      * 设置手工录入固定属性

@@ -1,6 +1,10 @@
 package com.bootdo.modular.cashier.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bootdo.modular.cashier.domain.RecordDO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -11,26 +15,14 @@ import java.util.Map;
  * @author makejava
  * @since 2022-06-25 19:39:09
  */
-public interface RecordDao {
+public interface RecordDao extends BaseMapper<RecordDO> {
 
-    RecordDO get(Integer id);
+    Page<RecordDO> list(IPage<RecordDO> page, @Param("param") Map<String, Object> param);
 
-    List<RecordDO> list(Map<String, Object> map);
+    List<RecordDO> list(@Param("param") Map<String, Object> param);
 
-    int count(Map<String, Object> map);
+    Map<String, Object> selectSum(@Param("param") Map<String, Object> map);
 
-    Map<String,Object> selectSum(Map<String, Object> map);
-
-    int save(RecordDO recordDO);
-
-    int saveBatch(List<RecordDO> list);
-
-    int update(RecordDO journal);
-
-    int remove(Map<String, Object> map);
-
-    int batchRemove(Integer[] ids);
-
-    List<RecordDO> multiSelect(Map<String, Object> map);
+    List<RecordDO> multiSelect(@Param("param") Map<String, Object> map);
 }
 

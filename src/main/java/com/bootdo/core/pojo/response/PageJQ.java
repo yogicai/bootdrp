@@ -1,5 +1,8 @@
 package com.bootdo.core.pojo.response;
 
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.PageUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -54,5 +57,13 @@ public class PageJQ implements Serializable {
 		this.page = page;
 		this.records = records;
 		this.extra = extra;
+	}
+
+	public <T> PageJQ(Page<T> page, int totalAmount) {
+		this.setRows(page.getRecords());
+		this.setRecords(Convert.toInt(page.getTotal()));
+		this.setPage(Convert.toInt(page.getCurrent()));
+		this.setTotal(PageUtil.totalPage(Convert.toInt(page.getTotal()), Convert.toInt(page.getSize())));
+		this.setTotalAmount(totalAmount);
 	}
 }

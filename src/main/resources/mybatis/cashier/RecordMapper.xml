@@ -4,212 +4,73 @@
 
     <sql id="whereSql">
         <where>
-            <if test="id != null"> and id = #{id} </if>
-            <if test="nick != null and nick != ''"> and nick = #{nick} </if>
-            <if test="account != null and account != ''"> and account = #{account} </if>
-            <if test="type != null and type != ''"> and type in <foreach collection="type.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
-            <if test="tradeTime != null"> and trade_time = #{tradeTime} </if>
-            <if test="tradeClass != null and tradeClass != ''"> and trade_class in <foreach collection="tradeClass.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
-            <if test="targetName != null and targetName != ''"> and target_name = #{targetName} </if>
-            <if test="targetAccount != null and targetAccount != ''"> and target_account in <foreach collection="targetAccount.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
-            <if test="tradeGoods != null and tradeGoods != ''"> and trade_goods = #{tradeGoods} </if>
-            <if test="tradeType != null and tradeType != ''"> and trade_type in <foreach collection="tradeType.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
-            <if test="payAmount != null"> and pay_amount = #{payAmount} </if>
-            <if test="payDirect != null and payDirect != ''"> and pay_direct in <foreach collection="payDirect.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
-            <if test="payStatus != null and payStatus != ''"> and pay_status in <foreach collection="payStatus.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
-            <if test="txnNo != null and txnNo != ''"> and txn_no = #{txnNo} </if>
-            <if test="bizNo != null and bizNo != ''"> and biz_no = #{bizNo} </if>
-            <if test="remark != null and remark != ''"> and remark = #{remark} </if>
-            <if test="costType != null and costType != ''"> and cost_type in <foreach collection="costType.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach></if>
-            <if test="source != null and source != ''"> and source = #{source} </if>
-            <if test="updateTime != null"> and update_time = #{updateTime} </if>
-            <if test="start != null"> and trade_time >= #{start} </if>
-            <if test="end != null"> <![CDATA[ and trade_time <= #{end} ]]> </if>
-            <if test="searchText != null and searchText != ''"> and ( nick like '%${searchText}%' or account like '%${searchText}%' or type like '%${searchText}%' or tradeGoods like '%${tradeGoods}%')</if>
+            <if test="param.id != null">and id = #{param.id}</if>
+            <if test="param.nick != null and param.nick != ''">and nick = #{param.nick}</if>
+            <if test="param.account != null and param.account != ''">and account = #{param.account}</if>
+            <if test="param.type != null and param.type != ''">and type in
+                <foreach collection="param.type.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="param.tradeTime != null">and trade_time = #{param.tradeTime}</if>
+            <if test="param.tradeClass != null and param.tradeClass != ''">and trade_class in
+                <foreach collection="param.tradeClass.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="param.targetName != null and param.targetName != ''">and target_name = #{param.targetName}</if>
+            <if test="param.targetAccount != null and param.targetAccount != ''">and target_account in
+                <foreach collection="param.targetAccount.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="param.tradeGoods != null and param.tradeGoods != ''">and trade_goods = #{param.tradeGoods}</if>
+            <if test="param.tradeType != null and param.tradeType != ''">and trade_type in
+                <foreach collection="param.tradeType.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="param.payAmount != null">and pay_amount = #{param.payAmount}</if>
+            <if test="param.payDirect != null and param.payDirect != ''">and pay_direct in
+                <foreach collection="param.payDirect.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="param.payStatus != null and param.payStatus != ''">and pay_status in
+                <foreach collection="param.payStatus.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="param.txnNo != null and param.txnNo != ''">and txn_no = #{param.txnNo}</if>
+            <if test="param.bizNo != null and param.bizNo != ''">and biz_no = #{param.bizNo}</if>
+            <if test="param.remark != null and param.remark != ''">and remark = #{param.remark}</if>
+            <if test="param.costType != null and param.costType != ''">and cost_type in
+                <foreach collection="param.costType.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="param.source != null and param.source != ''">and source = #{param.source}</if>
+            <if test="param.updateTime != null">and update_time = #{param.updateTime}</if>
+            <if test="param.start != null">and trade_time >= #{param.start}</if>
+            <if test="param.end != null"> <![CDATA[ and trade_time <= #{param.end} ]]> </if>
+            <if test="param.searchText != null and searchText != ''">and ( nick like '%${param.searchText}%' or account like '%${param.searchText}%' or type like '%${param.searchText}%' or tradeGoods like '%${param.searchText}%')</if>
         </where>
     </sql>
-    <sql id="pageSql">
-        <choose>
-            <when test="sort != null and sort.trim() != ''">
-                order by ${sort} ${order}
-            </when>
-            <otherwise>
-                order by trade_time desc
-            </otherwise>
-        </choose>
-        <if test="offset != null and limit != null">
-            limit #{offset}, #{limit}
-        </if>
-    </sql>
 
-    <!--查询单个-->
-    <select id="get" resultType="com.bootdo.modular.cashier.domain.RecordDO">
-        select id, nick, account, type, trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, cost_type, source, update_time
-        from cashier_record where id = #{id}
-    </select>
-
-    <!--查询指定行数据-->
     <select id="list" resultType="com.bootdo.modular.cashier.domain.RecordDO">
         select
-        id, nick, account, type, trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, cost_type, source, update_time
-        from cashier_record
-        <include refid="whereSql"/>
-        <include refid="pageSql"/>
-    </select>
-
-    <!--统计总行数-->
-    <select id="count" resultType="java.lang.Integer">
-        select count(1)
-        from cashier_record
+            *
+        from
+            cashier_record
         <include refid="whereSql"/>
     </select>
 
-    <!--统计总行数-->
     <select id="selectSum" resultType="java.util.Map">
-        select count(1) as totalCount, ifnull(sum(pay_amount), 0) as totalAmount
-        from cashier_record
+        select
+            count(1)                   as totalCount,
+            ifnull(sum(pay_amount), 0) as totalAmount
+        from
+            cashier_record
         <include refid="whereSql"/>
     </select>
-
-    <!--新增所有列-->
-    <insert id="save" keyProperty="id" useGeneratedKeys="true">
-        insert into cashier_record(trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, cost_type, source, nick, account, type)
-        values (#{tradeTime}, #{tradeClass}, #{targetName}, #{targetAccount}, #{tradeGoods}, #{tradeType}, #{payAmount}, #{payDirect}, #{payStatus}, #{txnNo}, #{bizNo}, #{remark}, #{costType}, #{source}, #{nick}, #{account}, #{type})
-    </insert>
-
-    <insert id="saveBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into cashier_record(trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, cost_type, source, nick, account, type)
-        values
-        <foreach collection="list" item="entity" separator=",">
-            (#{entity.tradeTime}, #{entity.tradeClass}, #{entity.targetName}, #{entity.targetAccount}, #{entity.tradeGoods}, #{entity.tradeType}, #{entity.payAmount}, #{entity.payDirect}, #{entity.payStatus}, #{entity.txnNo}, #{entity.bizNo}, #{entity.remark}, #{entity.costType}, #{entity.source}, #{entity.nick}, #{entity.account}, #{entity.type})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into cashier_record(trade_time, trade_class, target_name, target_account, trade_goods, trade_type, pay_amount, pay_direct, pay_status, txn_no, biz_no, remark, cost_type, source, nick, account, type)
-        values
-        <foreach collection="list" item="entity" separator=",">
-            (#{entity.tradeTime}, #{entity.tradeClass}, #{entity.targetName}, #{entity.targetAccount}, #{entity.tradeGoods}, #{entity.tradeType}, #{entity.payAmount}, #{entity.payDirect}, #{entity.payStatus}, #{entity.txnNo}, #{entity.bizNo}, #{entity.remark}, #{entity.costType}, #{entity.source}, #{entity.nick}, #{entity.account}, #{entity.type})
-        </foreach>
-        on duplicate key update
-        trade_time = values(trade_time),
-        trade_class = values(trade_class),
-        target_name = values(target_name),
-        target_account = values(target_account),
-        trade_goods = values(trade_goods),
-        trade_type = values(trade_type),
-        pay_amount = values(pay_amount),
-        pay_direct = values(pay_direct),
-        pay_status = values(pay_status),
-        txn_no = values(txn_no),
-        biz_no = values(biz_no),
-        remark = values(remark),
-        source = values(source),
-        update_time = values(update_time),
-        nick = values(nick),
-        account = values(account),
-        type = values(type)
-    </insert>
-
-    <!--通过主键修改数据-->
-    <update id="update">
-        update cashier_record
-        <set>
-            <if test="tradeTime != null">
-                trade_time = #{tradeTime},
-            </if>
-            <if test="tradeClass != null and tradeClass != ''">
-                trade_class = #{tradeClass},
-            </if>
-            <if test="targetName != null and targetName != ''">
-                target_name = #{targetName},
-            </if>
-            <if test="targetAccount != null and targetAccount != ''">
-                target_account = #{targetAccount},
-            </if>
-            <if test="tradeGoods != null and tradeGoods != ''">
-                trade_goods = #{tradeGoods},
-            </if>
-            <if test="tradeType != null and tradeType != ''">
-                trade_type = #{tradeType},
-            </if>
-            <if test="payAmount != null">
-                pay_amount = #{payAmount},
-            </if>
-            <if test="payDirect != null and payDirect != ''">
-                pay_direct = #{payDirect},
-            </if>
-            <if test="payStatus != null and payStatus != ''">
-                pay_status = #{payStatus},
-            </if>
-            <if test="txnNo != null and txnNo != ''">
-                txn_no = #{txnNo},
-            </if>
-            <if test="bizNo != null and bizNo != ''">
-                biz_no = #{bizNo},
-            </if>
-            <if test="remark != null and remark != ''">
-                remark = #{remark},
-            </if>
-            <if test="source != null and source != ''">
-                source = #{source},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime},
-            </if>
-            <if test="nick != null and nick != ''">
-                nick = #{nick},
-            </if>
-            <if test="account != null and account != ''">
-                account = #{account},
-            </if>
-            <if test="type != null and type != ''">
-                type = #{type},
-            </if>
-            <if test="costType != null and costType != ''">
-                cost_type = #{costType},
-            </if>
-        </set>
-        where id = #{id}
-    </update>
-
-    <!--通过主键删除-->
-    <delete id="remove">
-        delete from cashier_record
-        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
-            <if test="id != null"> and id = #{id} </if>
-            <if test="nick != null and nick != ''"> and nick = #{nick} </if>
-            <if test="account != null and account != ''"> and account = #{account} </if>
-            <if test="type != null and type != ''"> and type = #{type} </if>
-            <if test="tradeTime != null"> and trade_time = #{tradeTime} </if>
-            <if test="tradeClass != null and tradeClass != ''"> and trade_class = #{tradeClass} </if>
-            <if test="targetName != null and targetName != ''"> and target_name = #{targetName} </if>
-            <if test="targetAccount != null and targetAccount != ''"> and target_account = #{targetAccount} </if>
-            <if test="tradeGoods != null and tradeGoods != ''"> and trade_goods = #{tradeGoods} </if>
-            <if test="tradeType != null and tradeType != ''"> and trade_type = #{tradeType} </if>
-            <if test="payAmount != null"> and pay_amount = #{payAmount} </if>
-            <if test="payDirect != null and payDirect != ''"> and pay_direct = #{payDirect} </if>
-            <if test="payStatus != null and payStatus != ''"> and pay_status = #{payStatus} </if>
-            <if test="txnNo != null and txnNo != ''"> and txn_no = #{txnNo} </if>
-            <if test="bizNo != null and bizNo != ''"> and biz_no = #{bizNo} </if>
-            <if test="remark != null and remark != ''"> and remark = #{remark} </if>
-            <if test="source != null and source != ''"> and source = #{source} </if>
-            <if test="updateTime != null"> and update_time = #{updateTime} </if>
-            <if test="start != null and start != ''"> and trade_time >= #{start} </if>
-            <if test="end != null and end != ''"> <![CDATA[ and trade_time <= #{end} ]]> </if>
-        </trim>
-    </delete>
-
-    <delete id="batchRemove">
-        delete from cashier_record where id in
-        <foreach item="id" collection="array" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </delete>
 
     <select id="multiSelect" resultType="com.bootdo.modular.cashier.domain.RecordDO">
-        select distinct cr.type, cr.account, cr.pay_status, cr.pay_direct, cr.trade_class, cr.source, cr.cost_type
-        from cashier_record cr
+        select distinct
+            type,
+            account,
+            pay_status,
+            pay_direct,
+            trade_class,
+            source,
+            cost_type
+        from
+            cashier_record
         <include refid="whereSql"/>
     </select>
 
