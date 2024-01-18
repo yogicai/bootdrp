@@ -61,9 +61,9 @@ public class DataSourceConfig {
         filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
         //监控单个url调用的sql列表
         filterRegistrationBean.addInitParameter("profileEnable", "true");
-        filterRegistrationBean.addInitParameter("principalCookieName","USER_COOKIE");
-        filterRegistrationBean.addInitParameter("principalSessionName","USER_SESSION");
-        filterRegistrationBean.addInitParameter("DruidWebStatFilter","/*");
+        filterRegistrationBean.addInitParameter("principalCookieName", "USER_COOKIE");
+        filterRegistrationBean.addInitParameter("principalSessionName", "USER_SESSION");
+        filterRegistrationBean.addInitParameter("DruidWebStatFilter", "/*");
         return filterRegistrationBean;
     }
 }

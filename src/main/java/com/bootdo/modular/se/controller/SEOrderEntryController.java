@@ -2,11 +2,12 @@ package com.bootdo.modular.se.controller;
 
 import com.bootdo.core.annotation.Log;
 import com.bootdo.core.pojo.response.R;
-import com.bootdo.modular.se.param.SEOrderVO;
 import com.bootdo.modular.se.domain.SEOrderDO;
+import com.bootdo.modular.se.param.SEOrderVO;
 import com.bootdo.modular.se.service.SEOrderEntryService;
 import com.bootdo.modular.se.validator.SEOrderValidator;
 import com.google.common.collect.ImmutableMap;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-18 16:50:26
  */
-
+@Api(tags = "销售订单")
 @Controller
 @RequestMapping("/se/entry")
 public class SEOrderEntryController {

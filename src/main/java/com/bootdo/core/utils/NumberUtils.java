@@ -3,11 +3,12 @@ package com.bootdo.core.utils;
 import cn.hutool.core.util.StrUtil;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * @Author: yogiCai
  */
-public class NumberUtils extends org.apache.commons.lang.math.NumberUtils{
+public class NumberUtils extends org.apache.commons.lang.math.NumberUtils {
 
     public static BigDecimal toBigDecimal(BigDecimal price) {
         return price == null ? BigDecimal.ZERO : price;
@@ -24,7 +25,7 @@ public class NumberUtils extends org.apache.commons.lang.math.NumberUtils{
     public static BigDecimal add(BigDecimal b1, BigDecimal b2, int scale) {
         b1 = b1 == null ? BigDecimal.ZERO : b1;
         b2 = b2 == null ? BigDecimal.ZERO : b2;
-        return b1.add(b2).setScale(scale, BigDecimal.ROUND_HALF_UP);
+        return b1.add(b2).setScale(scale, RoundingMode.HALF_UP);
     }
 
     public static BigDecimal div(BigDecimal b1, BigDecimal b2) {
@@ -35,7 +36,7 @@ public class NumberUtils extends org.apache.commons.lang.math.NumberUtils{
         if (b1 == null || b2 == null || b2.compareTo(BigDecimal.ZERO) <= 0) {
             return BigDecimal.ZERO;
         }
-        return b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP);
+        return b1.divide(b2, scale, RoundingMode.HALF_UP);
     }
 
     public static BigDecimal mul(BigDecimal b1, BigDecimal b2) {
@@ -46,7 +47,7 @@ public class NumberUtils extends org.apache.commons.lang.math.NumberUtils{
         if (b1 == null || b2 == null) {
             return BigDecimal.ZERO;
         }
-        return b1.multiply(b2).setScale(scale, BigDecimal.ROUND_HALF_UP);
+        return b1.multiply(b2).setScale(scale, RoundingMode.HALF_UP);
     }
 
     public static BigDecimal subtract(BigDecimal b1, BigDecimal b2) {
@@ -56,7 +57,7 @@ public class NumberUtils extends org.apache.commons.lang.math.NumberUtils{
     public static BigDecimal subtract(BigDecimal b1, BigDecimal b2, int scale) {
         b1 = b1 == null ? BigDecimal.ZERO : b1;
         b2 = b2 == null ? BigDecimal.ZERO : b2;
-        return b1.subtract(b2).setScale(scale, BigDecimal.ROUND_HALF_UP);
+        return b1.subtract(b2).setScale(scale, RoundingMode.HALF_UP);
     }
 
 

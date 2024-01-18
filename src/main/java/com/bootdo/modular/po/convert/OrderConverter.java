@@ -12,10 +12,10 @@ import com.bootdo.core.utils.ShiroUtils;
 import com.bootdo.modular.data.domain.AccountDO;
 import com.bootdo.modular.data.domain.StockDO;
 import com.bootdo.modular.data.domain.VendorDO;
-import com.bootdo.modular.po.param.OrderEntryVO;
-import com.bootdo.modular.po.param.OrderVO;
 import com.bootdo.modular.po.domain.OrderDO;
 import com.bootdo.modular.po.domain.OrderEntryDO;
+import com.bootdo.modular.po.param.OrderEntryVO;
+import com.bootdo.modular.po.param.OrderVO;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.domain.RPOrderEntryDO;
 import com.bootdo.modular.rp.domain.RPOrderSettleDO;
@@ -36,7 +36,7 @@ public class OrderConverter {
         List<OrderEntryDO> entryDOList = Lists.newArrayList();
         BigDecimal entryAmountTotal = BigDecimal.ZERO;
         BigDecimal qtyTotal = BigDecimal.ZERO;
-        for (OrderEntryVO vo: orderVO.getEntryVOList()) {
+        for (OrderEntryVO vo : orderVO.getEntryVOList()) {
             OrderEntryDO orderEntryDO = new OrderEntryDO();
             orderEntryDO.setBillNo(orderDO.getBillNo());
             orderEntryDO.setEntryId(vo.getEntryId());
@@ -83,7 +83,7 @@ public class OrderConverter {
         return orderDO;
     }
 
-    public static  List<RPOrderSettleDO> convertRPOrderSettle(RPOrderDO rpOrderDO, OrderDO orderDO, Map<String, AccountDO> accountDOMap) {
+    public static List<RPOrderSettleDO> convertRPOrderSettle(RPOrderDO rpOrderDO, OrderDO orderDO, Map<String, AccountDO> accountDOMap) {
         List<RPOrderSettleDO> rpOrderSettleDOList = Lists.newArrayList();
         RPOrderSettleDO rpOrderSettleDO = new RPOrderSettleDO();
         rpOrderSettleDO.setBillNo(rpOrderDO.getBillNo());
@@ -95,7 +95,7 @@ public class OrderConverter {
         return rpOrderSettleDOList;
     }
 
-    public static  List<RPOrderEntryDO> convertRPOrderEntry(RPOrderDO rpOrderDO, OrderDO orderDO) {
+    public static List<RPOrderEntryDO> convertRPOrderEntry(RPOrderDO rpOrderDO, OrderDO orderDO) {
         List<RPOrderEntryDO> rpOrderEntryDOList = Lists.newArrayList();
         RPOrderEntryDO rpOrderEntryDO = new RPOrderEntryDO();
         rpOrderEntryDO.setBillNo(rpOrderDO.getBillNo());
@@ -109,7 +109,7 @@ public class OrderConverter {
         return rpOrderEntryDOList;
     }
 
-    public static  RPOrderDO convertRPOrder(OrderDO orderDO) {
+    public static RPOrderDO convertRPOrder(OrderDO orderDO) {
         BillType billType = BillType.CG_ORDER.equals(orderDO.getBillType()) ? BillType.CW_FK_ORDER : BillType.CW_SK_ORDER;
         RPOrderDO rpOrderDO = new RPOrderDO();
         rpOrderDO.setBillDate(orderDO.getBillDate());

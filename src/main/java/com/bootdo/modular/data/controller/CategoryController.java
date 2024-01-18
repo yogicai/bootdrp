@@ -9,6 +9,7 @@ import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.data.domain.CategoryDO;
 import com.bootdo.modular.data.service.CategoryService;
 import com.google.common.collect.ImmutableMap;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-16 16:30:26
  */
+@Api(tags = "类目管理")
 @Controller
 @RequestMapping("/data/category")
 public class CategoryController {

@@ -11,7 +11,9 @@ import lombok.Getter;
 @Getter
 public enum CostType implements EnumBean<CostType> {
 
-    /** 采购单调整  */
+    /**
+     * 采购单调整
+     */
     PO_CG("采购单调整"),
     PO_TH("采购退货单调整"),
 

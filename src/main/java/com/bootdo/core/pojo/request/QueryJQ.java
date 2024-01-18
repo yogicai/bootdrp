@@ -12,25 +12,40 @@ import java.util.Map;
 
 /**
  * 查询参数
+ *
  * @author yogiCai
  */
 @Slf4j
 @Data
 public class QueryJQ extends LinkedHashMap<String, Object> {
 
-    /** 查询启始行 */
+    /**
+     * 查询启始行
+     */
     private int offset;
-    /** 查询条数 */
+    /**
+     * 查询条数
+     */
     private int limit;
-    /** 当前页码 */
+    /**
+     * 当前页码
+     */
     private int page;
-    /** 查询开始时间 */
+    /**
+     * 查询开始时间
+     */
     private String start;
-    /** 查询终止时间 */
+    /**
+     * 查询终止时间
+     */
     private String end;
-    /** 排序列 */
+    /**
+     * 排序列
+     */
     private String sort;
-    /** 升序、降序 */
+    /**
+     * 升序、降序
+     */
     private String order;
 
     public QueryJQ(Map<String, Object> params, boolean page) {

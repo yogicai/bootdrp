@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * 工资表
+ *
  * @author L
  */
 public interface SalaryDao extends BaseMapper<CashierSalary> {

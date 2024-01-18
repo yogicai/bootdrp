@@ -10,6 +10,7 @@ import java.util.Date;
 @Data
 public class UserOnline {
     /**
+     *
      */
     private String id;
 

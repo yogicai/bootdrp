@@ -9,34 +9,54 @@ import java.util.List;
 import java.util.Map;
 
 /**
-* @author yogiCai
-* @date 2018-01-21 11:45:46
-*/
+ * @author yogiCai
+ * @date 2018-01-21 11:45:46
+ */
 public class EnumCollection {
-    /** 单据类型 */
+    /**
+     * 单据类型
+     */
     public static final EnumSet<BillType> BILL_TYPE = EnumSet.of(BillType.CG_ORDER, BillType.TH_ORDER, BillType.XS_ORDER, BillType.CW_SK_ORDER, BillType.CW_FK_ORDER, BillType.WH_RK_ORDER, BillType.WH_CK_ORDER);
-    /** 单据来源 */
+    /**
+     * 单据来源
+     */
     public static final EnumSet<BillSource> BILL_SOURCE = EnumSet.of(BillSource.SYSTEM, BillSource.USER, BillSource.IMPORT);
-    /** 采购单状态 */
+    /**
+     * 采购单状态
+     */
     public static final EnumSet<OrderStatus> ORDER_CG_STATUS = EnumSet.of(OrderStatus.WAITING_PAY, OrderStatus.PART_PAY, OrderStatus.FINISH_PAY, OrderStatus.ORDER_CANCEL);
-    /** 销售单状态 */
+    /**
+     * 销售单状态
+     */
     public static final EnumSet<OrderStatus> ORDER_XS_STATUS = EnumSet.of(OrderStatus.WAITING_PAY, OrderStatus.PART_PAY, OrderStatus.FINISH_PAY, OrderStatus.ORDER_CANCEL);
 
-    /** 订单审核状态 */
+    /**
+     * 订单审核状态
+     */
     public static final EnumSet<AuditStatus> AUDIT_STATUS = EnumSet.of(AuditStatus.YES, AuditStatus.NO);
-    /** 类目分类 */
+    /**
+     * 类目分类
+     */
     public static final EnumSet<CategoryType> CATEGORY_TYPE = EnumSet.of(CategoryType.CUSTOMER, CategoryType.VENDOR, CategoryType.PRODUCT, CategoryType.PAYMENT, CategoryType.INCOME, CategoryType.ACCOUNT);
 
-    /** 积分记录状态 */
+    /**
+     * 积分记录状态
+     */
     public static final EnumSet<PointStatus> POINT_STATUS = EnumSet.of(PointStatus.NORMAL, PointStatus.DISABLE, PointStatus.SETTLE);
-    /** 积分记录来源 */
+    /**
+     * 积分记录来源
+     */
     public static final EnumSet<PointSource> POINT_SOURCE = EnumSet.of(PointSource.ORDER, PointSource.RETURN, PointSource.MANUAL);
 
-    /** 成本类型 */
+    /**
+     * 成本类型
+     */
     public static final EnumSet<CostType> COST_TYPE = EnumSet.of(CostType.PO_CG, CostType.PO_TH, CostType.WH_CK, CostType.SE_XS, CostType.WH_RK, CostType.MANUAL);
     public static final EnumSet<CostVersion> COST_VERSION = EnumSet.of(CostVersion.CURRENT);
 
-    /** 状态类型 */
+    /**
+     * 状态类型
+     */
     public static final EnumSet<CommonStatus> STATUS_TYPE = EnumSet.of(CommonStatus.DISABLE, CommonStatus.ENABLE);
 
 
@@ -69,8 +89,8 @@ public class EnumCollection {
     }
 
     /**
-    * 下拉列表用：[{AUDIT_STATUS : [{YES: 已审核}, {NO: 未审核}]}]
-    */
+     * 下拉列表用：[{AUDIT_STATUS : [{YES: 已审核}, {NO: 未审核}]}]
+     */
     public static Map<String, List<Map<String, String>>> listEnumMap() {
         Map<String, List<Map<String, String>>> setMap = Maps.newHashMap();
         setMap.put("BILL_TYPE", convertEnumMap(BILL_TYPE));

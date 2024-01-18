@@ -6,11 +6,11 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.CharPool;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
-import com.bootdo.modular.system.domain.DictDO;
 import com.bootdo.core.enums.EnumCollection;
-import com.bootdo.modular.system.service.DictService;
 import com.bootdo.modular.data.domain.CategoryDO;
 import com.bootdo.modular.data.service.CategoryService;
+import com.bootdo.modular.system.domain.DictDO;
+import com.bootdo.modular.system.service.DictService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -22,12 +22,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- *  * 支持字典参数设置
- *  * 举例： @Excel(name = "性别", width = 15, dict = "sex")
- *  * 1、导出的时候会根据字典配置，把值1,2 翻译成：男、女;
- *  * 2、导入的时候，会把男、女翻译成1,2 存进数据库;
+ * * 支持字典参数设置
+ * * 举例： @Excel(name = "性别", width = 15, dict = "sex")
+ * * 1、导出的时候会根据字典配置，把值1,2 翻译成：男、女;
+ * * 2、导入的时候，会把男、女翻译成1,2 存进数据库;
  *
- * @author caiyz
+ * @author L
  * @since 2022-07-08 22:50
  */
 @Slf4j
@@ -105,17 +105,19 @@ public class ExcelDictHandlerImpl implements IExcelDictHandler {
 
     /**
      * 获取字典key
+     *
      * @param dict 字典key，多个逗号分隔
      */
-    private String getDictType (String dict) {
+    private String getDictType(String dict) {
         List<String> dictTypes = CharSequenceUtil.split(dict, CharPool.COMMA);
         return CollUtil.findOne(dictTypes, type -> listDic.containsKey(type));
     }
 
     /**
      * 字典value转name
+     *
      * @param dictType 字典key
-     * @param value 字段值
+     * @param value    字段值
      */
     private String getDictName(String dictType, Object value) {
         DictDO dictDO = CollUtil.findOne(listDic.get(dictType), d -> CharSequenceUtil.equals(d.getValue(), StrUtil.toString(value)));
@@ -124,8 +126,9 @@ public class ExcelDictHandlerImpl implements IExcelDictHandler {
 
     /**
      * 字典name转value
+     *
      * @param dictType 字典key
-     * @param value 字段值
+     * @param value    字段值
      */
     private String getDictValue(String dictType, Object value) {
         DictDO dictDO = CollUtil.findOne(listDic.get(dictType), d -> CharSequenceUtil.equals(d.getName(), StrUtil.toString(value)));

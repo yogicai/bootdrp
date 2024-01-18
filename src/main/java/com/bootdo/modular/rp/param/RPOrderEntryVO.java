@@ -13,20 +13,34 @@ import java.util.Date;
  */
 @Data
 public class RPOrderEntryVO {
-    /**  */
+    /**
+     *
+     */
     private Integer id;
-    /** 源单编号 */
+    /**
+     * 源单编号
+     */
     private String srcBillNo;
-    /** 源单类型 */
+    /**
+     * 源单类型
+     */
     private BillType srcBillType;
-    /** 源单据日期 */
+    /**
+     * 源单据日期
+     */
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date srcBillDate;
-    /** 单据金额 */
+    /**
+     * 单据金额
+     */
     private BigDecimal srcTotalAmount;
-    /** 已核销金额 */
+    /**
+     * 已核销金额
+     */
     private BigDecimal srcPaymentAmount;
-    /** 本次核销金额 */
+    /**
+     * 本次核销金额
+     */
     private BigDecimal checkAmount;
 
 }

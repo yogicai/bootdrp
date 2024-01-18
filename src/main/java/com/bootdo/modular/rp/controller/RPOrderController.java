@@ -2,14 +2,15 @@ package com.bootdo.modular.rp.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.Log;
+import com.bootdo.core.pojo.request.QueryJQ;
+import com.bootdo.core.pojo.response.PageJQ;
+import com.bootdo.core.pojo.response.R;
+import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.service.RPOrderService;
-import com.bootdo.modular.system.controller.BaseController;
-import com.bootdo.core.pojo.response.PageJQ;
-import com.bootdo.core.utils.PoiUtil;
-import com.bootdo.core.pojo.request.QueryJQ;
-import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.rp.validator.RPOrderValidator;
+import com.bootdo.modular.system.controller.BaseController;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-21 21:23:27
  */
+@Api(tags = "收款、付款单")
 @Controller
 @RequestMapping("/rp/order")
 public class RPOrderController extends BaseController {

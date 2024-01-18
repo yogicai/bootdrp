@@ -9,17 +9,17 @@ import java.util.List;
  */
 @Data
 public class PageR {
-	// 总记录数
-	private int total;
-	// 列表数据
-	private List<?> rows;
+    // 总记录数
+    private int total;
+    // 列表数据
+    private List<?> rows;
 
-	/**
-	 * 分页
-	 */
-	public PageR(List<?> list, int total) {
-		this.rows = list;
-		this.total = total;
-	}
+    /**
+     * 分页
+     */
+    public PageR(List<?> list, int total) {
+        this.rows = list;
+        this.total = total;
+    }
 
 }

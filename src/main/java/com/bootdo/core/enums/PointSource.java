@@ -11,7 +11,9 @@ import lombok.Getter;
 @Getter
 public enum PointSource implements EnumBean<PointSource> {
 
-    /** 订单  */
+    /**
+     * 订单
+     */
     ORDER("订单"),
     RETURN("退货"),
     MANUAL("调整");

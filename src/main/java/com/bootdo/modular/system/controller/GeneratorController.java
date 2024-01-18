@@ -2,9 +2,10 @@ package com.bootdo.modular.system.controller;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.json.JSONUtil;
-import com.bootdo.modular.system.service.GeneratorService;
-import com.bootdo.core.utils.GenUtils;
 import com.bootdo.core.pojo.response.R;
+import com.bootdo.core.utils.GenUtils;
+import com.bootdo.modular.system.service.GeneratorService;
+import io.swagger.annotations.Api;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -23,77 +24,78 @@ import java.util.Map;
 /**
  * @author L
  */
+@Api(tags = "代码生成")
 @RequestMapping("/common/generator")
 @Controller
 public class GeneratorController {
-	String prefix = "system/generator";
-	@Resource
+    String prefix = "system/generator";
+    @Resource
     GeneratorService generatorService;
 
-	@GetMapping()
-	String generator() {
-		return prefix + "/list";
-	}
+    @GetMapping()
+    String generator() {
+        return prefix + "/list";
+    }
 
-	@ResponseBody
-	@GetMapping("/list")
-	List<Map<String, Object>> list() {
-		List<Map<String, Object>> list = generatorService.list();
-		return list;
-	};
+    @ResponseBody
+    @GetMapping("/list")
+    List<Map<String, Object>> list() {
+        List<Map<String, Object>> list = generatorService.list();
+        return list;
+    }
 
-	@RequestMapping("/code/{tableName}")
-	public void code(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("tableName") String tableName) throws IOException {
-		String[] tableNames = new String[] { tableName };
-		byte[] data = generatorService.generatorCode(tableNames);
-		response.reset();
-		response.setHeader("Content-Disposition", "attachment; filename=\"bootdo.zip\"");
-		response.addHeader("Content-Length", "" + data.length);
-		response.setContentType("application/octet-stream; charset=UTF-8");
+    @RequestMapping("/code/{tableName}")
+    public void code(HttpServletRequest request, HttpServletResponse response,
+                     @PathVariable("tableName") String tableName) throws IOException {
+        String[] tableNames = new String[]{tableName};
+        byte[] data = generatorService.generatorCode(tableNames);
+        response.reset();
+        response.setHeader("Content-Disposition", "attachment; filename=\"bootdo.zip\"");
+        response.addHeader("Content-Length", "" + data.length);
+        response.setContentType("application/octet-stream; charset=UTF-8");
 
-		IoUtil.write(response.getOutputStream(), true, data);
-	}
+        IoUtil.write(response.getOutputStream(), true, data);
+    }
 
-	@RequestMapping("/batchCode")
-	public void batchCode(HttpServletRequest request, HttpServletResponse response, String tables) throws IOException {
-		String[] tableNames = JSONUtil.parseArray(tables).toArray(new String[0]);
-		byte[] data = generatorService.generatorCode(tableNames);
-		response.reset();
-		response.setHeader("Content-Disposition", "attachment; filename=\"bootdo.zip\"");
-		response.addHeader("Content-Length", "" + data.length);
-		response.setContentType("application/octet-stream; charset=UTF-8");
+    @RequestMapping("/batchCode")
+    public void batchCode(HttpServletRequest request, HttpServletResponse response, String tables) throws IOException {
+        String[] tableNames = JSONUtil.parseArray(tables).toArray(new String[0]);
+        byte[] data = generatorService.generatorCode(tableNames);
+        response.reset();
+        response.setHeader("Content-Disposition", "attachment; filename=\"bootdo.zip\"");
+        response.addHeader("Content-Length", "" + data.length);
+        response.setContentType("application/octet-stream; charset=UTF-8");
 
-		IoUtil.write(response.getOutputStream(), true, data);
-	}
+        IoUtil.write(response.getOutputStream(), true, data);
+    }
 
-	@GetMapping("/edit")
-	public String edit(Model model) {
-		Configuration conf = GenUtils.getConfig();
-		Map<String, Object> property = new HashMap<>(16);
-		property.put("author", conf.getProperty("author"));
-		property.put("email", conf.getProperty("email"));
-		property.put("package", conf.getProperty("package"));
-		property.put("autoRemovePre", conf.getProperty("autoRemovePre"));
-		property.put("tablePrefix", conf.getProperty("tablePrefix"));
-		model.addAttribute("property", property);
-		return prefix + "/edit";
-	}
+    @GetMapping("/edit")
+    public String edit(Model model) {
+        Configuration conf = GenUtils.getConfig();
+        Map<String, Object> property = new HashMap<>(16);
+        property.put("author", conf.getProperty("author"));
+        property.put("email", conf.getProperty("email"));
+        property.put("package", conf.getProperty("package"));
+        property.put("autoRemovePre", conf.getProperty("autoRemovePre"));
+        property.put("tablePrefix", conf.getProperty("tablePrefix"));
+        model.addAttribute("property", property);
+        return prefix + "/edit";
+    }
 
-	@ResponseBody
-	@PostMapping("/update")
-	R update(@RequestParam Map<String, Object> map) {
-		try {
-			PropertiesConfiguration conf = new PropertiesConfiguration("generator.properties");
-			conf.setProperty("author", map.get("author"));
-			conf.setProperty("email", map.get("email"));
-			conf.setProperty("package", map.get("package"));
-			conf.setProperty("autoRemovePre", map.get("autoRemovePre"));
-			conf.setProperty("tablePrefix", map.get("tablePrefix"));
-			conf.save();
-		} catch (ConfigurationException e) {
-			return R.error("保存配置文件出错");
-		}
-		return R.ok();
-	}
+    @ResponseBody
+    @PostMapping("/update")
+    R update(@RequestParam Map<String, Object> map) {
+        try {
+            PropertiesConfiguration conf = new PropertiesConfiguration("generator.properties");
+            conf.setProperty("author", map.get("author"));
+            conf.setProperty("email", map.get("email"));
+            conf.setProperty("package", map.get("package"));
+            conf.setProperty("autoRemovePre", map.get("autoRemovePre"));
+            conf.setProperty("tablePrefix", map.get("tablePrefix"));
+            conf.save();
+        } catch (ConfigurationException e) {
+            return R.error("保存配置文件出错");
+        }
+        return R.ok();
+    }
 }

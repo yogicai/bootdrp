@@ -13,13 +13,19 @@ import java.math.BigDecimal;
  */
 @Data
 public class WHStockInfo {
-    /** 仓库编号 */
+    /**
+     * 仓库编号
+     */
     @ExcelIgnore
     private String stockNo;
-    /** 仓库名称 */
+    /**
+     * 仓库名称
+     */
     @Excel(name = "仓库名称", needMerge = true)
     private String stockName;
-    /** 库存数量 */
+    /**
+     * 库存数量
+     */
     @Excel(name = "库存数量", needMerge = true)
     private BigDecimal totalQty = BigDecimal.ZERO;
 

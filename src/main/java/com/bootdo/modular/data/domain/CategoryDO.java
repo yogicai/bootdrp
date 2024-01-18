@@ -15,17 +15,29 @@ import java.io.Serializable;
 public class CategoryDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**  */
+    /**
+     *
+     */
     private Long categoryId;
-    /** 上级ID，顶级为0 */
+    /**
+     * 上级ID，顶级为0
+     */
     private Long parentId;
-    /** 名称 */
+    /**
+     * 名称
+     */
     private String name;
-    /** 排序 */
+    /**
+     * 排序
+     */
     private Integer orderNum;
-    /** 分类 */
+    /**
+     * 分类
+     */
     private String type;
-    /** 状态 */
+    /**
+     * 状态
+     */
     private Integer status = 0;
 
 }

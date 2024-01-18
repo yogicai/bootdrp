@@ -2,8 +2,6 @@ package com.bootdo.modular.se.service;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import com.bootdo.modular.system.dao.DictDao;
-import com.bootdo.modular.system.domain.DictDO;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.BillSource;
 import com.bootdo.core.utils.NumberUtils;
@@ -23,6 +21,8 @@ import com.bootdo.modular.se.convert.SEOrderConverter;
 import com.bootdo.modular.se.dao.SEOrderDao;
 import com.bootdo.modular.se.dao.SEOrderEntryDao;
 import com.bootdo.modular.se.domain.SEOrderDO;
+import com.bootdo.modular.system.dao.DictDao;
+import com.bootdo.modular.system.domain.DictDO;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -84,7 +84,7 @@ public class SEOrderService {
         List<SEOrderDO> orderDOList = seOrderDao.list(ImmutableMap.of("billNos", MapUtil.get(params, "billNos", List.class)));
         //去除已经是审核（未审核）状态的订单
         List<SEOrderDO> orderDOList1 = orderDOList.stream()
-                .filter(orderDO ->!auditStatus.equals(orderDO.getAuditStatus())).collect(Collectors.toList());
+                .filter(orderDO -> !auditStatus.equals(orderDO.getAuditStatus())).collect(Collectors.toList());
         //计算客户积分、生成收付款单
         if (CollectionUtils.isNotEmpty(orderDOList1)) {
             handleCostAndAudit(orderDOList1, auditStatus);

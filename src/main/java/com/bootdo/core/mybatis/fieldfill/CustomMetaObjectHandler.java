@@ -34,25 +34,25 @@ public class CustomMetaObjectHandler implements MetaObjectHandler {
 
             //为空则设置createUser（BaseEntity)
             Object createUser = metaObject.getValue(CREATE_USER);
-            if(ObjectUtil.isNull(createUser)) {
+            if (ObjectUtil.isNull(createUser)) {
                 setFieldValByName(CREATE_USER, this.getUserUniqueId(), metaObject);
             }
 
             //为空则设置createTime（BaseEntity)
             Object createTime = metaObject.getValue(CREATE_TIME);
-            if(ObjectUtil.isNull(createTime)) {
+            if (ObjectUtil.isNull(createTime)) {
                 setFieldValByName(CREATE_TIME, date, metaObject);
             }
 
             //为空则设置updateUser（BaseEntity)
             Object updateUser = metaObject.getValue(UPDATE_USER);
-            if(ObjectUtil.isNull(updateUser)) {
+            if (ObjectUtil.isNull(updateUser)) {
                 setFieldValByName(UPDATE_USER, this.getUserUniqueId(), metaObject);
             }
 
             //为空则设置updateTime（BaseEntity)
             Object updateTime = metaObject.getValue(UPDATE_TIME);
-            if(ObjectUtil.isNull(updateTime)) {
+            if (ObjectUtil.isNull(updateTime)) {
                 setFieldValByName(UPDATE_TIME, date, metaObject);
             }
         } catch (ReflectionException e) {
@@ -78,7 +78,7 @@ public class CustomMetaObjectHandler implements MetaObjectHandler {
     private Long getUserUniqueId() {
         try {
             UserDO sysLoginUser = ShiroUtils.getUser();
-            if(ObjectUtil.isNotNull(sysLoginUser)) {
+            if (ObjectUtil.isNotNull(sysLoginUser)) {
                 return sysLoginUser.getUserId();
             } else {
                 return -1L;

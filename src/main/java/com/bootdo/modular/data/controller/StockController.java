@@ -1,11 +1,12 @@
 package com.bootdo.modular.data.controller;
 
-import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.request.Query;
+import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.data.domain.StockDO;
 import com.bootdo.modular.data.service.StockService;
 import com.bootdo.modular.data.validator.DataValidator;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-18 16:23:32
  */
-
+@Api(tags = "仓库管理")
 @Controller
 @RequestMapping("/data/stock")
 public class StockController {

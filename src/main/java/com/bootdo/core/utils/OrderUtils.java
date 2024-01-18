@@ -28,14 +28,16 @@ public class OrderUtils {
             return PO_CG_TK_PRE + DateUtils.convertDateToStrISO(new Date()) + RandomUtil.randomNumbers(5);
         }
     }
+
     /**
      * 销售单
      */
     public static String generateOrderNoXS() {
         return PO_XS_PRE + DateUtils.convertDateToStrISO(new Date()) + RandomUtil.randomNumbers(5);
     }
+
     /**
-    /**
+     * /**
      * 财务-付款单
      */
     public static String generateOrderNoCW(BillType billType) {

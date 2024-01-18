@@ -4,9 +4,9 @@ package com.bootdo.core.utils;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.core.consts.Constant;
+import com.bootdo.core.exception.assertion.BizServiceException;
 import com.bootdo.modular.system.domain.ColumnDO;
 import com.bootdo.modular.system.domain.TableDO;
-import com.bootdo.core.exception.assertion.BizServiceException;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -24,6 +24,7 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * 代码生成器   工具类
+ *
  * @author L
  */
 public class GenUtils {

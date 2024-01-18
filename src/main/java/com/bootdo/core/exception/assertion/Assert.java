@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * @author caiyz
+ * @author L
  * @since 2022-03-03 10:09
  */
 public interface Assert {
@@ -22,7 +22,7 @@ public interface Assert {
     /**
      * 创建异常
      *
-     * @param t 原始异常
+     * @param t    原始异常
      * @param args 占位符对应的参数列表
      * @return 业务异常
      */
@@ -34,7 +34,7 @@ public interface Assert {
      * 再以入参的形式传给 {{{@link #newException(Throwable, Object...)}}}, 作为最后创建的异常的 cause 属性.
      *
      * @param errMsg 自定义的错误信息
-     * @param args 占位符对应的参数列表
+     * @param args   占位符对应的参数列表
      * @return 业务异常
      */
     default RuntimeException newExceptionWithMsg(String errMsg, Object... args) {
@@ -52,8 +52,8 @@ public interface Assert {
      * 再以入参的形式传给 {{{@link #newException(Throwable, Object...)}}}, 作为最后创建的异常的 cause 属性.
      *
      * @param errMsg 自定义的错误信息
-     * @param t 异常
-     * @param args 占位符对应的参数列表
+     * @param t      异常
+     * @param args   占位符对应的参数列表
      * @return 业务异常
      */
     default RuntimeException newExceptionWithMsg(String errMsg, Throwable t, Object... args) {

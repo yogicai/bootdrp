@@ -18,49 +18,49 @@ import java.util.Map;
  */
 @Service
 public class RPPointService {
-	@Resource
-	private PointEntryDao pointEntryDao;
+    @Resource
+    private PointEntryDao pointEntryDao;
     @Resource
     private ConsumerDao consumerDao;
-	
-	public PointEntryDO get(Integer id){
-		return pointEntryDao.get(id);
-	}
-	
-	public List<PointEntryDO> list(Map<String, Object> map){
-	    String type = MapUtil.getStr(map, "type");
+
+    public PointEntryDO get(Integer id) {
+        return pointEntryDao.get(id);
+    }
+
+    public List<PointEntryDO> list(Map<String, Object> map) {
+        String type = MapUtil.getStr(map, "type");
         if ("COLLECT".equals(type)) {
             return pointEntryDao.listG(map);
         }
         return pointEntryDao.list(map);
-	}
-	
-	public int count(Map<String, Object> map){
+    }
+
+    public int count(Map<String, Object> map) {
         String type = MapUtil.getStr(map, "type");
         if ("COLLECT".equals(type)) {
             return pointEntryDao.countG(map);
         }
-		return pointEntryDao.count(map);
-	}
-	
-	public int save(PointEntryDO pointEntry){
+        return pointEntryDao.count(map);
+    }
+
+    public int save(PointEntryDO pointEntry) {
         ConsumerDO consumerDO = consumerDao.get(NumberUtils.toInt(pointEntry.getConsumerId()));
         pointEntry.setConsumerName(consumerDO.getName());
-		return pointEntryDao.save(pointEntry);
-	}
-	
-	public int update(PointEntryDO pointEntry){
+        return pointEntryDao.save(pointEntry);
+    }
+
+    public int update(PointEntryDO pointEntry) {
         ConsumerDO consumerDO = consumerDao.get(NumberUtils.toInt(pointEntry.getConsumerId()));
         pointEntry.setConsumerName(consumerDO.getName());
-		return pointEntryDao.update(pointEntry);
-	}
-	
-	public int remove(Integer id){
-		return pointEntryDao.remove(id);
-	}
-	
-	public int batchRemove(Integer[] ids){
-		return pointEntryDao.batchRemove(ids);
-	}
-	
+        return pointEntryDao.update(pointEntry);
+    }
+
+    public int remove(Integer id) {
+        return pointEntryDao.remove(id);
+    }
+
+    public int batchRemove(Integer[] ids) {
+        return pointEntryDao.batchRemove(ids);
+    }
+
 }

@@ -1,4 +1,3 @@
-
 package com.bootdo.core.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
@@ -8,7 +7,7 @@ import lombok.Getter;
 /**
  * 公共状态
  *
- * @author caiyz
+ * @author L
  * @since 2023-04-03 20:09
  */
 @Getter

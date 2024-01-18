@@ -1,7 +1,6 @@
 package com.bootdo.modular.rp.dao;
 
 import com.bootdo.modular.rp.domain.RPOrderDO;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Map;

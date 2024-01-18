@@ -6,13 +6,13 @@ import com.bootdo.core.enums.BillSource;
 import com.bootdo.core.utils.NumberUtils;
 import com.bootdo.core.utils.OrderUtils;
 import com.bootdo.modular.data.domain.AccountDO;
-import com.bootdo.modular.system.domain.UserDO;
-import com.bootdo.modular.rp.param.RPOrderEntryVO;
-import com.bootdo.modular.rp.param.RPOrderSettleVO;
-import com.bootdo.modular.rp.param.RPOrderVO;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.domain.RPOrderEntryDO;
 import com.bootdo.modular.rp.domain.RPOrderSettleDO;
+import com.bootdo.modular.rp.param.RPOrderEntryVO;
+import com.bootdo.modular.rp.param.RPOrderSettleVO;
+import com.bootdo.modular.rp.param.RPOrderVO;
+import com.bootdo.modular.system.domain.UserDO;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -29,7 +29,7 @@ public class RPOrderConverter {
     public static List<RPOrderSettleDO> convertOrderSettle(RPOrderVO orderVO, RPOrderDO orderDO, Map<String, AccountDO> accountDOMap) {
         List<RPOrderSettleDO> settleDOList = Lists.newArrayList();
         BigDecimal paymentAmountTotal = BigDecimal.ZERO;
-        for (RPOrderSettleVO vo: orderVO.getSettleVOList()) {
+        for (RPOrderSettleVO vo : orderVO.getSettleVOList()) {
             RPOrderSettleDO orderSettleDO = new RPOrderSettleDO();
             orderSettleDO.setBillNo(orderDO.getBillNo());
             orderSettleDO.setSettleAccount(vo.getSettleAccount());
@@ -46,7 +46,7 @@ public class RPOrderConverter {
     public static List<RPOrderEntryDO> convertOrderEntry(RPOrderVO orderVO, RPOrderDO orderDO) {
         List<RPOrderEntryDO> entryDOList = Lists.newArrayList();
         BigDecimal checkAmountTotal = BigDecimal.ZERO;
-        for (RPOrderEntryVO vo: orderVO.getEntryVOList()) {
+        for (RPOrderEntryVO vo : orderVO.getEntryVOList()) {
             RPOrderEntryDO orderEntryDO = new RPOrderEntryDO();
             orderEntryDO.setBillNo(orderDO.getBillNo());
             orderEntryDO.setSrcBillNo(vo.getSrcBillNo());
@@ -79,7 +79,7 @@ public class RPOrderConverter {
         return orderDO;
     }
 
-    public static  Map<String, AccountDO> convertAccountMap(List<AccountDO> accountDOList) {
+    public static Map<String, AccountDO> convertAccountMap(List<AccountDO> accountDOList) {
         Map<String, AccountDO> accountDOMap = Maps.newHashMap();
         for (AccountDO accountDO : accountDOList) {
             accountDOMap.put(accountDO.getNo().toString(), accountDO);

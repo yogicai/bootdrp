@@ -1,4 +1,3 @@
-
 package com.bootdo.modular.cashier.enums;
 
 import lombok.AllArgsConstructor;
@@ -16,9 +15,13 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum DataTypeEnum {
 
-    /** 图表类目（X轴） */
+    /**
+     * 图表类目（X轴）
+     */
     CHART_CATEGORY(DataTypeEnum.CONST_CHART_CATEGORY, "X轴"),
-    /** 图表数值（Y轴） */
+    /**
+     * 图表数值（Y轴）
+     */
     CHART_DATA(DataTypeEnum.CONST_CHART_DATA, "Y轴"),
 
     ;

@@ -8,8 +8,8 @@ import lombok.Data;
 @Data
 public class RoleMenuDO {
 
-	private Long id;
-	private Long  roleId;
-	private Long menuId;
+    private Long id;
+    private Long roleId;
+    private Long menuId;
 
 }

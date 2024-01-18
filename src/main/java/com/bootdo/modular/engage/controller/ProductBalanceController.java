@@ -1,16 +1,17 @@
 package com.bootdo.modular.engage.controller;
 
 import cn.hutool.core.map.MapUtil;
+import com.bootdo.core.pojo.request.QueryJQ;
+import com.bootdo.core.pojo.response.PageJQ;
+import com.bootdo.core.pojo.response.R;
+import com.bootdo.core.utils.PoiUtil;
+import com.bootdo.modular.engage.param.BalanceAdjustParam;
 import com.bootdo.modular.engage.result.BalanceResult;
+import com.bootdo.modular.engage.result.EntryBalanceResult;
 import com.bootdo.modular.engage.service.ProductBalanceService;
 import com.bootdo.modular.system.controller.BaseController;
 import com.bootdo.modular.wh.result.WHProductInfo;
-import com.bootdo.core.pojo.response.PageJQ;
-import com.bootdo.core.utils.PoiUtil;
-import com.bootdo.core.pojo.request.QueryJQ;
-import com.bootdo.core.pojo.response.R;
-import com.bootdo.modular.engage.param.BalanceAdjustParam;
-import com.bootdo.modular.engage.result.EntryBalanceResult;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +28,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
-
+@Api(tags = "商品库存")
 @Controller
 @RequestMapping("/engage/product")
 public class ProductBalanceController extends BaseController {

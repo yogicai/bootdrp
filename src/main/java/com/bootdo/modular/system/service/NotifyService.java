@@ -8,28 +8,28 @@ import java.util.Map;
 
 /**
  * 通知通告
- * 
+ *
  * @author chglee
  * @email 1992lcg@163.com
  * @date 2017-10-05 17:11:16
  */
 public interface NotifyService {
 
-	NotifyDO get(Long id);
+    NotifyDO get(Long id);
 
-	List<NotifyDO> list(Map<String, Object> map);
+    List<NotifyDO> list(Map<String, Object> map);
 
-	int count(Map<String, Object> map);
+    int count(Map<String, Object> map);
 
-	int save(NotifyDO notify);
+    int save(NotifyDO notify);
 
-	int update(NotifyDO notify);
+    int update(NotifyDO notify);
 
-	int remove(Long id);
+    int remove(Long id);
 
-	int batchRemove(Long[] ids);
+    int batchRemove(Long[] ids);
 
 //	Map<String, Object> message(Long userId);
 
-	PageR selfList(Map<String, Object> map);
+    PageR selfList(Map<String, Object> map);
 }

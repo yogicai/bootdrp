@@ -11,7 +11,9 @@ import lombok.Getter;
 @Getter
 public enum PointStatus implements EnumBean<PointStatus> {
 
-    /** 正常 */
+    /**
+     * 正常
+     */
     NORMAL("正常"),
     DISABLE("不可用"),
     SETTLE("已结算");

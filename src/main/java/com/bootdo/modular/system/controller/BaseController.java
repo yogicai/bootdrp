@@ -15,17 +15,17 @@ import java.util.Date;
  */
 @Controller
 public class BaseController {
-	public UserDO getUser() {
-		return ShiroUtils.getUser();
-	}
+    public UserDO getUser() {
+        return ShiroUtils.getUser();
+    }
 
-	public Long getUserId() {
-		return getUser().getUserId();
-	}
+    public Long getUserId() {
+        return getUser().getUserId();
+    }
 
-	public String getUsername() {
-		return getUser().getUsername();
-	}
+    public String getUsername() {
+        return getUser().getUsername();
+    }
 
     @InitBinder
     public void init(WebDataBinder binder) {

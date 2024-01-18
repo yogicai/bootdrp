@@ -8,13 +8,14 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * @author caiyz
+ * @author L
  * @since 2022-03-03 10:09
  */
 public interface BizServiceAssert extends AbstractExceptionEnum, Assert {
 
     /**
      * 创建异常
+     *
      * @param args message占位符对应的参数列表
      * @return 业务异常
      */
@@ -27,8 +28,9 @@ public interface BizServiceAssert extends AbstractExceptionEnum, Assert {
 
     /**
      * 创建异常
-     * @param cause  待判断对象
-     * @param args message占位符对应的参数列表
+     *
+     * @param cause 待判断对象
+     * @param args  message占位符对应的参数列表
      * @return 业务异常
      */
     @Override
@@ -40,6 +42,7 @@ public interface BizServiceAssert extends AbstractExceptionEnum, Assert {
 
     /**
      * args参数转json处理
+     *
      * @param args message占位符对应的参数列表
      * @return 业务异常
      */

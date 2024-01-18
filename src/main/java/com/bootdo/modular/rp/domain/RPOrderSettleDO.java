@@ -17,21 +17,37 @@ import java.util.Date;
 public class RPOrderSettleDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**  */
+    /**
+     *
+     */
     private Integer id;
-    /** 应收、应付票据编号 */
+    /**
+     * 应收、应付票据编号
+     */
     private String billNo;
-    /** 结算账户 */
+    /**
+     * 结算账户
+     */
     private String settleAccount;
-    /** 结算账户名称 */
+    /**
+     * 结算账户名称
+     */
     private String settleName;
-    /** 已付金额 */
+    /**
+     * 已付金额
+     */
     private BigDecimal paymentAmount;
-    /** 备注 */
+    /**
+     * 备注
+     */
     private String remark;
-    /** 创建时间 */
+    /**
+     * 创建时间
+     */
     private Date createTime;
-    /** 修改时间 */
+    /**
+     * 修改时间
+     */
     private Date updateTime;
 
 }

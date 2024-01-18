@@ -27,14 +27,20 @@ public class Constant {
     public static String Q_MONTH = "MONTH";
     public static String Q_YEAR = "YEAR";
 
-    /** 报表 */
+    /**
+     * 报表
+     */
     public static String R = "YEAR";
 
-    /** main主页 */
+    /**
+     * main主页
+     */
     public static String MAIN_TAB_CUSTOMER = "CUSTOMER";
     public static String MAIN_TAB_PRODUCT = "PRODUCT";
 
-    /** 提示消息 */
+    /**
+     * 提示消息
+     */
     public static String PO_RP_ORDER_REMARK = "系统自动生成付款单";
     public static String SE_RP_POINT_REMARK = "系统自动生成【%s】";
     public static String COST_REMARK = "%S【%s】";

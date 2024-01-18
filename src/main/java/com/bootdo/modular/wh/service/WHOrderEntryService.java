@@ -6,13 +6,13 @@ import com.bootdo.modular.data.domain.StockDO;
 import com.bootdo.modular.data.service.StockService;
 import com.bootdo.modular.engage.dao.ProductCostDao;
 import com.bootdo.modular.engage.domain.ProductCostDO;
-import com.bootdo.modular.wh.dao.WHOrderDao;
-import com.bootdo.modular.wh.param.WHOrderEntryVO;
-import com.bootdo.modular.wh.param.WHOrderVO;
 import com.bootdo.modular.wh.convert.WHOrderConverter;
+import com.bootdo.modular.wh.dao.WHOrderDao;
 import com.bootdo.modular.wh.dao.WHOrderEntryDao;
 import com.bootdo.modular.wh.domain.WHOrderDO;
 import com.bootdo.modular.wh.domain.WHOrderEntryDO;
+import com.bootdo.modular.wh.param.WHOrderEntryVO;
+import com.bootdo.modular.wh.param.WHOrderVO;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -101,7 +101,7 @@ public class WHOrderEntryService {
         }
         List<ProductCostDO> productCostDOList = productCostDao.listLate(ImmutableMap.of("productNos", entryNos));
         for (ProductCostDO productCostDO : productCostDOList) {
-            result.put(productCostDO.getProductNo().toString(), productCostDO);
+            result.put(productCostDO.getProductNo(), productCostDO);
         }
         return result;
     }

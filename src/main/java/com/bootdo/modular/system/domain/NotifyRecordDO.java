@@ -15,7 +15,7 @@ import java.util.Date;
 @Data
 public class NotifyRecordDO {
     /**
-     *  编号
+     * 编号
      */
     private Long id;
     //通知通告ID

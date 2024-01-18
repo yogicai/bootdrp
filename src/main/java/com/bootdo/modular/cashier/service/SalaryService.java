@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * 工资表
+ *
  * @author L
  */
 @Service

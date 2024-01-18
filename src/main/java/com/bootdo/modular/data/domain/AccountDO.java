@@ -15,28 +15,50 @@ import java.util.Date;
 public class AccountDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**  */
+    /**
+     *
+     */
     private Integer id;
-    /** 编号 */
+    /**
+     * 编号
+     */
     private Integer no;
-    /** 帐户名称 */
+    /**
+     * 帐户名称
+     */
     private String name;
-    /** 帐户编码 */
+    /**
+     * 帐户编码
+     */
     private String code;
-    /** 帐户类型 */
+    /**
+     * 帐户类型
+     */
     private String type;
-    /** 期初日期 */
+    /**
+     * 期初日期
+     */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
-    /** 期初余额 */
+    /**
+     * 期初余额
+     */
     private BigDecimal startBalance;
-    /** 当前余额 */
+    /**
+     * 当前余额
+     */
     private BigDecimal currentBalance;
-    /** 状态 */
+    /**
+     * 状态
+     */
     private Integer status = 0;
-    /** 创建时间 */
+    /**
+     * 创建时间
+     */
     private Date createTime;
-    /** 更新余额 */
+    /**
+     * 更新余额
+     */
     private Date updateTime;
 
 }

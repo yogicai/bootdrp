@@ -4,16 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * @author caiyz
+ * @author L
  * @since 2020-11-10 11:00
  */
 @Getter
 @AllArgsConstructor
 public enum EChartSeriesType {
 
-    /** 曲线 */
+    /**
+     * 曲线
+     */
     LINE("line"),
-    /** 饼图 */
+    /**
+     * 饼图
+     */
     BAR("bar"),
 
     ;

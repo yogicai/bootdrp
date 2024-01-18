@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class RPPointValidator {
 
     public void validateSave(PointEntryDO pointEntry) {
-        if (pointEntry.getConsumerId() == null || pointEntry.getSource() == null ) {
+        if (pointEntry.getConsumerId() == null || pointEntry.getSource() == null) {
             throw new BizServiceException(OrderStatusCode.ORDER_INVALID, ErrorMessage.PARAM_INVALID);
         }
 

@@ -19,22 +19,32 @@ import java.util.Map;
 /**
  * 导入订单
  *
- * @author caiyz
+ * @author L
  * @since 2023-03-27 14:53
  */
 @Data
 public class JournalGeneralResult {
 
-    /** 统计起始 */
+    /**
+     * 统计起始
+     */
     private String startYear;
-    /** 统计结止 */
+    /**
+     * 统计结止
+     */
     private String endYear;
 
-    /** 账户现金流合计*/
+    /**
+     * 账户现金流合计
+     */
     private Collection<AccountItem> flowAccountStatList;
-    /** 年份现金流合计 */
+    /**
+     * 年份现金流合计
+     */
     private Collection<AccountItem> flowAccountYearList;
-    /** 经营情况 */
+    /**
+     * 经营情况
+     */
     private Collection<OperateItem> operateYearList;
 
     @JsonIgnore
@@ -147,7 +157,7 @@ public class JournalGeneralResult {
         private String year;
         @Excel(name = "销售数量", numFormat = "0", type = 10, orderNum = "1")
         private Integer totalQty;
-        @Excel(name = "营业额", numFormat = "0.00", type = 10, width = 12,  orderNum = "2", dict = DataTypeEnum.CONST_CHART_DATA)
+        @Excel(name = "营业额", numFormat = "0.00", type = 10, width = 12, orderNum = "2", dict = DataTypeEnum.CONST_CHART_DATA)
         private BigDecimal totalAmount;
         @Excel(name = "收款", numFormat = "0.00", type = 10, width = 12, orderNum = "3", dict = DataTypeEnum.CONST_CHART_DATA)
         private BigDecimal paymentAmount;

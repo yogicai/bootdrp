@@ -11,10 +11,12 @@ import lombok.Getter;
 @Getter
 public enum AuditStatus implements EnumBean<AuditStatus> {
 
-    /** 已审核  */
-    YES("已审核","审核"),
-    NO("未审核","反审核"),
-    OTHER("异常状态","异常状态");
+    /**
+     * 已审核
+     */
+    YES("已审核", "审核"),
+    NO("未审核", "反审核"),
+    OTHER("异常状态", "异常状态");
 
     private final String remark;
     private final String remark1;

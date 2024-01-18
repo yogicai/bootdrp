@@ -15,33 +15,61 @@ import java.util.Date;
  */
 @Data
 public class WHOrderEntryDO implements Serializable {
-    /**  */
+    /**
+     *
+     */
     private Integer id;
-    /** 单据号 */
+    /**
+     * 单据号
+     */
     private String billNo;
-    /** 商品ID */
+    /**
+     * 商品ID
+     */
     private String entryId;
-    /** 商品名称 */
+    /**
+     * 商品名称
+     */
     private String entryName;
-    /** 条形码 */
+    /**
+     * 条形码
+     */
     private String entryBarcode;
-    /** 商品单位 */
+    /**
+     * 商品单位
+     */
     private String entryUnit;
-    /** 商品单价 */
+    /**
+     * 商品单价
+     */
     private BigDecimal entryPrice;
-    /** 成本单价 */
+    /**
+     * 成本单价
+     */
     private BigDecimal costPrice;
-    /** 仓库编号 */
+    /**
+     * 仓库编号
+     */
     private String stockNo;
-    /** 仓库名称 */
+    /**
+     * 仓库名称
+     */
     private String stockName;
-    /** 数量 */
+    /**
+     * 数量
+     */
     private BigDecimal totalQty;
-    /** 商品金额 */
+    /**
+     * 商品金额
+     */
     private BigDecimal entryAmount;
-    /** 创建时间 */
+    /**
+     * 创建时间
+     */
     private Date createTime;
-    /** 修改时间 */
+    /**
+     * 修改时间
+     */
     private Date updateTime;
 
 }

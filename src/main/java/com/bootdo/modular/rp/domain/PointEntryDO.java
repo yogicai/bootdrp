@@ -17,27 +17,49 @@ import java.util.Date;
 public class PointEntryDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**  */
+    /**
+     *
+     */
     private Integer id;
-    /** 客户ID */
+    /**
+     * 客户ID
+     */
     private String consumerId;
-    /** 客户名称 */
+    /**
+     * 客户名称
+     */
     private String consumerName;
-    /** 积分来源 */
+    /**
+     * 积分来源
+     */
     private String source;
-    /** 积分 */
+    /**
+     * 积分
+     */
     private BigDecimal point;
-    /** 备注 */
+    /**
+     * 备注
+     */
     private String remark;
-    /** 状态 */
+    /**
+     * 状态
+     */
     private String status;
-    /** 关联单号 */
+    /**
+     * 关联单号
+     */
     private String relateNo;
-    /** 计算积分的订单金额 */
+    /**
+     * 计算积分的订单金额
+     */
     private BigDecimal totalAmount;
-    /** 创建时间 */
+    /**
+     * 创建时间
+     */
     private Date createTime;
-    /** 修改时间 */
+    /**
+     * 修改时间
+     */
     private Date updateTime;
 
 }

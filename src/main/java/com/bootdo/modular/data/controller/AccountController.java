@@ -1,12 +1,13 @@
 package com.bootdo.modular.data.controller;
 
-import com.bootdo.modular.data.domain.AccountDO;
-import com.bootdo.modular.system.controller.BaseController;
-import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.request.Query;
+import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
+import com.bootdo.modular.data.domain.AccountDO;
 import com.bootdo.modular.data.service.AccountService;
 import com.bootdo.modular.data.validator.DataValidator;
+import com.bootdo.modular.system.controller.BaseController;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-16 16:30:26
  */
+@Api(tags = "帐户管理")
 @Controller
 @RequestMapping("/data/account")
 public class AccountController extends BaseController {

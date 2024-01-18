@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author caiyz
+ * @author L
  * @since 2017-02-04 08:56
  */
 @Configuration
@@ -24,7 +24,7 @@ public class ThymeleafConfig {
 
     @Bean
     public ThymeleafViewResolver configureThymeleafStaticVars(ThymeleafViewResolver viewResolver, ThymeleafProperties thymeleafProperties) {
-        if(viewResolver != null) {
+        if (viewResolver != null) {
             Map<String, Object> vars = new HashMap<>();
             vars.put("echartsUrl", thymeleafProperties.getEcharts());
             vars.put("bootstrapUrl", thymeleafProperties.getBootstrap());

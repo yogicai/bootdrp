@@ -14,22 +14,22 @@ import java.util.Map;
  */
 @Service
 public class LogServiceImpl implements LogService {
-	@Resource
+    @Resource
     private LogDao logDao;
 
-	public List<LogDO> list(Map<String, Object> map){
-		return logDao.list(map);
-	}
+    public List<LogDO> list(Map<String, Object> map) {
+        return logDao.list(map);
+    }
 
-	public int count(Map<String, Object> map){
-		return logDao.count(map);
-	}
+    public int count(Map<String, Object> map) {
+        return logDao.count(map);
+    }
 
-	public int remove(Long id) {
+    public int remove(Long id) {
         return logDao.remove(id);
-	}
+    }
 
-	public int batchRemove(Long[] ids){
-		return logDao.batchRemove(ids);
-	}
+    public int batchRemove(Long[] ids) {
+        return logDao.batchRemove(ids);
+    }
 }

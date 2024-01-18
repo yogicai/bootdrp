@@ -10,9 +10,9 @@ import java.util.Map;
 
 @Service
 public interface SessionService {
-	List<UserOnline> list(Map<String, Object> params);
+    List<UserOnline> list(Map<String, Object> params);
 
-	Collection<Session> sessionList();
-	
-	boolean forceLogout(String sessionId);
+    Collection<Session> sessionList();
+
+    boolean forceLogout(String sessionId);
 }

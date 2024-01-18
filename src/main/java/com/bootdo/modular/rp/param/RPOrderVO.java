@@ -17,31 +17,55 @@ import java.util.List;
  */
 @Data
 public class RPOrderVO {
-    /** 单据日期 */
+    /**
+     * 单据日期
+     */
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date billDate;
-    /** 单据编号 */
+    /**
+     * 单据编号
+     */
     private String billNo;
-    /** 收款、付款标识 */
+    /**
+     * 收款、付款标识
+     */
     private BillType billType;
-    /** 买家ID */
+    /**
+     * 买家ID
+     */
     private String debtorId;
-    /** 买家名称 */
+    /**
+     * 买家名称
+     */
     private String debtorName;
-    /** 收款人ID */
+    /**
+     * 收款人ID
+     */
     private String checkId;
-    /** 收款人名称 */
+    /**
+     * 收款人名称
+     */
     private String checkName;
-    /** 整单折扣 */
+    /**
+     * 整单折扣
+     */
     private BigDecimal discountAmount;
-    /** 备注 */
+    /**
+     * 备注
+     */
     private String remark;
-    /** 审核状态 */
+    /**
+     * 审核状态
+     */
     private AuditStatus auditStatus;
 
-    /** 结算金额明细 */
+    /**
+     * 结算金额明细
+     */
     private final List<RPOrderSettleVO> settleVOList = Lists.newArrayList();
-    /** 源单及核销金额明细 */
+    /**
+     * 源单及核销金额明细
+     */
     private final List<RPOrderEntryVO> entryVOList = Lists.newArrayList();
 
 }

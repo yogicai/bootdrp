@@ -2,11 +2,12 @@ package com.bootdo.modular.report.controller;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONUtil;
-import com.bootdo.modular.report.result.SReconResult;
-import com.bootdo.modular.system.controller.BaseController;
-import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.core.pojo.response.R;
+import com.bootdo.core.utils.PoiUtil;
+import com.bootdo.modular.report.result.SReconResult;
 import com.bootdo.modular.report.service.ReportService;
+import com.bootdo.modular.system.controller.BaseController;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
+@Api(value = "首页-图表")
 @Controller
 @RequestMapping("/report")
 public class ReportController extends BaseController {

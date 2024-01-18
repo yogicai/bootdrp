@@ -11,7 +11,9 @@ import lombok.Getter;
 @Getter
 public enum CategoryType implements EnumBean<CategoryType> {
 
-    /** 客户类目  */
+    /**
+     * 客户类目
+     */
     CUSTOMER("客户类目"),
     VENDOR("供应商类目"),
     PRODUCT("商品类目"),

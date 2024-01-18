@@ -11,7 +11,9 @@ import lombok.Getter;
 @Getter
 public enum CostVersion implements EnumBean<CostVersion> {
 
-    /** 最新成本 */
+    /**
+     * 最新成本
+     */
     CURRENT("最新成本"),
     ;
 

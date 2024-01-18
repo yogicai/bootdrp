@@ -16,19 +16,33 @@ import java.util.Date;
 public class StockDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**  */
+    /**
+     *
+     */
     private Integer id;
-    /** 仓库编号 */
+    /**
+     * 仓库编号
+     */
     private String stockNo;
-    /** 仓库名称 */
+    /**
+     * 仓库名称
+     */
     private String stockName;
-    /** 仓库地址 */
+    /**
+     * 仓库地址
+     */
     private String stockAddress;
-    /** 状态 */
+    /**
+     * 状态
+     */
     private Integer status = 0;
-    /** 创建时间 */
+    /**
+     * 创建时间
+     */
     private Date createTime;
-    /** 修改时间 */
+    /**
+     * 修改时间
+     */
     private Date updateTime;
 
 }

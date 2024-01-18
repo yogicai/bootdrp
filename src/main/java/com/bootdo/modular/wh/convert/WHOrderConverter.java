@@ -8,10 +8,10 @@ import com.bootdo.core.utils.ShiroUtils;
 import com.bootdo.modular.data.domain.ConsumerDO;
 import com.bootdo.modular.data.domain.StockDO;
 import com.bootdo.modular.engage.domain.ProductCostDO;
-import com.bootdo.modular.wh.param.WHOrderEntryVO;
-import com.bootdo.modular.wh.param.WHOrderVO;
 import com.bootdo.modular.wh.domain.WHOrderDO;
 import com.bootdo.modular.wh.domain.WHOrderEntryDO;
+import com.bootdo.modular.wh.param.WHOrderEntryVO;
+import com.bootdo.modular.wh.param.WHOrderVO;
 import com.google.common.collect.Lists;
 
 import java.math.BigDecimal;
@@ -28,7 +28,7 @@ public class WHOrderConverter {
         List<WHOrderEntryDO> entryDOList = Lists.newArrayList();
         BigDecimal entryAmountTotal = BigDecimal.ZERO;
         BigDecimal qtyTotal = BigDecimal.ZERO;
-        for (WHOrderEntryVO vo: orderVO.getEntryVOList()) {
+        for (WHOrderEntryVO vo : orderVO.getEntryVOList()) {
             WHOrderEntryDO orderEntryDO = new WHOrderEntryDO();
             orderEntryDO.setBillNo(orderDO.getBillNo());
             orderEntryDO.setEntryId(vo.getEntryId());
@@ -48,7 +48,7 @@ public class WHOrderConverter {
         orderDO.setTotalQty(qtyTotal);
         orderDO.setEntryAmount(entryAmountTotal);
         return entryDOList;
-        }
+    }
 
     public static WHOrderDO convertOrder(WHOrderVO orderVO, ConsumerDO consumerDO) {
         WHOrderDO orderDO = new WHOrderDO();

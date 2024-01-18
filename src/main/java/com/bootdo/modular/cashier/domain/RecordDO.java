@@ -13,7 +13,7 @@ import java.util.Date;
  * @author makejava
  * @since 2022-06-22 13:21:49
  */
-@TableName(value ="cashier_record")
+@TableName(value = "cashier_record")
 @Data
 public class RecordDO extends BaseEntity {
 

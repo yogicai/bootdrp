@@ -1,4 +1,3 @@
-
 package com.bootdo.config.properties;
 
 import com.alibaba.druid.pool.DruidDataSource;

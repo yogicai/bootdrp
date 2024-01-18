@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * 手动调整库存
  *
- * @author caiyz
+ * @author L
  * @since 2023-04-04 17:30
  */
 @Data

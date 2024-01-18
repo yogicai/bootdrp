@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     /**
      * -- GETTER --
-     *  获取最原始的request
+     * 获取最原始的request
      */
     private final HttpServletRequest orgRequest;
     private final boolean isIncludeRichText;

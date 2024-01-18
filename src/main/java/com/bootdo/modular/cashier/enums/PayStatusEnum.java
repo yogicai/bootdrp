@@ -1,4 +1,3 @@
-
 package com.bootdo.modular.cashier.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;

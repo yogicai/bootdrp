@@ -8,16 +8,22 @@ import java.util.List;
 
 
 /**
-* @author yogiCai
-* @date 2018-02-01 10:43:43
-*/
+ * @author yogiCai
+ * @date 2018-02-01 10:43:43
+ */
 @Data
 public class BalanceResult {
-    /** 库存日期 */
+    /**
+     * 库存日期
+     */
     private String toDate;
-    /** 动态列名 */
+    /**
+     * 动态列名
+     */
     private final List<String> stockList = Lists.newArrayList();
-    /** 商品信息 */
+    /**
+     * 商品信息
+     */
     private final List<WHProductInfo> productInfoList = Lists.newArrayList();
 
 }

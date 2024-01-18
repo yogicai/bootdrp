@@ -7,13 +7,13 @@ import com.bootdo.core.utils.DateUtils;
 import com.bootdo.core.utils.NumberUtils;
 import com.bootdo.modular.data.service.CostAmountCalculator;
 import com.bootdo.modular.data.service.CostAmountIResult;
+import com.bootdo.modular.engage.dao.ProductBalanceDao;
+import com.bootdo.modular.engage.dao.ProductCostDao;
+import com.bootdo.modular.engage.domain.ProductCostDO;
 import com.bootdo.modular.engage.param.BalanceAdjustParam;
 import com.bootdo.modular.engage.result.BalanceResult;
 import com.bootdo.modular.engage.result.BalanceTotalResult;
 import com.bootdo.modular.engage.result.EntryBalanceResult;
-import com.bootdo.modular.engage.dao.ProductBalanceDao;
-import com.bootdo.modular.engage.dao.ProductCostDao;
-import com.bootdo.modular.engage.domain.ProductCostDO;
 import com.bootdo.modular.wh.result.WHProductInfo;
 import com.bootdo.modular.wh.result.WHStockInfo;
 import com.google.common.collect.ImmutableMap;
@@ -33,7 +33,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
- * @author caiyz
+ * @author L
  * @since 2020-11-10 14:48
  */
 @Service

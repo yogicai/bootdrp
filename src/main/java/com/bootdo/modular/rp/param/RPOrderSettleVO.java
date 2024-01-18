@@ -11,13 +11,21 @@ import java.math.BigDecimal;
  */
 @Data
 public class RPOrderSettleVO {
-    /**  */
+    /**
+     *
+     */
     private Integer id;
-    /** 商品ID */
+    /**
+     * 商品ID
+     */
     private String settleAccount;
-    /** 收款金额 */
+    /**
+     * 收款金额
+     */
     private BigDecimal paymentAmount;
-    /** 备注 */
+    /**
+     * 备注
+     */
     private String remark;
 
 }

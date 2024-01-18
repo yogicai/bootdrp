@@ -3,11 +3,12 @@ package com.bootdo.modular.po.controller;
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.Log;
 import com.bootdo.core.pojo.response.R;
-import com.bootdo.modular.po.param.OrderVO;
 import com.bootdo.modular.po.domain.OrderDO;
+import com.bootdo.modular.po.param.OrderVO;
 import com.bootdo.modular.po.service.OrderEntryService;
 import com.bootdo.modular.po.validator.OrderValidator;
 import com.google.common.collect.ImmutableMap;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-01-21 12:38:44
  */
+@Api(tags = "采购订单")
 @Controller
 @RequestMapping("/po/entry")
 public class OrderEntryController {

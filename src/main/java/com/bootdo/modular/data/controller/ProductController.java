@@ -8,8 +8,9 @@ import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.data.domain.ProductDO;
 import com.bootdo.modular.data.service.ProductService;
 import com.bootdo.modular.data.validator.DataValidator;
-import com.bootdo.modular.system.controller.BaseController;
 import com.bootdo.modular.engage.domain.ProductCostDO;
+import com.bootdo.modular.system.controller.BaseController;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-16 16:30:26
  */
+@Api(tags = "商品管理")
 @Controller
 @RequestMapping("/data/product")
 public class ProductController extends BaseController {

@@ -11,5 +11,5 @@ import java.util.Map;
  */
 public interface EnumService {
 
-	Map<String, List<DictDO>> listEnum(Map<String, Object> map);
+    Map<String, List<DictDO>> listEnum(Map<String, Object> map);
 }

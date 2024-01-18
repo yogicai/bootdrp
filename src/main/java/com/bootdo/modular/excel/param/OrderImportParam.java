@@ -9,10 +9,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-/** 
+/**
  * 导入订单
- * 
- * @author caiyz
+ *
+ * @author L
  * @since 2023-03-27 14:53
  */
 @Data
@@ -20,12 +20,12 @@ public class OrderImportParam {
 
     @NotNull
     @ApiModelProperty(value = "单据日期_开始")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date billDateB;
 
     @NotNull
     @ApiModelProperty(value = "单据日期_开始")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date billDateE;
 
     @NotNull

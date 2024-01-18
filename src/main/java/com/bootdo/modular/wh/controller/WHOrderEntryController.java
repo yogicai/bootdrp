@@ -3,11 +3,12 @@ package com.bootdo.modular.wh.controller;
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.Log;
 import com.bootdo.core.pojo.response.R;
-import com.bootdo.modular.wh.param.WHOrderVO;
 import com.bootdo.modular.wh.domain.WHOrderDO;
+import com.bootdo.modular.wh.param.WHOrderVO;
 import com.bootdo.modular.wh.service.WHOrderEntryService;
 import com.bootdo.modular.wh.validator.WHOrderValidator;
 import com.google.common.collect.ImmutableMap;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +23,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
-
+@Api(tags = "出库、入库订单")
 @Controller
 @RequestMapping("/wh/entry")
 public class WHOrderEntryController {

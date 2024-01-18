@@ -46,13 +46,13 @@ public class DataValidator {
     }
 
     public void validateStock(StockDO stock) {
-        if (stockDao.count(ImmutableMap.of("idNot",stock.getId() == null ? "" : stock.getId(), "stockNo", stock.getStockNo())) > 0) {
+        if (stockDao.count(ImmutableMap.of("idNot", stock.getId() == null ? "" : stock.getId(), "stockNo", stock.getStockNo())) > 0) {
             throw new BizServiceException(OrderStatusCode.DATA_INVALID, String.format(ErrorMessage.DATA_NO_DUPLICATE, "仓库"));
         }
     }
 
     public void validateVendor(VendorDO vendor) {
-        if (vendorDao.count(ImmutableMap.of("idNot",vendor.getId() == null ? "" : vendor.getId(), "name", vendor.getName())) > 0) {
+        if (vendorDao.count(ImmutableMap.of("idNot", vendor.getId() == null ? "" : vendor.getId(), "name", vendor.getName())) > 0) {
             throw new BizServiceException(OrderStatusCode.DATA_INVALID, String.format(ErrorMessage.DATA_NAME_DUPLICATE, "供应商"));
         }
     }

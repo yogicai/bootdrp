@@ -27,24 +27,25 @@ public class ImageUtils {
      * @throws IOException
      * @date
      */
-    public static BufferedImage cutImage(MultipartFile file, int x, int y, int w, int h,String prefix) {
+    public static BufferedImage cutImage(MultipartFile file, int x, int y, int w, int h, String prefix) {
 
         Iterator iterator = ImageIO.getImageReadersByFormatName(prefix);
         try {
-            ImageReader reader = (ImageReader)iterator.next();
+            ImageReader reader = (ImageReader) iterator.next();
             //转换成输入流
             InputStream in = file.getInputStream();
             ImageInputStream iis = ImageIO.createImageInputStream(in);
             reader.setInput(iis, true);
             ImageReadParam param = reader.getDefaultReadParam();
-            Rectangle rect = new Rectangle(x, y, w,h);
+            Rectangle rect = new Rectangle(x, y, w, h);
             param.setSourceRegion(rect);
-            BufferedImage bi = reader.read(0,param);
+            BufferedImage bi = reader.read(0, param);
             return bi;
         } catch (Exception ignored) {
         }
         return null;
     }
+
     /***
      * 图片旋转指定角度
      * @param bufferedimage 图像
@@ -65,7 +66,7 @@ public class ImageUtils {
         graphics2d.setPaint(Color.WHITE);
         graphics2d.fillRect(0, 0, w, h);
         graphics2d.rotate(Math.toRadians(degree), w / 2, h / 2);
-        graphics2d.drawImage(bufferedimage, 0, 0,Color.WHITE, null);
+        graphics2d.drawImage(bufferedimage, 0, 0, Color.WHITE, null);
         graphics2d.dispose();
         return img;
     }

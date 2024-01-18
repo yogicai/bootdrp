@@ -16,25 +16,45 @@ import java.util.Date;
 public class VendorDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**  */
+    /**
+     *
+     */
     private Integer id;
-    /** 编号 */
+    /**
+     * 编号
+     */
     private Integer no;
-    /** 供应商名称 */
+    /**
+     * 供应商名称
+     */
     private String name;
-    /** 供应商类别 */
+    /**
+     * 供应商类别
+     */
     private String type;
-    /** 联系人 */
+    /**
+     * 联系人
+     */
     private String contacts;
-    /** 联系人电话 */
+    /**
+     * 联系人电话
+     */
     private String phone;
-    /** 供应商地址 */
+    /**
+     * 供应商地址
+     */
     private String address;
-    /** 状态 */
+    /**
+     * 状态
+     */
     private Integer status = 0;
-    /** 创建时间 */
+    /**
+     * 创建时间
+     */
     private Date createTime;
-    /** 修改时间 */
+    /**
+     * 修改时间
+     */
     private Date updateTime;
 
 }

@@ -12,7 +12,9 @@ import lombok.Getter;
 @Getter
 public enum BillSource implements EnumBean<BillSource> {
 
-    /** 系统  */
+    /**
+     * 系统
+     */
     SYSTEM("系统"),
     USER("用户"),
     IMPORT("导入"),
@@ -23,7 +25,7 @@ public enum BillSource implements EnumBean<BillSource> {
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static BillSource fromCode(String name) {
         for (BillSource o : BillSource.values()) {
-            if (o.name().equals(name) ) {
+            if (o.name().equals(name)) {
                 return o;
             }
         }

@@ -1,24 +1,24 @@
 package com.bootdo.modular.system.service;
 
-import java.util.List;
-
 import com.bootdo.modular.system.domain.RoleDO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface RoleService {
 
-	RoleDO get(Long id);
+    RoleDO get(Long id);
 
-	List<RoleDO> list();
+    List<RoleDO> list();
 
-	int save(RoleDO role);
+    int save(RoleDO role);
 
-	int update(RoleDO role);
+    int update(RoleDO role);
 
-	int remove(Long id);
+    int remove(Long id);
 
-	List<RoleDO> list(Long userId);
+    List<RoleDO> list(Long userId);
 
-	int batchremove(Long[] ids);
+    int batchremove(Long[] ids);
 }

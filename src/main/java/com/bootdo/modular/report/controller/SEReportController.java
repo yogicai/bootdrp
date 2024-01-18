@@ -2,16 +2,16 @@ package com.bootdo.modular.report.controller;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import com.bootdo.core.enums.AuditStatus;
+import com.bootdo.core.pojo.response.R;
+import com.bootdo.core.utils.DateUtils;
+import com.bootdo.modular.engage.result.BalanceTotalResult;
 import com.bootdo.modular.engage.service.ProductBalanceService;
 import com.bootdo.modular.report.result.SEBillTotalResult;
 import com.bootdo.modular.report.result.SEDebtTotalResult;
 import com.bootdo.modular.report.result.echart.EChartOption;
-import com.bootdo.modular.system.controller.BaseController;
-import com.bootdo.core.enums.AuditStatus;
-import com.bootdo.core.utils.DateUtils;
-import com.bootdo.core.pojo.response.R;
-import com.bootdo.modular.engage.result.BalanceTotalResult;
 import com.bootdo.modular.report.service.SEReportService;
+import com.bootdo.modular.system.controller.BaseController;
 import com.google.common.collect.ImmutableMap;
 import io.swagger.annotations.Api;
 import org.springframework.stereotype.Controller;
@@ -30,9 +30,9 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
+@Api(value = "首页-销售单报表")
 @Controller
 @RequestMapping("/report")
-@Api(value = "首页-销售单报表")
 public class SEReportController extends BaseController {
     @Resource
     private SEReportService seReportService;

@@ -15,11 +15,11 @@ import com.bootdo.modular.rp.domain.PointEntryDO;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.domain.RPOrderEntryDO;
 import com.bootdo.modular.rp.domain.RPOrderSettleDO;
-import com.bootdo.modular.se.param.SEOrderVO;
-import com.bootdo.modular.system.domain.UserDO;
-import com.bootdo.modular.se.param.SEOrderEntryVO;
 import com.bootdo.modular.se.domain.SEOrderDO;
 import com.bootdo.modular.se.domain.SEOrderEntryDO;
+import com.bootdo.modular.se.param.SEOrderEntryVO;
+import com.bootdo.modular.se.param.SEOrderVO;
+import com.bootdo.modular.system.domain.UserDO;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -39,7 +39,7 @@ public class SEOrderConverter {
         BigDecimal costAmountTotal = BigDecimal.ZERO;
         BigDecimal qtyTotal = BigDecimal.ZERO;
         int sort = 1;
-        for (SEOrderEntryVO vo: orderVO.getEntryVOList()) {
+        for (SEOrderEntryVO vo : orderVO.getEntryVOList()) {
             SEOrderEntryDO orderEntryDO = new SEOrderEntryDO();
             orderEntryDO.setBillNo(orderDO.getBillNo());
             orderEntryDO.setEntryId(vo.getEntryId());

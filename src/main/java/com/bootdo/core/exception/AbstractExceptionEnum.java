@@ -3,7 +3,7 @@ package com.bootdo.core.exception;
 /**
  * 异常枚举格式规范
  *
- * @author caiyz
+ * @author L
  * @since 2022-03-03 10:09
  */
 public interface AbstractExceptionEnum {

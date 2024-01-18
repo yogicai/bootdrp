@@ -68,7 +68,7 @@ public class CostAmountCalculator {
 
         CostType costType = BillType.CG_ORDER.equals(orderDO.getBillType()) ? CostType.PO_CG : CostType.PO_TH;
         //商品
-        List<OrderEntryDO>  entryDOList = orderEntryDao.list(ImmutableMap.of("billNo", orderDO.getBillNo()));
+        List<OrderEntryDO> entryDOList = orderEntryDao.list(ImmutableMap.of("billNo", orderDO.getBillNo()));
         List<String> entryNoList = entryDOList.stream().map(OrderEntryDO::getEntryId).collect(Collectors.toList());
         //商品采购价信息
         Map<String, BigDecimal> purchaseMap = convertPurchase(entryNoList);
@@ -252,7 +252,7 @@ public class CostAmountCalculator {
     public CostAmountIResult calcWHBillCost(WHOrderDO orderDO, AuditStatus auditStatus) {
         CostType costType = BillType.WH_RK_ORDER.equals(orderDO.getBillType()) ? CostType.WH_RK : CostType.WH_CK;
         //商品
-        List<WHOrderEntryDO>  entryDOList = whOrderEntryDao.list(ImmutableMap.of("billNo", orderDO.getBillNo()));
+        List<WHOrderEntryDO> entryDOList = whOrderEntryDao.list(ImmutableMap.of("billNo", orderDO.getBillNo()));
         List<String> entryNoList = entryDOList.stream().map(WHOrderEntryDO::getEntryId).collect(Collectors.toList());
         //商品采购价信息
         Map<String, BigDecimal> purchaseMap = convertPurchase(entryNoList);

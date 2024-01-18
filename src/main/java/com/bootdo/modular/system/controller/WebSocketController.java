@@ -3,6 +3,7 @@ package com.bootdo.modular.system.controller;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.system.param.Message;
 import com.bootdo.modular.system.result.Response;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
 /**
  * @author L
  */
+@Api(tags = "WebSocket")
 @Slf4j
 @Controller
 public class WebSocketController {

@@ -2,14 +2,15 @@ package com.bootdo.modular.wh.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.Log;
-import com.bootdo.modular.system.controller.BaseController;
-import com.bootdo.core.pojo.response.PageJQ;
-import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.core.pojo.request.QueryJQ;
+import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
+import com.bootdo.core.utils.PoiUtil;
+import com.bootdo.modular.system.controller.BaseController;
 import com.bootdo.modular.wh.domain.WHOrderDO;
 import com.bootdo.modular.wh.service.WHOrderService;
 import com.bootdo.modular.wh.validator.WHOrderValidator;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +26,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
-
+@Api(tags = "出库、入库单")
 @Controller
 @RequestMapping("/wh/order")
 public class WHOrderController extends BaseController {

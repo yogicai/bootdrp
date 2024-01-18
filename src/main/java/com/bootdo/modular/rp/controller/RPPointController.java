@@ -1,12 +1,13 @@
 package com.bootdo.modular.rp.controller;
 
 import com.bootdo.core.annotation.Log;
-import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.request.QueryJQ;
+import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.rp.domain.PointEntryDO;
 import com.bootdo.modular.rp.service.RPPointService;
 import com.bootdo.modular.rp.validator.RPPointValidator;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-03-06 23:17:49
  */
+@Api(tags = "积分记录")
 @Controller
 @RequestMapping("/rp/point")
 public class RPPointController {

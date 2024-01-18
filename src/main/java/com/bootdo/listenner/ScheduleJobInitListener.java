@@ -16,17 +16,17 @@ import javax.annotation.Resource;
 @Component
 @Order(value = 1)
 public class ScheduleJobInitListener implements CommandLineRunner {
-	@Resource
-	private JobService scheduleJobService;
+    @Resource
+    private JobService scheduleJobService;
 
-	@Override
-	public void run(String... arg0) throws Exception {
-		try {
-			scheduleJobService.initSchedule();
-		} catch (Exception e) {
-			log.error("ScheduleJobInitListener.run error!", e);
-		}
+    @Override
+    public void run(String... arg0) throws Exception {
+        try {
+            scheduleJobService.initSchedule();
+        } catch (Exception e) {
+            log.error("ScheduleJobInitListener.run error!", e);
+        }
 
-	}
+    }
 
 }

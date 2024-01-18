@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * 日期处理
+ *
  * @author L
  */
 public class DateUtils {
@@ -68,17 +69,17 @@ public class DateUtils {
         LocalDate end = LocalDate.now().plusDays(1);
         List<String> serialList = Lists.newArrayList();
         if (Constant.Q_DAY.equals(type)) {
-            for (;begin.isBefore(end);) {
+            while (begin.isBefore(end)) {
                 serialList.add(begin.getDayOfMonth() + "号");
                 begin = begin.plusDays(1);
             }
         } else if (Constant.Q_MONTH.equals(type)) {
-            for (;begin.isBefore(end);) {
+            while (begin.isBefore(end)) {
                 serialList.add(begin.getMonthValue() + "月");
                 begin = begin.plusMonths(1);
             }
         } else if (Constant.Q_YEAR.equals(type)) {
-            for (;begin.isBefore(end);) {
+            while (begin.isBefore(end)) {
                 serialList.add(begin.getYear() + "年");
                 begin = begin.plusYears(1);
             }
@@ -91,17 +92,17 @@ public class DateUtils {
         LocalDate end = LocalDate.now().plusDays(1);
         List<String> serialList = Lists.newArrayList();
         if (Constant.Q_DAY.equals(type)) {
-            for (;begin.isBefore(end);) {
+            while (begin.isBefore(end)) {
                 serialList.add(begin.format(DATE_TIME_YMD_FORMAT));
                 begin = begin.plusDays(1);
             }
         } else if (Constant.Q_MONTH.equals(type)) {
-            for (;begin.isBefore(end);) {
+            while (begin.isBefore(end)) {
                 serialList.add(begin.format(DATE_TIME_YM_FORMAT));
                 begin = begin.plusMonths(1);
             }
         } else if (Constant.Q_YEAR.equals(type)) {
-            for (;begin.isBefore(end);) {
+            while (begin.isBefore(end)) {
                 serialList.add(begin.format(DATE_TIME_Y_FORMAT));
                 begin = begin.plusYears(1);
             }
@@ -169,9 +170,9 @@ public class DateUtils {
 
     public static String getMonthEnd(String dateStr, DateTimeFormatter formatter) {
         if (StrUtil.isEmpty(dateStr)) {
-            return LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59).format(DATE_TIME_FORMAT);
+            return LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()).atTime(23, 59, 59).format(DATE_TIME_FORMAT);
         }
-        return LocalDate.parse(dateStr, formatter).with(TemporalAdjusters.lastDayOfMonth()).atTime(23,59,59).format(DATE_TIME_FORMAT);
+        return LocalDate.parse(dateStr, formatter).with(TemporalAdjusters.lastDayOfMonth()).atTime(23, 59, 59).format(DATE_TIME_FORMAT);
     }
 
     public static String getYearBegin() {
@@ -191,9 +192,9 @@ public class DateUtils {
 
     public static String getYearEnd(String dateStr) {
         if (StrUtil.isEmpty(dateStr)) {
-            return LocalDate.now().with(TemporalAdjusters.lastDayOfYear()).atTime(23,59,59).format(DATE_TIME_FORMAT);
+            return LocalDate.now().with(TemporalAdjusters.lastDayOfYear()).atTime(23, 59, 59).format(DATE_TIME_FORMAT);
         }
-        return LocalDate.parse(dateStr, DATE_FORMAT).with(TemporalAdjusters.lastDayOfYear()).atTime(23,59,59).format(DATE_TIME_FORMAT);
+        return LocalDate.parse(dateStr, DATE_FORMAT).with(TemporalAdjusters.lastDayOfYear()).atTime(23, 59, 59).format(DATE_TIME_FORMAT);
     }
 
     public static void main(String[] args) {

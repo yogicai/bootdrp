@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 /**
  * 简单导入导出工具类
  *
- * @author caiyz
+ * @author L
  * @since 2022-02-6 23:36
  */
 @Slf4j
@@ -158,7 +158,7 @@ public class PoiUtil {
     /**
      * 生成workbook
      *
-     * @param file       上传的文件
+     * @param file 上传的文件
      */
     public static Workbook getWorkBook(MultipartFile file) throws IOException {
         //这样写excel能兼容03和07

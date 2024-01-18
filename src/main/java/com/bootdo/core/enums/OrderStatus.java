@@ -14,7 +14,9 @@ import java.math.BigDecimal;
 @Getter
 public enum OrderStatus implements EnumBean<OrderStatus> {
 
-    /** 未结款  */
+    /**
+     * 未结款
+     */
     WAITING_PAY("未结款"),
     PART_PAY("部分结款"),
     FINISH_PAY("全部结款"),

@@ -37,7 +37,7 @@ public class Swagger2Config {
                 .apiInfo(apiInfo())
                 .groupName("业务模块")
                 .select()
-                .apis( input -> !ClassUtil.getPackage(input.declaringClass()).startsWith("com.bootdo.modular.system"))
+                .apis(input -> !ClassUtil.getPackage(input.declaringClass()).startsWith("com.bootdo.modular.system"))
                 .build();
     }
 

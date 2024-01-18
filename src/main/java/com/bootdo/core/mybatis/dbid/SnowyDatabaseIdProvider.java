@@ -23,7 +23,7 @@ public class SnowyDatabaseIdProvider implements DatabaseIdProvider {
     @Override
     public String getDatabaseId(DataSource dataSource) throws SQLException {
         String url = "";
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             url = connection.getMetaData().getURL();
         }
 

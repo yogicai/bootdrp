@@ -11,11 +11,11 @@ import java.util.Map;
  */
 @Service
 public interface LogService {
-	List<LogDO> list(Map<String, Object> map);
+    List<LogDO> list(Map<String, Object> map);
 
-	int count(Map<String, Object> map);
+    int count(Map<String, Object> map);
 
-	int remove(Long id);
+    int remove(Long id);
 
-	int batchRemove(Long[] ids);
+    int batchRemove(Long[] ids);
 }

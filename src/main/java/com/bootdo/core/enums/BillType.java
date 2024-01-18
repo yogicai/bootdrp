@@ -11,7 +11,9 @@ import lombok.Getter;
 @Getter
 public enum BillType implements EnumBean<BillType> {
 
-    /** 采购单  */
+    /**
+     * 采购单
+     */
     CG_ORDER("采购单"),
     TH_ORDER("退货单"),
 

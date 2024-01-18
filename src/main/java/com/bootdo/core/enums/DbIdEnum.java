@@ -1,4 +1,3 @@
-
 package com.bootdo.core.enums;
 
 import lombok.Getter;

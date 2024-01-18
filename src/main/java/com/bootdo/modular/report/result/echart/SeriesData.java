@@ -7,9 +7,9 @@ import lombok.Data;
 import java.util.List;
 
 /**
-* @author yogiCai
-* @date 2018-02-01 10:43:43
-*/
+ * @author yogiCai
+ * @date 2018-02-01 10:43:43
+ */
 @Data
 public class SeriesData {
     private String name;

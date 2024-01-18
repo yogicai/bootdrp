@@ -1,4 +1,3 @@
-
 package com.bootdo.config.properties;
 
 import lombok.Data;

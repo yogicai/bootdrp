@@ -1,13 +1,14 @@
 package com.bootdo.modular.se.controller;
 
 import com.bootdo.core.annotation.Log;
-import com.bootdo.core.pojo.response.PageJQ;
-import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.core.pojo.request.QueryJQ;
+import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
-import com.bootdo.modular.se.service.SEOrderService;
+import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.modular.se.domain.SEOrderDO;
+import com.bootdo.modular.se.service.SEOrderService;
 import com.bootdo.modular.se.validator.SEOrderValidator;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-18 16:50:26
  */
-
+@Api(tags = "销售单")
 @Controller
 @RequestMapping("/se/order")
 public class SEOrderController {

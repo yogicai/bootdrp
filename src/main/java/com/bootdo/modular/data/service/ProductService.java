@@ -20,63 +20,63 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ProductService {
-	@Resource
-	private ProductDao productDao;
-	@Resource
-	private ProductCostDao productCostDao;
-	
-	public ProductDO get(Integer id){
-		return productDao.get(id);
-	}
+    @Resource
+    private ProductDao productDao;
+    @Resource
+    private ProductCostDao productCostDao;
 
-	public List<ProductDO> list(Map<String, Object> map) {
-		//商品列表
-		List<ProductDO> productDOList = productDao.list(map);
-		//商品成本
-		Set<Integer> productNoSet = productDOList.stream().map(ProductDO::getNo).collect(Collectors.toSet());
-		Map<String, Object> param = MapUtil.<String, Object>builder().put("latest", true).put("productNos", productNoSet).build();
+    public ProductDO get(Integer id) {
+        return productDao.get(id);
+    }
 
-		Map<String, ProductCostDO> productCostDoMap = productCostDao.listLate(param).stream()
-				.collect(Collectors.toMap(ProductCostDO::getProductNo, v -> v, (o, n) -> n));
+    public List<ProductDO> list(Map<String, Object> map) {
+        //商品列表
+        List<ProductDO> productDOList = productDao.list(map);
+        //商品成本
+        Set<Integer> productNoSet = productDOList.stream().map(ProductDO::getNo).collect(Collectors.toSet());
+        Map<String, Object> param = MapUtil.<String, Object>builder().put("latest", true).put("productNos", productNoSet).build();
 
-		productDOList.forEach(productDo -> {
-			String productNo = productDo.getNo().toString();
-			if (productCostDoMap.containsKey(productNo)) {
-				productDo.setCostPrice(productCostDoMap.get(productNo).getCostPrice());
-				productDo.setCostQty(productCostDoMap.get(productNo).getCostQty());
-			} else {
-				productDo.setCostPrice(productDo.getPurchasePrice());
-				productDo.setCostQty(BigDecimal.ZERO);
-			}
-		});
-		return productDOList;
-	}
-	
-	public int count(Map<String, Object> map){
-		return productDao.count(map);
-	}
-	
-	public int save(ProductDO product){
-		return productDao.save(product);
-	}
-	
-	public int update(ProductDO product){
-		return productDao.update(product);
-	}
-	
-	public int remove(Integer id){
-		return productDao.remove(id);
-	}
-	
-	public int batchRemove(Integer[] ids){
-		return productDao.batchRemove(ids);
-	}
+        Map<String, ProductCostDO> productCostDoMap = productCostDao.listLate(param).stream()
+                .collect(Collectors.toMap(ProductCostDO::getProductNo, v -> v, (o, n) -> n));
 
-	public List<ProductCostDO> listCost(Map<String, Object> map){
+        productDOList.forEach(productDo -> {
+            String productNo = productDo.getNo().toString();
+            if (productCostDoMap.containsKey(productNo)) {
+                productDo.setCostPrice(productCostDoMap.get(productNo).getCostPrice());
+                productDo.setCostQty(productCostDoMap.get(productNo).getCostQty());
+            } else {
+                productDo.setCostPrice(productDo.getPurchasePrice());
+                productDo.setCostQty(BigDecimal.ZERO);
+            }
+        });
+        return productDOList;
+    }
+
+    public int count(Map<String, Object> map) {
+        return productDao.count(map);
+    }
+
+    public int save(ProductDO product) {
+        return productDao.save(product);
+    }
+
+    public int update(ProductDO product) {
+        return productDao.update(product);
+    }
+
+    public int remove(Integer id) {
+        return productDao.remove(id);
+    }
+
+    public int batchRemove(Integer[] ids) {
+        return productDao.batchRemove(ids);
+    }
+
+    public List<ProductCostDO> listCost(Map<String, Object> map) {
         return productCostDao.list(map);
     }
 
-	public int countCost(Map<String, Object> map){
-		return productCostDao.count(map);
-	}
+    public int countCost(Map<String, Object> map) {
+        return productCostDao.count(map);
+    }
 }

@@ -10,23 +10,23 @@ import java.util.Date;
  */
 @Data
 public class LogDO {
-	private Long id;
+    private Long id;
 
-	private Long userId;
+    private Long userId;
 
-	private String username;
+    private String username;
 
-	private String operation;
+    private String operation;
 
-	private Integer time;
+    private Integer time;
 
-	private String method;
+    private String method;
 
-	private String params;
+    private String params;
 
-	private String ip;
+    private String ip;
 
-	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date gmtCreate;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date gmtCreate;
 
 }

@@ -5,10 +5,11 @@ import com.bootdo.core.annotation.Log;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.domain.RPOrderEntryDO;
-import com.bootdo.modular.rp.service.RPOrderEntryService;
 import com.bootdo.modular.rp.param.RPOrderVO;
+import com.bootdo.modular.rp.service.RPOrderEntryService;
 import com.bootdo.modular.rp.validator.RPOrderValidator;
 import com.google.common.collect.ImmutableMap;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-21 21:23:27
  */
+@Api(tags = "收款、付款订单")
 @Controller
 @RequestMapping("/rp/entry")
 public class RPOrderEntryController {

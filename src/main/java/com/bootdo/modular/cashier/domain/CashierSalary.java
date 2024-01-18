@@ -12,13 +12,14 @@ import java.util.Date;
 
 /**
  * 工资表
+ *
  * @author L
  */
-@TableName(value ="cashier_salary")
+@TableName(value = "cashier_salary")
 @Data
 public class CashierSalary extends BaseEntity {
     /**
-     * 
+     *
      */
     @TableId(type = IdType.AUTO)
     private Integer id;

@@ -3,15 +3,14 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}"/>
     <title>BootDo</title>
     <meta name="keywords" content="BootDo管理系统">
     <meta name="description" content="BootDo管理系统">
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
-<!--    <link href="/css/animate.css" rel="stylesheet">-->
+    <!--    <link href="/css/animate.css" rel="stylesheet">-->
     <link href="/css/style.css" rel="stylesheet">
     <link href="/css/login.css" rel="stylesheet">
     <!--[if lt IE 9]>
@@ -58,8 +57,8 @@
             <form id="signupForm">
                 <h3 class="text-center">用户登录</h3>
                 <p class="m-t-md text-center">欢迎登录bootdo后台管理系统</p>
-                <input type="text" name="username" class="form-control uname" />
-                <input type="password" name="password" class="form-control pword m-b" />
+                <input type="text" name="username" class="form-control uname"/>
+                <input type="password" name="password" class="form-control pword m-b"/>
                 <button class="btn btn-login btn-block">登录</button>
                 <!--按钮模块-->
                 <div class="outside-login">
@@ -67,18 +66,15 @@
                         <span>代码链接</span>
                     </div>
                     <div class="outside-login-cot">
-                        <a class="outside-login-btn wxoa actived oschina J-btnSwitchLoginType" target="_Blank"
-                           href="https://www.oschina.net/p/bootdo">
+                        <a class="outside-login-btn wxoa actived oschina J-btnSwitchLoginType" target="_Blank" href="https://www.oschina.net/p/bootdo">
                             <em><i class="fa fa-home"></i></em>
                             <span>oschina主页</span>
                         </a>
-                        <a class="outside-login-btn wxoa actived my J-btnSwitchLoginType" target="_Blank"
-                           href="https://gitee.com/lcg0124/bootdo">
+                        <a class="outside-login-btn wxoa actived my J-btnSwitchLoginType" target="_Blank" href="https://gitee.com/lcg0124/bootdo">
                             <em><i class="fa fa-git-square"></i></em>
                             <span>码云仓库</span>
                         </a>
-                        <a class="outside-login-btn wxoa actived git J-btnSwitchLoginType" target="_Blank"
-                           href="https://github.com/lcg0124/bootdo">
+                        <a class="outside-login-btn wxoa actived git J-btnSwitchLoginType" target="_Blank" href="https://github.com/lcg0124/bootdo">
                             <em><i class="fa fa-github"></i></em>
                             <span>GitHub仓库</span>
                         </a>
@@ -122,7 +118,7 @@
     function login() {
         $.ajax({
             type: "POST",
-            url: ctx+"login",
+            url: ctx + "login",
             data: $('#signupForm').serialize(),
             success: function (r) {
                 if (r.code == 0) {

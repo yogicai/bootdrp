@@ -18,54 +18,53 @@ import java.util.Map;
 
 /**
  * 待完善
- * 
- * @author bootdo
  *
+ * @author bootdo
  */
 @Service
 public class SessionServiceImpl implements SessionService {
-	@Resource
-	private SessionDAO sessionDAO;
+    @Resource
+    private SessionDAO sessionDAO;
 
-	@Override
-	public List<UserOnline> list(Map<String, Object> params) {
-		List<UserOnline> list = new ArrayList<>();
+    @Override
+    public List<UserOnline> list(Map<String, Object> params) {
+        List<UserOnline> list = new ArrayList<>();
         String searchText = MapUtil.getStr(params, "searchText", "");
-		Collection<Session> sessions = sessionDAO.getActiveSessions();
-		for (Session session : sessions) {
-			UserOnline userOnline = new UserOnline();
-			UserDO userDO = new UserDO();
-			SimplePrincipalCollection principalCollection = new SimplePrincipalCollection();
-			if (session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY) == null) {
-				continue;
-			} else {
-				principalCollection = (SimplePrincipalCollection) session
-						.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY);
-				userDO = (UserDO) principalCollection.getPrimaryPrincipal();
-				userOnline.setUsername(userDO.getUsername());
-			}
-			if (!userOnline.getUsername().contains(searchText)) {
+        Collection<Session> sessions = sessionDAO.getActiveSessions();
+        for (Session session : sessions) {
+            UserOnline userOnline = new UserOnline();
+            UserDO userDO = new UserDO();
+            SimplePrincipalCollection principalCollection = new SimplePrincipalCollection();
+            if (session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY) == null) {
+                continue;
+            } else {
+                principalCollection = (SimplePrincipalCollection) session
+                        .getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY);
+                userDO = (UserDO) principalCollection.getPrimaryPrincipal();
+                userOnline.setUsername(userDO.getUsername());
+            }
+            if (!userOnline.getUsername().contains(searchText)) {
                 continue;
             }
-			userOnline.setId((String) session.getId());
-			userOnline.setHost(session.getHost());
-			userOnline.setStartTimestamp(session.getStartTimestamp());
-			userOnline.setLastAccessTime(session.getLastAccessTime());
-			userOnline.setTimeout(session.getTimeout());
-			list.add(userOnline);
-		}
-		return list;
-	}
+            userOnline.setId((String) session.getId());
+            userOnline.setHost(session.getHost());
+            userOnline.setStartTimestamp(session.getStartTimestamp());
+            userOnline.setLastAccessTime(session.getLastAccessTime());
+            userOnline.setTimeout(session.getTimeout());
+            list.add(userOnline);
+        }
+        return list;
+    }
 
-	@Override
-	public Collection<Session> sessionList() {
-		return sessionDAO.getActiveSessions();
-	}
+    @Override
+    public Collection<Session> sessionList() {
+        return sessionDAO.getActiveSessions();
+    }
 
-	@Override
-	public boolean forceLogout(String sessionId) {
-		Session session = sessionDAO.readSession(sessionId);
-		session.setTimeout(0);
-		return true;
-	}
+    @Override
+    public boolean forceLogout(String sessionId) {
+        Session session = sessionDAO.readSession(sessionId);
+        session.setTimeout(0);
+        return true;
+    }
 }
