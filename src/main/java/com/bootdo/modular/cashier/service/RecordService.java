@@ -1,6 +1,8 @@
 package com.bootdo.modular.cashier.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.CharsetDetector;
 import cn.hutool.core.map.MapUtil;
@@ -17,6 +19,7 @@ import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.modular.cashier.dao.RecordDao;
 import com.bootdo.modular.cashier.domain.RecordDO;
+import com.bootdo.modular.cashier.param.RecordQryParam;
 import com.bootdo.modular.cashier.result.MultiSelect;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,9 +55,9 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
     private static final Pattern TRADE_TIME_PATTERN = Pattern.compile("起始时间：\\[(.*)\\]\\s+终止时间：\\[(.*)\\]");
 
 
-    public PageJQ page(Map<String, Object> param) {
-        Page<RecordDO> page = recordDao.list(PageFactory.defaultPage(), param);
-        Map<String, Object> map = recordDao.selectSum(param);
+    public PageJQ page(RecordQryParam param) {
+        Page<RecordDO> page = recordDao.list(PageFactory.defaultPage(), BeanUtil.beanToMap(param));
+        Map<String, Object> map = recordDao.selectSum(BeanUtil.beanToMap(param));
         return new PageJQ(page, MapUtil.getInt(map, "totalAmount", 0));
     }
 
@@ -62,9 +65,9 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
         return recordDao.list(param);
     }
 
-    public void export(Map<String, Object> param) {
-        List<RecordDO> orderList = recordDao.list(param);
-        String fileName = StrUtil.format("支付对账单{}-{}.xlsx", MapUtil.getStr(param, "start"), MapUtil.getStr(param, "end"));
+    public void export(RecordQryParam param) {
+        List<RecordDO> orderList = recordDao.list(BeanUtil.beanToMap(param));
+        String fileName = StrUtil.format("支付对账单{}-{}.xlsx", DateUtil.format(param.getStart(), DatePattern.PURE_DATE_FORMAT), DateUtil.format(param.getEnd(), DatePattern.PURE_DATE_FORMAT));
         PoiUtil.exportExcelWithStream(fileName, RecordDO.class, orderList);
     }
 
@@ -78,7 +81,6 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
     }
 
     private void readAliCvs(MultipartFile file) throws Exception {
-        Map<String, Object> param = new HashMap<>(8);
         List<RecordDO> recordDOList = new ArrayList<>();
         // 获取字符编码
         Charset charset = CharsetDetector.detect(file.getInputStream());

@@ -39,7 +39,7 @@
             <if test="param.updateTime != null">and update_time = #{param.updateTime}</if>
             <if test="param.start != null">and trade_time >= #{param.start}</if>
             <if test="param.end != null"> <![CDATA[ and trade_time <= #{param.end} ]]> </if>
-            <if test="param.searchText != null and searchText != ''">and ( nick like '%${param.searchText}%' or account like '%${param.searchText}%' or type like '%${param.searchText}%' or tradeGoods like '%${param.searchText}%')</if>
+            <if test="param.searchText != null and param.searchText != ''">and ( nick like '%${param.searchText}%' or account like '%${param.searchText}%' or type like '%${param.searchText}%' or tradeGoods like '%${param.searchText}%')</if>
         </where>
     </sql>
 

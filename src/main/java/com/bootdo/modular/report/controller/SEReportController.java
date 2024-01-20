@@ -30,7 +30,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
-@Api(value = "首页-销售单报表")
+@Api(tags = "首页-销售单报表")
 @Controller
 @RequestMapping("/report")
 public class SEReportController extends BaseController {

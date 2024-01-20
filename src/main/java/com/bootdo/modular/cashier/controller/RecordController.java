@@ -5,6 +5,7 @@ import com.bootdo.core.pojo.request.QueryJQ;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.cashier.domain.RecordDO;
+import com.bootdo.modular.cashier.param.RecordQryParam;
 import com.bootdo.modular.cashier.result.MultiSelect;
 import com.bootdo.modular.cashier.service.RecordService;
 import io.swagger.annotations.Api;
@@ -33,22 +34,22 @@ public class RecordController {
 
     @GetMapping()
     @RequiresPermissions("cashier:record:record")
-    public String journal() {
+    public String record() {
         return "cashier/record/record";
     }
 
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("cashier:record:record")
-    public PageJQ list(@RequestParam Map<String, Object> params) {
-        return recordService.page(new QueryJQ(params));
+    public PageJQ list(RecordQryParam param) {
+        return recordService.page(param);
     }
 
     @ResponseBody
     @GetMapping("/export")
     @RequiresPermissions("cashier:record:record")
-    public void export(@RequestParam Map<String, Object> params) {
-        recordService.export(params);
+    public void export(RecordQryParam param) {
+        recordService.export(param);
     }
 
     @GetMapping("/add")
@@ -67,7 +68,7 @@ public class RecordController {
     }
 
     @ResponseBody
-    @RequestMapping("/update")
+    @PostMapping("/update")
     @RequiresPermissions("cashier:record:record")
     public R update(RecordDO recordDO) {
         return R.ok(recordService.updateById(recordDO));

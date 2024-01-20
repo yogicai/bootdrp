@@ -1,7 +1,6 @@
 #服务配置
 server:
   port: 80
-  uri-encoding: utf-8
   max-http-header-size: 10240
 
 #spring相关配置
@@ -16,8 +15,7 @@ spring:
     mode: LEGACYHTML5
     cache: false
   jackson:
-    time-zone: GMT+8
-    date-format: yyyy-MM-dd HH:mm:ss
+    date-format: com.bootdo.config.converter.JsonDateFormat
 
 #mybaits相关配置
 mybatis-plus:
@@ -41,4 +39,3 @@ mybatis-plus:
     blobType: BLOB
     #如果数据库为oracle或mssql，则需要配置为boolValue: 1
     boolValue: true
-  type-enums-package: com.bootdo.*
