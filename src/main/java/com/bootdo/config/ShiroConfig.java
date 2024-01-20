@@ -35,6 +35,9 @@ public class ShiroConfig {
         return em;
     }
 
+    /**
+     * 3. 自定义的Realm类实现认证和授权
+     */
     @Bean
     UserRealm userRealm(EhCacheManager cacheManager) {
         UserRealm userRealm = new UserRealm();
@@ -57,6 +60,9 @@ public class ShiroConfig {
         return sessionManager;
     }
 
+    /**
+     * 2. 自定义安全管理器
+     */
     @Bean
     SecurityManager securityManager(UserRealm userRealm) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
@@ -66,6 +72,9 @@ public class ShiroConfig {
         return manager;
     }
 
+    /**
+     * 1. shiro过滤工厂 URL地址过滤器
+     */
     @Bean
     ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -104,6 +113,9 @@ public class ShiroConfig {
         return proxyCreator;
     }
 
+    /**
+     * 注入这个是是为了在thymeleaf中使用shiro的自定义tag。
+     */
     @Bean
     public ShiroDialect shiroDialect() {
         return new ShiroDialect();

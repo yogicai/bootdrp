@@ -91,11 +91,11 @@
 </div>
 <script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
 <!-- 全局js -->
-<script src="/js/jquery.min.js?v=2.1.4" th:src="@{/js/jquery.min.js?v=2.1.4}"></script>
-<script src="/js/bootstrap.min.js?v=3.3.6" th:src="@{/js/bootstrap.min.js?v=3.3.6}"></script>
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.6"></script>
 
 <!-- 自定义js -->
-<script src="/js/content.js?v=1.0.0" th:src="@{/js/content.js?v=1.0.0}"></script>
+<script src="/js/content.js?v=1.0.0"></script>
 
 <!-- jQuery Validation plugin javascript-->
 <script src="/js/plugins/validate/jquery.validate.min.js" th:src="@{/js/plugins/validate/jquery.validate.min.js}"></script>
@@ -103,10 +103,8 @@
 <script src="/js/plugins/layer/layer.min.js" th:src="@{/js/plugins/layer/layer.min.js}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-
         console.log(ctx);
         validateRule();
-
     });
 
     $.validator.setDefaults({
@@ -121,7 +119,7 @@
             url: ctx + "login",
             data: $('#signupForm').serialize(),
             success: function (r) {
-                if (r.code == 0) {
+                if (r.code === 0) {
                     parent.location.href = '/index';
                 } else {
                     layer.msg(r.msg);
@@ -131,7 +129,7 @@
     }
 
     function validateRule() {
-        var icon = "<i class='fa fa-times-circle'></i> ";
+        let icon = "<i class='fa fa-times-circle'></i> ";
         $("#signupForm").validate({
             rules: {
                 username: {
@@ -154,6 +152,4 @@
 </script>
 
 </body>
-
-
 </html>
