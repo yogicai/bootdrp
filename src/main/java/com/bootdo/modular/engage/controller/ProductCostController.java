@@ -80,7 +80,7 @@ public class ProductCostController extends BaseController {
      * 成本调整
      */
     @ResponseBody
-    @RequestMapping("/adjust")
+    @PostMapping("/adjust")
     @RequiresPermissions("engage:product:cost")
     public R update(ProductCostDO productCost) {
         engageValidator.validateProduct(productCost);

@@ -10,6 +10,7 @@ import com.bootdo.modular.data.service.VendorService;
 import com.bootdo.modular.data.validator.DataValidator;
 import com.bootdo.modular.system.controller.BaseController;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,6 +43,7 @@ public class VendorController extends BaseController {
 
     @ResponseBody
     @GetMapping("/list")
+    @ApiOperation(value = "列表查询")
     @RequiresPermissions("data:vendor:vendor")
     public PageR list(@RequestParam Map<String, Object> params) {
         //查询列表数据
@@ -53,6 +55,7 @@ public class VendorController extends BaseController {
 
     @ResponseBody
     @GetMapping("/listJQ")
+    @ApiOperation(value = "分页查询")
     @RequiresPermissions("data:vendor:vendor")
     public PageJQ listJQ(@RequestParam Map<String, Object> params) {
         //查询列表数据
@@ -77,11 +80,9 @@ public class VendorController extends BaseController {
         return "data/vendor/edit";
     }
 
-    /**
-     * 保存
-     */
     @ResponseBody
     @PostMapping("/save")
+    @ApiOperation(value = "保存")
     @RequiresPermissions("data:vendor:add")
     public R save(VendorDO vendor) {
         dataValidator.validateVendor(vendor);
@@ -91,11 +92,9 @@ public class VendorController extends BaseController {
         return R.error();
     }
 
-    /**
-     * 修改
-     */
     @ResponseBody
-    @RequestMapping("/update")
+    @PostMapping("/update")
+    @ApiOperation(value = "修改")
     @RequiresPermissions("data:vendor:edit")
     public R update(VendorDO vendor) {
         dataValidator.validateVendor(vendor);
@@ -103,11 +102,9 @@ public class VendorController extends BaseController {
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
     @PostMapping("/remove")
     @ResponseBody
+    @ApiOperation(value = "删除")
     @RequiresPermissions("data:vendor:remove")
     public R remove(Integer id) {
         if (vendorService.remove(id) > 0) {
@@ -116,13 +113,11 @@ public class VendorController extends BaseController {
         return R.error();
     }
 
-    /**
-     * 删除
-     */
     @PostMapping("/batchRemove")
     @ResponseBody
+    @ApiOperation(value = "批量删除")
     @RequiresPermissions("data:vendor:batchRemove")
-    public R remove(@RequestParam("ids[]") Integer[] ids) {
+    public R batchRemove(@RequestParam("ids[]") Integer[] ids) {
         vendorService.batchRemove(ids);
         return R.ok();
     }

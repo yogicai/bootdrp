@@ -1,5 +1,6 @@
-package com.bootdo.core.pojo.shiro;
+package com.bootdo.core.shiro.realm;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.bootdo.core.utils.ShiroUtils;
 import com.bootdo.modular.system.dao.UserDao;
@@ -33,13 +34,11 @@ public class UserRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         String username = (String) token.getPrincipal();
-        Map<String, Object> map = new HashMap<>(16);
-        map.put("username", username);
         String password = new String((char[]) token.getCredentials());
 
         UserDao userMapper = SpringUtil.getBean(UserDao.class);
         // 查询用户信息
-        UserDO user = userMapper.list(map).get(0);
+        UserDO user = userMapper.list(MapUtil.of("username", username)).get(0);
 
         // 账号不存在
         if (user == null) {
@@ -55,8 +54,8 @@ public class UserRealm extends AuthorizingRealm {
         if (user.getStatus() == 0) {
             throw new LockedAccountException("账号已被锁定,请联系管理员");
         }
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, password, getName());
-        return info;
+
+        return new SimpleAuthenticationInfo(user, password, getName());
     }
 
 }

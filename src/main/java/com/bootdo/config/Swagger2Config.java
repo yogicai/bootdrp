@@ -3,6 +3,7 @@ package com.bootdo.config;
 import cn.hutool.core.util.ClassUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.ResponseBody;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -28,6 +29,7 @@ public class Swagger2Config {
                 .groupName("系统模块")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.bootdo.modular.system"))
+                .apis(input -> input.findAnnotation(ResponseBody.class).isPresent())
                 .build();
     }
 
@@ -38,6 +40,7 @@ public class Swagger2Config {
                 .groupName("业务模块")
                 .select()
                 .apis(input -> !ClassUtil.getPackage(input.declaringClass()).startsWith("com.bootdo.modular.system"))
+                .apis(input -> input.findAnnotation(ResponseBody.class).isPresent())
                 .build();
     }
 

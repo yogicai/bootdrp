@@ -10,6 +10,7 @@ import com.bootdo.modular.data.domain.CategoryDO;
 import com.bootdo.modular.data.service.CategoryService;
 import com.google.common.collect.ImmutableMap;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,6 +43,7 @@ public class CategoryController {
 
     @ResponseBody
     @GetMapping(value = "/list")
+    @ApiOperation(value = "列表查询")
     @RequiresPermissions("data:category:category")
     public List<CategoryDO> list(@RequestParam Map<String, Object> params) {
         //查询列表数据
@@ -75,11 +77,9 @@ public class CategoryController {
         return "data/category/edit";
     }
 
-    /**
-     * 保存
-     */
     @ResponseBody
     @PostMapping("/save")
+    @ApiOperation(value = "保存")
     @RequiresPermissions("data:category:add")
     public R save(CategoryDO category) {
         if (categoryService.save(category) > 0) {
@@ -88,22 +88,18 @@ public class CategoryController {
         return R.error();
     }
 
-    /**
-     * 修改
-     */
     @ResponseBody
-    @RequestMapping("/update")
+    @PostMapping("/update")
+    @ApiOperation(value = "修改")
     @RequiresPermissions("data:category:edit")
     public R update(CategoryDO category) {
         categoryService.update(category);
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
     @PostMapping("/remove")
     @ResponseBody
+    @ApiOperation(value = "删除")
     @RequiresPermissions("data:category:remove")
     public R remove(Long categoryId) {
         if (categoryService.remove(categoryId) > 0) {
@@ -112,31 +108,25 @@ public class CategoryController {
         return R.error();
     }
 
-    /**
-     * 删除
-     */
     @PostMapping("/batchRemove")
     @ResponseBody
+    @ApiOperation(value = "批量删除")
     @RequiresPermissions("data:category:batchRemove")
-    public R remove(@RequestParam("ids[]") Long[] categoryIds) {
+    public R batchRemove(@RequestParam("ids[]") Long[] categoryIds) {
         categoryService.batchRemove(categoryIds);
         return R.ok();
     }
 
-    /**
-     * 类目树菜单
-     */
     @GetMapping("/tree")
     @ResponseBody
+    @ApiOperation(value = "类目树菜单")
     public Tree<CategoryDO> tree(@RequestParam Map<String, Object> params) {
         return categoryService.getTree(params);
     }
 
-    /**
-     * 类目树下拉框数据
-     */
     @GetMapping("/listTree/{types}")
     @ResponseBody
+    @ApiOperation(value = "类目树下拉框数据")
     public Map<String, List<Tree<CategoryDO>>> listTree(@PathVariable("types") String types) {
         // 查询列表数据
         Map<String, Object> map = new HashMap<>(16);
@@ -144,22 +134,18 @@ public class CategoryController {
         return categoryService.listTree(map);
     }
 
-    /**
-     * 类目树关联数据下拉框数据(商品、供应商、客户、结算帐户)
-     */
     @GetMapping("/listTreeData/{types}")
     @ResponseBody
+    @ApiOperation(value = "类目树关联数据下拉框数据(商品、供应商、客户、结算帐户)")
     public Map<String, List<Tree<Object>>> listTreeData(@PathVariable("types") String types) {
         // 查询列表数据
         return categoryService.listTreeData(ImmutableMap.of("types", StringUtils.split(types, ","), "status", 1));
     }
 
 
-    /**
-     * 类目树菜单
-     */
     @GetMapping("/productTree")
     @ResponseBody
+    @ApiOperation(value = "类目树菜单")
     public List<AsyncTree<CategoryDO>> productTree(@RequestParam Map<String, Object> params) {
         String id = MapUtil.getStr(params, "id");
         if ("#".equals(id)) {

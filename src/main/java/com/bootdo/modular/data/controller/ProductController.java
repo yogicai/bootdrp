@@ -11,6 +11,7 @@ import com.bootdo.modular.data.validator.DataValidator;
 import com.bootdo.modular.engage.domain.ProductCostDO;
 import com.bootdo.modular.system.controller.BaseController;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +45,7 @@ public class ProductController extends BaseController {
 
     @ResponseBody
     @GetMapping("/list")
+    @ApiOperation(value = "列表查询")
     @RequiresPermissions("data:product:product")
     public PageR list(@RequestParam Map<String, Object> params) {
         //查询列表数据
@@ -55,6 +57,7 @@ public class ProductController extends BaseController {
 
     @ResponseBody
     @GetMapping("/listJQ")
+    @ApiOperation(value = "分页查询")
     @RequiresPermissions("data:product:product")
     public PageJQ listJQ(@RequestParam Map<String, Object> params) {
         //查询列表数据
@@ -79,11 +82,9 @@ public class ProductController extends BaseController {
         return "data/product/edit";
     }
 
-    /**
-     * 保存
-     */
     @ResponseBody
     @PostMapping("/save")
+    @ApiOperation(value = "保存")
     @RequiresPermissions("data:product:add")
     public R save(ProductDO product) {
         dataValidator.validateProduct(product);
@@ -93,11 +94,9 @@ public class ProductController extends BaseController {
         return R.error();
     }
 
-    /**
-     * 修改
-     */
     @ResponseBody
-    @RequestMapping("/update")
+    @PostMapping("/update")
+    @ApiOperation(value = "修改")
     @RequiresPermissions("data:product:edit")
     public R update(ProductDO product) {
         dataValidator.validateProduct(product);
@@ -105,11 +104,9 @@ public class ProductController extends BaseController {
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
     @PostMapping("/remove")
     @ResponseBody
+    @ApiOperation(value = "删除")
     @RequiresPermissions("data:product:remove")
     public R remove(Integer id) {
         if (productService.remove(id) > 0) {
@@ -118,13 +115,11 @@ public class ProductController extends BaseController {
         return R.error();
     }
 
-    /**
-     * 删除
-     */
     @PostMapping("/batchRemove")
     @ResponseBody
+    @ApiOperation(value = "批量删除")
     @RequiresPermissions("data:product:batchRemove")
-    public R remove(@RequestParam("ids[]") Integer[] ids) {
+    public R batchRemove(@RequestParam("ids[]") Integer[] ids) {
         productService.batchRemove(ids);
         return R.ok();
     }
@@ -149,6 +144,7 @@ public class ProductController extends BaseController {
 
     @ResponseBody
     @GetMapping("/listCost")
+    @ApiOperation(value = "商品成本")
     @RequiresPermissions("data:product:product")
     public PageJQ listCost(@RequestParam Map<String, Object> params) {
         //查询列表数据

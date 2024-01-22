@@ -1,7 +1,7 @@
 package com.bootdo.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
-import com.bootdo.core.pojo.shiro.UserRealm;
+import com.bootdo.core.shiro.realm.UserRealm;
 import com.bootdo.core.shiro.listener.BDSessionListener;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
@@ -18,6 +18,7 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,27 +30,31 @@ import java.util.LinkedHashMap;
 @Configuration
 public class ShiroConfig {
     @Bean
-    public EhCacheManager getEhCacheManager() {
+    public EhCacheManager ehCacheManager() {
         EhCacheManager em = new EhCacheManager();
         em.setCacheManagerConfigFile("classpath:config/ehcache.xml");
         return em;
     }
 
     /**
-     * 3. 自定义的Realm类实现认证和授权
+     * 自定义的Realm类实现认证和授权
      */
     @Bean
-    UserRealm userRealm(EhCacheManager cacheManager) {
+    public UserRealm userRealm(EhCacheManager cacheManager) {
         UserRealm userRealm = new UserRealm();
         userRealm.setCacheManager(cacheManager);
         return userRealm;
     }
 
     @Bean
-    SessionDAO sessionDAO() {
+    public SessionDAO sessionDAO() {
         return new MemorySessionDAO();
     }
 
+    /**
+     * session管理器
+     * 自定义了获取session的方式
+     */
     @Bean
     public SessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
@@ -61,22 +66,22 @@ public class ShiroConfig {
     }
 
     /**
-     * 2. 自定义安全管理器
+     * 自定义安全管理器
      */
     @Bean
-    SecurityManager securityManager(UserRealm userRealm) {
+    public SecurityManager securityManager(UserRealm userRealm) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         manager.setRealm(userRealm);
-        manager.setCacheManager(getEhCacheManager());
+        manager.setCacheManager(ehCacheManager());
         manager.setSessionManager(sessionManager());
         return manager;
     }
 
     /**
-     * 1. shiro过滤工厂 URL地址过滤器
+     * shiro过滤工厂 URL地址过滤器
      */
     @Bean
-    ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         shiroFilterFactoryBean.setLoginUrl("/login");
@@ -121,6 +126,9 @@ public class ShiroConfig {
         return new ShiroDialect();
     }
 
+    /**
+     * 开启对shiro注解的支持
+     */
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(@Qualifier("securityManager") SecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();

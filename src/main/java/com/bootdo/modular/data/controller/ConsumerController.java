@@ -10,6 +10,7 @@ import com.bootdo.modular.data.service.ConsumerService;
 import com.bootdo.modular.data.validator.DataValidator;
 import com.bootdo.modular.system.controller.BaseController;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,6 +43,7 @@ public class ConsumerController extends BaseController {
 
     @ResponseBody
     @GetMapping("/list")
+    @ApiOperation(value = "列表查询")
     @RequiresPermissions("data:consumer:consumer")
     public PageR list(@RequestParam Map<String, Object> params) {
         //查询列表数据
@@ -53,6 +55,7 @@ public class ConsumerController extends BaseController {
 
     @ResponseBody
     @GetMapping("/listJQ")
+    @ApiOperation(value = "分页查询")
     @RequiresPermissions("data:consumer:consumer")
     public PageJQ listJQ(@RequestParam Map<String, Object> params) {
         //查询列表数据
@@ -77,11 +80,9 @@ public class ConsumerController extends BaseController {
         return "data/consumer/edit";
     }
 
-    /**
-     * 保存
-     */
     @ResponseBody
     @PostMapping("/save")
+    @ApiOperation(value = "保存")
     @RequiresPermissions("data:consumer:add")
     public R save(ConsumerDO consumer) {
         dataValidator.validateConsumer(consumer);
@@ -91,11 +92,9 @@ public class ConsumerController extends BaseController {
         return R.error();
     }
 
-    /**
-     * 修改
-     */
     @ResponseBody
-    @RequestMapping("/update")
+    @PostMapping("/update")
+    @ApiOperation(value = "修改")
     @RequiresPermissions("data:consumer:edit")
     public R update(ConsumerDO consumer) {
         dataValidator.validateConsumer(consumer);
@@ -103,11 +102,9 @@ public class ConsumerController extends BaseController {
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
     @PostMapping("/remove")
     @ResponseBody
+    @ApiOperation(value = "删除")
     @RequiresPermissions("data:consumer:remove")
     public R remove(Integer id) {
         if (consumerService.remove(id) > 0) {
@@ -116,13 +113,11 @@ public class ConsumerController extends BaseController {
         return R.error();
     }
 
-    /**
-     * 删除
-     */
     @PostMapping("/batchRemove")
     @ResponseBody
+    @ApiOperation(value = "批量删除")
     @RequiresPermissions("data:consumer:batchRemove")
-    public R remove(@RequestParam("ids[]") Integer[] ids) {
+    public R batchRemove(@RequestParam("ids[]") Integer[] ids) {
         consumerService.batchRemove(ids);
         return R.ok();
     }
