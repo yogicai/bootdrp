@@ -1,4 +1,4 @@
-let prefix = "/report";
+let prefix = "/workbench";
 let tableGrid;
 //订单趋势图表的配置项和数据
 let option1 = {

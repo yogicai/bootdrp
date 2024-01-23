@@ -1,4 +1,4 @@
-package com.bootdo.modular.report.service;
+package com.bootdo.modular.workbench.service;
 
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.consts.Constant;
@@ -7,7 +7,7 @@ import com.bootdo.core.utils.DateUtils;
 import com.bootdo.core.utils.NumberUtils;
 import com.bootdo.modular.po.dao.OrderDao;
 import com.bootdo.modular.po.domain.OrderDO;
-import com.bootdo.modular.report.dao.SEReportDao;
+import com.bootdo.modular.workbench.dao.WorkbenchDao;
 import com.bootdo.modular.report.enums.BillStatType;
 import com.bootdo.modular.report.enums.EChartSeriesType;
 import com.bootdo.modular.report.result.SEBillTotalResult;
@@ -36,13 +36,13 @@ import java.util.stream.IntStream;
  * @since 2020-11-10 14:48
  */
 @Service
-public class SEReportService {
+public class WorkbenchService {
     @Resource
     private SEOrderDao seOrderDao;
     @Resource
     private OrderDao orderDao;
     @Resource
-    private SEReportDao seReportDao;
+    private WorkbenchDao workbenchDao;
 
     /**
      * 饼图展示前十名
@@ -85,7 +85,7 @@ public class SEReportService {
         EChartOption option = new EChartOption(1, 2, 3);
         String type = MapUtil.getStr(params, "type", Constant.Q_MONTH);
         params.put("billDate", DateUtils.getDayStartStr(type));
-        List<Map<String, Object>> seList = seReportDao.pBillTrend(params);
+        List<Map<String, Object>> seList = workbenchDao.pBillTrend(params);
 
         option.getXAxis().get(0).getData().addAll(DateUtils.getDaySerial(type));
 
@@ -127,7 +127,7 @@ public class SEReportService {
         EChartOption option = new EChartOption(0, 0, 2);
         String type = MapUtil.getStr(params, "type", Constant.Q_MONTH);
         params.put("billDate", DateUtils.getDayStartStr(type));
-        List<Map<String, Object>> seList = seReportDao.pBillTrendPie(params);
+        List<Map<String, Object>> seList = workbenchDao.pBillTrendPie(params);
 
         int count = 1;
         BigDecimal profitAmountOther = BigDecimal.ZERO, totalAmountOther = BigDecimal.ZERO;
@@ -151,7 +151,7 @@ public class SEReportService {
     }
 
     public R pCashTotal(Map<String, Object> params) {
-        List<Map<String, Object>> list = seReportDao.pCashTrend(params);
+        List<Map<String, Object>> list = workbenchDao.pCashTrend(params);
         if (CollectionUtils.isNotEmpty(list)) {
             return R.ok(ImmutableMap.of("profitAmountT", MapUtil.get(list.get(0), "profitAmount", BigDecimal.class, BigDecimal.ZERO), "cashFlowAmountT", MapUtil.get(list.get(0), "cashFlowAmount", BigDecimal.class, BigDecimal.ZERO)));
         }
@@ -162,7 +162,7 @@ public class SEReportService {
         EChartOption option = new EChartOption(1, 2, 3);
         String type = MapUtil.getStr(params, "type", Constant.Q_MONTH);
         params.put("billDate", DateUtils.getDayStartStr(type));
-        List<Map<String, Object>> seList = seReportDao.pCashTrend(params);
+        List<Map<String, Object>> seList = workbenchDao.pCashTrend(params);
 
         option.getXAxis().get(0).getData().addAll(DateUtils.getDaySerial(type));
 
@@ -194,7 +194,7 @@ public class SEReportService {
         //图表数据类型
         BillStatType type = BillStatType.valueOf(MapUtil.getStr(params, "type"));
         //销售单历史数据
-        List<Map<String, Object>> seList = seReportDao.pHisPBillTrend(params);
+        List<Map<String, Object>> seList = workbenchDao.pHisPBillTrend(params);
 
         TreeSet<String> yearSet = new TreeSet<>();
         MultiKeyMap<String, Map<String, Object>> multiKeyMap = new MultiKeyMap<>();

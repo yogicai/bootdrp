@@ -8,6 +8,7 @@ import com.bootdo.modular.report.result.SReconResult;
 import com.bootdo.modular.report.service.ReportService;
 import com.bootdo.modular.system.controller.BaseController;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 入库出库单
+ * 报表
  *
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
-@Api(tags = "首页-图表")
+@Api(tags = "报表")
 @Controller
 @RequestMapping("/report")
 public class ReportController extends BaseController {
@@ -45,6 +46,7 @@ public class ReportController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/sRecon")
+    @ApiOperation(value = "客户、供应商应收应付款")
     @RequiresPermissions("report:recon:recon")
     public R sReconVC(@RequestBody Map<String, Object> params, Model model) {
         return reportService.sRecon(params);
@@ -55,22 +57,13 @@ public class ReportController extends BaseController {
      */
     @ResponseBody
     @GetMapping(value = "/sRecon/export")
+    @ApiOperation(value = "客户、供应商应收应付款-导出")
     @RequiresPermissions("report:recon:recon")
     public void sReconVCExport(@RequestParam Map<String, Object> params, Model model) {
         R r = reportService.sRecon(params);
         List<SReconResult> result = JSONUtil.toList(JSONUtil.toJsonStr(r.get("result")), SReconResult.class);
         PoiUtil.exportExcelWithStream("SReconResult.xls", SReconResult.class, result);
     }
-
-    /**
-     * main统计表格
-     */
-    @GetMapping("/mainTab")
-    @RequiresPermissions("report:recon:recon")
-    public R mainTab(@RequestBody Map<String, Object> params, Model model) {
-        return reportService.mainTab(params);
-    }
-
 
     /**
      * 商品销售统计报表
@@ -84,6 +77,7 @@ public class ReportController extends BaseController {
 
     @ResponseBody
     @PostMapping(value = "/saleProduct")
+    @ApiOperation(value = "商品销售统计报表")
     @RequiresPermissions("report:report:report")
     public R saleProduct(@RequestBody Map<String, Object> params, Model model) {
         return reportService.saleProduct(params);

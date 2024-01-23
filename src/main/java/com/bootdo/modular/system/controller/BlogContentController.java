@@ -84,7 +84,7 @@ public class BlogContentController extends BaseController {
         bContent.setGtmCreate(new Date());
         bContent.setGtmModified(new Date());
         int count;
-        if (bContent.getCid() == null || "".equals(bContent.getCid())) {
+        if (bContent.getCid() == null) {
             count = bBlogContentService.save(bContent);
         } else {
             count = bBlogContentService.update(bContent);

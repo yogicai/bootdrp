@@ -1,4 +1,4 @@
-package com.bootdo.modular.report.controller;
+package com.bootdo.modular.workbench.controller;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
@@ -10,7 +10,7 @@ import com.bootdo.modular.engage.service.ProductBalanceService;
 import com.bootdo.modular.report.result.SEBillTotalResult;
 import com.bootdo.modular.report.result.SEDebtTotalResult;
 import com.bootdo.modular.report.result.echart.EChartOption;
-import com.bootdo.modular.report.service.SEReportService;
+import com.bootdo.modular.workbench.service.WorkbenchService;
 import com.bootdo.modular.system.controller.BaseController;
 import com.google.common.collect.ImmutableMap;
 import io.swagger.annotations.Api;
@@ -25,17 +25,17 @@ import javax.annotation.Resource;
 import java.util.Map;
 
 /**
- * 入库出库单
+ * 工作台
  *
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
-@Api(tags = "首页-销售单报表")
+@Api(tags = "工作台")
 @Controller
-@RequestMapping("/report")
-public class SEReportController extends BaseController {
+@RequestMapping("/workbench")
+public class WorkbenchController extends BaseController {
     @Resource
-    private SEReportService seReportService;
+    private WorkbenchService workbenchService;
     @Resource
     private ProductBalanceService productBalanceService;
 
@@ -51,7 +51,7 @@ public class SEReportController extends BaseController {
         String type = MapUtil.getStr(params, "type");
         //WEEK MONTH
         Map<String, Object> param = StrUtil.isEmpty(type) ? ImmutableMap.of("billDateStart", DateUtils.getStartStr(-days), "audit", AuditStatus.YES.name()) : ImmutableMap.of("billDateStart", DateUtils.getStartStr(type), "audit", AuditStatus.YES.name());
-        result = seReportService.pBalanceTotal(param);
+        result = workbenchService.pBalanceTotal(param);
         return R.ok().put("result", result);
     }
 
@@ -61,7 +61,7 @@ public class SEReportController extends BaseController {
     @ResponseBody
     @PostMapping(value = "/pDebtTotal")
     public R pDebtTotal(@RequestBody Map<String, Object> params, Model model) {
-        SEDebtTotalResult result = seReportService.pDebtTotal(ImmutableMap.of("audit", AuditStatus.YES.name()));
+        SEDebtTotalResult result = workbenchService.pDebtTotal(ImmutableMap.of("audit", AuditStatus.YES.name()));
         return R.ok().put("result", result);
     }
 
@@ -71,7 +71,7 @@ public class SEReportController extends BaseController {
     @ResponseBody
     @PostMapping(value = "/pBillTrend")
     public R pSEBillTrend(@RequestBody Map<String, Object> params, Model model) {
-        EChartOption option = seReportService.pBillTrend(params);
+        EChartOption option = workbenchService.pBillTrend(params);
         return R.ok().put("result", option);
     }
 
@@ -81,7 +81,7 @@ public class SEReportController extends BaseController {
     @ResponseBody
     @PostMapping(value = "/pBillTrendPie")
     public R pSEBillTrendPie(@RequestBody Map<String, Object> params, Model model) {
-        EChartOption option = seReportService.pBillTrendPie(params);
+        EChartOption option = workbenchService.pBillTrendPie(params);
         return R.ok().put("result", option);
     }
 
@@ -91,7 +91,7 @@ public class SEReportController extends BaseController {
     @ResponseBody
     @PostMapping(value = "/pCashTotal")
     public R pCashTotal(@RequestBody Map<String, Object> params, Model model) {
-        return seReportService.pCashTotal(ImmutableMap.of("audit", AuditStatus.YES.name(), "billDate", DateUtils.getYearBegin()));
+        return workbenchService.pCashTotal(ImmutableMap.of("audit", AuditStatus.YES.name(), "billDate", DateUtils.getYearBegin()));
     }
 
     /**
@@ -100,7 +100,7 @@ public class SEReportController extends BaseController {
     @ResponseBody
     @PostMapping(value = "/pCashTrend")
     public R pCashTrend(@RequestBody Map<String, Object> params, Model model) {
-        EChartOption option = seReportService.pCashTrend(params);
+        EChartOption option = workbenchService.pCashTrend(params);
         return R.ok().put("result", option);
     }
 
@@ -110,7 +110,7 @@ public class SEReportController extends BaseController {
     @ResponseBody
     @PostMapping(value = "/pHisPCashTrend")
     public R pHisPBillTrend(@RequestBody Map<String, Object> params, Model model) {
-        EChartOption option = seReportService.pHisPBillTrend(params);
+        EChartOption option = workbenchService.pHisPBillTrend(params);
         return R.ok().put("result", option);
     }
 

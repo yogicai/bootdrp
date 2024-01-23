@@ -8,6 +8,9 @@
         SELECT
             DATE_FORMAT(a.bill_date, '%Y')             as year,
             count(1)                                   as totalQty,
+            sum(a.entry_amount)                        as entryAmount,
+            sum(a.discount_amount)                     as discountAmount,
+            sum(a.final_amount)                        as finalAmount,
             sum(a.total_amount)                        as totalAmount,
             sum(a.payment_amount)                      as paymentAmount,
             sum(a.cost_amount)                         as costAmount,

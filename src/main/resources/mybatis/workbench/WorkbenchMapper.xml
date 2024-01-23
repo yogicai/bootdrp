@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.modular.workbench.dao.WorkbenchDao">
+
+    <select id="pHisPBillTrend" resultType="java.util.Map">
+        SELECT
+            DATE_FORMAT(so.`bill_date`, '%Y')                 AS otime,
+            DATE_FORMAT(so.`bill_date`, '%c')                 AS time,
+            COUNT(0)                                          AS count,
+            SUM(so.`total_amount`)                            AS totalAmount,
+            SUM(so.`payment_amount`)                          AS paymentAmount,
+            SUM(so.`cost_amount`)                             AS costAmount,
+            SUM(so.`total_amount`) - SUM(so.`payment_amount`) AS debtAmount,
+            SUM(so.`total_amount`) - SUM(so.`cost_amount`)    AS profitAmount
+        FROM
+            se_order so
+        where
+            so.`audit_status` = 'YES'
+        GROUP BY
+            DATE_FORMAT(so.`bill_date`, '%Y%m')
+        order by
+            DATE_FORMAT(so.`bill_date`, '%Y%m')
+    </select>
+
+    <select id="pBillTrend" resultType="java.util.Map">
+        SELECT
+        <choose>
+            <when test="type != null and type.trim == 'DAY'">DATE_FORMAT(so.`bill_date`, '%Y%m%d') AS otime, DATE_FORMAT(so.`bill_date`, '%d') AS time,</when>
+            <when test="type != null and type.trim == 'MONTH'">DATE_FORMAT(so.`bill_date`, '%Y%m') AS otime, DATE_FORMAT(so.`bill_date`, '%c') AS time,</when>
+            <when test="type != null and type.trim == 'YEAR'">DATE_FORMAT(so.`bill_date`, '%Y') AS otime, DATE_FORMAT(so.`bill_date`, '%Y') AS time,</when>
+            <otherwise></otherwise>
+        </choose>
+        COUNT(0) AS count, SUM(so.`total_amount`) AS totalAmount, SUM(so.`payment_amount`) AS paymentAmount FROM se_order so
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            so.`audit_status`='YES'
+            <if test="billDate != null and billDate != ''">and bill_date >= #{billDate}</if>
+        </trim>
+        <choose>
+            <when test="type != null and type.trim == 'DAY'">GROUP BY DATE_FORMAT(so.`bill_date`, '%Y%m%d') order by DATE_FORMAT(so.`bill_date`, '%Y%m%d')</when>
+            <when test="type != null and type.trim == 'MONTH'">GROUP BY DATE_FORMAT(so.`bill_date`, '%Y%m') order by DATE_FORMAT(so.`bill_date`, '%Y%m')</when>
+            <when test="type != null and type.trim == 'YEAR'">GROUP BY DATE_FORMAT(so.`bill_date`, '%Y') order by DATE_FORMAT(so.`bill_date`, '%Y')</when>
+            <otherwise></otherwise>
+        </choose>
+    </select>
+
+    <select id="pBillTrendPie" resultType="java.util.Map">
+        SELECT
+            dp.`type`,
+            dc.`name`,
+            COUNT(DISTINCT so.`bill_no`)                                         as count,
+            ROUND(SUM((se.`entry_price` - se.`cost_price`) * se.`total_qty`), 2) as profitAmount,
+            SUM(se.`total_amount`)                                               as totalAmount
+        FROM
+            se_order                 so
+            LEFT JOIN se_order_entry se ON so.`bill_no` = se.`bill_no`
+            LEFT JOIN data_product   dp ON se.`entry_id` = dp.`no`
+            LEFT JOIN data_category  dc ON dp.`type` = dc.`category_id`
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            so.`audit_status`='YES'
+            <if test="billDate != null and billDate != ''"> and so.bill_date >= #{billDate} </if>
+        </trim>
+        GROUP BY
+            dp.`type`
+        ORDER BY
+            totalAmount DESC
+    </select>
+
+    <select id="pCashTrend" resultType="java.util.Map">
+        SELECT
+        <choose>
+            <when test="type != null and type.trim == 'DAY'"> DATE_FORMAT(spo.`bill_date`, '%Y%m%d') AS otime, DATE_FORMAT(spo.`bill_date`, '%d') AS time, </when>
+            <when test="type != null and type.trim == 'MONTH'"> DATE_FORMAT(spo.`bill_date`, '%Y%m') AS otime, DATE_FORMAT(spo.`bill_date`, '%c') AS time, </when>
+            <when test="type != null and type.trim == 'YEAR'"> DATE_FORMAT(spo.`bill_date`, '%Y') AS otime, DATE_FORMAT(spo.`bill_date`, '%Y') AS time, </when>
+            <otherwise></otherwise>
+        </choose>
+        SUM(spo.`total_amount`) - SUM(spo.`cost_amount`) AS profitAmount, SUM(spo.`payment_amount`) AS cashFlowAmount FROM
+        (
+            select so.`bill_date`,so.`total_amount`,so.`cost_amount`,so.`payment_amount` from se_order so where so.`audit_status`='YES'<if test="billDate != null and billDate != ''"> and so.bill_date >= #{billDate}</if>
+            union ALL
+            select po.`bill_date`,0 as `total_amount`, 0 as `cost_amount`, po.`payment_amount` * -1 as `payment_amount` from po_order po where po.`audit_status`='YES'<if test="billDate != null and billDate != ''"> and po.bill_date >= #{billDate}</if>
+            union ALL
+            SELECT cj.`date` AS bill_date,0 AS `total_amount`, 0 AS `cost_amount`, cj.`debit` - cj.`credit` AS `payment_amount` FROM cashier_journal cj where 1=1 <if test="billDate != null and billDate != ''"> and cj.date >= #{billDate}</if>
+        ) spo
+        <choose>
+            <when test="type != null and type.trim == 'DAY'"> GROUP BY DATE_FORMAT(spo.`bill_date`, '%Y%m%d') order by DATE_FORMAT(spo.`bill_date`, '%Y%m%d')</when>
+            <when test="type != null and type.trim == 'MONTH'"> GROUP BY DATE_FORMAT(spo.`bill_date`, '%Y%m') order by DATE_FORMAT(spo.`bill_date`, '%Y%m')</when>
+            <when test="type != null and type.trim == 'YEAR'"> GROUP BY DATE_FORMAT(spo.`bill_date`, '%Y') order by DATE_FORMAT(spo.`bill_date`, '%Y')</when>
+            <otherwise></otherwise>
+        </choose>
+    </select>
+</mapper>

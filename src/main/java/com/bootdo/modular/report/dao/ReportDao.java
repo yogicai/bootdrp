@@ -14,10 +14,6 @@ public interface ReportDao {
 
     List<Map<String, Object>> sReconV(Map<String, Object> map);
 
-    List<Map<String, Object>> mainTabCustomer(Map<String, Object> map);
-
-    List<Map<String, Object>> mainTabProduct(Map<String, Object> map);
-
     List<Map<String, Object>> saleProduct(Map<String, Object> map);
 
 }

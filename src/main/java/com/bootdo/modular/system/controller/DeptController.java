@@ -38,7 +38,7 @@ public class DeptController extends BaseController {
         return prefix + "/dept";
     }
 
-    @ApiOperation(value = "获取部门列表", notes = "")
+    @ApiOperation(value = "获取部门列表")
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("system:sysDept:sysDept")

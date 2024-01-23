@@ -138,6 +138,15 @@ public class JournalGeneralResult {
         private BigDecimal netProfitRate;
 
         @ExcelIgnore
+        @Excel(name = "商品金额", numFormat = "0.00", type = 10)
+        private BigDecimal entryAmount;
+        @ExcelIgnore
+        @Excel(name = "折扣金额", numFormat = "0.00", type = 10)
+        private BigDecimal discountAmount;
+        @ExcelIgnore
+        @Excel(name = "折扣后金额", numFormat = "0.00", type = 10)
+        private BigDecimal finalAmount;
+        @ExcelIgnore
         @Excel(name = "已实现净利润", numFormat = "0.00", type = 10)
         private BigDecimal netProfitRealized;
         @ExcelIgnore

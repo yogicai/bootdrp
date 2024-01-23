@@ -44,18 +44,6 @@ public class ReportService {
     }
 
     @Transactional(readOnly = true)
-    public R mainTab(Map<String, Object> params) {
-        List<Map<String, Object>> data = Lists.newArrayList();
-        String type = MapUtil.getStr(params, "type");
-        if (Constant.MAIN_TAB_CUSTOMER.equals(type)) {
-            data = reportDao.mainTabCustomer(params);
-        } else if (Constant.MAIN_TAB_PRODUCT.equals(type)) {
-            data = reportDao.mainTabProduct(params);
-        }
-        return R.ok(ImmutableMap.of("result", data));
-    }
-
-    @Transactional(readOnly = true)
     public R saleProduct(Map<String, Object> params) {
         List<Map<String, Object>> data = reportDao.saleProduct(params);
         String startDate = "9999-99-99", endDate = "0000-00-00";

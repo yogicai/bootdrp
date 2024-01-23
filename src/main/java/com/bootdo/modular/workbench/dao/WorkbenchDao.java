@@ -1,4 +1,4 @@
-package com.bootdo.modular.report.dao;
+package com.bootdo.modular.workbench.dao;
 
 import java.util.List;
 import java.util.Map;
@@ -9,7 +9,7 @@ import java.util.Map;
  * @author yogiCai
  * @date 2018-02-25 11:17:02
  */
-public interface SEReportDao {
+public interface WorkbenchDao {
 
     List<Map<String, Object>> pHisPBillTrend(Map<String, Object> map);
 
