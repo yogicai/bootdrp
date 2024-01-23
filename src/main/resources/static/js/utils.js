@@ -345,31 +345,32 @@
 *  订单金额计算用
 * ======================================================================== */
 
-    Utils.prototype.numberEditOptions = function numberEditOptions(func,type, delay) {
-        var timeoutID;
+    Utils.prototype.numberEditOptions = function numberEditOptions(func, options = {}) {
+        let timeoutID;
         return {
             autocomplete: "off",
+            readOnly: options.readOnly !== undefined && options.readOnly === true,
             dataEvents: [{
-                type: type || 'keyup',
+                type: options.type || 'keyup',
                 data: {func: func},
                 fn: function(e) {
                     clearTimeout(timeoutID);
-                    var _e = e, _self = this;
+                    let _e = e, _self = this;
                     timeoutID= window.setTimeout(function(){
-                        var srcElement = _e.target.getAttribute('name');
-                        var amountEntry = _e.data['func'].call(_self);
-                        var valueObj = amountEntry['valueObj'];
-                        var totalObj = amountEntry['totalObj'];
-                        var elements = amountEntry['elements'];
-                        var formulas = amountEntry['formula'];
+                        let srcElement = _e.target.getAttribute('name');
+                        let amountEntry = _e.data['func'].call(_self);
+                        let valueObj = amountEntry['valueObj'];
+                        let totalObj = amountEntry['totalObj'];
+                        let elements = amountEntry['elements'];
+                        let formulas = amountEntry['formula'];
 
-                        var calElements = elements[srcElement];
-                        for (var i=0; i<calElements.length; i++) {
-                            var element = calElements[i];
+                        let calElements = elements[srcElement];
+                        for (let i=0; i<calElements.length; i++) {
+                            let element = calElements[i];
                             valueObj[element] = totalObj[element] = eval(formulas[element]);
                             $('[name="' + element + '"]').val(valueObj[element])
                         }
-                    }, delay || 100);
+                    }, options.delay || 100);
                 }
             }]
         }
@@ -442,10 +443,10 @@
     };
 
     //jqGrid edit input控件属性
-    Utils.prototype.commonEditOptions = function commonEditOptions() {
-        return {
-            autocomplete: "off"
-        }
+    Utils.prototype.commonEditOptions = function commonEditOptions(options) {
+        return $.extend({
+            autocomplete: "off",
+        }, options);
     };
 
     /* ========================================================================

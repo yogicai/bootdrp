@@ -9,7 +9,7 @@ var initData = [{},{},{}];
 var mask;
 
 $(function() {
-	load();
+    load();
     dataForm  = $('#data_form');
     mask = $('#mask');
     utils.loadCategory(["VENDOR_DATA","ACCOUNT_DATA"], ["vendorId","settleAccountTotal"], [{width:"300px"},{width:"185px"}]);
@@ -46,11 +46,11 @@ function load() {
             { name:'stockNo', index:'stockNo', editable:true, width:100, edittype:'select', editoptions: utils.formatSelect("data_stock"), formatter: "select" },
             { name:'totalQty', index:'totalQty', editable:true, width:90, align:"right", editoptions: utils.numberEditOptions(collectRow) },
             { name:'entryPrice', index:'entryPrice', editable:true, width:100, align:"right", editoptions: utils.numberEditOptions(collectRow) },
-            { name:'entryAmount', index:'entryAmount', editable:true, width:120, align:"right", editoptions: utils.numberEditOptions(collectRow) },
+            { name:'entryAmount', index:'entryAmount', editable:true, width:120, align:"right", editoptions: utils.numberEditOptions(collectRow, {readOnly: true}) },
             { name:'discountRate', index:'discountRate', editable:true, width:90, align:"right", editoptions: utils.numberEditOptions(collectRow) },
             { name:'discountAmount', index:'discountAmount', editable:true, width:120, align:"right", editoptions: utils.numberEditOptions(collectRow) },
             { name:'purchaseFee', index:'purchaseFee', editable:true, width:120, align:"right", editoptions: utils.numberEditOptions(collectRow) },
-            { name:'totalAmount', index:'totalAmount', editable:true, width:120, align:"right", editoptions: utils.commonEditOptions() },
+            { name:'totalAmount', index:'totalAmount', editable:true, width:120, align:"right", editoptions: utils.commonEditOptions({readOnly: true}) },
             { name:'remark', index:'remark', editable:true, width:150, editoptions: utils.commonEditOptions() },
             { name:'requestBillNo', index:'requestBillNo', editable:false, width:200 }
         ],
