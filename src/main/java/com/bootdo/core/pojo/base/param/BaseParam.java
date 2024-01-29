@@ -26,6 +26,11 @@ public class BaseParam {
     private List<Long> dataScope;
 
     /**
+     * 店铺权限
+     */
+    private List<Long> shopScope;
+
+    /**
      * 开始时间
      */
     private Date start;

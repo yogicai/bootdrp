@@ -1,6 +1,8 @@
 package com.bootdo.core.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -30,8 +32,19 @@ public enum CommonStatus implements EnumBean<CommonStatus> {
     DELETED(2, "删除");
 
     @EnumValue
+    @JsonValue
     private final Integer code;
     private final String remark;
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static CommonStatus fromCode(Integer code) {
+        for (CommonStatus o : CommonStatus.values()) {
+            if (o.getCode().equals(code)) {
+                return o;
+            }
+        }
+        return null;
+    }
 
     public String getValue() {
         return code.toString();

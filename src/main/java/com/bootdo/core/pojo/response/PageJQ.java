@@ -5,17 +5,16 @@ import cn.hutool.core.util.PageUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * @Author: yogiCai
+ * @author L
  */
+
 @Data
-public class PageJQ implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class PageJQ {
     /**
      * 总页数
      */
@@ -69,6 +68,13 @@ public class PageJQ implements Serializable {
         this.page = page;
         this.records = records;
         this.extra = extra;
+    }
+
+    public <T> PageJQ(Page<T> page) {
+        this.setRows(page.getRecords());
+        this.setRecords(Convert.toInt(page.getTotal()));
+        this.setPage(Convert.toInt(page.getCurrent()));
+        this.setTotal(PageUtil.totalPage(Convert.toInt(page.getTotal()), Convert.toInt(page.getSize())));
     }
 
     public <T> PageJQ(Page<T> page, int totalAmount) {
