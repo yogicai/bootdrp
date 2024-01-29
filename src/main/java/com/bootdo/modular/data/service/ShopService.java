@@ -49,7 +49,7 @@ public class ShopService extends ServiceImpl<DataShopDao, DataShop> {
 
     public List<DataShop> selectPicker() {
         Wrapper<DataShop> queryWrapper = Wrappers.lambdaQuery(DataShop.class)
-                .like(DataShop::getManagerId, ShiroUtils.getUserId() + StrUtil.COMMA);
+                .like(DataShop::getManagerId, ShiroUtils.getUserId());
         return this.list(queryWrapper);
     }
 
