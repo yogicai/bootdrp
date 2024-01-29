@@ -1,6 +1,7 @@
 package com.bootdo.core.pojo.base.param;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import lombok.Data;
 
 import java.util.Date;
@@ -44,7 +45,10 @@ public class BaseParam {
      * 时间区间查询时，结束时间转换：yyyy-MM-dd => yyyy-MM-dd 23:59:59
      */
     public Date getEnd() {
-        return DateUtil.beginOfDay(this.end).equals(this.end) ? DateUtil.endOfDay(this.end) : this.end;
+        if (ObjectUtil.isNotNull(this.end)) {
+            return DateUtil.beginOfDay(this.end).equals(this.end) ? DateUtil.endOfDay(this.end) : this.end;
+        }
+        return null;
     }
 
     /**

@@ -74,8 +74,8 @@ function load() {
                 {field: 'updateTime', title: '修改时间'},
                 {
                     title: '操作', field: 'id', align: 'center', formatter: function (value, row, index) {
-                        let e = `<a class="btn btn-primary btn-sm ${s_edit_h}" href="#" title="编辑" onclick="edit('${row.id}')"><i class="fa fa-edit"></i></a>`;
-                        let d = `<a class="btn btn-warning btn-sm ${s_remove_h}" href="#" title="删除" onclick="remove('${row.id}')"><i class="fa fa-remove"></i></a>`;
+                        let e = `<a class="btn btn-primary btn-sm ${s_edit_h}" href="#" title="编辑" onclick="edit('${row.id}')"><i class="fa fa-edit"></i></a> `;
+                        let d = `<a class="btn btn-warning btn-sm ${s_remove_h}" href="#" title="删除" onclick="remove('${row.id}')"><i class="fa fa-remove"></i></a> `;
                         return e + d;
                     }
                 }]
