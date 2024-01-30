@@ -1,26 +1,30 @@
 let prefix = "/se/order";
-let dataForm;
+let $dataForm;
 let tableGrid;
+let $tableList;
+
 $(function () {
+    $dataForm = $('#search');
+    $tableList = $("#table_list");
+
+    utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
+
+    utils.selectpicker('shopId', {multiple: true, noneSelectedText: '店铺'}, '/data/shop/selectPicker')
+
+    utils.loadEnumTypes(["ORDER_CG_STATUS", "AUDIT_STATUS", "BILL_SOURCE"], ["status", "audit", "billSource"], [{width: "100px", noneSelectedText: '收款状态', multiple: true}, {width: "100px", noneSelectedText: '审核状态', multiple: true}, {width: "80px", noneSelectedText: '来源', multiple: true}]);
+
+    utils.loadCategory(["CUSTOMER_DATA"], ["consumerId"], [{width: "100px", noneSelectedText: '客户', liveSearch: true, multiple: true}]);
+
     load();
-    utils.loadEnumTypes(["ORDER_CG_STATUS", "AUDIT_STATUS", "BILL_SOURCE"], ["status", "audit", "billSource"], [{width: "100px"}, {width: "100px"}, {width: "80px"}]);
-    utils.loadCategory(["CUSTOMER_DATA", "USER_DATA"], ["consumerId", "billerId"], [{width: "100px"}, {width: "120px"}]);
 });
 
 function load() {
 
-    recordDate = utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-    recordDateS = recordDate.data("datepicker").pickers[0];
-    recordDateE = recordDate.data("datepicker").pickers[1];
-
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
-    dataForm = $('#search');
-
-    tableGrid = $("#table_list").jqGrid({
+    tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
-        datatype: "json",
-        postData: $.extend({}, dataForm.serializeObject(), {'start': recordDateS.getDate().format('yyyy-MM-dd'), 'end': recordDateE.getDate().format('yyyy-MM-dd')}),
+        datatype: "json", postData: $dataForm.serializeObject(),
         height: window.innerHeight - 180,
         autowidth: true,
         shrinkToFit: false,
@@ -32,11 +36,7 @@ function load() {
         colModel: [
             {name: 'billDate', index: 'billDate', editable: true, width: 80, sorttype: "date", formatter: "date", frozen: true},
             {name: 'billNo', index: 'billNo', editable: true, sorttype: "text", width: 170, frozen: true},
-            {
-                name: 'billType', index: 'billType', editable: true, sorttype: "text", width: 60, formatter: function (cellValue) {
-                    return utils.formatEnum(cellValue, 'BILL_TYPE')
-                }
-            },
+            {name: 'billType', index: 'billType', editable: true, sorttype: "text", width: 60, formatter: cellValue => utils.formatEnum(cellValue, 'BILL_TYPE')},
             {name: 'billerName', index: 'billerName', editable: true, sorttype: "text", width: 70},
             {name: 'consumerName', index: 'consumerName', editable: true, sorttype: "text", width: 70},
             {name: 'totalQty', index: 'totalQty', editable: true, width: 60, align: "right", sorttype: "int", formatter: "number"},
@@ -48,26 +48,10 @@ function load() {
             {name: 'finalAmount', index: 'finalAmount', editable: true, width: 90, align: "right", sorttype: "float", formatter: "number", hidden: true},
             {name: 'expenseFee', index: 'expenseFee', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number", hidden: true},
             {name: 'totalAmount', index: 'totalAmount', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},
-            {
-                name: 'status', index: 'status', editable: true, sorttype: "text", edittype: "select", width: 70, formatter: function (cellValue) {
-                    return utils.formatEnum(cellValue, 'ORDER_CG_STATUS')
-                }
-            },
-            {
-                name: 'auditStatus', index: 'auditStatus', editable: true, sorttype: "text", width: 70, formatter: function (cellValue) {
-                    return utils.formatEnumS(cellValue, 'AUDIT_STATUS')
-                }
-            },
-            {
-                name: 'settleAccount', index: 'settleAccount', editable: true, sorttype: "text", width: 80, formatter: function (cellValue) {
-                    return utils.formatCategory(cellValue, 'ACCOUNT_DATA')
-                }
-            },
-            {
-                name: 'billSource', index: 'billSource', editable: true, sorttype: "text", width: 60, align: "center", formatter: function (cellValue) {
-                    return utils.formatEnum(cellValue, 'BILL_SOURCE', '')
-                }
-            },
+            {name: 'status', index: 'status', editable: true, sorttype: "text", edittype: "select", width: 70, formatter: cellValue => utils.formatEnum(cellValue, 'ORDER_CG_STATUS')},
+            {name: 'auditStatus', index: 'auditStatus', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatEnumS(cellValue, 'AUDIT_STATUS')},
+            {name: 'settleAccount', index: 'settleAccount', editable: true, sorttype: "text", width: 80, formatter: cellValue => utils.formatCategory(cellValue, 'ACCOUNT_DATA')},
+            {name: 'billSource', index: 'billSource', editable: true, sorttype: "text", width: 60, align: "center", formatter: cellValue => utils.formatEnum(cellValue, 'BILL_SOURCE')},
             {name: 'remark', index: 'remark', editable: true, sorttype: "text", width: 140},
             {name: 'createTime', index: 'createTime', editable: true, width: 140},
             {name: 'updateTime', index: 'updateTime', editable: true, width: 140}
@@ -100,8 +84,6 @@ function load() {
         tableGrid.setGridWidth(width);
         tableGrid.setGridHeight(window.innerHeight - 180);
     });
-
-    // tableGrid.jqGrid('setFrozenColumns');
 }
 
 function search(pageBtn) {
@@ -167,7 +149,6 @@ function remove() {
         layer.msg("请选择要删除的数据");
         return;
     }
-
     let selectData = [];
     $(ids).each(function (index, id) {
         let row = tableGrid.jqGrid('getRowData', id);
@@ -180,9 +161,7 @@ function remove() {
         $.ajax({
             url: prefix + "/remove",
             type: "post",
-            data: {
-                'billNos': selectData
-            },
+            data: {'billNos': selectData},
             success: function (r) {
                 if (r.code === 0) {
                     layer.msg(r.msg);
@@ -230,14 +209,14 @@ function triggerMenu(dataUrl, billNo) {
 }
 
 function exportExcel() {
-    let queryParam = dataForm.serialize();
+    let queryParam = $dataForm.serialize();
     let url = prefix + "/export?" + queryParam //下载地址
-    utils.download(url, 'SEOrderResult.xls');
+    utils.downloadAjax(url, 'SEOrderResult.xls');
 }
 
 function exportExcelTpl() {
     let url = "/order/import/excel/tpl" //下载地址
-    utils.download(url, `${(new Date()).format("yyyy-MM")}.xls`);
+    utils.downloadAjax(url, `${(new Date()).format("yyyy-MM")}.xls`);
 }
 
 function importExcel() {
