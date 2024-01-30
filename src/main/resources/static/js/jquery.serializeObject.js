@@ -16,8 +16,8 @@
     $.fn.serializeObject = function () {
         "use strict";
 
-        var result = {};
-        var extend = function (i, element) {
+        let result = {};
+        let extend = function (i, element) {
             var node = result[element.name];
 
             // If node with same name exists already, need to convert it to an array as it
@@ -47,7 +47,7 @@
     $.fn.serializeJson = function (otherString) {
         "use strict";
 
-        var serializeObj = {}, array = this.serializeArray();
+        let serializeObj = {}, array = this.serializeArray();
         $(array).each(function () {
             if (serializeObj[this.name]) {
                 serializeObj[this.name] += ';' + this.value;
@@ -56,9 +56,9 @@
             }
         });
         if (otherString) {
-            var otherArray = otherString.split(';');
+            let otherArray = otherString.split(';');
             $(otherArray).each(function () {
-                var otherSplitArray = this.split(':');
+                let otherSplitArray = this.split(':');
                 serializeObj[otherSplitArray[0]] = otherSplitArray[1];
             });
         }
@@ -73,9 +73,9 @@
     $.fn.setForm = function (jsonValue) {
         "use strict";
 
-        var obj = this;
+        let obj = this;
         $.each(jsonValue, function (name, ival) {
-            var $oinput = obj.find("[name=" + name + "]");
+            let $oinput = obj.find("[name=" + name + "]");
             if ($oinput.attr("type") === "checkbox") {
                 if (ival !== null) {
                     var checkboxObj = $("[name=" + name + "]");
@@ -90,7 +90,7 @@
                 }
             } else if ($oinput.attr("type") === "radio") {
                 $oinput.each(function () {
-                    var radioObj = $("[name=" + name + "]");
+                    let radioObj = $("[name=" + name + "]");
                     for (var i = 0; i < radioObj.length; i++) {
                         if (radioObj[i].value === ival) {
                             radioObj[i].click();
@@ -116,15 +116,15 @@
     $.fn.resetForm = function () {
         "use strict";
 
-        var obj = this;
+        let obj = this;
         $(obj)[0].reset(); //jQuery中是没有reset()方法, 通过调用 DOM 中的reset方法来重置表单
-        var $oinput = obj.find("select");
-        $.each($oinput, function (name, ival) {
-            if ($(ival).attr("type") === "chosen") {
-                $(ival).val("").trigger("chosen:updated");
+        let $oinput = obj.find("select");
+        $.each($oinput, function (index, item) {
+            if ($(item).attr("type") === "chosen") {
+                $(item).val('').trigger("chosen:updated");
             }
-            if ($(ival).parent().hasClass('bootstrap-select')) {
-                $(ival).val("").trigger("change");
+            if ($(item).parent().hasClass('bootstrap-select')) {
+                $(item).val('').trigger("change");
             }
         })
     };
