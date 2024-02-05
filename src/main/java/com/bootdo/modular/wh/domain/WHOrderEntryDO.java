@@ -1,20 +1,21 @@
 package com.bootdo.modular.wh.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 
 /**
  * 入库出库商品
  *
  * @author yogiCai
- * @date 2018-02-25 11:17:02
+ * @since 2018-02-25 11:17:02
  */
+@TableName(value = "wh_order_entry")
 @Data
-public class WHOrderEntryDO implements Serializable {
+public class WHOrderEntryDO extends BaseEntity {
     /**
      *
      */
@@ -63,13 +64,5 @@ public class WHOrderEntryDO implements Serializable {
      * 商品金额
      */
     private BigDecimal entryAmount;
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-    /**
-     * 修改时间
-     */
-    private Date updateTime;
 
 }

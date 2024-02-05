@@ -15,7 +15,7 @@ $(function() {
     } else {
         utils.loadTypes(["data_wh_ck"], ["serviceType"]);
     }
-    utils.loadEnumTypes(["AUDIT_STATUS"], ["audit"]);
+    utils.loadEnumTypes(["AUDIT_STATUS"], ["auditStatus"]);
 
     load();
 });

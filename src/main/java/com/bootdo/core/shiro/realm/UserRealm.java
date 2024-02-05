@@ -1,7 +1,7 @@
 package com.bootdo.core.shiro.realm;
 
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bootdo.core.utils.ShiroUtils;
 import com.bootdo.modular.system.dao.UserDao;
 import com.bootdo.modular.system.domain.UserDO;
@@ -12,8 +12,6 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -36,9 +34,9 @@ public class UserRealm extends AuthorizingRealm {
         String username = (String) token.getPrincipal();
         String password = new String((char[]) token.getCredentials());
 
-        UserDao userMapper = SpringUtil.getBean(UserDao.class);
+        UserDao userDao = SpringUtil.getBean(UserDao.class);
         // 查询用户信息
-        UserDO user = userMapper.list(MapUtil.of("username", username)).get(0);
+        UserDO user = userDao.selectList(Wrappers.lambdaQuery(UserDO.class).eq(UserDO::getUsername, username)).get(0);
 
         // 账号不存在
         if (user == null) {

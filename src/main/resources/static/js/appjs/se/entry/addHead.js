@@ -1,8 +1,16 @@
-var prefix = "/data/consumer";
-var prefixCategory = "/data/category";
-var tableGrid;
+let prefix = "/data/consumer";
+let prefixCategory = "/data/category";
+let tableGrid;
+let $tableList;
+let $searchText;
+let $jsTree;
+
 
 $(function() {
+    $searchText = $('#searchText');
+    $tableList = $('#table_list');
+    $jsTree = $('#jstree');
+
     getTreeData();
     load();
     bindEvent();
@@ -11,7 +19,7 @@ $(function() {
 function load(categoryId) {
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
-    tableGrid = $("#table_list").jqGrid({
+    tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
         datatype: "json",
         postData: { "status": 1 },
@@ -48,20 +56,20 @@ function load(categoryId) {
 
     // Add responsive to jqGrid
     $(window).bind('resize', function () {
-        var width = $('.jqGrid_wrapper').width();
+        let width = $('.jqGrid_wrapper').width();
         $('#table_list').setGridWidth(width);
     });
 }
 
 //刷新表格数据
 function reLoad() {
-    tableGrid.jqGrid('setGridParam', {postData: {"searchText": $('#searchText').val()}}).trigger("reloadGrid");
+    tableGrid.jqGrid('setGridParam', {postData: {"searchText": $searchText.val()}}).trigger("reloadGrid");
 }
 
 //添加商品到订单分录
 function add() {
-    var id = tableGrid.jqGrid('getGridParam', 'selrow');
-    var row = tableGrid.jqGrid('getRowData', id);
+    let id = tableGrid.jqGrid('getGridParam', 'selrow');
+    let row = tableGrid.jqGrid('getRowData', id);
     window.parent.insertHead(row);
 }
 
@@ -73,7 +81,7 @@ function addAndClose() {
 
 //关闭窗口
 function cancel() {
-    var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+    let index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
     parent.layer.close(index);
 }
 
@@ -89,25 +97,25 @@ function getTreeData() {
     });
 }
 function loadTree(tree) {
-    $('#jstree').jstree({
+    $jsTree.jstree({
         "core": { 'data' : tree },
         "plugins": [ "search" ]
     });
-    $('#jstree').jstree().open_all();
+    
+    $jsTree.on("changed.jstree", function (e, data) {
+        if (_.isEmpty(data.selected) || data.selected[0] === '-1') {
+            tableGrid.jqGrid('setGridParam', {postData: {"type": ""}}).trigger("reloadGrid");
+        } else {
+            tableGrid.jqGrid('setGridParam', {postData: {"type": data.selected[0]}}).trigger("reloadGrid");
+        }
+    });
+
+    $jsTree.jstree().open_all();
 }
-
-$('#jstree').on("changed.jstree", function(e, data) {
-    if (data.selected == -1) {
-        tableGrid.jqGrid('setGridParam', {postData: {"type": ""} }).trigger("reloadGrid");
-    } else {
-        tableGrid.jqGrid('setGridParam', { postData: {"type" : data.selected[0]} }).trigger("reloadGrid");
-    }
-});
-
 //绑定事件
 function bindEvent() {
-    var timeoutID;
-    $('#searchText').bind('keyup', function () {
+    let timeoutID;
+    $searchText.bind('keyup', function () {
         clearTimeout(timeoutID);
         timeoutID= window.setTimeout(function(){
             reLoad();

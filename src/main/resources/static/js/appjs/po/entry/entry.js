@@ -1,27 +1,32 @@
-var lastSel; //jqGrid最后编辑未保存的行号
-var amountOrder; //订单信息对象
-var amountEntry; //表格行分录信息对象
-var tableGrid;
-var dataForm;
-var prefix = "/po/entry";
-var prefixOrder = "/po/order";
-var initData = [{},{},{}];
-var mask;
+let lastSel; //jqGrid最后编辑未保存的行号
+let amountOrder; //订单信息对象
+let amountEntry; //表格行分录信息对象
+let tableGrid;
+let $tableList;
+let $dataForm;
+let $vendorId;
+let $mask;
+
+let prefix = "/po/entry";
+let prefixOrder = "/po/order";
+let initData = [{}, {}, {}];
 
 $(function() {
+    $mask = $('#mask');
+    $dataForm = $('#data_form');
+    $vendorId = $('#vendorId');
+    $tableList = $('#table_list');
+
+    utils.createDatePicker('date_1');
+    utils.loadCategory(["VENDOR_DATA", "ACCOUNT_DATA"], ["vendorId", "settleAccountTotal"], [{width: "300px"}, {width: "200px", selectedIndex: 1}]);
+
     load();
-    dataForm  = $('#data_form');
-    mask = $('#mask');
-    utils.loadCategory(["VENDOR_DATA","ACCOUNT_DATA"], ["vendorId","settleAccountTotal"], [{width:"300px"},{width:"185px"}]);
 });
 
 function load() {
-
-    utils.createDatePicker('date_1');
-
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
-    tableGrid = $("#table_list").jqGrid({
+    tableGrid = $tableList.jqGrid({
         datatype : "local",
         data: initData,
         height: 'auto',
@@ -34,11 +39,13 @@ function load() {
         editurl: "clientArray",
         colNames: ['','ID','商品名称', '商品ID',  '单位', '仓库', '数量', '单价', '商品金额', '优惠率', '优惠金额',  '采购费用', '合计金额', '备注', '关联购货单'],
         colModel: [
-            { name: 'act', width:60, fixed:true, sortable:false, resize:false, formatter : function(cellValue, options, rowObject) {
-                var e = '<a class="btn btn-primary btn-xs" href="#" mce_href="#" onclick="addRow(\'' + options.rowId + '\')"><i class="fa  fa-plus"></i></a> ';
-                var d = '<a class="btn btn-warning btn-xs" href="#" mce_href="#" onclick="delRow(\''+ options.rowId + '\')"><i class="fa fa-minus"></i></a> ';
-                return e + d ;
-            }},
+            {
+                name: 'act', width: 60, fixed: true, sortable: false, resize: false, formatter: function (cellValue, options, rowObject) {
+                    let e = `<a class="btn btn-primary btn-xs" href="#" onclick="addRow('${options.rowId}')"><i class="fa fa-plus"></i></a> `;
+                    let d = `<a class="btn btn-warning btn-xs" href="#" onclick="delRow('${options.rowId}')"><i class="fa fa-minus"></i></a> `;
+                    return e + d;
+                }
+            },
             { name:'id', index:'id', editable:false, hidedlg:true, hidden:true},
             { name:'entryName', index:'entryName', editable:true, edittype:'custom', width:300, editoptions: utils.myElementAndValue() },
             { name:'entryId', index:'entryId', editable:false, width:70 },
@@ -46,9 +53,9 @@ function load() {
             { name:'stockNo', index:'stockNo', editable:true, width:100, edittype:'select', editoptions: utils.formatSelect("data_stock"), formatter: "select" },
             { name:'totalQty', index:'totalQty', editable:true, width:90, align:"right", editoptions: utils.numberEditOptions(collectRow) },
             { name:'entryPrice', index:'entryPrice', editable:true, width:100, align:"right", editoptions: utils.numberEditOptions(collectRow) },
-            { name:'entryAmount', index:'entryAmount', editable:true, width:120, align:"right", editoptions: utils.numberEditOptions(collectRow, {readOnly: true}) },
-            { name:'discountRate', index:'discountRate', editable:true, width:90, align:"right", editoptions: utils.numberEditOptions(collectRow) },
-            { name:'discountAmount', index:'discountAmount', editable:true, width:120, align:"right", editoptions: utils.numberEditOptions(collectRow) },
+            {name: 'entryAmount', index: 'entryAmount', editable: true, width: 120, align: "right", editoptions: utils.numberEditOptions(collectRow, {readOnly: true})},
+            {name: 'discountRate', index: 'discountRate', editable: true, width: 90, align: "right", editoptions: utils.numberEditOptions(collectRow)},
+            {name: 'discountAmount', index: 'discountAmount', editable: true, width: 120, align: "right", editoptions: utils.numberEditOptions(collectRow)},
             { name:'purchaseFee', index:'purchaseFee', editable:true, width:120, align:"right", editoptions: utils.numberEditOptions(collectRow) },
             { name:'totalAmount', index:'totalAmount', editable:true, width:120, align:"right", editoptions: utils.commonEditOptions({readOnly: true}) },
             { name:'remark', index:'remark', editable:true, width:150, editoptions: utils.commonEditOptions() },
@@ -71,12 +78,6 @@ function load() {
         }
     });
 
-    // 自适应表格宽度
-    // $(window).bind('resize', function () {
-    //     var width = $('.jqGrid_wrapper').width();
-    //     tableGrid.setGridWidth(width);
-    // });
-
     // 设置横向滚动条
     $('.jqGrid_wrapper .ui-jqgrid').attr('style','overflow:auto');
 
@@ -90,10 +91,10 @@ function load() {
     });
 
     // 触发订单金额计算事件
-    $('[name="discountRateTotal"]').bind('blur', {amountOrder: collectValueTotal()}, utils.collectAmount);
-    $('[name="discountAmountTotal"]').bind('blur', {amountOrder: collectValueTotal()}, utils.collectAmount);
-    $('[name="paymentAmountTotal"]').bind('blur', {amountOrder: collectValueTotal()}, utils.collectAmount);
-    $('[name="purchaseFeeTotal"]').bind('blur', {amountOrder: collectValueTotal()}, utils.collectAmount);
+    $('[name="discountRateTotal"]').bind('blur', {amountOrderFun: collectValueTotal}, utils.collectAmount);
+    $('[name="discountAmountTotal"]').bind('blur', {amountOrderFun: collectValueTotal}, utils.collectAmount);
+    $('[name="paymentAmountTotal"]').bind('blur', {amountOrderFun: collectValueTotal}, utils.collectAmount);
+    $('[name="purchaseFeeTotal"]').bind('blur', {amountOrderFun: collectValueTotal}, utils.collectAmount);
 
 }
 
@@ -125,28 +126,29 @@ amountOrder = {
 };
 
 function collectValueTotal() {
-    var totalQtyTotal=$("#totalQtyTotal").val() || 0;
-    var entryAmountTotal=$("#entryAmountTotal").val() || 0;
-    var discountAmountTotal=$("#discountAmountTotal").val() || 0;
-    var purchaseFeeTotal=$("#purchaseFeeTotal").val() || 0;
-    var totalAmountTotal=$("#totalAmountTotal").val() || 0;
-    amountOrder.valueObj = {totalQtyTotal: totalQtyTotal, entryAmountTotal: entryAmountTotal, discountAmountTotal: discountAmountTotal, purchaseFeeTotal:  purchaseFeeTotal,totalAmountTotal: totalAmountTotal };
+    let totalQtyTotal = $("#totalQtyTotal").val() || 0;
+    let entryAmountTotal = $("#entryAmountTotal").val() || 0;
+    let discountAmountTotal = $("#discountAmountTotal").val() || 0;
+    let purchaseFeeTotal = $("#purchaseFeeTotal").val() || 0;
+    let totalAmountTotal = $("#totalAmountTotal").val() || 0;
+    let paymentAmountTotal = $("#paymentAmountTotal").val() || 0;
+    amountOrder.valueObj = {totalQtyTotal: totalQtyTotal, entryAmountTotal: entryAmountTotal, discountAmountTotal: discountAmountTotal, paymentAmountTotal: paymentAmountTotal, purchaseFeeTotal: purchaseFeeTotal, totalAmountTotal: totalAmountTotal};
     return amountOrder;
 }
 
 //计算表格合计行数据
 function collectTotal(){
-    var totalQtyTotal=$("#table_list").getCol('totalQty',false,'sum');
-    var entryAmountTotal=$("#table_list").getCol('entryAmount',false,'sum').toFixed(2);
-    var discountAmountTotal=$("#table_list").getCol('discountAmount',false,'sum').toFixed(2);
-    var purchaseFeeTotal=$("#table_list").getCol('purchaseFee',false,'sum').toFixed(2);
-    var totalAmountTotal=$("#table_list").getCol('totalAmount',false,'sum').toFixed(2);
+    let totalQtyTotal = $tableList.getCol('totalQty', false, 'sum');
+    let entryAmountTotal = $tableList.getCol('entryAmount', false, 'sum').toFixed(2);
+    let discountAmountTotal = $tableList.getCol('discountAmount', false, 'sum').toFixed(2);
+    let purchaseFeeTotal = $tableList.getCol('purchaseFee', false, 'sum').toFixed(2);
+    let totalAmountTotal = $tableList.getCol('totalAmount', false, 'sum').toFixed(2);
     amountOrder.totalObj = {totalQtyTotal: totalQtyTotal, entryAmountTotal: entryAmountTotal, discountAmountTotal: discountAmountTotal, purchaseFeeTotal:  purchaseFeeTotal,totalAmountTotal: totalAmountTotal };
     // 全量计算订单各项金额
     utils.collectAmountManual(amountOrder);
     // 设置表格合计项金额
-    $("#table_list").footerData('set', { entryName: '合计:', totalQty: totalQtyTotal, entryAmount: entryAmountTotal, discountAmount: discountAmountTotal, purchaseFee:  purchaseFeeTotal, totalAmount:  totalAmountTotal });
-};
+    $tableList.footerData('set', {entryName: '合计:', totalQty: totalQtyTotal, entryAmount: entryAmountTotal, discountAmount: discountAmountTotal, purchaseFee: purchaseFeeTotal, totalAmount: totalAmountTotal});
+}
 
 amountEntry = {
     // 订单分录各列值，数量、单价、商品金额、折扣率、折扣金额、采购费用、合计
@@ -173,30 +175,30 @@ amountEntry = {
 };
 
 //获取编辑状态行数据
-function collectRow($rowId){
-    var rowId = $rowId || $("#table_list").jqGrid("getGridParam", "selrow");
-    var originRow = $("#table_list tr[id="+(rowId)+"]");
-    var entryPrice=originRow.find("[name='entryPrice']").val();
-    var totalQty=originRow.find("[name='totalQty']").val();
-    var entryAmount=originRow.find("[name='entryAmount']").val();
-    var discountRate=originRow.find("[name='discountRate']").val();
-    var discountAmount=originRow.find("[name='discountAmount']").val();
-    var purchaseFee=originRow.find("[name='purchaseFee']").val();
+function collectRow(rowid) {
+    let rowId = rowid || $tableList.jqGrid("getGridParam", "selrow");
+    let originRow = $("#table_list tr[id=" + (rowId) + "]");
+    let entryPrice = originRow.find("[name='entryPrice']").val();
+    let totalQty = originRow.find("[name='totalQty']").val();
+    let entryAmount = originRow.find("[name='entryAmount']").val();
+    let discountRate = originRow.find("[name='discountRate']").val();
+    let discountAmount = originRow.find("[name='discountAmount']").val();
+    let purchaseFee = originRow.find("[name='purchaseFee']").val();
     amountEntry.totalObj = {entryPrice: entryPrice, totalQty: totalQty, entryAmount: entryAmount, discountRate:  discountRate, discountAmount: discountAmount, purchaseFee: purchaseFee };
     return amountEntry;
 }
 
 //增加行
 function addRow(rowid){
-    var rowData = { };
-    var ids = tableGrid.jqGrid('getDataIDs');
-    var maxId = ids.length == 0 ? 1 : Math.max.apply(Math,ids);
+    let rowData = {};
+    let ids = tableGrid.jqGrid('getDataIDs');
+    let maxId = ids.length === 0 ? 1 : Math.max.apply(Math, ids);
     tableGrid.jqGrid('addRowData', maxId+1, rowData, 'after', rowid);//插入行
 }
 
 //删除行
 function delRow(rowid) {
-    var ids = tableGrid.jqGrid('getDataIDs')
+    let ids = tableGrid.jqGrid('getDataIDs')
     if (ids.length > 1) {
         tableGrid.jqGrid('delRowData', rowid);
     } else {
@@ -206,34 +208,34 @@ function delRow(rowid) {
 
 //保存
 function save(add) {
-    var order = dataForm.serializeObject();
-    var entryArr = tableGrid.jqGrid("getRowData");
+    let order = $dataForm.serializeObject();
+    let entryArr = tableGrid.jqGrid("getRowData");
     order.entryVOList = [];
 
-    if (order.vendorId == "" || order.billDate == "" || order.settleAccountTotal == "" || amountOrder.totalObj.totalQtyTotal <= 0) {
-        layer.msg((order.vendorId == "" ? "[供应商信息]" : "") + (order.billDate == "" ? "[单据日期]" : "") + (order.settleAccountTotal == "" ? "[结算帐户]" : "")  + (amountOrder.totalObj.totalQtyTotal <= 0 ? "[合计数量]" : "") + "不能为空！");
+    if (_.isEmpty(order.vendorId) || _.isEmpty(order.billDate) || _.isEmpty(order.settleAccountTotal) || amountOrder.totalObj.totalQtyTotal <= 0) {
+        layer.msg((_.isEmpty(order.vendorId) ? "[客户信息]" : "") + (_.isEmpty(order.billDate) ? "[单据日期]" : "") + (_.isEmpty(order.settleAccountTotal) ? "[结算帐户]" : "") + (amountOrder.totalObj.totalQtyTotal <= 0 ? "[合计数量]" : "") + "不能为空！");
         return;
     }
 
-    var entryTotalAmount = 0;
+    let entryTotalAmount = 0;
     $.each(entryArr, function (key, val) {
         delete val['act'];
-        if (val['entryName'] != "" && val['totalAmount'] != "") {
-            entryTotalAmount = (entryTotalAmount * 1.0 + val.totalAmount * 1.0).toFixed(2);
+        if (!_.some([val['entryName'], val['totalAmount']], _.isEmpty)) {
+            entryTotalAmount = (_.toNumber(entryTotalAmount) + _.toNumber(val.totalAmount)).toFixed(2);
             order.entryVOList.push(val);
         }
     });
 
-    var validateFlag = true;
+    let validateFlag = true;
     $.each(order.entryVOList, function (key, val) {
-        if (val['totalQty'] == "" || val['entryName'] == "" || val['stockNo'] == "") {
-            layer.msg((val['totalQty'] == "" ? "[数量]" : "") + (val['entryName'] == "" ? "[商品]" : "") + (val['stockNo'] == "" ? "[仓库]" : "") + "列不能为空！");
+        if (_.isEmpty(val['totalQty']) || _.isEmpty(val['entryName']) || _.isEmpty(val['stockNo'])) {
+            layer.msg((_.isEmpty(val['totalQty']) ? "[数量] " : "") + (_.isEmpty(val['entryName']) ? "[商品]" : "") + (_.isEmpty(val['stockNo']) ? "[仓库]" : "") + "列不能为空！");
             validateFlag = false;
             return false;
         }
     });
 
-    if ((entryTotalAmount - order.finalAmountTotal - order.discountAmountTotal).toFixed(2) != 0) {
+    if (_.round((entryTotalAmount - order.finalAmountTotal - order.discountAmountTotal), 2) !== 0) {
         layer.msg("单据商品非空分录金额与总金额不相等！");
         return;
     }
@@ -246,12 +248,12 @@ function save(add) {
             contentType: "application/json; charset=utf-8",
             data : JSON.stringify(order),
             success : function(r) {
-                if (r.code == 0 && add && add == 1) { //保存并新增
+                if (r.code === 0 && add && add === 1) { //保存并新增
                     initBillNo();
                     tableGrid.clearGridData();
                     tableGrid.jqGrid('setGridParam', {data: [{}, {}, {}]}).trigger('reloadGrid');
                     layer.msg(r.msg);
-                } else if (r.code == 0) { //新增
+                } else if (r.code === 0) { //新增
                     initBillNo(r.billNo);
                     layer.msg(r.msg);
                 } else {
@@ -264,18 +266,18 @@ function save(add) {
 
 //审核
 function audit(type) {
-    var billNo = $("#billNo").val();
-    if (billNo &&　billNo != "") {
+    let billNo = $("#billNo").val();
+    if (!_.isEmpty(billNo)) {
         $.ajax({
             url : prefixOrder+"/audit",
             type : "post",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            data : JSON.stringify({ 'billNos' : [billNo],  'auditStatus' : type == 0 ? 'YES' : 'NO' }),
+            data: JSON.stringify({'billNos': [billNo], 'auditStatus': type === 0 ? 'YES' : 'NO'}),
             success : function(r) {
-                if (r.code == 0) {
-                    mask.removeClass('util-has-audit');
-                    mask.addClass('util-has-audit');
+                if (r.code === 0) {
+                    $mask.removeClass('util-has-audit');
+                    $mask.addClass('util-has-audit');
                 }
                 layer.msg(r.msg);
             }
@@ -287,10 +289,10 @@ function audit(type) {
 
 //历史单据
 function listOrder(dataUrl) {
-    var dataIndex;
+    let dataIndex;
     //触发菜单单击
     window.parent.$(".J_menuItem").each(function (index) {
-        if ($(this).attr('href') == dataUrl) {
+        if ($(this).attr('href') === dataUrl) {
             window.parent.$(this).trigger('click');
             dataIndex = window.parent.$(this).data('index');
             return false;
@@ -298,15 +300,14 @@ function listOrder(dataUrl) {
     });
     //重新刷订单列表
     window.parent.$('.J_mainContent .J_iframe').each(function () {
-        if ($(this).data('id') == dataUrl) {
-            var win = window.parent.$('iframe[name="iframe' + dataIndex +'"]')[0].contentWindow;
+        if ($(this).data('id') === dataUrl) {
+            let win = window.parent.$('iframe[name="iframe' + dataIndex + '"]')[0].contentWindow;
             if (win.reLoad) {
                 win.reLoad();
             }
             return false;
         }
     });
-
 }
 
 //操作日志
@@ -330,10 +331,10 @@ function add() {
 //订单表格插入数据
 function insertData(datas) {
     if (!datas || datas.length <= 0) return;
-    var ids = tableGrid.jqGrid('getDataIDs');
-    var maxId = ids.length == 0 ? 1 : Math.max.apply(Math, ids);
-    var rowId = tableGrid.jqGrid("getGridParam", "selrow")
-    for (var i = 0; i < datas.length; i++) {
+    let ids = tableGrid.jqGrid('getDataIDs');
+    let maxId = ids.length === 0 ? 1 : Math.max.apply(Math, ids);
+    let rowId = tableGrid.jqGrid("getGridParam", "selrow")
+    for (let i = 0; i < datas.length; i++) {
         if (i === 0) {
             tableGrid.jqGrid('saveRow', rowId);
             tableGrid.jqGrid('setRowData', rowId, datas[i]);//更新当前行
@@ -344,10 +345,10 @@ function insertData(datas) {
         }
     }
     //选中下一个空行
-    var ids = tableGrid.jqGrid('getDataIDs');
+    ids = tableGrid.jqGrid('getDataIDs');
     $.each(ids, function (key, val) {
-        var data = tableGrid.jqGrid("getRowData", val);
-        if (data['entryName'] == "") {
+        let data = tableGrid.jqGrid("getRowData", val);
+        if (_.isEmpty(data['entryName'])) {
             tableGrid.setSelection(val, false);
             return false;
         }
@@ -370,7 +371,7 @@ function addHead() {
 //设置供应商下拉框值
 function insertHead(data) {
     if (!data) return;
-    $("#vendorId").val(data.no).trigger("chosen:updated");
+    $vendorId.val(data.no).trigger("change");
 }
 
 //初始化订单数据
@@ -382,12 +383,12 @@ function initOrder(billNo) {
             contentType: "application/json; charset=utf-8",
             data: {"billNo": billNo},
             success: function (r) {
-                if (r.code == 0) {
+                if (r.code === 0) {
                     tableGrid.clearGridData();
                     tableGrid.jqGrid('setGridParam', {data: r.order.entryVOList}).trigger('reloadGrid');
-                    dataForm.setForm(r.order);
-                    mask.removeClass('util-has-audit');
-                    mask.addClass(r.order && r.order.auditStatus == 'YES' ? 'util-has-audit' :'');
+                    $dataForm.setForm(r.order);
+                    $mask.removeClass('util-has-audit');
+                    $mask.addClass(r.order && r.order.auditStatus === 'YES' ? 'util-has-audit' : '');
 
                     initBillNo(r.order.billNo);
                 } else {
@@ -399,19 +400,19 @@ function initOrder(billNo) {
         initBillNo();
         tableGrid.clearGridData();
         tableGrid.jqGrid('setGridParam', {data: [{}, {}, {}]}).trigger('reloadGrid');
-        dataForm.resetForm();
-        mask.removeClass('util-has-audit');
+        $dataForm.resetForm();
+        $mask.removeClass('util-has-audit');
     }
 }
 
 //设置单据号隐藏域值
-function initBillNo(ival) {
-    ival = ival || "";
+function initBillNo(iVal) {
+    iVal = _.defaultTo(iVal, '');
     $("[name=billNo]").each(function (index, element) {
-        if ($(element).prop("tagName") == "SPAN") {
-            $(element).html("单据编号: " + ival);
+        if ($(element).prop("tagName") === "SPAN") {
+            $(element).html("单据编号: " + iVal);
         } else {
-            $(element).val(ival);
+            $(element).val(iVal);
         }
     });
 }

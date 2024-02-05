@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @author chglee
  * @email 1992lcg@163.com
- * @date 2017-10-03 16:17:48
+ * @since 2017-10-03 16:17:48
  */
 public interface BlogContentDao {
 

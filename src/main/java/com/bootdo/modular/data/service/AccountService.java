@@ -1,48 +1,37 @@
 package com.bootdo.modular.data.service;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bootdo.core.factory.PageFactory;
+import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.modular.data.dao.AccountDao;
 import com.bootdo.modular.data.domain.AccountDO;
+import com.bootdo.modular.data.param.AccountQryParam;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
 
 
 /**
  * @author L
  */
 @Service
-public class AccountService {
-    @Resource
-    private AccountDao accountDao;
+public class AccountService extends ServiceImpl<AccountDao, AccountDO> {
 
-    public AccountDO get(Integer id) {
-        return accountDao.get(id);
+    public PageR page(AccountQryParam param) {
+        return new PageR(this.pageList(PageFactory.defaultPage(), param));
     }
 
-    public List<AccountDO> list(Map<String, Object> map) {
-        return accountDao.list(map);
-    }
+    public Page<AccountDO> pageList(Page<AccountDO> page, AccountQryParam param) {
+        LambdaQueryWrapper<AccountDO> queryWrapper = Wrappers.lambdaQuery(AccountDO.class)
+                .in(ObjectUtil.isNotEmpty(param.getType()), AccountDO::getType, StrUtil.split(param.getType(), StrUtil.COMMA))
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), AccountDO::getUpdateTime, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), AccountDO::getUpdateTime, param.getEnd())
+                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(AccountDO::getNo, param.getSearchText()).or().like(AccountDO::getName, param.getSearchText()));
 
-    public int count(Map<String, Object> map) {
-        return accountDao.count(map);
-    }
-
-    public int save(AccountDO account) {
-        return accountDao.save(account);
-    }
-
-    public int update(AccountDO account) {
-        return accountDao.update(account);
-    }
-
-    public int remove(Integer id) {
-        return accountDao.remove(id);
-    }
-
-    public int batchRemove(Integer[] ids) {
-        return accountDao.batchRemove(ids);
+        return this.page(page, queryWrapper);
     }
 
 }

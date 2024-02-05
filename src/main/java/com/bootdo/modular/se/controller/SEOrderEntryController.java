@@ -1,25 +1,26 @@
 package com.bootdo.modular.se.controller;
 
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.Log;
 import com.bootdo.core.pojo.response.R;
+import com.bootdo.modular.po.param.OrderDetailParam;
 import com.bootdo.modular.se.domain.SEOrderDO;
 import com.bootdo.modular.se.param.SEOrderVO;
 import com.bootdo.modular.se.service.SEOrderEntryService;
 import com.bootdo.modular.se.validator.SEOrderValidator;
-import com.google.common.collect.ImmutableMap;
 import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Map;
 
 /**
  * 购货订单分录
  *
  * @author yogiCai
- * @date 2018-02-18 16:50:26
+ * @since 2018-02-18 16:50:26
  */
 @Api(tags = "销售订单")
 @Controller
@@ -36,9 +37,6 @@ public class SEOrderEntryController {
         return "se/entry/entry";
     }
 
-    /**
-     * 保存
-     */
     @Log("销售单保存")
     @ResponseBody
     @PostMapping("/save")
@@ -46,18 +44,14 @@ public class SEOrderEntryController {
     public R save(@RequestBody SEOrderVO order) {
         seOrderValidator.validateSave(order);
         SEOrderDO orderDO = seOrderEntryService.save(order);
-        return R.ok(ImmutableMap.of("billNo", orderDO.getBillNo()));
+        return R.ok(MapUtil.of("billNo", orderDO.getBillNo()));
     }
 
-    /**
-     * 选择零售客户
-     */
     @GetMapping("/add")
     @RequiresPermissions("se:entry:add")
     public String add() {
         return "se/entry/add";
     }
-
 
     @GetMapping("/addHead")
     @RequiresPermissions("se:entry:add")
@@ -65,13 +59,12 @@ public class SEOrderEntryController {
         return "se/entry/addHead";
     }
 
-
     @ResponseBody
     @GetMapping("/get")
     @RequiresPermissions("se:order:order")
-    public R get(@RequestParam Map<String, Object> params) {
+    public R get(@Validated OrderDetailParam param) {
         //查询列表数据
-        SEOrderVO orderVO = seOrderEntryService.getOrderVO(params);
+        SEOrderVO orderVO = seOrderEntryService.getOrderVO(param);
         return R.ok().put("order", orderVO);
     }
 }

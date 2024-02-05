@@ -10,7 +10,7 @@ import java.util.Date;
  *
  * @author chglee
  * @email 1992lcg@163.com
- * @date 2017-09-22 13:16:10
+ * @since 2017-09-22 13:16:10
  */
 @Data
 public class ContentDO {

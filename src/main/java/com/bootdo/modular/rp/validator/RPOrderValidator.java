@@ -1,48 +1,47 @@
 package com.bootdo.modular.rp.validator;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bootdo.core.consts.ErrorMessage;
 import com.bootdo.core.consts.OrderStatusCode;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.EnumCollection;
 import com.bootdo.core.exception.assertion.BizServiceException;
-import com.bootdo.modular.po.dao.OrderDao;
 import com.bootdo.modular.po.domain.OrderDO;
-import com.bootdo.modular.rp.dao.RPOrderDao;
-import com.bootdo.modular.rp.dao.RPOrderEntryDao;
+import com.bootdo.modular.po.param.OrderAuditParam;
+import com.bootdo.modular.po.service.OrderService;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.domain.RPOrderEntryDO;
 import com.bootdo.modular.rp.param.RPOrderVO;
-import com.bootdo.modular.se.dao.SEOrderDao;
+import com.bootdo.modular.rp.service.RPOrderEntryService;
+import com.bootdo.modular.rp.service.RPOrderService;
 import com.bootdo.modular.se.domain.SEOrderDO;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
-import org.apache.commons.collections.CollectionUtils;
+import com.bootdo.modular.se.service.SEOrderService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author yogiCai
- * @date 2018-02-04 10:07:05
+ * @since 2018-02-04 10:07:05
  */
 @Service
 public class RPOrderValidator {
     @Resource
-    private RPOrderDao rpOrderDao;
+    private RPOrderService rpOrderService;
     @Resource
-    private RPOrderEntryDao rpOrderEntryDao;
+    private RPOrderEntryService rpOrderEntryService;
     @Resource
-    private OrderDao orderDao;
+    private OrderService orderService;
     @Resource
-    private SEOrderDao seOrderDao;
+    private SEOrderService seOrderService;
+
 
     public void validateSave(RPOrderVO order) {
         if (order.getBillDate() == null || order.getDebtorId() == null || order.getCheckId() == null) {
@@ -57,48 +56,34 @@ public class RPOrderValidator {
         if (StrUtil.isEmpty(order.getBillNo())) {
             return;
         }
-        List<RPOrderDO> orderDOList = rpOrderDao.list(ImmutableMap.of("billNo", order.getBillNo()));
-        if (!CollectionUtils.isEmpty(orderDOList) && AuditStatus.YES.equals(orderDOList.get(0).getAuditStatus())) {
+        List<RPOrderDO> orderDOList = rpOrderService.list(Wrappers.lambdaQuery(RPOrderDO.class).eq(RPOrderDO::getBillNo, order.getBillNo()));
+        if (CollUtil.isNotEmpty(orderDOList) && AuditStatus.YES.equals(orderDOList.get(0).getAuditStatus())) {
             throw new BizServiceException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "修改"));
         }
     }
 
-    public void validateAudit(Map<String, Object> params) {
-        List<String> billNos = MapUtil.get(params, "billNos", List.class);
-        AuditStatus auditStatus = AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus"));
-        if (CollectionUtils.isEmpty(billNos) || !EnumCollection.AUDIT_STATUS.contains(auditStatus)) {
+    public void validateAudit(OrderAuditParam param) {
+        List<String> billNos = param.getBillNos();
+        AuditStatus auditStatus = param.getAuditStatus();
+        if (CollUtil.isEmpty(billNos) || !EnumCollection.AUDIT_STATUS.contains(auditStatus)) {
             throw new BizServiceException(OrderStatusCode.ORDER_INVALID, ErrorMessage.PARAM_INVALID);
         }
         //审核需要判断收付款单对应的采购销售单是否是审核状态
         if (AuditStatus.YES.equals(auditStatus)) {
-            List<RPOrderEntryDO> orderEntryDOList = rpOrderEntryDao.list(ImmutableMap.of("billNos", billNos));
-            Set<String> srcBillNoSet = Sets.newHashSet();
-            for (RPOrderEntryDO entryDO : orderEntryDOList) {
-                srcBillNoSet.add(entryDO.getSrcBillNo());
-            }
-            if (CollectionUtils.isEmpty(srcBillNoSet)) {
+            List<RPOrderEntryDO> orderEntryDOList = rpOrderEntryService.list(Wrappers.lambdaQuery(RPOrderEntryDO.class).in(RPOrderEntryDO::getBillNo, billNos));
+            Set<String> srcBillNoSet = orderEntryDOList.stream().map(RPOrderEntryDO::getSrcBillNo).collect(Collectors.toSet());
+            if (CollUtil.isEmpty(srcBillNoSet)) {
                 return;
             }
-
             //收款单对应的校验销售单是否已经审核了
-            List<SEOrderDO> seOrderDOList = seOrderDao.list(ImmutableMap.of("billNos", srcBillNoSet));
-            Set<String> auditBillNoSet = Sets.newHashSet();
-            for (SEOrderDO orderDO : seOrderDOList) {
-                if (AuditStatus.NO.equals(orderDO.getAuditStatus())) {
-                    auditBillNoSet.add(orderDO.getBillNo());
-                }
-            }
+            List<SEOrderDO> seOrderDOList = seOrderService.list(Wrappers.lambdaQuery(SEOrderDO.class).in(SEOrderDO::getBillNo, srcBillNoSet));
+            Set<String> auditBillNoSet = seOrderDOList.stream().filter(orderDO -> AuditStatus.NO.equals(orderDO.getAuditStatus())).map(SEOrderDO::getBillNo).collect(Collectors.toSet());
             if (!auditBillNoSet.isEmpty()) {
                 throw new BizServiceException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.RP_ORDER_AUDIT, "销售单", JSONUtil.toJsonStr(auditBillNoSet)));
             }
             //付款单对应的校验采购单是否已经审核了
-            List<OrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", srcBillNoSet));
-            Set<String> auditBillNoSet1 = Sets.newHashSet();
-            for (OrderDO orderDO : orderDOList) {
-                if (AuditStatus.NO.equals(orderDO.getAuditStatus())) {
-                    auditBillNoSet1.add(orderDO.getBillNo());
-                }
-            }
+            List<OrderDO> orderDOList = orderService.list(Wrappers.lambdaQuery(OrderDO.class).in(OrderDO::getBillNo, srcBillNoSet));
+            Set<String> auditBillNoSet1 = orderDOList.stream().filter(orderDO -> AuditStatus.NO.equals(orderDO.getAuditStatus())).map(OrderDO::getBillNo).collect(Collectors.toSet());
             if (!auditBillNoSet1.isEmpty()) {
                 throw new BizServiceException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.RP_ORDER_AUDIT, "采购单", JSONUtil.toJsonStr(auditBillNoSet1)));
             }
@@ -106,10 +91,10 @@ public class RPOrderValidator {
     }
 
     public void validateRemove(List<String> billNos) {
-        if (CollectionUtils.isEmpty(billNos)) {
+        if (CollUtil.isEmpty(billNos)) {
             return;
         }
-        List<RPOrderDO> orderDOList = rpOrderDao.list(ImmutableMap.of("billNos", billNos));
+        List<RPOrderDO> orderDOList = rpOrderService.list(Wrappers.lambdaQuery(RPOrderDO.class).in(RPOrderDO::getBillNo, billNos));
         for (RPOrderDO orderDO : orderDOList) {
             if (AuditStatus.YES.equals(orderDO.getAuditStatus())) {
                 throw new BizServiceException(OrderStatusCode.ORDER_PROCESS, String.format(ErrorMessage.STATUS_AUDIT_YES, "删除"));

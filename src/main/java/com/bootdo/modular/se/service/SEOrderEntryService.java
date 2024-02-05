@@ -1,19 +1,20 @@
 package com.bootdo.modular.se.service;
 
-
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bootdo.core.enums.BillSource;
 import com.bootdo.core.utils.NumberUtils;
-import com.bootdo.modular.data.dao.ConsumerDao;
-import com.bootdo.modular.data.dao.ProductDao;
 import com.bootdo.modular.data.domain.ConsumerDO;
 import com.bootdo.modular.data.domain.ProductDO;
 import com.bootdo.modular.data.domain.StockDO;
+import com.bootdo.modular.data.service.ConsumerService;
+import com.bootdo.modular.data.service.ProductService;
 import com.bootdo.modular.data.service.StockService;
-import com.bootdo.modular.engage.dao.ProductCostDao;
 import com.bootdo.modular.engage.domain.ProductCostDO;
+import com.bootdo.modular.engage.service.ProductCostService;
+import com.bootdo.modular.po.param.OrderDetailParam;
 import com.bootdo.modular.se.convert.SEOrderConverter;
-import com.bootdo.modular.se.dao.SEOrderDao;
 import com.bootdo.modular.se.dao.SEOrderEntryDao;
 import com.bootdo.modular.se.domain.SEOrderDO;
 import com.bootdo.modular.se.domain.SEOrderEntryDO;
@@ -21,10 +22,6 @@ import com.bootdo.modular.se.param.SEOrderEntryVO;
 import com.bootdo.modular.se.param.SEOrderVO;
 import com.bootdo.modular.system.dao.UserDao;
 import com.bootdo.modular.system.domain.UserDO;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,49 +29,50 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-
+/**
+ * @author L
+ */
 @Service
-public class SEOrderEntryService {
+public class SEOrderEntryService extends ServiceImpl<SEOrderEntryDao, SEOrderEntryDO> {
     @Resource
-    private SEOrderDao seOrderDao;
+    private SEOrderService seOrderService;
     @Resource
-    private SEOrderEntryDao seOrderEntryDao;
-    @Resource
-    private ConsumerDao consumerDao;
+    private ConsumerService consumerService;
     @Resource
     private UserDao userDao;
     @Resource
     private StockService stockService;
     @Resource
-    private ProductDao productDao;
+    private ProductService productService;
     @Resource
-    private ProductCostDao productCostDao;
+    private ProductCostService productCostService;
 
     @Transactional(rollbackFor = Exception.class)
     public SEOrderDO save(SEOrderVO orderVO) {
-        UserDO userDO = userDao.get(NumberUtils.toLong(orderVO.getBillerId()));
-        ConsumerDO consumerDO = consumerDao.get(NumberUtils.toInt(orderVO.getConsumerId()));
-        Map<String, StockDO> stockDOMap = stockService.listStock(Maps.newHashMap());
-        Map<String, ProductCostDO> costDOMap = convertProductCostMap(orderVO);
+        UserDO userDO = userDao.selectById(orderVO.getBillerId());
+        ConsumerDO consumerDO = consumerService.getByNo(orderVO.getConsumerId());
+        Map<String, StockDO> stockMap = stockService.listStock();
+        Map<String, ProductCostDO> costMap = convertProductCostMap(orderVO);
         Map<String, BigDecimal> purchaseMap = convertPurchaseMap(orderVO);//商品采购价信息
         SEOrderDO orderDO = SEOrderConverter.convertOrder(orderVO, userDO, consumerDO);
-        List<SEOrderEntryDO> orderEntryDOList = SEOrderConverter.convertOrderEntry(orderVO, orderDO, stockDOMap, costDOMap, purchaseMap);
+        List<SEOrderEntryDO> orderEntryDOList = SEOrderConverter.convertOrderEntry(orderVO, orderDO, stockMap, costMap, purchaseMap);
         //订单入库
-        seOrderDao.save(orderDO);
-        seOrderEntryDao.delete(ImmutableMap.of("billNo", orderDO.getBillNo()));
-        seOrderEntryDao.saveBatch(orderEntryDOList);
+        seOrderService.saveOrUpdate(orderDO, Wrappers.lambdaUpdate(SEOrderDO.class).eq(SEOrderDO::getBillNo, orderDO.getBillNo()));
+        this.remove(Wrappers.lambdaQuery(SEOrderEntryDO.class).eq(SEOrderEntryDO::getBillNo, orderDO.getBillNo()));
+        this.saveBatch(orderEntryDOList);
         return orderDO;
     }
 
-    public SEOrderVO getOrderVO(Map<String, Object> params) {
-        List<SEOrderDO> orderDOList = seOrderDao.list(params);
-        List<SEOrderEntryDO> orderEntryDOList = seOrderEntryDao.list(params);
-        if (CollectionUtils.isEmpty(orderDOList) || CollectionUtils.isEmpty(orderEntryDOList)) {
+    public SEOrderVO getOrderVO(OrderDetailParam param) {
+        SEOrderDO orderDO = seOrderService.getOne(Wrappers.lambdaQuery(SEOrderDO.class).eq(SEOrderDO::getBillNo, param.getBillNo()));
+        List<SEOrderEntryDO> orderEntryDOList = this.list(Wrappers.lambdaQuery(SEOrderEntryDO.class).eq(SEOrderEntryDO::getBillNo, param.getBillNo()));
+        if (ObjectUtil.isEmpty(orderDO) || ObjectUtil.isEmpty(orderEntryDOList)) {
             return new SEOrderVO();
         }
         SEOrderVO orderVO = new SEOrderVO();
-        SEOrderDO orderDO = orderDOList.get(0);
         orderVO.setBillDate(orderDO.getBillDate());
         orderVO.setBillNo(orderDO.getBillNo());
         orderVO.setBillerId(orderDO.getBillerId());
@@ -115,31 +113,19 @@ public class SEOrderEntryService {
     }
 
     private Map<String, ProductCostDO> convertProductCostMap(SEOrderVO orderVO) {
-        List<String> entryNos = Lists.newArrayList();
-        Map<String, ProductCostDO> result = Maps.newHashMap();
-        List<SEOrderEntryVO> entryVOList = orderVO.getEntryVOList();
-        for (SEOrderEntryVO entryVO : entryVOList) {
-            entryNos.add(entryVO.getEntryId());
-        }
-        List<ProductCostDO> productCostDOList = productCostDao.listLate(ImmutableMap.of("productNos", entryNos));
-        for (ProductCostDO productCostDO : productCostDOList) {
-            result.putIfAbsent(productCostDO.getProductNo(), productCostDO);
-        }
-        return result;
+        List<String> entryNos = orderVO.getEntryVOList().stream().map(SEOrderEntryVO::getEntryId).collect(Collectors.toList());
+
+        return productCostService.listLate(entryNos)
+                .stream()
+                .collect(Collectors.toMap(ProductCostDO::getProductNo, Function.identity(), (o, n) -> o));
     }
 
     private Map<String, BigDecimal> convertPurchaseMap(SEOrderVO orderVO) {
-        List<String> entryNos = Lists.newArrayList();
-        Map<String, BigDecimal> result = Maps.newHashMap();
-        List<SEOrderEntryVO> entryVOList = orderVO.getEntryVOList();
-        for (SEOrderEntryVO entryVO : entryVOList) {
-            entryNos.add(entryVO.getEntryId());
-        }
-        List<ProductDO> productDOList = productDao.list(ImmutableMap.of("nos", entryNos));
-        for (ProductDO productDO : productDOList) {
-            result.put(productDO.getNo().toString(), productDO.getPurchasePrice());
-        }
-        return result;
+        List<String> entryNos = orderVO.getEntryVOList().stream().map(SEOrderEntryVO::getEntryId).collect(Collectors.toList());
+
+        return productService.list(Wrappers.lambdaQuery(ProductDO.class).in(ProductDO::getNo, entryNos))
+                .stream()
+                .collect(Collectors.toMap(p -> p.getNo().toString(), ProductDO::getPurchasePrice, (o, n) -> n));
     }
 
 }

@@ -5,10 +5,10 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bootdo.core.consts.Constant;
 import com.bootdo.core.enums.BillSource;
 import com.bootdo.core.excel.ClassExcelVerifyHandler;
@@ -67,12 +67,13 @@ public class OrderImportService {
         boolean billDateFlag = StrUtil.startWith(filename, billDateYm) && DateUtil.formatDate(orderImportParam.getBillDateB()).startsWith(billDateYm);
         BootServiceExceptionEnum.BILL_DATE_INVALID.assertIsTrue(billDateFlag, orderImportParam.getBillDateB());
         //结算账户 默认取第一个
-        AccountDO accountDo = accountDao.list(MapUtil.empty()).get(0);
+        AccountDO accountDo = accountDao.selectList(Wrappers.query()).get(0);
         //客户用户信息
-        Map<String, ConsumerDO> comsumerDoMap = consumerDao.list(MapUtil.empty()).stream()
+        Map<String, ConsumerDO> comsumerDoMap = consumerDao.selectList(Wrappers.query()).stream()
                 .collect(Collectors.toMap(k -> joinKey(k.getNo(), k.getName()), v -> v, (o, n) -> n));
         //商品信息
-        Map<String, ProductDO> productDoMap = productDao.list(MapUtil.of("status", 1)).stream()
+        Map<String, ProductDO> productDoMap = productDao.selectList(Wrappers.lambdaQuery(ProductDO.class).eq(ProductDO::getStatus, 1))
+                .stream()
                 .collect(Collectors.toMap(k -> joinKey(k.getNo(), k.getName()), v -> v, (o, n) -> n));
         //导入excel文件
         Workbook hssfWorkbook = PoiUtil.getWorkBook(orderImportParam.getFile());

@@ -1,5 +1,8 @@
 package com.bootdo.modular.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
 
 
@@ -8,11 +11,13 @@ import lombok.Data;
  *
  * @author chglee
  * @email 1992lcg@163.com
- * @date 2017-09-27 14:28:36
+ * @since 2017-09-27 14:28:36
  */
+@TableName(value = "sys_dept")
 @Data
-public class DeptDO {
+public class DeptDO extends BaseEntity {
     //
+    @TableId
     private Long deptId;
     //上级部门ID，一级部门为0
     private Long parentId;

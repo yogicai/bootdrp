@@ -1,20 +1,20 @@
 package com.bootdo.modular.data.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * @author yogiCai
- * @date 2018-02-16 16:30:26
+ * @since 2018-02-16 16:30:26
  */
+@TableName(value = "data_account")
 @Data
-public class AccountDO implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class AccountDO extends BaseEntity {
     /**
      *
      */
@@ -52,13 +52,5 @@ public class AccountDO implements Serializable {
      * 状态
      */
     private Integer status = 0;
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-    /**
-     * 更新余额
-     */
-    private Date updateTime;
 
 }

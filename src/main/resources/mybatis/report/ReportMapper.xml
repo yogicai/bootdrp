@@ -17,8 +17,8 @@
             se_order a
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             <if test="instituteId != null and instituteId != ''">and consumer_id = #{instituteId}</if>
-            <if test="start != null and start != ''">and bill_date >= #{start}</if>
-            <if test="end != null and end != ''"> <![CDATA[ and bill_date <= #{end} ]]> </if>
+            <if test="start != null">and bill_date >= #{start}</if>
+            <if test="end != null"> <![CDATA[ and bill_date <= #{end} ]]> </if>
             and audit_status = 'YES'
         </trim>
         GROUP BY
@@ -39,8 +39,8 @@
             po_order a
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             <if test="instituteId != null and instituteId != ''"> and vendor_id = #{instituteId} </if>
-            <if test="start != null and start != ''"> and bill_date >= #{start} </if>
-            <if test="end != null and end != ''"> <![CDATA[ and bill_date <= #{end} ]]> </if>
+            <if test="start != null"> and bill_date >= #{start} </if>
+            <if test="end != null"> <![CDATA[ and bill_date <= #{end} ]]> </if>
             and audit_status = 'YES'
         </trim>
         GROUP BY
@@ -66,8 +66,8 @@
             `se_order_entry`     a
             LEFT JOIN `se_order` b ON a.`bill_no` = b.`bill_no`
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
-            <if test="start != null and start != ''"> and b.bill_date >= #{start} </if>
-            <if test="end != null and end != ''"> <![CDATA[ and b.bill_date <= #{end} ]]> </if>
+            <if test="start != null"> and b.bill_date >= #{start} </if>
+            <if test="end != null"> <![CDATA[ and b.bill_date <= #{end} ]]> </if>
             and b.audit_status = 'YES'
         </trim>
         GROUP BY

@@ -89,7 +89,7 @@ public class NotifyServiceImpl implements NotifyService {
         List<NotifyDTO> rows = notifyDao.listDTO(map);
         for (NotifyDTO notifyDTO : rows) {
             notifyDTO.setBefore(DateUtils.getTimeBefore(notifyDTO.getUpdateDate()));
-            notifyDTO.setSender(userDao.get(notifyDTO.getCreateBy()).getName());
+            notifyDTO.setSender(userDao.selectById(notifyDTO.getCreateBy()).getName());
         }
         PageR page = new PageR(rows, notifyDao.countDTO(map));
         return page;

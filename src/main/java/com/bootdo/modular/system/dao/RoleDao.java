@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @author chglee
  * @email 1992lcg@163.com
- * @date 2017-10-02 20:24:47
+ * @since 2017-10-02 20:24:47
  */
 public interface RoleDao {
 

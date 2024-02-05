@@ -12,30 +12,23 @@
                         <div class="input-group col-md-2">
                             <span class="input-group-addon"><span style="color:red">*</span>客户: </span>
                             <select data-placeholder="选择客户" name="consumerId" id="consumerId" class="form-control">
-                                <option value="">选择客户</option>
                             </select>
                             <span class="input-group-btn"> <button type="button" class="btn btn-white" onclick="addHead()">...</button> </span>
                         </div>
-
                         <div class="input-group col-md-2">
                             <span class="input-group-addon"><span style="color:red">*</span>销售人员: </span>
                             <select data-placeholder="销售人员" name="billerId" id="billerId" class="form-control">
-                                <option value="">销售人员</option>
                             </select>
                         </div>
-
                         <div class="input-group date col-md-2">
                             <span class="input-group-addon"><span style="color:red">*</span>单据日期: </span>
                             <input  id="date_1" type="text" name="billDate" class="form-control" autocomplete="off">
                         </div>
-
                         <input type="hidden" id="billNo" name="billNo" class="form-control">
                         <div class="input-group pull-right">
                             <span class="input-group-addon" name="billNo">单据编号:</span>
                         </div>
-
                         <input type="hidden" id="billSource" name="billSource" class="form-control">
-
                     </div>
                 </div>
 
@@ -54,20 +47,20 @@
                         <div class=" form-inline">
                             <div class="form-group col-md-3">
                                 <label class="util-form-label">优惠率：</label>
-                                <input type="number" placeholder="优惠率" name="discountRateTotal" class="form-control">
+                                <input type="number" placeholder="优惠率" id="discountRateTotal" name="discountRateTotal" class="form-control">
                                 <span class="">%</span>
                             </div>
                             <div class="form-group col-md-3">
                                 <label class="util-form-label">收款优惠：</label>
-                                <input type="number" placeholder="收款优惠" name="discountAmountTotal" class="form-control">
+                                <input type="number" placeholder="收款优惠" id="discountAmountTotal" name="discountAmountTotal" class="form-control">
                             </div>
                             <div class="form-group col-md-3">
                                 <label class="util-form-label">优惠后金额：</label>
-                                <input type="number" placeholder="优惠后金额" name="finalAmountTotal" class="form-control" readonly>
+                                <input type="number" placeholder="优惠后金额" id="finalAmountTotal" name="finalAmountTotal" class="form-control" readonly>
                             </div>
                             <div class="form-group col-md-3">
                                 <label class="util-form-label">本次付款：</label>
-                                <input type="number" placeholder="本次付款" name="paymentAmountTotal" class="form-control">
+                                <input type="number" placeholder="本次付款" id="paymentAmountTotal" name="paymentAmountTotal" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -81,15 +74,15 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label class="util-form-label">本次欠款：</label>
-                                <input type="number" placeholder="本次欠款" name="debtAccountTotal" class="form-control" readonly>
+                                <input type="number" placeholder="本次欠款" id="debtAccountTotal" name="debtAccountTotal" class="form-control" readonly>
                             </div>
                             <div class="form-group col-md-3">
                                 <label class="util-form-label small">客户承担费用：</label>
-                                <input type="number" placeholder="客户承担费用" name="expenseFeeTotal" class="form-control">
+                                <input type="number" placeholder="客户承担费用" id="expenseFeeTotal" name="expenseFeeTotal" class="form-control">
                             </div>
                             <div class="form-group col-md-3">
                                 <label class="util-form-label">销售费用：</label>
-                                <input type="number" placeholder="销售费用" name="purchaseFeeTotal" class="form-control" readonly>
+                                <input type="number" placeholder="销售费用" id="purchaseFeeTotal" name="purchaseFeeTotal" class="form-control" readonly>
                             </div>
                         </div>
                     </div>

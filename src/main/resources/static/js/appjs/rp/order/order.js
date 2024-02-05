@@ -10,7 +10,7 @@ var dataUrl = billType === 'CW_SK_ORDER' ? '/rp/entry?billType=CW_SK_ORDER' : '/
 
 $(function() {
     load();
-    utils.loadEnumTypes(["AUDIT_STATUS"], ["audit"]);
+    utils.loadEnumTypes(["AUDIT_STATUS"], ["auditStatus"]);
     utils.loadCategory(["USER_DATA"], ["checkId"], [{width:"120px"},]);
 });
 
@@ -37,21 +37,21 @@ function load() {
         rowList: [20, 50, 100],
         colNames: colNames,
         colModel: [
-            { name:'billDate', index:'billDate', editable:true, width:80, sorttype:"date", formatter:"date", frozen: true },
-            { name:'billNo', index:'billNo', editable:true, sorttype:"text", width:200, frozen: true },
-            { name:'billType', index:'billType', editable:true, sorttype:"text", width:70, formatter:function (cellValue){return utils.formatEnum(cellValue, 'BILL_TYPE')} },
-            { name:'debtorName', index:'debtorName', editable:true, sorttype:"text", width:70 },
-            { name:'settleDOList', index:'settleDOList', editable:true, width:90, align:"center", formatter:function (cellValue, options, rowobj){ return utils.formatListS(cellValue, 'settleName')} },
-            { name:'settleDOList', index:'settleDOList', editable:true, width:80, align:"right", formatter:function (cellValue, options, rowobj){ return utils.formatListS(cellValue, 'paymentAmount', 'number')} },
-            { name:'entryDOList', index:'entryDOList', editable:true, width:180, align:"center", formatter:function (cellValue, options, rowobj){ return utils.formatListS(cellValue, 'srcBillNo')} },
-            { name:'paymentAmount', index:'paymentAmount', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
-            { name:'checkAmount', index:'checkAmount', editable:true, width:100, align:"right", sorttype:"float", formatter:"number" },
-            { name:'discountAmount', index:'discountAmount', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
-            { name:'checkName', index:'checkName', editable:true, sorttype:"text", width:70 },
-            { name:'auditStatus', index:'auditStatus', editable:true, sorttype:"text", width:70, formatter:function (cellValue){return utils.formatEnumS(cellValue, 'AUDIT_STATUS')} },
-            { name:'remark', index:'remark', editable:true, sorttype:"text", width:150 },
-            { name:'createTime', index:'createTime', editable:true, width:140 },
-            { name:'updateTime', index:'updateTime', editable:true, width:150 }
+            {name: 'billDate', index: 'billDate', editable: true, width: 80, sorttype: "date", formatter: "date", frozen: true},
+            {name: 'billNo', index: 'billNo', editable: true, sorttype: "text", width: 200, frozen: true},
+            {name: 'billType', index: 'billType', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatEnum(cellValue, 'BILL_TYPE')},
+            {name: 'debtorName', index: 'debtorName', editable: true, sorttype: "text", width: 70},
+            {name: 'settleDOList', index: 'settleDOList', editable: true, width: 90, align: "center", formatter: cellValue => utils.formatListS(cellValue, 'settleName')},
+            {name: 'settleDOList', index: 'settleDOList', editable: true, width: 80, align: "right", formatter: cellValue => utils.formatListS(cellValue, 'paymentAmount', 'number')},
+            {name: 'entryDOList', index: 'entryDOList', editable: true, width: 180, align: "center", formatter: cellValue => utils.formatListS(cellValue, 'srcBillNo')},
+            {name: 'paymentAmount', index: 'paymentAmount', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},
+            {name: 'checkAmount', index: 'checkAmount', editable: true, width: 100, align: "right", sorttype: "float", formatter: "number"},
+            {name: 'discountAmount', index: 'discountAmount', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},
+            {name: 'checkName', index: 'checkName', editable: true, sorttype: "text", width: 70},
+            {name: 'auditStatus', index: 'auditStatus', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatEnumS(cellValue, 'AUDIT_STATUS')},
+            {name: 'remark', index: 'remark', editable: true, sorttype: "text", width: 150},
+            {name: 'createTime', index: 'createTime', editable: true, width: 140},
+            {name: 'updateTime', index: 'updateTime', editable: true, width: 150}
         ],
         pager: "#pager_list",
         viewrecords: true,
@@ -183,7 +183,7 @@ function triggerMenu(dataUrl, billNo) {
     var dataIndex;
     //触发菜单单击
     window.parent.$(".J_menuItem").each(function (index) {
-        if ($(this).attr('href') == dataUrl) {
+        if ($(this).attr('href') === dataUrl) {
             window.parent.$(this).trigger('click');
             dataIndex = window.parent.$(this).data('index');
             return false;
@@ -191,7 +191,7 @@ function triggerMenu(dataUrl, billNo) {
     });
     //加载订单数据
     window.parent.$('.J_mainContent .J_iframe').each(function () {
-        if ($(this).data('id') == dataUrl) {
+        if ($(this).data('id') === dataUrl) {
             var win = window.parent.$('iframe[name="iframe' + dataIndex +'"]')[0].contentWindow;
             if (win.initOrder) {
                 win.initOrder(billNo);

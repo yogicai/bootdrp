@@ -1,20 +1,20 @@
 package com.bootdo.modular.po.service;
 
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bootdo.core.utils.NumberUtils;
-import com.bootdo.modular.data.dao.VendorDao;
 import com.bootdo.modular.data.domain.StockDO;
 import com.bootdo.modular.data.domain.VendorDO;
 import com.bootdo.modular.data.service.StockService;
+import com.bootdo.modular.data.service.VendorService;
 import com.bootdo.modular.po.convert.OrderConverter;
-import com.bootdo.modular.po.dao.OrderDao;
 import com.bootdo.modular.po.dao.OrderEntryDao;
 import com.bootdo.modular.po.domain.OrderDO;
 import com.bootdo.modular.po.domain.OrderEntryDO;
+import com.bootdo.modular.po.param.OrderDetailParam;
 import com.bootdo.modular.po.param.OrderEntryVO;
 import com.bootdo.modular.po.param.OrderVO;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,37 +26,34 @@ import java.util.Map;
  * @author L
  */
 @Service
-public class OrderEntryService {
+public class OrderEntryService extends ServiceImpl<OrderEntryDao, OrderEntryDO> {
     @Resource
-    private OrderDao orderDao;
+    private OrderService orderService;
     @Resource
-    private OrderEntryDao orderEntryDao;
-    @Resource
-    private VendorDao vendorDao;
+    private VendorService vendorService;
     @Resource
     private StockService stockService;
 
     @Transactional(rollbackFor = Exception.class)
     public OrderDO save(OrderVO orderVO) {
-        VendorDO vendorDO = vendorDao.get(NumberUtils.toInt(orderVO.getVendorId()));
-        Map<String, StockDO> stockDOMap = stockService.listStock(Maps.newHashMap());
+        VendorDO vendorDO = vendorService.getByNo(orderVO.getVendorId());
+        Map<String, StockDO> stockMap = stockService.listStock();
         OrderDO orderDO = OrderConverter.convertOrder(orderVO, vendorDO);
-        List<OrderEntryDO> orderEntryDOList = OrderConverter.convertOrderEntry(orderVO, orderDO, stockDOMap);
+        List<OrderEntryDO> orderEntryDOList = OrderConverter.convertOrderEntry(orderVO, orderDO, stockMap);
         //订单入库
-        orderDao.save(orderDO);
-        orderEntryDao.delete(ImmutableMap.of("billNo", orderDO.getBillNo()));
-        orderEntryDao.saveBatch(orderEntryDOList);
+        orderService.saveOrUpdate(orderDO, Wrappers.lambdaUpdate(OrderDO.class).eq(OrderDO::getBillNo, orderDO.getBillNo()));
+        this.remove(Wrappers.lambdaQuery(OrderEntryDO.class).eq(OrderEntryDO::getBillNo, orderDO.getBillNo()));
+        this.saveBatch(orderEntryDOList);
         return orderDO;
     }
 
-    public OrderVO getOrderVO(Map<String, Object> params) {
-        List<OrderDO> orderDOList = orderDao.list(params);
-        List<OrderEntryDO> orderEntryDOList = orderEntryDao.list(params);
-        if (CollectionUtils.isEmpty(orderDOList) || CollectionUtils.isEmpty(orderEntryDOList)) {
+    public OrderVO getOrderVO(OrderDetailParam param) {
+        OrderDO orderDO = orderService.getOne(Wrappers.lambdaQuery(OrderDO.class).eq(OrderDO::getBillNo, param.getBillNo()));
+        List<OrderEntryDO> orderEntryDOList = this.list(Wrappers.lambdaQuery(OrderEntryDO.class).eq(OrderEntryDO::getBillNo, param.getBillNo()));
+        if (ObjectUtil.isEmpty(orderDO) || ObjectUtil.isEmpty(orderEntryDOList)) {
             return new OrderVO();
         }
         OrderVO orderVO = new OrderVO();
-        OrderDO orderDO = orderDOList.get(0);
         orderVO.setBillDate(orderDO.getBillDate());
         orderVO.setBillNo(orderDO.getBillNo());
         orderVO.setBillType(orderDO.getBillType());

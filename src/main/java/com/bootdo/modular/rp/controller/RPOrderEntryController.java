@@ -3,6 +3,7 @@ package com.bootdo.modular.rp.controller;
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.Log;
 import com.bootdo.core.pojo.response.R;
+import com.bootdo.modular.po.param.OrderDetailParam;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.domain.RPOrderEntryDO;
 import com.bootdo.modular.rp.param.RPOrderVO;
@@ -22,7 +23,7 @@ import java.util.Map;
  * 应收、应付票据核销目标单据
  *
  * @author yogiCai
- * @date 2018-02-21 21:23:27
+ * @since 2018-02-21 21:23:27
  */
 @Api(tags = "收款、付款订单")
 @Controller
@@ -49,7 +50,7 @@ public class RPOrderEntryController {
     @GetMapping("/edit/{id}")
     @RequiresPermissions("rp:entry:edit")
     public String edit(@PathVariable("id") Integer id, Model model) {
-        RPOrderEntryDO orderEntry = rpOrderEntryService.get(id);
+        RPOrderEntryDO orderEntry = rpOrderEntryService.getById(id);
         model.addAttribute("entry", orderEntry);
         return "rp/entry/edit";
     }
@@ -70,9 +71,9 @@ public class RPOrderEntryController {
     @ResponseBody
     @GetMapping("/get")
     @RequiresPermissions("rp:order:order")
-    public R get(@RequestParam Map<String, Object> params) {
+    public R get(OrderDetailParam param) {
         //查询列表数据
-        RPOrderVO orderVO = rpOrderEntryService.getOrderVO(params);
+        RPOrderVO orderVO = rpOrderEntryService.getOrderVO(param);
         return R.ok().put("order", orderVO);
     }
 }

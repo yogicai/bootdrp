@@ -8,32 +8,32 @@
 			<div class="ibox">
 				<div class="ibox-body">
 					<div class="fixed-table-toolbar">
-						<div class="columns pull-left">
-							<button shiro:hasPermission="common:sysDict:add" type="button"
-								class="btn  btn-primary" onclick="add()">
+						<form id="search">
+							<div class="columns pull-left col-md-2 nopadding">
+								<input type="text" class="form-control" name="searchText" placeholder="请输入标签名或类型或描述" autocomplete="off">
+							</div>
+							<div class="input-group columns pull-left tool-pull-left">
+								<select data-placeholder="选择类别" name="type" class="form-control chosen-select">
+									<option value="">选择类别</option>
+								</select>
+							</div>
+						</form>
+
+						<div class="columns pull-left tool-pull-left">
+							<button class="btn btn-success" onclick="reLoad()">查询</button>
+						</div>
+
+						<div class="columns pull-right">
+							<button shiro:hasPermission="common:sysDict:add" type="button" class="btn btn-primary" onclick="add()" href="/se/entry">
 								<i class="fa fa-plus" aria-hidden="true"></i>添加
 							</button>
-							<button shiro:hasPermission="common:sysDict:batchRemove"
-								type="button" class="btn  btn-danger" onclick="batchRemove()">
+							<button shiro:hasPermission="common:sysDict:batchRemove" type="button" class="btn btn-danger" onclick="batchRemove()">
 								<i class="fa fa-trash" aria-hidden="true"></i>删除
 							</button>
 						</div>
-						<div class="columns pull-right">
-							<button class="btn btn-success" onclick="reLoad()">查询</button>
-						</div>
-						<div class="columns pull-right col-md-2">
-							<input id="searchName" type="text" class="form-control"
-								placeholder="">
-						</div>
-						<div class="columns pull-right col-md-2 nopadding">
-							<select data-placeholder="选择类别" class="form-control chosen-select"
-								tabindex="2" style="width: 100%">
-								<option value="">选择类别</option>
-							</select>
-						</div>
 					</div>
-					<table id="exampleTable" data-mobile-responsive="true">
-					</table>
+
+					<table id="exampleTable" data-mobile-responsive="true"></table>
 				</div>
 			</div>
 		</div>
@@ -64,7 +64,6 @@
 
 	</div>
 	<div th:include="include :: footer"></div>
-	<script type="text/javascript"
-		src="/js/appjs/system/dict/dict.js"></script>
+	<script type="text/javascript" src="/js/appjs/system/dict/dict.js"></script>
 </body>
 </html>

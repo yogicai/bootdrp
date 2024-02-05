@@ -1,22 +1,23 @@
 package com.bootdo.modular.rp.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
+import lombok.experimental.FieldNameConstants;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 
 /**
  * 应收、应付票据结算表
  *
  * @author yogiCai
- * @date 2018-02-21 21:23:27
+ * @since 2018-02-21 21:23:27
  */
+@FieldNameConstants
+@TableName(value = "rp_order_settle")
 @Data
-public class RPOrderSettleDO implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class RPOrderSettleDO extends BaseEntity {
     /**
      *
      */
@@ -41,13 +42,5 @@ public class RPOrderSettleDO implements Serializable {
      * 备注
      */
     private String remark;
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-    /**
-     * 修改时间
-     */
-    private Date updateTime;
 
 }

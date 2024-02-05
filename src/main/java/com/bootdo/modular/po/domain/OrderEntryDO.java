@@ -1,20 +1,21 @@
 package com.bootdo.modular.po.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 
 /**
  * 购货订单分录
  *
  * @author yogiCai
- * @date 2018-01-21 12:38:44
+ * @since 2018-01-21 12:38:44
  */
+@TableName(value = "po_order_entry")
 @Data
-public class OrderEntryDO implements Serializable {
+public class OrderEntryDO extends BaseEntity {
     /**
      *
      */
@@ -79,13 +80,5 @@ public class OrderEntryDO implements Serializable {
      * 购货订单号
      */
     private String requestBillNo;
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-    /**
-     * 修改时间
-     */
-    private Date updateTime;
 
 }

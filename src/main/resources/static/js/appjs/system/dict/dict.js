@@ -1,27 +1,12 @@
+let prefix = "/common/sysDict"
+let $dataForm;
 
-var prefix = "/common/sysDict"
 $(function() {
-	
-	//	var config = {
-	//		'.chosen-select' : {},
-	//		'.chosen-select-deselect' : {
-	//			allow_single_deselect : true
-	//		},
-	//		'.chosen-select-no-single' : {
-	//			disable_search_threshold : 10
-	//		},
-	//		'.chosen-select-no-results' : {
-	//			no_results_text : '没有数据'
-	//		},
-	//		'.chosen-select-width' : {
-	//			width : "95%"
-	//		}
-	//	}
-	//	for (var selector in config) {
-	//		$(selector).chosen(config[selector]);
-	//	}
+	$dataForm = $('#search');
+	selectLoad();
 	load();
 });
+
 function selectLoad() {
 	var html = "";
 	$.ajax({
@@ -32,16 +17,12 @@ function selectLoad() {
 				html += '<option value="' + data[i].type + '">' + data[i].description + '</option>'
 			}
 			$(".chosen-select").append(html);
-			$(".chosen-select").chosen({
-				maxHeight : 200
-			});
+			$(".chosen-select").chosen({maxHeight: 200});
 			//点击事件
 			$('.chosen-select').on('change', function(e, params) {
 				console.log(params.selected);
 				var opt = {
-					query : {
-						type : params.selected,
-					}
+					query: $dataForm.serializeObject()
 				}
 				$('#exampleTable').bootstrapTable('refresh', opt);
 			});
@@ -49,7 +30,6 @@ function selectLoad() {
 	});
 }
 function load() {
-	selectLoad();
 	$('#exampleTable')
 		.bootstrapTable(
 			{
@@ -173,12 +153,7 @@ function load() {
 			});
 }
 function reLoad() {
-	var opt = {
-		query : {
-			type : $('.chosen-select').val(),
-		}
-	}
-	$('#exampleTable').bootstrapTable('refresh', opt);
+	$('#exampleTable').bootstrapTable('refresh', {query: $dataForm.serializeObject()});
 }
 function add() {
 	layer.open({
@@ -229,12 +204,12 @@ function addD(type,description) {
 		maxmin : true,
 		shadeClose : false, // 点击遮罩关闭层
 		area : [ '800px', '520px' ],
-		content : prefix + '/add/'+type+'/'+description // iframe的url
+		content: prefix + '/addNew?' + $.param({'type': type, 'description': description}) // iframe的url
 	});
 }
 function batchRemove() {
-	var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
-	if (rows.length == 0) {
+	let rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
+	if (rows.length === 0) {
 		layer.msg("请选择要删除的数据");
 		return;
 	}
@@ -242,7 +217,7 @@ function batchRemove() {
 		btn : [ '确定', '取消' ]
 	// 按钮
 	}, function() {
-		var ids = new Array();
+		let ids = new Array();
 		// 遍历所有选择的行数据，取每条数据对应的ID
 		$.each(rows, function(i, row) {
 			ids[i] = row['id'];
@@ -254,7 +229,7 @@ function batchRemove() {
 			},
 			url : prefix + '/batchRemove',
 			success : function(r) {
-				if (r.code == 0) {
+				if (r.code === 0) {
 					layer.msg(r.msg);
 					reLoad();
 				} else {

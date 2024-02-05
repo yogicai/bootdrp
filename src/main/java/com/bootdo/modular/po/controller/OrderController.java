@@ -2,11 +2,13 @@ package com.bootdo.modular.po.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.Log;
-import com.bootdo.core.pojo.request.QueryJQ;
+import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.modular.po.domain.OrderDO;
+import com.bootdo.modular.po.param.OrderAuditParam;
+import com.bootdo.modular.po.param.OrderQryParam;
 import com.bootdo.modular.po.service.OrderService;
 import com.bootdo.modular.po.validator.OrderValidator;
 import com.bootdo.modular.system.controller.BaseController;
@@ -24,7 +26,7 @@ import java.util.Map;
  * 购货订单
  *
  * @author yogiCai
- * @date 2017-11-28 21:30:03
+ * @since 2017-11-28 21:30:03
  */
 @Api(tags = "采购单")
 @Controller
@@ -45,20 +47,16 @@ public class OrderController extends BaseController {
     @ResponseBody
     @PostMapping(value = "/list")
     @RequiresPermissions("se:order:order")
-    public PageJQ listP(@RequestBody Map<String, Object> params) {
-        return list(params);
+    public PageJQ listP(@RequestBody OrderQryParam param) {
+        return list(param);
     }
 
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("po:order:order")
-    public PageJQ list(@RequestParam Map<String, Object> params) {
+    public PageJQ list(OrderQryParam param) {
         //查询列表数据
-        QueryJQ query = new QueryJQ(params);
-        List<OrderDO> orderList = orderService.list(query);
-        int total = orderService.count(query);
-        int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
-        return new PageJQ(orderList, totalPage, query.getPage(), total);
+        return orderService.page(param);
     }
 
     /**
@@ -67,10 +65,9 @@ public class OrderController extends BaseController {
     @ResponseBody
     @GetMapping("/export")
     @RequiresPermissions("po:order:order")
-    public void export(@RequestParam Map<String, Object> params) {
+    public void export(OrderQryParam param) {
         //查询列表数据
-        QueryJQ query = new QueryJQ(params, false);
-        List<OrderDO> orderList = orderService.list(query);
+        List<OrderDO> orderList = orderService.pageList(PageFactory.defalultAllPage(), param).getRecords();
         PoiUtil.exportExcelWithStream("POOrderResult.xls", OrderDO.class, orderList);
     }
 
@@ -81,9 +78,9 @@ public class OrderController extends BaseController {
     @PostMapping("/audit")
     @ResponseBody
     @RequiresPermissions("po:order:audit")
-    public R audit(@RequestBody Map<String, Object> params) {
-        orderValidator.validateAudit(params);
-        orderService.audit(params);
+    public R audit(@RequestBody OrderAuditParam param) {
+        orderValidator.validateAudit(param);
+        orderService.audit(param);
         return R.ok();
     }
 

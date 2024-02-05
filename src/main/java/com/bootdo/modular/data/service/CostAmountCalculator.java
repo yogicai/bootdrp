@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bootdo.core.consts.Constant;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.BillType;
@@ -14,8 +15,8 @@ import com.bootdo.core.utils.NumberUtils;
 import com.bootdo.modular.data.dao.ProductDao;
 import com.bootdo.modular.data.domain.ProductDO;
 import com.bootdo.modular.engage.dao.ProductBalanceDao;
-import com.bootdo.modular.engage.dao.ProductCostDao;
 import com.bootdo.modular.engage.domain.ProductCostDO;
+import com.bootdo.modular.engage.service.ProductCostService;
 import com.bootdo.modular.po.dao.OrderEntryDao;
 import com.bootdo.modular.po.domain.OrderDO;
 import com.bootdo.modular.po.domain.OrderEntryDO;
@@ -45,7 +46,7 @@ import java.util.stream.Collectors;
 @Service
 public class CostAmountCalculator {
     @Resource
-    private ProductCostDao productCostDao;
+    private ProductCostService productCostService;
     @Resource
     private OrderEntryDao orderEntryDao;
     @Resource
@@ -57,9 +58,9 @@ public class CostAmountCalculator {
     @Resource
     private ProductDao productDao;
 
-
     private final EnumSet<BillType> incBillTypeSet = EnumSet.of(BillType.CG_ORDER, BillType.WH_RK_ORDER);
     private final EnumSet<BillType> desBillTypeSet = EnumSet.of(BillType.TH_ORDER, BillType.WH_CK_ORDER, BillType.XS_ORDER);
+
 
     /**
      * 采购单审核计算成本信息，退货单
@@ -68,7 +69,7 @@ public class CostAmountCalculator {
 
         CostType costType = BillType.CG_ORDER.equals(orderDO.getBillType()) ? CostType.PO_CG : CostType.PO_TH;
         //商品
-        List<OrderEntryDO> entryDOList = orderEntryDao.list(ImmutableMap.of("billNo", orderDO.getBillNo()));
+        List<OrderEntryDO> entryDOList = orderEntryDao.selectList(Wrappers.lambdaQuery(OrderEntryDO.class).eq(OrderEntryDO::getBillNo, orderDO.getBillNo()));
         List<String> entryNoList = entryDOList.stream().map(OrderEntryDO::getEntryId).collect(Collectors.toList());
         //商品采购价信息
         Map<String, BigDecimal> purchaseMap = convertPurchase(entryNoList);
@@ -193,7 +194,7 @@ public class CostAmountCalculator {
             detail.getCostMap().put(entry.getEntryId(), productCostDO);
             productCostDOList.add(productCostDO);
         }
-        productCostDao.saveBatch(productCostDOList);
+        productCostService.saveBatch(productCostDOList);
         return detail;
     }
 
@@ -202,7 +203,7 @@ public class CostAmountCalculator {
      */
     public CostAmountIResult calcSEBillCost(SEOrderDO orderDO, AuditStatus auditStatus) {
         //销售单
-        List<SEOrderEntryDO> entryDOList = seOrderEntryDao.list(ImmutableMap.of("billNo", orderDO.getBillNo()));
+        List<SEOrderEntryDO> entryDOList = seOrderEntryDao.selectList(Wrappers.lambdaQuery(SEOrderEntryDO.class).eq(SEOrderEntryDO::getBillNo, orderDO.getBillNo()));
         //销售单商品
         List<String> entryNoList = entryDOList.stream().map(SEOrderEntryDO::getEntryId).collect(Collectors.toList());
         //查询商品成本单价(最近那个记录)
@@ -241,7 +242,7 @@ public class CostAmountCalculator {
             detail.getCostMap().put(entry.getEntryId(), productCostDO);
             productCostDOList.add(productCostDO);
         }
-        productCostDao.saveBatch(productCostDOList);
+        productCostService.saveBatch(productCostDOList);
         return detail;
 
     }
@@ -252,7 +253,7 @@ public class CostAmountCalculator {
     public CostAmountIResult calcWHBillCost(WHOrderDO orderDO, AuditStatus auditStatus) {
         CostType costType = BillType.WH_RK_ORDER.equals(orderDO.getBillType()) ? CostType.WH_RK : CostType.WH_CK;
         //商品
-        List<WHOrderEntryDO> entryDOList = whOrderEntryDao.list(ImmutableMap.of("billNo", orderDO.getBillNo()));
+        List<WHOrderEntryDO> entryDOList = whOrderEntryDao.selectList(Wrappers.lambdaQuery(WHOrderEntryDO.class).eq(WHOrderEntryDO::getBillNo, orderDO.getBillNo()));
         List<String> entryNoList = entryDOList.stream().map(WHOrderEntryDO::getEntryId).collect(Collectors.toList());
         //商品采购价信息
         Map<String, BigDecimal> purchaseMap = convertPurchase(entryNoList);
@@ -296,7 +297,7 @@ public class CostAmountCalculator {
             detail.getCostMap().put(entry.getEntryId(), productCostDO);
             productCostDOList.add(productCostDO);
         }
-        productCostDao.saveBatch(productCostDOList);
+        productCostService.saveBatch(productCostDOList);
         return detail;
     }
 
@@ -344,7 +345,7 @@ public class CostAmountCalculator {
             }
         });
 
-        productCostDao.saveBatch(productCostDOList);
+        productCostService.saveBatch(productCostDOList);
         return detail;
     }
 
@@ -393,7 +394,7 @@ public class CostAmountCalculator {
      * 查询商品采购价
      */
     private Map<String, BigDecimal> convertPurchase(List<String> entryNoList) {
-        return productDao.list(ImmutableMap.of("nos", entryNoList))
+        return productDao.selectList(Wrappers.lambdaQuery(ProductDO.class).in(ProductDO::getNo, entryNoList))
                 .stream()
                 .collect(Collectors.toMap(k -> k.getNo().toString(), ProductDO::getPurchasePrice, (o, n) -> o));
     }
@@ -402,7 +403,7 @@ public class CostAmountCalculator {
      * 查询商品成本单价(最近那个记录)
      */
     private Map<String, ProductCostDO> convertProductCost(List<String> entryNoList) {
-        return productCostDao.listLate(ImmutableMap.of("productNos", entryNoList, "latest", true))
+        return productCostService.listLate(entryNoList)
                 .stream()
                 .collect(Collectors.toMap(ProductCostDO::getProductNo, v -> v, (o, n) -> o));
     }

@@ -1,48 +1,47 @@
 package com.bootdo.modular.data.service;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bootdo.core.factory.PageFactory;
+import com.bootdo.core.pojo.response.PageJQ;
+import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.modular.data.dao.VendorDao;
 import com.bootdo.modular.data.domain.VendorDO;
+import com.bootdo.modular.data.param.VendorQryParam;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
 
 
 /**
  * @author L
  */
 @Service
-public class VendorService {
-    @Resource
-    private VendorDao vendorDao;
+public class VendorService extends ServiceImpl<VendorDao, VendorDO> {
 
-    public VendorDO get(Integer id) {
-        return vendorDao.get(id);
+    public PageR page(VendorQryParam param) {
+        return new PageR(this.pageList(PageFactory.defaultPage(), param));
     }
 
-    public List<VendorDO> list(Map<String, Object> map) {
-        return vendorDao.list(map);
+    public PageJQ pageJQ(VendorQryParam param) {
+        return new PageJQ(this.pageList(PageFactory.defaultPage(), param));
     }
 
-    public int count(Map<String, Object> map) {
-        return vendorDao.count(map);
+    public Page<VendorDO> pageList(Page<VendorDO> page, VendorQryParam param) {
+        LambdaQueryWrapper<VendorDO> queryWrapper = Wrappers.lambdaQuery(VendorDO.class)
+                .in(ObjectUtil.isNotEmpty(param.getType()), VendorDO::getType, StrUtil.split(param.getType(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getStatus()), VendorDO::getStatus, StrUtil.split(param.getStatus(), StrUtil.COMMA))
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), VendorDO::getUpdateTime, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), VendorDO::getUpdateTime, param.getEnd())
+                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(VendorDO::getNo, param.getSearchText()).or().like(VendorDO::getName, param.getSearchText()));
+
+        return this.page(page, queryWrapper);
     }
 
-    public int save(VendorDO vendor) {
-        return vendorDao.save(vendor);
-    }
-
-    public int update(VendorDO vendor) {
-        return vendorDao.update(vendor);
-    }
-
-    public int remove(Integer id) {
-        return vendorDao.remove(id);
-    }
-
-    public int batchRemove(Integer[] ids) {
-        return vendorDao.batchRemove(ids);
+    public VendorDO getByNo(String no) {
+        return this.getOne(Wrappers.lambdaQuery(VendorDO.class).eq(VendorDO::getNo, no));
     }
 
 }

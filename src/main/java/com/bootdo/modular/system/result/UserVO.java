@@ -1,13 +1,13 @@
 package com.bootdo.modular.system.result;
 
 import com.bootdo.modular.system.domain.UserDO;
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * @author gaoyuzhe
- * @date 2017/12/15.
+ * @since 2017/12/15.
  */
-@Getter
+@Data
 public class UserVO {
     /**
      * 更新的用户对象
@@ -22,15 +22,4 @@ public class UserVO {
      */
     private String pwdNew;
 
-    public void setUserDO(UserDO userDO) {
-        this.userDO = userDO;
-    }
-
-    public void setPwdOld(String pwdOld) {
-        this.pwdOld = pwdOld;
-    }
-
-    public void setPwdNew(String pwdNew) {
-        this.pwdNew = pwdNew;
-    }
 }

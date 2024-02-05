@@ -1,26 +1,27 @@
 let prefix = "/po/order";
-let dataForm;
 let tableGrid;
+
+let $dataForm;
+let $tableGrid;
 $(function() {
+    $dataForm = $('#search');
+    $tableGrid = $("#table_list")
+
+    utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
+    utils.loadEnumTypes(["ORDER_CG_STATUS", "AUDIT_STATUS"], ["status", "auditStatus"], [{width: "105px", noneSelectedText: '收款状态', multiple: true}, {width: "105px", noneSelectedText: '审核状态', multiple: true}]);
+    utils.loadChosenStatic(["billType"], [{width: "105px", noneSelectedText: '订单类型', multiple: true}]);
+
     load();
-    utils.loadEnumTypes(["ORDER_CG_STATUS","AUDIT_STATUS"], ["status","audit"], [{width:"105px"},{width:"105px"}]);
-    utils.loadChosenStatic(["billType"], [{width:"105px"}]);
 });
 
 function load() {
 
-    recordDate = utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-    recordDateS= recordDate.data("datepicker").pickers[0];
-    recordDateE= recordDate.data("datepicker").pickers[1];
-
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
-    dataForm  = $('#search');
-
-    tableGrid = $("#table_list").jqGrid({
+    tableGrid = $tableGrid.jqGrid({
         url: prefix + "/list",
         datatype: "json",
-        postData: $.extend({}, dataForm.serializeObject(), {'start' : recordDateS.getDate().format('yyyy-MM-dd'), 'end' : recordDateE.getDate().format('yyyy-MM-dd')}),
+        postData: $dataForm.serializeObject(),
         height: window.innerHeight - 180,
         autowidth: true,
         shrinkToFit: false,
@@ -233,7 +234,7 @@ function triggerMenu(dataUrl, billNo) {
 }
 
 function exportExcel() {
-    let queryParam = dataForm.serialize();
+    let queryParam = $dataForm.serialize();
     let url = prefix + "/export?" + queryParam
-    utils.download(url ,'POOrderResult.xls');
+    utils.downloadAjax(url, 'POOrderResult.xls');
 }

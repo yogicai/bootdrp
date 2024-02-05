@@ -2,11 +2,13 @@ package com.bootdo.modular.rp.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.Log;
-import com.bootdo.core.pojo.request.QueryJQ;
+import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.core.utils.PoiUtil;
+import com.bootdo.modular.po.param.OrderAuditParam;
 import com.bootdo.modular.rp.domain.RPOrderDO;
+import com.bootdo.modular.rp.param.RPOrderQryParam;
 import com.bootdo.modular.rp.service.RPOrderService;
 import com.bootdo.modular.rp.validator.RPOrderValidator;
 import com.bootdo.modular.system.controller.BaseController;
@@ -14,6 +16,7 @@ import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -24,7 +27,7 @@ import java.util.Map;
  * 收付款单
  *
  * @author yogiCai
- * @date 2018-02-21 21:23:27
+ * @since 2018-02-21 21:23:27
  */
 @Api(tags = "收款、付款单")
 @Controller
@@ -45,13 +48,9 @@ public class RPOrderController extends BaseController {
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("rp:order:order")
-    public PageJQ list(@RequestParam Map<String, Object> params) {
+    public PageJQ list(RPOrderQryParam param) {
         //查询列表数据
-        QueryJQ query = new QueryJQ(params);
-        List<RPOrderDO> orderList = rpOrderService.list(query);
-        int total = rpOrderService.count(query);
-        int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
-        return new PageJQ(orderList, totalPage, query.getPage(), total);
+        return rpOrderService.selectJoinPage(param);
     }
 
     /**
@@ -60,10 +59,9 @@ public class RPOrderController extends BaseController {
     @ResponseBody
     @GetMapping("/export")
     @RequiresPermissions("po:order:order")
-    public void export(@RequestParam Map<String, Object> params) {
+    public void export(RPOrderQryParam param) {
         //查询列表数据
-        QueryJQ query = new QueryJQ(params, false);
-        List<RPOrderDO> orderList = rpOrderService.list(query);
+        List<RPOrderDO> orderList = rpOrderService.pageList(PageFactory.defalultAllPage(), param).getRecords();
         PoiUtil.exportExcelWithStream("RPOrderResult.xls", RPOrderDO.class, orderList);
     }
 
@@ -74,9 +72,9 @@ public class RPOrderController extends BaseController {
     @PostMapping("/audit")
     @ResponseBody
     @RequiresPermissions("rp:order:audit")
-    public R audit(@RequestBody Map<String, Object> params) {
-        rpOrderValidator.validateAudit(params);
-        rpOrderService.audit(params);
+    public R audit(@RequestBody @Validated OrderAuditParam param) {
+        rpOrderValidator.validateAudit(param);
+        rpOrderService.audit(param);
         return R.ok();
     }
 

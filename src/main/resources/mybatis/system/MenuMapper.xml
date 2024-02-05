@@ -111,26 +111,36 @@
 	</delete>
 
 	<select id="listMenuByUserId" resultType="com.bootdo.modular.system.domain.MenuDO">
-		select distinct
-		m.menu_id , parent_id, name, url,
-		perms,`type`,icon,order_num,gmt_create, gmt_modified
-		from sys_menu m
-		left
-		join sys_role_menu rm on m.menu_id = rm.menu_id left join
-		sys_user_role ur
-		on rm.role_id =ur.role_id where ur.user_id = #{id}
-		and
-		m.type in(0,1)
-		order by
-		m.order_num
+		SELECT DISTINCT
+			sys_menu.menu_id,
+			parent_id,
+			name,
+			url,
+			perms,
+			`type`,
+			icon,
+			order_num,
+			gmt_create,
+			gmt_modified
+		FROM
+			sys_menu
+			LEFT JOIN sys_role_menu ON sys_menu.menu_id = sys_role_menu.menu_id
+			LEFT JOIN sys_user_role ON sys_role_menu.role_id = sys_user_role.role_id
+		WHERE
+			  sys_user_role.user_id = #{id}
+		  AND sys_menu.type IN (0, 1)
+		ORDER BY
+			sys_menu.order_num
 	</select>
 
 	<select id="listUserPerms" resultType="string">
-		select distinct m.perms
-		from sys_menu m left join
-		sys_role_menu rm on m.menu_id = rm.menu_id
-		left join sys_user_role ur
-		on rm.role_id = ur.role_id where ur.user_id
-		= #{id}
+		SELECT DISTINCT
+			sys_menu.perms
+		FROM
+			sys_menu
+			LEFT JOIN sys_role_menu ON sys_menu.menu_id = sys_role_menu.menu_id
+			LEFT JOIN sys_user_role ON sys_role_menu.role_id = sys_user_role.role_id
+		WHERE
+			sys_user_role.user_id = #{id}
 	</select>
 </mapper>

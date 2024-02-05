@@ -1,29 +1,35 @@
 package com.bootdo.modular.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bootdo.config.properties.BootdoProperties;
 import com.bootdo.core.enums.FileType;
+import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.node.Tree;
+import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.utils.BuildTree;
 import com.bootdo.core.utils.ImageUtils;
 import com.bootdo.core.utils.MD5Utils;
-import com.bootdo.modular.system.dao.DeptDao;
+import com.bootdo.core.utils.ShiroUtils;
 import com.bootdo.modular.system.dao.UserDao;
 import com.bootdo.modular.system.dao.UserRoleDao;
 import com.bootdo.modular.system.domain.DeptDO;
 import com.bootdo.modular.system.domain.FileDO;
 import com.bootdo.modular.system.domain.UserDO;
 import com.bootdo.modular.system.domain.UserRoleDO;
+import com.bootdo.modular.system.param.SysUserParam;
+import com.bootdo.modular.system.result.LoginUserResult;
 import com.bootdo.modular.system.result.UserVO;
 import com.bootdo.modular.system.service.FileService;
-import com.bootdo.modular.system.service.UserService;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +39,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author L
@@ -40,41 +47,44 @@ import java.util.*;
  */
 @Transactional
 @Service
-public class UserServiceImpl implements UserService {
+public class UserService extends ServiceImpl<UserDao, UserDO> {
     @Resource
-    UserDao userMapper;
+    private UserRoleDao userRoleMapper;
     @Resource
-    UserRoleDao userRoleMapper;
-    @Resource
-    DeptDao deptMapper;
+    private DeptService deptService;
     @Resource
     private FileService sysFileService;
     @Resource
     private BootdoProperties bootdoProperties;
 
-    @Override
-    public UserDO get(Long id) {
+
+    public PageR page(SysUserParam param) {
+        return new PageR(this.pageList(PageFactory.defaultPage(), param));
+    }
+
+    public Page<UserDO> pageList(Page<UserDO> page, SysUserParam param) {
+        LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
+                .in(ObjectUtil.isNotEmpty(param.getName()), UserDO::getName, StrUtil.split(param.getName(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getUserName()), UserDO::getUsername, StrUtil.split(param.getUserName(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getDeptId()), UserDO::getDeptId, StrUtil.split(param.getDeptId(), StrUtil.COMMA))
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), UserDO::getUpdateTime, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), UserDO::getUpdateTime, param.getEnd())
+                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(UserDO::getName, param.getSearchText()).or().like(UserDO::getUsername, param.getSearchText()));
+
+        return this.page(page, queryWrapper);
+    }
+
+    public UserDO getUser(Long id) {
+        UserDO user = this.getById(id);
         List<Long> roleIds = userRoleMapper.listRoleId(id);
-        UserDO user = userMapper.get(id);
-        user.setDeptName(deptMapper.get(user.getDeptId()).getName());
+        user.setDeptName(deptService.getById(user.getDeptId()).getName());
         user.setRoleIds(roleIds);
         return user;
     }
 
-    @Override
-    public List<UserDO> list(Map<String, Object> map) {
-        return userMapper.list(map);
-    }
-
-    @Override
-    public int count(Map<String, Object> map) {
-        return userMapper.count(map);
-    }
-
     @Transactional
-    @Override
-    public int save(UserDO user) {
-        int count = userMapper.save(user);
+    public boolean save(UserDO user) {
+        this.saveOrUpdate(user);
         Long userId = user.getUserId();
         List<Long> roles = user.getRoleIds();
         userRoleMapper.removeByUserId(userId);
@@ -88,12 +98,11 @@ public class UserServiceImpl implements UserService {
         if (!list.isEmpty()) {
             userRoleMapper.batchSave(list);
         }
-        return count;
+        return true;
     }
 
-    @Override
-    public int update(UserDO user) {
-        int r = userMapper.update(user);
+    public void update(UserDO user) {
+        this.updateById(user);
         Long userId = user.getUserId();
         List<Long> roles = user.getRoleIds();
         userRoleMapper.removeByUserId(userId);
@@ -107,31 +116,23 @@ public class UserServiceImpl implements UserService {
         if (!list.isEmpty()) {
             userRoleMapper.batchSave(list);
         }
-        return r;
     }
 
-    @Override
-    public int remove(Long userId) {
+    @Transactional(rollbackFor = Exception.class)
+    public void removeUser(Long userId) {
         userRoleMapper.removeByUserId(userId);
-        return userMapper.remove(userId);
+        this.removeById(userId);
     }
 
-    @Override
-    public boolean exit(Map<String, Object> params) {
-        return !userMapper.list(params).isEmpty();
+    public boolean exit(String userName) {
+        return this.count(Wrappers.lambdaQuery(UserDO.class).eq(UserDO::getUsername, userName)) > 0;
     }
 
-    @Override
-    public Set<String> listRoles(Long userId) {
-        return null;
-    }
-
-    @Override
-    public int resetPwd(UserVO userVO, UserDO userDO) throws Exception {
+    public void resetPwd(UserVO userVO, UserDO userDO) throws Exception {
         if (Objects.equals(userVO.getUserDO().getUserId(), userDO.getUserId())) {
             if (Objects.equals(MD5Utils.encrypt(userDO.getUsername(), userVO.getPwdOld()), userDO.getPassword())) {
                 userDO.setPassword(MD5Utils.encrypt(userDO.getUsername(), userVO.getPwdNew()));
-                return userMapper.update(userDO);
+                this.updateById(userDO);
             } else {
                 throw new Exception("输入的旧密码有误！");
             }
@@ -140,67 +141,52 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public int adminResetPwd(UserVO userVO) throws Exception {
-        UserDO userDO = get(userVO.getUserDO().getUserId());
+    public void adminResetPwd(UserVO userVO) throws Exception {
+        UserDO userDO = getUser(userVO.getUserDO().getUserId());
         if ("admin".equals(userDO.getUsername())) {
             throw new Exception("超级管理员的账号不允许直接重置！");
         }
         userDO.setPassword(MD5Utils.encrypt(userDO.getUsername(), userVO.getPwdNew()));
-        return userMapper.update(userDO);
+        this.updateById(userDO);
     }
 
     @Transactional
-    @Override
-    public int batchremove(Long[] userIds) {
-        int count = userMapper.batchRemove(userIds);
+    public void batchRemove(List<Integer> userIds) {
+        this.removeByIds(userIds);
         userRoleMapper.batchRemoveByUserId(userIds);
-        return count;
     }
 
-    @Override
     public Tree<DeptDO> getTree() {
-        List<Tree<DeptDO>> trees = new ArrayList<Tree<DeptDO>>();
-        List<DeptDO> depts = deptMapper.list(new HashMap<String, Object>(16));
-        Long[] pDepts = deptMapper.listParentDept();
-        Long[] uDepts = userMapper.listAllDept();
-        Long[] allDepts = (Long[]) ArrayUtils.addAll(pDepts, uDepts);
-        for (DeptDO dept : depts) {
-            if (!ArrayUtils.contains(allDepts, dept.getDeptId())) {
+        List<Tree<DeptDO>> trees = new ArrayList<>();
+        List<DeptDO> deptAll = deptService.list();
+        Set<Long> pDept = deptAll.stream().map(DeptDO::getParentId).collect(Collectors.toSet());
+        Set<Long> uDept = this.list().stream().map(UserDO::getDeptId).collect(Collectors.toSet());
+
+        Collection<Long> allDeptIdSet = CollUtil.union(pDept, uDept);
+        for (DeptDO dept : deptAll) {
+            if (!allDeptIdSet.contains(dept.getDeptId())) {
                 continue;
             }
-            Tree<DeptDO> tree = new Tree<DeptDO>();
+            Tree<DeptDO> tree = new Tree<>();
             tree.setId(dept.getDeptId().toString());
             tree.setParentId(dept.getParentId().toString());
             tree.setText(dept.getName());
-            Map<String, Object> state = new HashMap<>(16);
-            state.put("opened", true);
-            state.put("mType", "dept");
-            tree.setState(state);
+            tree.setState(MapUtil.<String, Object>builder().put("opened", true).put("mType", "dept").build());
             trees.add(tree);
         }
-        List<UserDO> users = userMapper.list(new HashMap<String, Object>(16));
+        List<UserDO> users = this.list();
         for (UserDO user : users) {
-            Tree<DeptDO> tree = new Tree<DeptDO>();
+            Tree<DeptDO> tree = new Tree<>();
             tree.setId(user.getUserId().toString());
             tree.setParentId(user.getDeptId().toString());
             tree.setText(user.getName());
-            Map<String, Object> state = new HashMap<>(16);
-            state.put("opened", true);
-            state.put("mType", "user");
-            tree.setState(state);
+            tree.setState(MapUtil.<String, Object>builder().put("opened", true).put("mType", "user").build());
             trees.add(tree);
         }
         // 默认顶级菜单为０，根据数据库实际情况调整
         return BuildTree.build(trees);
     }
 
-    @Override
-    public int updatePersonal(UserDO userDO) {
-        return userMapper.update(userDO);
-    }
-
-    @Override
     public Map<String, Object> updatePersonalImg(MultipartFile file, String avatarData, Long userId) throws Exception {
         String fileName = file.getOriginalFilename();
         fileName = StrUtil.replace(fileName, FileUtil.mainName(fileName), IdUtil.simpleUUID());
@@ -236,49 +222,16 @@ public class UserServiceImpl implements UserService {
             UserDO userDO = new UserDO();
             userDO.setUserId(userId);
             userDO.setPicId(sysFile.getId());
-            if (userMapper.update(userDO) > 0) {
+            if (this.updateById(userDO)) {
                 result.put("url", sysFile.getUrl());
             }
         }
         return result;
     }
 
-
-    public Map<String, List<Tree<Map>>> listTreeData(Map<String, Object> params) {
-        List<Tree<Map>> trees = new ArrayList<>();
-        List<Map> deptUserData = userMapper.listTreeData(params);
-
-        Set<String> categorySet = Sets.newHashSet();
-        for (Map map : deptUserData) {
-            Tree<Map> tree = new Tree<>();
-            if (categorySet.add(MapUtil.getStr(map, "deptId"))) {
-                tree.setId(MapUtil.getStr(map, "deptId"));
-                tree.setParentId("0");
-                tree.setText(MapUtil.getStr(map, "name"));
-                Map<String, Object> attributes = new HashMap<>(16);
-                attributes.put("type", MapUtil.getStr(map, "type") + "_DATA");
-                tree.setAttributes(attributes);
-                trees.add(tree);
-            }
-            tree = new Tree<>();
-            tree.setId(MapUtil.getStr(map, "dataId"));
-            tree.setParentId(MapUtil.getStr(map, "deptId"));
-            tree.setText(MapUtil.getStr(map, "dataName"));
-            Map<String, Object> attributes = new HashMap<>(16);
-            attributes.put("type", MapUtil.getStr(map, "type") + "_DATA");
-            tree.setAttributes(attributes);
-            trees.add(tree);
-        }
-        // 默认顶级菜单为０，根据数据库实际情况调整
-        List<Tree<Map>> treeList = BuildTree.buildList(trees, ImmutableSet.of("0"));
-        Map<String, List<Tree<Map>>> listTree = Maps.newHashMap();
-        for (Tree<Map> node : treeList) {
-            String type = MapUtil.getStr(node.getAttributes(), "type");
-            if (!listTree.containsKey(type)) {
-                listTree.put(type, new ArrayList<>());
-            }
-            listTree.get(type).add(node);
-        }
-        return listTree;
+    public LoginUserResult loginUserInfo() {
+        UserDO userDO = this.getUser(ShiroUtils.getUserId());
+        return BeanUtil.copyProperties(userDO, LoginUserResult.class);
     }
+
 }

@@ -14,7 +14,7 @@ import java.util.Map;
  * 日记账
  *
  * @author yogiCai
- * @date 2018-07-14 22:31:58
+ * @since 2018-07-14 22:31:58
  */
 public interface JournalDao extends BaseMapper<RecordDO> {
 

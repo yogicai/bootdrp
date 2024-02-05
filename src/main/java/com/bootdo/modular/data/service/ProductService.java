@@ -1,15 +1,23 @@
 package com.bootdo.modular.data.service;
 
-import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bootdo.core.factory.PageFactory;
+import com.bootdo.core.pojo.response.PageJQ;
+import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.modular.data.dao.ProductDao;
 import com.bootdo.modular.data.domain.ProductDO;
-import com.bootdo.modular.engage.dao.ProductCostDao;
+import com.bootdo.modular.data.param.ProductQryParam;
 import com.bootdo.modular.engage.domain.ProductCostDO;
+import com.bootdo.modular.engage.service.ProductCostService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,27 +27,32 @@ import java.util.stream.Collectors;
  * @author L
  */
 @Service
-public class ProductService {
+public class ProductService extends ServiceImpl<ProductDao, ProductDO> {
     @Resource
-    private ProductDao productDao;
-    @Resource
-    private ProductCostDao productCostDao;
+    private ProductCostService productCostService;
 
-    public ProductDO get(Integer id) {
-        return productDao.get(id);
+    public PageR page(ProductQryParam param) {
+        return new PageR(this.pageList(PageFactory.defaultPage(), param));
     }
 
-    public List<ProductDO> list(Map<String, Object> map) {
-        //商品列表
-        List<ProductDO> productDOList = productDao.list(map);
-        //商品成本
-        Set<Integer> productNoSet = productDOList.stream().map(ProductDO::getNo).collect(Collectors.toSet());
-        Map<String, Object> param = MapUtil.<String, Object>builder().put("latest", true).put("productNos", productNoSet).build();
+    public PageJQ pageJQ(ProductQryParam param) {
+        return new PageJQ(this.pageList(PageFactory.defaultPage(), param));
+    }
 
-        Map<String, ProductCostDO> productCostDoMap = productCostDao.listLate(param).stream()
+    public Page<ProductDO> pageList(Page<ProductDO> page, ProductQryParam param) {
+        LambdaQueryWrapper<ProductDO> queryWrapper = Wrappers.lambdaQuery(ProductDO.class)
+                .in(ObjectUtil.isNotEmpty(param.getType()), ProductDO::getType, StrUtil.split(param.getType(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getStatus()), ProductDO::getStatus, StrUtil.split(param.getStatus(), StrUtil.COMMA))
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), ProductDO::getUpdateTime, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), ProductDO::getUpdateTime, param.getEnd())
+                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(ProductDO::getNo, param.getSearchText()).or().like(ProductDO::getName, param.getSearchText()));
+        Page<ProductDO> pageList = this.page(page, queryWrapper);
+        //商品成本
+        Set<Integer> productNoSet = pageList.getRecords().stream().map(ProductDO::getNo).collect(Collectors.toSet());
+        Map<String, ProductCostDO> productCostDoMap = productCostService.listLate(productNoSet).stream()
                 .collect(Collectors.toMap(ProductCostDO::getProductNo, v -> v, (o, n) -> n));
 
-        productDOList.forEach(productDo -> {
+        pageList.getRecords().forEach(productDo -> {
             String productNo = productDo.getNo().toString();
             if (productCostDoMap.containsKey(productNo)) {
                 productDo.setCostPrice(productCostDoMap.get(productNo).getCostPrice());
@@ -49,34 +62,8 @@ public class ProductService {
                 productDo.setCostQty(BigDecimal.ZERO);
             }
         });
-        return productDOList;
+
+        return this.page(page, queryWrapper);
     }
 
-    public int count(Map<String, Object> map) {
-        return productDao.count(map);
-    }
-
-    public int save(ProductDO product) {
-        return productDao.save(product);
-    }
-
-    public int update(ProductDO product) {
-        return productDao.update(product);
-    }
-
-    public int remove(Integer id) {
-        return productDao.remove(id);
-    }
-
-    public int batchRemove(Integer[] ids) {
-        return productDao.batchRemove(ids);
-    }
-
-    public List<ProductCostDO> listCost(Map<String, Object> map) {
-        return productCostDao.list(map);
-    }
-
-    public int countCost(Map<String, Object> map) {
-        return productCostDao.count(map);
-    }
 }

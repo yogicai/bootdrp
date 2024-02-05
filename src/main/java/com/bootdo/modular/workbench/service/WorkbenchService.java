@@ -1,21 +1,24 @@
 package com.bootdo.modular.workbench.service;
 
 import cn.hutool.core.map.MapUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bootdo.core.consts.Constant;
+import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.core.utils.DateUtils;
 import com.bootdo.core.utils.NumberUtils;
-import com.bootdo.modular.po.dao.OrderDao;
 import com.bootdo.modular.po.domain.OrderDO;
-import com.bootdo.modular.workbench.dao.WorkbenchDao;
+import com.bootdo.modular.po.service.OrderService;
 import com.bootdo.modular.report.enums.BillStatType;
 import com.bootdo.modular.report.enums.EChartSeriesType;
+import com.bootdo.modular.report.param.SEBillTotalParam;
 import com.bootdo.modular.report.result.SEBillTotalResult;
 import com.bootdo.modular.report.result.SEDebtTotalResult;
 import com.bootdo.modular.report.result.echart.EChartOption;
 import com.bootdo.modular.report.result.echart.PieData;
-import com.bootdo.modular.se.dao.SEOrderDao;
 import com.bootdo.modular.se.domain.SEOrderDO;
+import com.bootdo.modular.se.service.SEOrderService;
+import com.bootdo.modular.workbench.dao.WorkbenchDao;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -38,9 +41,9 @@ import java.util.stream.IntStream;
 @Service
 public class WorkbenchService {
     @Resource
-    private SEOrderDao seOrderDao;
+    private OrderService orderService;
     @Resource
-    private OrderDao orderDao;
+    private SEOrderService seOrderService;
     @Resource
     private WorkbenchDao workbenchDao;
 
@@ -58,9 +61,10 @@ public class WorkbenchService {
     private final List<String> month_series = Lists.newArrayList("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月");
 
 
-    public SEBillTotalResult pBalanceTotal(Map<String, Object> params) {
+    public SEBillTotalResult pBalanceTotal(SEBillTotalParam param) {
         SEBillTotalResult result = new SEBillTotalResult();
-        List<SEOrderDO> list = seOrderDao.list(params);
+        List<SEOrderDO> list = seOrderService.list(Wrappers.lambdaQuery(SEOrderDO.class).ge(SEOrderDO::getBillDate, param.getBillDateStart())
+                .eq(SEOrderDO::getAuditStatus, param.getAuditStatus()));
         for (SEOrderDO seOrderDO : list) {
             result.setProfit(NumberUtils.add(result.getProfit(), NumberUtils.subtract(seOrderDO.getTotalAmount(), seOrderDO.getCostAmount())));
             result.setTotalAmount(NumberUtils.add(result.getTotalAmount(), seOrderDO.getTotalAmount()));
@@ -68,13 +72,13 @@ public class WorkbenchService {
         return result;
     }
 
-    public SEDebtTotalResult pDebtTotal(Map<String, Object> params) {
+    public SEDebtTotalResult pDebtTotal() {
         SEDebtTotalResult result = new SEDebtTotalResult();
-        List<SEOrderDO> seList = seOrderDao.list(params);
+        List<SEOrderDO> seList = seOrderService.list(Wrappers.lambdaQuery(SEOrderDO.class).eq(SEOrderDO::getAuditStatus, AuditStatus.YES));
         for (SEOrderDO seOrderDO : seList) {
             result.setDebtAmount(NumberUtils.add(result.getDebtAmount(), NumberUtils.subtract(seOrderDO.getTotalAmount(), seOrderDO.getPaymentAmount())));
         }
-        List<OrderDO> list = orderDao.list(params);
+        List<OrderDO> list = orderService.list(Wrappers.lambdaQuery(OrderDO.class).eq(OrderDO::getAuditStatus, AuditStatus.YES));
         for (OrderDO orderDO : list) {
             result.setDebtVAmount(NumberUtils.add(result.getDebtVAmount(), NumberUtils.subtract(orderDO.getTotalAmount(), orderDO.getPaymentAmount())));
         }
@@ -189,7 +193,7 @@ public class WorkbenchService {
         return option;
     }
 
-    public EChartOption pHisPBillTrend(Map<String, Object> params) {
+    public EChartOption pHisBillTrend(Map<String, Object> params) {
 
         //图表数据类型
         BillStatType type = BillStatType.valueOf(MapUtil.getStr(params, "type"));

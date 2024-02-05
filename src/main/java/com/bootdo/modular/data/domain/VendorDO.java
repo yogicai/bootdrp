@@ -1,21 +1,19 @@
 package com.bootdo.modular.data.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
-
-import java.io.Serializable;
-import java.util.Date;
 
 
 /**
  * 供应商信息表
  *
  * @author yogiCai
- * @date 2017-11-24 23:12:54
+ * @since 2017-11-24 23:12:54
  */
+@TableName(value = "data_vendor")
 @Data
-public class VendorDO implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class VendorDO extends BaseEntity {
     /**
      *
      */
@@ -48,13 +46,5 @@ public class VendorDO implements Serializable {
      * 状态
      */
     private Integer status = 0;
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-    /**
-     * 修改时间
-     */
-    private Date updateTime;
 
 }

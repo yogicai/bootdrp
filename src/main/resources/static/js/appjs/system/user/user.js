@@ -1,6 +1,7 @@
-var prefix = "/sys/user"
+let prefix = "/sys/user"
+
 $(function() {
-	var deptId = '';
+	let deptId = '';
 	getTreeData();
 	load(deptId);
 });
@@ -82,13 +83,13 @@ function load(deptId) {
 						field : 'id',
 						align : 'center',
 						formatter : function(value, row, index) {
-							var e = '<a  class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title="编辑" onclick="edit(\''
+							let e = '<a  class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title="编辑" onclick="edit(\''
 								+ row.userId
 								+ '\')"><i class="fa fa-edit "></i></a> ';
-							var d = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="删除"  mce_href="#" onclick="remove(\''
+							let d = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="删除"  mce_href="#" onclick="remove(\''
 								+ row.userId
 								+ '\')"><i class="fa fa-remove"></i></a> ';
-							var f = '<a class="btn btn-success btn-sm ' + s_resetPwd_h + '" href="#" title="重置密码"  mce_href="#" onclick="resetPwd(\''
+							let f = '<a class="btn btn-success btn-sm ' + s_resetPwd_h + '" href="#" title="重置密码"  mce_href="#" onclick="resetPwd(\''
 								+ row.userId
 								+ '\')"><i class="fa fa-key"></i></a> ';
 							return e + d + f;
@@ -152,7 +153,7 @@ function resetPwd(id) {
 	});
 }
 function batchRemove() {
-	var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
+	let rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
 	if (rows.length == 0) {
 		layer.msg("请选择要删除的数据");
 		return;
@@ -161,7 +162,7 @@ function batchRemove() {
 		btn : [ '确定', '取消' ]
 	// 按钮
 	}, function() {
-		var ids = new Array();
+		let ids = new Array();
 		// 遍历所有选择的行数据，取每条数据对应的ID
 		$.each(rows, function(i, row) {
 			ids[i] = row['userId'];
@@ -202,15 +203,15 @@ function loadTree(tree) {
 	$('#jstree').jstree().open_all();
 }
 $('#jstree').on("changed.jstree", function(e, data) {
-	if (data.selected == -1) {
-		var opt = {
+	if (_.isEmpty(data.selected) || data.selected[0] === '-1') {
+		let opt = {
 			query : {
 				deptId : '',
 			}
 		}
 		$('#exampleTable').bootstrapTable('refresh', opt);
 	} else {
-		var opt = {
+		let opt = {
 			query : {
 				deptId : data.selected[0],
 			}

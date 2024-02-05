@@ -1,15 +1,23 @@
-let prefix = window.parent.billType === "CW_SK_ORDER" ? "/se/order" : "/po/order";
 let tableGrid;
-let debtorId = window.parent.$("#debtorId").val();
-let postData = { "statusNot": ["FINISH_PAY", "ORDER_CANCEL"], "audit": "YES", "consumerId": debtorId, "vendorId": debtorId };
+let $tableList;
+
+let debtorId = window.parent.$('#debtorId').val();
+let billType = window.parent.$('#billType').val();
+
+let prefix = _.eq(billType, 'CW_SK_ORDER') ? "/se/order" : "/po/order";
+let postData = {"statusNot": ["FINISH_PAY", "ORDER_CANCEL"], "auditStatus": "YES", "consumerId": debtorId, "vendorId": debtorId};
+
+
 $(function() {
+    $tableList = $('#table_list');
+
     load();
 });
 
 function load() {
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
-    tableGrid = $("#table_list").jqGrid({
+    tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
         mtype: "POST",
         datatype: "json",

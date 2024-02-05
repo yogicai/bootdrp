@@ -15,7 +15,7 @@ import org.apache.ibatis.annotations.Update;
  * 
  * @author ${author}
  * @email ${email}
- * @date ${datetime}
+ * @since ${datetime}
  */
 @Mapper
 public interface ${className}Mapper {

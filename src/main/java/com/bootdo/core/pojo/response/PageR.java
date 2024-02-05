@@ -1,7 +1,5 @@
 package com.bootdo.core.pojo.response;
 
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.PageUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
 
@@ -13,7 +11,7 @@ import java.util.List;
 @Data
 public class PageR {
     // 总记录数
-    private int total;
+    private long total;
     // 列表数据
     private List<?> rows;
 
@@ -24,6 +22,6 @@ public class PageR {
 
     public <T> PageR(Page<T> page) {
         this.setRows(page.getRecords());
-        this.setTotal(PageUtil.totalPage(Convert.toInt(page.getTotal()), Convert.toInt(page.getSize())));
+        this.setTotal(page.getTotal());
     }
 }

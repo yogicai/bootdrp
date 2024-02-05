@@ -1,39 +1,47 @@
 package com.bootdo.modular.rp.service;
 
-import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.BillType;
 import com.bootdo.core.enums.OrderStatus;
+import com.bootdo.core.factory.PageFactory;
+import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.utils.NumberUtils;
-import com.bootdo.modular.po.convert.OrderConverter;
 import com.bootdo.modular.po.dao.OrderDao;
 import com.bootdo.modular.po.domain.OrderDO;
+import com.bootdo.modular.po.param.OrderAuditParam;
 import com.bootdo.modular.rp.dao.RPOrderDao;
 import com.bootdo.modular.rp.dao.RPOrderEntryDao;
 import com.bootdo.modular.rp.dao.RPOrderSettleDao;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.domain.RPOrderEntryDO;
 import com.bootdo.modular.rp.domain.RPOrderSettleDO;
-import com.bootdo.modular.se.convert.SEOrderConverter;
+import com.bootdo.modular.rp.param.RPOrderQryParam;
 import com.bootdo.modular.se.dao.SEOrderDao;
 import com.bootdo.modular.se.domain.SEOrderDO;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.github.yulichang.toolkit.JoinWrappers;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
+/**
+ * @author L
+ */
 @Service
-public class RPOrderService {
+public class RPOrderService extends ServiceImpl<RPOrderDao, RPOrderDO> {
     @Resource
     private OrderDao orderDao;
     @Resource
@@ -45,105 +53,140 @@ public class RPOrderService {
     @Resource
     private RPOrderSettleDao rpOrderSettleDao;
 
-    private final EnumSet<BillType> poBillSet = EnumSet.of(BillType.CG_ORDER, BillType.TH_ORDER);
-    private final EnumSet<BillType> seBillSet = EnumSet.of(BillType.XS_ORDER);
+    private static final EnumSet<BillType> PO_BILL_SET = EnumSet.of(BillType.CG_ORDER, BillType.TH_ORDER);
+    private static final EnumSet<BillType> SE_BILL_SET = EnumSet.of(BillType.XS_ORDER);
 
-    public RPOrderDO get(Integer id) {
-        return rpOrderDao.get(id);
+
+    public PageJQ page(RPOrderQryParam param) {
+        return new PageJQ(this.pageList(PageFactory.defaultPage(), param));
     }
 
-    public List<RPOrderDO> list(Map<String, Object> map) {
-        List<RPOrderDO> rpOrderDOList = rpOrderDao.list(map);
-        Set<String> billNoSet = Sets.newHashSet();
-        for (RPOrderDO orderDO : rpOrderDOList) {
-            billNoSet.add(orderDO.getBillNo());
-        }
-        List<RPOrderEntryDO> rpOrderEntryDOList = rpOrderEntryDao.list(ImmutableMap.of("billNos", billNoSet));
-        List<RPOrderSettleDO> rpOrderSettleDOList = rpOrderSettleDao.list(ImmutableMap.of("billNos", billNoSet));
+    public Page<RPOrderDO> pageList(Page<RPOrderDO> page, RPOrderQryParam param) {
+        LambdaQueryWrapper<RPOrderDO> queryWrapper = Wrappers.lambdaQuery(RPOrderDO.class)
+                .in(ObjectUtil.isNotEmpty(param.getBillType()), RPOrderDO::getBillType, StrUtil.split(param.getBillType(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getAuditStatus()), RPOrderDO::getAuditStatus, StrUtil.split(param.getAuditStatus(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getCheckId()), RPOrderDO::getCheckId, StrUtil.split(param.getCheckId(), StrUtil.COMMA))
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), RPOrderDO::getUpdateTime, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), RPOrderDO::getUpdateTime, param.getEnd())
+                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(RPOrderDO::getBillNo, param.getSearchText()).or().like(RPOrderDO::getRemark, param.getSearchText()))
+                .orderByDesc(RPOrderDO::getBillDate).orderByDesc(RPOrderDO::getUpdateTime);
 
-        for (RPOrderDO orderDO : rpOrderDOList) {
-            for (RPOrderEntryDO entryDO : rpOrderEntryDOList) {
-                if (orderDO.getBillNo().equals(entryDO.getBillNo())) {
-                    orderDO.getEntryDOList().add(entryDO);
-                }
-            }
-            for (RPOrderSettleDO settleDO : rpOrderSettleDOList) {
-                if (orderDO.getBillNo().equals(settleDO.getBillNo())) {
-                    orderDO.getSettleDOList().add(settleDO);
-                }
-            }
-        }
+        return this.page(page, queryWrapper);
+    }
+
+    public List<RPOrderDO> list(RPOrderQryParam param) {
+        List<RPOrderDO> rpOrderDOList = this.pageList(PageFactory.defalultAllPage(), param).getRecords();
+        Set<String> billNoSet = rpOrderDOList.stream().map(RPOrderDO::getBillNo).collect(Collectors.toSet());
+
+        Map<String, List<RPOrderEntryDO>> entryListMap = rpOrderEntryDao.selectList(Wrappers.lambdaQuery(RPOrderEntryDO.class).in(RPOrderEntryDO::getBillNo, billNoSet))
+                .stream().collect(Collectors.groupingBy(RPOrderEntryDO::getBillNo, Collectors.toList()));
+
+        Map<String, List<RPOrderSettleDO>> settleListMap = rpOrderSettleDao.selectList(Wrappers.lambdaQuery(RPOrderSettleDO.class).in(RPOrderSettleDO::getBillNo, billNoSet))
+                .stream().collect(Collectors.groupingBy(RPOrderSettleDO::getBillNo, Collectors.toList()));
+
+        rpOrderDOList.forEach(rpOrderDO -> {
+            rpOrderDO.getEntryDOList().addAll(entryListMap.getOrDefault(rpOrderDO.getBillNo(), Collections.emptyList()));
+            rpOrderDO.getSettleDOList().addAll(settleListMap.getOrDefault(rpOrderDO.getBillNo(), Collections.emptyList()));
+        });
+
         return rpOrderDOList;
     }
 
-    public int count(Map<String, Object> map) {
-        return rpOrderDao.count(map);
+    public PageJQ selectJoinPage(RPOrderQryParam param) {
+        return new PageJQ(this.baseMapper.selectJoinPage(PageFactory.defaultPage(), RPOrderDO.class, selectJoinWrapper(param)));
+    }
+
+    public List<RPOrderDO> selectJoinList(RPOrderQryParam param) {
+        return this.baseMapper.selectJoinList(RPOrderDO.class, selectJoinWrapper(param));
+    }
+
+    public Long selectJoinCount(RPOrderQryParam param) {
+        return this.baseMapper.selectJoinCount(selectJoinWrapper(param));
+    }
+
+    private MPJLambdaWrapper<RPOrderDO> selectJoinWrapper(RPOrderQryParam param) {
+        return JoinWrappers.lambda(RPOrderDO.class)
+                .selectCollection(RPOrderEntryDO.class, RPOrderDO::getEntryDOList)
+                .selectCollection(RPOrderSettleDO.class, RPOrderDO::getSettleDOList)
+                .leftJoin(RPOrderEntryDO.class, RPOrderEntryDO::getBillNo, RPOrderDO::getBillNo)
+                .leftJoin(RPOrderSettleDO.class, RPOrderSettleDO::getBillNo, RPOrderDO::getBillNo)
+                //明细表过滤条件
+                .in(ObjectUtil.isNotEmpty(param.getSrcBillNo()), RPOrderEntryDO::getSrcBillNo, StrUtil.split(param.getSrcBillNo(), StrUtil.COMMA))
+                //主表过滤条件
+                .in(ObjectUtil.isNotEmpty(param.getBillSource()), RPOrderDO::getBillSource, StrUtil.split(param.getBillSource(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getBillType()), RPOrderDO::getBillType, StrUtil.split(param.getBillType(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getAuditStatus()), RPOrderDO::getAuditStatus, StrUtil.split(param.getAuditStatus(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getCheckId()), RPOrderDO::getCheckId, StrUtil.split(param.getCheckId(), StrUtil.COMMA))
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), RPOrderDO::getUpdateTime, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), RPOrderDO::getUpdateTime, param.getEnd())
+                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(RPOrderDO::getBillNo, param.getSearchText())
+                        .or().like(RPOrderDO::getRemark, param.getSearchText()).or().like(RPOrderEntryDO::getSrcBillNo, param.getSearchText()))
+                .orderByDesc(RPOrderDO::getBillDate).orderByDesc(RPOrderDO::getUpdateTime);
     }
 
     /**
      * 收付款财务单审核要更新，源订单的已付金额
      */
     @Transactional(rollbackFor = Exception.class)
-    public int audit(Map<String, Object> params) {
-        AuditStatus auditStatus = AuditStatus.fromValue(MapUtil.getStr(params, "auditStatus"));
-        List<RPOrderDO> list = rpOrderDao.list(ImmutableMap.of("billNos", MapUtil.get(params, "billNos", List.class)));
-        Set<String> billNoSet = Sets.newHashSet();
+    public void audit(OrderAuditParam param) {
+        AuditStatus auditStatus = param.getAuditStatus();
+        List<RPOrderDO> rpOrderDOList = rpOrderDao.selectList(Wrappers.lambdaQuery(RPOrderDO.class).in(RPOrderDO::getBillNo, param.getBillNos()));
         //过滤已审核或未审核的订单
-        for (RPOrderDO orderDO : list) {
-            if (!auditStatus.equals(orderDO.getAuditStatus())) {
-                billNoSet.add(orderDO.getBillNo());
-            }
+        Set<String> billNoSet = rpOrderDOList.stream().filter(rpOrderDO -> !auditStatus.equals(rpOrderDO.getAuditStatus())).map(RPOrderDO::getBillNo).collect(Collectors.toSet());
+        if (billNoSet.isEmpty()) {
+            return;
         }
-        if (billNoSet.size() <= 0) return 0;
 
         //按源订单号归类订单分录，计算本次需更新的源订单支付金额
-        Map<String, List<RPOrderEntryDO>> listMap = Maps.newHashMap();
-        Set<String> poBillNoSet = Sets.newHashSet(), seBillNoSet = Sets.newHashSet();
-        List<RPOrderEntryDO> list1 = rpOrderEntryDao.list(ImmutableMap.of("billNos", billNoSet));
-        for (RPOrderEntryDO entryDO : list1) {
-            if (!listMap.containsKey(entryDO.getSrcBillNo())) {
-                listMap.put(entryDO.getSrcBillNo(), Lists.newArrayList());
-            }
-            listMap.get(entryDO.getSrcBillNo()).add(entryDO);
-            if (poBillSet.contains(entryDO.getSrcBillType())) {
-                poBillNoSet.add(entryDO.getSrcBillNo());
-            } else if (seBillSet.contains(entryDO.getSrcBillType())) {
-                seBillNoSet.add(entryDO.getSrcBillNo());
-            }
-        }
-        //更新源订单已付金额
-        List<OrderDO> orderDOList = orderDao.list(ImmutableMap.of("billNos", poBillNoSet));
-        List<SEOrderDO> seOrderDOList = seOrderDao.list(ImmutableMap.of("billNos", seBillNoSet));
-        Map<String, OrderDO> orderDOMap = OrderConverter.convertOrderMap(orderDOList);
-        Map<String, SEOrderDO> seOrderDOMap = SEOrderConverter.convertOrderMap(seOrderDOList);
-        for (Map.Entry<String, List<RPOrderEntryDO>> entry : listMap.entrySet()) {
-            BigDecimal checkAmount = BigDecimal.ZERO;
-            for (RPOrderEntryDO entryDO : entry.getValue()) {
-                checkAmount = NumberUtils.add(checkAmount, NumberUtils.mul(entryDO.getCheckAmount(), AuditStatus.YES.equals(auditStatus) ? BigDecimal.ONE : BigDecimal.valueOf(-1)));
-            }
-            String billNo = entry.getValue().get(0).getSrcBillNo();
-            BillType billType = entry.getValue().get(0).getSrcBillType();
-            if (checkAmount.compareTo(BigDecimal.ZERO) != 0 && poBillSet.contains(billType)) {
-                BigDecimal totalAmount = orderDOMap.get(billNo).getTotalAmount();
-                BigDecimal paymentAmount = NumberUtils.add(orderDOMap.get(billNo).getPaymentAmount(), checkAmount);
-                OrderStatus status = paymentAmount.compareTo(totalAmount) >= 0 ? OrderStatus.FINISH_PAY : (paymentAmount.compareTo(BigDecimal.ZERO) == 0 ? OrderStatus.WAITING_PAY : OrderStatus.PART_PAY);
-                orderDao.update(ImmutableMap.of("cBillNo", billNo, "status", status.name(), "paymentAmount", paymentAmount));
-            } else if (checkAmount.compareTo(BigDecimal.ZERO) != 0 && seBillSet.contains(billType)) {
-                BigDecimal totalAmount = seOrderDOMap.get(billNo).getTotalAmount();
-                BigDecimal paymentAmount = NumberUtils.add(seOrderDOMap.get(billNo).getPaymentAmount(), checkAmount);
-                OrderStatus status = paymentAmount.compareTo(totalAmount) >= 0 ? OrderStatus.FINISH_PAY : (paymentAmount.compareTo(BigDecimal.ZERO) == 0 ? OrderStatus.WAITING_PAY : OrderStatus.PART_PAY);
-                seOrderDao.update(ImmutableMap.of("cBillNo", billNo, "status", status.name(), "paymentAmount", paymentAmount));
-            }
-        }
+        List<RPOrderEntryDO> rpOrderEntryDOList = rpOrderEntryDao.selectList(Wrappers.lambdaQuery(RPOrderEntryDO.class).in(RPOrderEntryDO::getBillNo, billNoSet));
+        //按源订单号归集 收付款单分录
+        Map<String, List<RPOrderEntryDO>> srcEntrylistMap = rpOrderEntryDOList.stream().collect(Collectors.groupingBy(RPOrderEntryDO::getSrcBillNo, Collectors.toList()));
+        //源订单MAP（采购单）
+        Map<String, OrderDO> orderMap = orderDao.selectList(Wrappers.lambdaQuery(OrderDO.class).in(OrderDO::getBillNo, srcEntrylistMap.keySet()))
+                .stream().collect(Collectors.toMap(OrderDO::getBillNo, Function.identity(), (o, v) -> o));
+        //源订单MAP（销售单）
+        Map<String, SEOrderDO> seOrderMap = seOrderDao.selectList(Wrappers.lambdaQuery(SEOrderDO.class).in(SEOrderDO::getBillNo, srcEntrylistMap.keySet()))
+                .stream().collect(Collectors.toMap(SEOrderDO::getBillNo, Function.identity(), (o, v) -> o));
 
-        return rpOrderDao.audit(params);
+        //更新源订单已付金额、支付状态
+        srcEntrylistMap.forEach((srcBillNo, entryList) -> {
+            //核销金额
+            BigDecimal checkAmount = entryList.stream().map(RPOrderEntryDO::getCheckAmount)
+                    .map(amount -> NumberUtil.mul(amount, AuditStatus.YES.equals(auditStatus) ? BigDecimal.ONE : NumberUtil.toBigDecimal(-1)))
+                    .reduce(BigDecimal.ZERO, NumberUtil::add);
+            //源订单类型
+            BillType billType = entryList.get(0).getSrcBillType();
+            //采购单
+            if (checkAmount.compareTo(BigDecimal.ZERO) != 0 && PO_BILL_SET.contains(billType)) {
+                BigDecimal totalAmount = orderMap.get(srcBillNo).getTotalAmount();
+                BigDecimal paymentAmount = NumberUtils.add(orderMap.get(srcBillNo).getPaymentAmount(), checkAmount);
+                orderDao.update(null, Wrappers.lambdaUpdate(OrderDO.class)
+                        .set(OrderDO::getStatus, OrderStatus.fromPayment(paymentAmount, totalAmount))
+                        .set(OrderDO::getPaymentAmount, paymentAmount)
+                        .eq(OrderDO::getBillNo, srcBillNo));
+
+            } else if (checkAmount.compareTo(BigDecimal.ZERO) != 0 && SE_BILL_SET.contains(billType)) {
+                //销售单
+                BigDecimal totalAmount = seOrderMap.get(srcBillNo).getTotalAmount();
+                BigDecimal paymentAmount = NumberUtils.add(seOrderMap.get(srcBillNo).getPaymentAmount(), checkAmount);
+                seOrderDao.update(null, Wrappers.lambdaUpdate(SEOrderDO.class)
+                        .set(SEOrderDO::getStatus, OrderStatus.fromPayment(paymentAmount, totalAmount))
+                        .set(SEOrderDO::getPaymentAmount, paymentAmount)
+                        .eq(SEOrderDO::getBillNo, srcBillNo));
+            }
+        });
+
+        this.update(Wrappers.lambdaUpdate(RPOrderDO.class)
+                .set(RPOrderDO::getAuditStatus, auditStatus)
+                .in(RPOrderDO::getBillNo, billNoSet)
+                .ne(RPOrderDO::getAuditStatus, auditStatus));
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public int batchRemove(List<String> billNos) {
-        rpOrderDao.delete(ImmutableMap.of("billNos", billNos));
-        rpOrderEntryDao.delete(ImmutableMap.of("billNos", billNos));
-        rpOrderSettleDao.delete(ImmutableMap.of("billNos", billNos));
-        return 1;
+    public void batchRemove(List<String> billNos) {
+        rpOrderDao.delete(Wrappers.lambdaQuery(RPOrderDO.class).in(RPOrderDO::getBillNo, billNos));
+        rpOrderEntryDao.delete(Wrappers.lambdaQuery(RPOrderEntryDO.class).in(RPOrderEntryDO::getBillNo, billNos));
+        rpOrderSettleDao.delete(Wrappers.lambdaQuery(RPOrderSettleDO.class).in(RPOrderSettleDO::getBillNo, billNos));
     }
+
 }

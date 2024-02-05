@@ -138,17 +138,6 @@ function search() {
 	$('#exampleTable').bootstrapTable('refresh', { query: $.extend({offset:0}, searchForm.serializeObject()) } );
 }
 
-function searchCost() {
-    layer.open({
-        type : 2,
-        title : '商品成本',
-        maxmin : true,
-        shadeClose : false, // 点击遮罩关闭层
-        area : [ '1300px', '650px' ],
-        content : prefix + '/productCost' // iframe的url
-    });
-}
-
 function add() {
 	layer.open({
 		type : 2,

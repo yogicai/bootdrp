@@ -1,22 +1,21 @@
 package com.bootdo.modular.rp.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 
 /**
  * 客户积分
  *
  * @author yogiCai
- * @date 2018-03-06 23:17:49
+ * @since 2018-03-06 23:17:49
  */
+@TableName(value = "rp_point_entry")
 @Data
-public class PointEntryDO implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class PointEntryDO extends BaseEntity {
     /**
      *
      */
@@ -53,13 +52,5 @@ public class PointEntryDO implements Serializable {
      * 计算积分的订单金额
      */
     private BigDecimal totalAmount;
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-    /**
-     * 修改时间
-     */
-    private Date updateTime;
 
 }

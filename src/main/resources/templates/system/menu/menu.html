@@ -8,18 +8,18 @@
 		<div class="col-sm-12">
 			<div class="ibox">
 				<div class="ibox-body">
-					<div id="exampleToolbar" role="group" class="t-bar">
-						<button shiro:hasPermission="sys:menu:add" type="button"
-							class="btn btn-primary" title="在根节点下添加菜单" onclick="add('0')">
-							<i class="fa fa-plus" aria-hidden="true"></i>添加
-						</button>
-						<button shiro:hasPermission="sys:menu:batchRemove" type="button"
-							class="btn btn-danger" onclick="batchRemove()">
-							<i class="fa fa-trash" aria-hidden="true"></i>删除
-						</button>
+					<div class="fixed-table-toolbar">
+						<div class="columns pull-right">
+							<button shiro:hasPermission="sys:menu:add" type="button" class="btn btn-primary" onclick="add('0')">
+								<i class="fa fa-plus" aria-hidden="true"></i>添加
+							</button>
+							<button shiro:hasPermission="sys:menu:batchRemove" type="button" class="btn btn-danger" onclick="batchRemove()">
+								<i class="fa fa-trash" aria-hidden="true"></i>删除
+							</button>
+						</div>
 					</div>
-					<table id="exampleTable" data-mobile-responsive="true">
-					</table>
+
+					<table id="exampleTable" data-mobile-responsive="true"></table>
 				</div>
 			</div>
 		</div>

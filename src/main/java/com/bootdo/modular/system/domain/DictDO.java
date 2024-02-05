@@ -1,5 +1,7 @@
 package com.bootdo.modular.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,10 +13,11 @@ import java.util.Date;
  *
  * @author chglee
  * @email 1992lcg@163.com
- * @date 2017-09-29 18:28:07
+ * @since 2017-09-29 18:28:07
  */
+@TableName(value = "sys_dict")
 @Data
-public class DictDO {
+public class DictDO extends BaseEntity {
     //编号
     private Long id;
     //标签名

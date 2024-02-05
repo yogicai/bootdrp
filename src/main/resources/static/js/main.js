@@ -447,7 +447,7 @@ function searchHisPCashTrend(type) {
     let myChart = echarts.init(document.getElementById('bill-bar-chart-his'));
     let _option = $.extend({}, option4);
     $.ajax({
-        url : prefix+"/pHisPCashTrend",
+        url : prefix+"/pHisCashTrend",
         type : "post",
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify({ type: type }),

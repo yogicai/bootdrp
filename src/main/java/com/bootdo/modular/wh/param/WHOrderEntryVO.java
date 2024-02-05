@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 /**
  * @Author: yogiCai
- * @Date: 2018-02-01 10:44:23
+ * @since 2018-02-01 10:44:23
  */
 @Data
 public class WHOrderEntryVO {

@@ -14,7 +14,7 @@ import java.util.Iterator;
 
 /**
  * @author gaoyuzhe
- * @date 2017/12/18.
+ * @since 2017/12/18.
  */
 public class ImageUtils {
     /***
@@ -25,7 +25,7 @@ public class ImageUtils {
      * @param w  长
      * @param h  高
      * @throws IOException
-     * @date
+     * @since
      */
     public static BufferedImage cutImage(MultipartFile file, int x, int y, int w, int h, String prefix) {
 
@@ -51,7 +51,7 @@ public class ImageUtils {
      * @param bufferedimage 图像
      * @param degree      角度
      * @return
-     * @date
+     * @since
      */
     public static BufferedImage rotateImage(BufferedImage bufferedimage, int degree) {
         int w = bufferedimage.getWidth();

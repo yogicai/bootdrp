@@ -2,7 +2,7 @@ package com.bootdo.core.consts;
 
 /**
  * @Author: yogiCai
- * @Date: 2018-02-04 10:27:25
+ * @since 2018-02-04 10:27:25
  */
 public final class ErrorMessage {
 

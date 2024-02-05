@@ -13,14 +13,14 @@ import java.util.List;
 
 /**
  * @author yogiCai
- * @date 2018-02-01 10:43:43
+ * @since 2018-02-01 10:43:43
  */
 @Data
 public class RPOrderVO {
     /**
      * 单据日期
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(locale = "zh", pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date billDate;
     /**
      * 单据编号

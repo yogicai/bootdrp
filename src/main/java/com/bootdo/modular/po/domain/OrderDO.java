@@ -1,9 +1,13 @@
 package com.bootdo.modular.po.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.BillType;
 import com.bootdo.core.enums.OrderStatus;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -14,10 +18,11 @@ import java.util.Date;
  * 购货订单
  *
  * @author yogiCai
- * @date 2017-11-28 21:30:03
+ * @since 2017-11-28 21:30:03
  */
+@TableName(value = "po_order")
 @Data
-public class OrderDO {
+public class OrderDO extends BaseEntity {
 
     private Integer id;
 
@@ -126,19 +131,8 @@ public class OrderDO {
     /**
      * 备注
      */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     @Excel(name = "备注")
     private String remark;
-
-    /**
-     * 创建时间
-     */
-    @Excel(name = "创建时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
-    private Date createTime;
-
-    /**
-     * 修改时间
-     */
-    @Excel(name = "修改时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
-    private Date updateTime;
 
 }

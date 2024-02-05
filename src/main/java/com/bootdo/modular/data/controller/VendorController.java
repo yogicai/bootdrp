@@ -1,11 +1,10 @@
 package com.bootdo.modular.data.controller;
 
-import com.bootdo.core.pojo.request.Query;
-import com.bootdo.core.pojo.request.QueryJQ;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.data.domain.VendorDO;
+import com.bootdo.modular.data.param.VendorQryParam;
 import com.bootdo.modular.data.service.VendorService;
 import com.bootdo.modular.data.validator.DataValidator;
 import com.bootdo.modular.system.controller.BaseController;
@@ -18,13 +17,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 供应商信息表
  *
  * @author yogiCai
- * @date 2018-02-16 16:30:26
+ * @since 2018-02-16 16:30:26
  */
 @Api(tags = "供应商管理")
 @Controller
@@ -36,7 +34,6 @@ public class VendorController extends BaseController {
     private VendorService vendorService;
 
     @GetMapping()
-    @RequiresPermissions("data:vendor:vendor")
     public String vendor() {
         return "data/vendor/vendor";
     }
@@ -44,38 +41,27 @@ public class VendorController extends BaseController {
     @ResponseBody
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
-    @RequiresPermissions("data:vendor:vendor")
-    public PageR list(@RequestParam Map<String, Object> params) {
+    public PageR list(VendorQryParam param) {
         //查询列表数据
-        Query query = new Query(params);
-        List<VendorDO> vendorList = vendorService.list(query);
-        int total = vendorService.count(query);
-        return new PageR(vendorList, total);
+        return vendorService.page(param);
     }
 
     @ResponseBody
     @GetMapping("/listJQ")
     @ApiOperation(value = "分页查询")
-    @RequiresPermissions("data:vendor:vendor")
-    public PageJQ listJQ(@RequestParam Map<String, Object> params) {
+    public PageJQ listJQ(VendorQryParam param) {
         //查询列表数据
-        QueryJQ query = new QueryJQ(params);
-        List<VendorDO> productList = vendorService.list(query);
-        int total = vendorService.count(query);
-        int totalPage = total / (query.getLimit() + 1) + 1;
-        return new PageJQ(productList, totalPage, query.getPage(), total);
+        return vendorService.pageJQ(param);
     }
 
     @GetMapping("/add")
-    @RequiresPermissions("data:vendor:add")
     public String add() {
         return "data/vendor/add";
     }
 
     @GetMapping("/edit/{id}")
-    @RequiresPermissions("data:vendor:edit")
     public String edit(@PathVariable("id") Integer id, Model model) {
-        VendorDO vendor = vendorService.get(id);
+        VendorDO vendor = vendorService.getById(id);
         model.addAttribute("vendor", vendor);
         return "data/vendor/edit";
     }
@@ -83,22 +69,18 @@ public class VendorController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     @ApiOperation(value = "保存")
-    @RequiresPermissions("data:vendor:add")
     public R save(VendorDO vendor) {
         dataValidator.validateVendor(vendor);
-        if (vendorService.save(vendor) > 0) {
-            return R.ok();
-        }
-        return R.error();
+        vendorService.save(vendor);
+        return R.ok();
     }
 
     @ResponseBody
     @PostMapping("/update")
     @ApiOperation(value = "修改")
-    @RequiresPermissions("data:vendor:edit")
     public R update(VendorDO vendor) {
         dataValidator.validateVendor(vendor);
-        vendorService.update(vendor);
+        vendorService.updateById(vendor);
         return R.ok();
     }
 
@@ -107,18 +89,16 @@ public class VendorController extends BaseController {
     @ApiOperation(value = "删除")
     @RequiresPermissions("data:vendor:remove")
     public R remove(Integer id) {
-        if (vendorService.remove(id) > 0) {
-            return R.ok();
-        }
-        return R.error();
+        vendorService.removeById(id);
+        return R.ok();
     }
 
     @PostMapping("/batchRemove")
     @ResponseBody
     @ApiOperation(value = "批量删除")
     @RequiresPermissions("data:vendor:batchRemove")
-    public R batchRemove(@RequestParam("ids[]") Integer[] ids) {
-        vendorService.batchRemove(ids);
+    public R batchRemove(@RequestParam("ids[]") List<Integer> ids) {
+        vendorService.removeByIds(ids);
         return R.ok();
     }
 

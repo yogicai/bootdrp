@@ -1,9 +1,10 @@
 package com.bootdo.modular.report.controller;
 
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONUtil;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.core.utils.PoiUtil;
+import com.bootdo.modular.report.param.SReconParam;
+import com.bootdo.modular.report.param.SaleProductParam;
 import com.bootdo.modular.report.result.SReconResult;
 import com.bootdo.modular.report.service.ReportService;
 import com.bootdo.modular.system.controller.BaseController;
@@ -16,13 +17,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 报表
  *
  * @author yogiCai
- * @date 2018-02-25 11:17:02
+ * @since 2018-02-25 11:17:02
  */
 @Api(tags = "报表")
 @Controller
@@ -36,8 +36,8 @@ public class ReportController extends BaseController {
      */
     @GetMapping("/sRecon")
     @RequiresPermissions("report:recon:recon")
-    public String sRecon(@RequestParam Map<String, Object> params, Model model) {
-        model.addAttribute("type", MapUtil.getStr(params, "type"));
+    public String sRecon(@RequestParam String type, Model model) {
+        model.addAttribute("type", type);
         return "report/sRecon";
     }
 
@@ -48,8 +48,8 @@ public class ReportController extends BaseController {
     @PostMapping(value = "/sRecon")
     @ApiOperation(value = "客户、供应商应收应付款")
     @RequiresPermissions("report:recon:recon")
-    public R sReconVC(@RequestBody Map<String, Object> params, Model model) {
-        return reportService.sRecon(params);
+    public R sReconVC(@RequestBody SReconParam param) {
+        return reportService.sRecon(param);
     }
 
     /**
@@ -59,8 +59,8 @@ public class ReportController extends BaseController {
     @GetMapping(value = "/sRecon/export")
     @ApiOperation(value = "客户、供应商应收应付款-导出")
     @RequiresPermissions("report:recon:recon")
-    public void sReconVCExport(@RequestParam Map<String, Object> params, Model model) {
-        R r = reportService.sRecon(params);
+    public void sReconVCExport(@RequestParam SReconParam param) {
+        R r = reportService.sRecon(param);
         List<SReconResult> result = JSONUtil.toList(JSONUtil.toJsonStr(r.get("result")), SReconResult.class);
         PoiUtil.exportExcelWithStream("SReconResult.xls", SReconResult.class, result);
     }
@@ -70,16 +70,16 @@ public class ReportController extends BaseController {
      */
     @GetMapping("/saleProduct")
     @RequiresPermissions("report:report:report")
-    public String balance(@RequestParam Map<String, Object> params, Model model) {
+    public String balance() {
         return "report/saleProduct";
     }
 
 
     @ResponseBody
     @PostMapping(value = "/saleProduct")
-    @ApiOperation(value = "商品销售统计报表")
+    @ApiOperation(value = "销售统计报表")
     @RequiresPermissions("report:report:report")
-    public R saleProduct(@RequestBody Map<String, Object> params, Model model) {
-        return reportService.saleProduct(params);
+    public R saleProduct(@RequestBody SaleProductParam param) {
+        return reportService.saleProduct(param);
     }
 }

@@ -1,4 +1,8 @@
+
 $().ready(function() {
+
+	utils.loadEnumTypes(["STATUS_TYPE"], ["delFlag"], [{width: "100%", multiple: false}]);
+
 	validateRule();
 });
 
@@ -7,6 +11,7 @@ $.validator.setDefaults({
 		save();
 	}
 });
+
 function save() {
 	$.ajax({
 		cache : true,
@@ -18,10 +23,10 @@ function save() {
 			parent.layer.alert("网络超时");
 		},
 		success : function(data) {
-			if (data.code == 0) {
+			if (data.code === 0) {
 				parent.layer.msg("操作成功");
 				parent.reLoad();
-				var index = parent.layer.getFrameIndex(window.name);
+				let index = parent.layer.getFrameIndex(window.name);
 				parent.layer.close(index);
 
 			} else {

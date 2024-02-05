@@ -1,14 +1,14 @@
 package com.bootdo.modular.data.controller;
 
-import com.bootdo.core.pojo.request.Query;
-import com.bootdo.core.pojo.request.QueryJQ;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.data.domain.ProductDO;
+import com.bootdo.modular.data.param.ProductQryParam;
 import com.bootdo.modular.data.service.ProductService;
 import com.bootdo.modular.data.validator.DataValidator;
-import com.bootdo.modular.engage.domain.ProductCostDO;
+import com.bootdo.modular.engage.param.ProductCostQryParam;
+import com.bootdo.modular.engage.service.ProductCostService;
 import com.bootdo.modular.system.controller.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,13 +19,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 商品信息表
  *
  * @author yogiCai
- * @date 2018-02-16 16:30:26
+ * @since 2018-02-16 16:30:26
  */
 @Api(tags = "商品管理")
 @Controller
@@ -35,10 +34,11 @@ public class ProductController extends BaseController {
     private DataValidator dataValidator;
     @Resource
     private ProductService productService;
+    @Resource
+    private ProductCostService productCostService;
 
 
     @GetMapping()
-    @RequiresPermissions("data:product:product")
     public String product() {
         return "data/product/product";
     }
@@ -46,26 +46,15 @@ public class ProductController extends BaseController {
     @ResponseBody
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
-    @RequiresPermissions("data:product:product")
-    public PageR list(@RequestParam Map<String, Object> params) {
-        //查询列表数据
-        Query query = new Query(params);
-        List<ProductDO> productList = productService.list(query);
-        int total = productService.count(query);
-        return new PageR(productList, total);
+    public PageR list(ProductQryParam param) {
+        return productService.page(param);
     }
 
     @ResponseBody
     @GetMapping("/listJQ")
     @ApiOperation(value = "分页查询")
-    @RequiresPermissions("data:product:product")
-    public PageJQ listJQ(@RequestParam Map<String, Object> params) {
-        //查询列表数据
-        QueryJQ query = new QueryJQ(params);
-        List<ProductDO> productList = productService.list(query);
-        int total = productService.count(query);
-        int totalPage = total / (query.getLimit() + 1) + 1;
-        return new PageJQ(productList, totalPage, query.getPage(), total);
+    public PageJQ listJQ(ProductQryParam param) {
+        return productService.pageJQ(param);
     }
 
     @GetMapping("/add")
@@ -77,7 +66,7 @@ public class ProductController extends BaseController {
     @GetMapping("/edit/{id}")
     @RequiresPermissions("data:product:edit")
     public String edit(@PathVariable("id") Integer id, Model model) {
-        ProductDO product = productService.get(id);
+        ProductDO product = productService.getById(id);
         model.addAttribute("product", product);
         return "data/product/edit";
     }
@@ -88,56 +77,40 @@ public class ProductController extends BaseController {
     @RequiresPermissions("data:product:add")
     public R save(ProductDO product) {
         dataValidator.validateProduct(product);
-        if (productService.save(product) > 0) {
-            return R.ok();
-        }
-        return R.error();
+        productService.save(product);
+        return R.ok();
     }
 
     @ResponseBody
     @PostMapping("/update")
     @ApiOperation(value = "修改")
-    @RequiresPermissions("data:product:edit")
     public R update(ProductDO product) {
         dataValidator.validateProduct(product);
-        productService.update(product);
+        productService.updateById(product);
         return R.ok();
     }
 
     @PostMapping("/remove")
     @ResponseBody
     @ApiOperation(value = "删除")
-    @RequiresPermissions("data:product:remove")
     public R remove(Integer id) {
-        if (productService.remove(id) > 0) {
-            return R.ok();
-        }
-        return R.error();
+        productService.removeById(id);
+        return R.ok();
     }
 
     @PostMapping("/batchRemove")
     @ResponseBody
     @ApiOperation(value = "批量删除")
     @RequiresPermissions("data:product:batchRemove")
-    public R batchRemove(@RequestParam("ids[]") Integer[] ids) {
-        productService.batchRemove(ids);
+    public R batchRemove(@RequestParam("ids[]") List<Integer> ids) {
+        productService.removeBatchByIds(ids);
         return R.ok();
-    }
-
-    /**
-     * 资料-商品管理-商品成本查询
-     */
-    @GetMapping("/productCost")
-    @RequiresPermissions("data:product:product")
-    public String productCost() {
-        return "data/product/productCost";
     }
 
     /**
      * 报表-库存余量查询-商品成本查询（双击）
      */
     @GetMapping("/productCostB")
-    @RequiresPermissions("data:product:product")
     public String productCostB() {
         return "data/product/productCostB";
     }
@@ -145,13 +118,7 @@ public class ProductController extends BaseController {
     @ResponseBody
     @GetMapping("/listCost")
     @ApiOperation(value = "商品成本")
-    @RequiresPermissions("data:product:product")
-    public PageJQ listCost(@RequestParam Map<String, Object> params) {
-        //查询列表数据
-        QueryJQ query = new QueryJQ(params);
-        List<ProductCostDO> productList = productService.listCost(query);
-        int total = productService.countCost(query);
-        int totalPage = total / (query.getLimit() + 1) + 1;
-        return new PageJQ(productList, totalPage, query.getPage(), total);
+    public PageJQ listCost(ProductCostQryParam param) {
+        return productCostService.page(param);
     }
 }

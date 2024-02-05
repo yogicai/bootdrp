@@ -1,9 +1,11 @@
 let prefix = "/report";
 let type = $('#type').val();
 let tableGrid;
-let dataForm;
+let $tableList;
+let $dataForm;
 let start;
 let end;
+
 let initData = [];
 let colNamesC = ['编号', '客户名称', '年度',  '应收金额', '收款金额', '商品成本', '销售毛利', '欠款金额'];
 let colNamesV = ['编号', '供应商名称', '年度',  '应付金额', '付款金额', '', '', '欠款金额'];
@@ -51,21 +53,23 @@ let gridConfig = {
 };
 
 $(function() {
+    $dataForm = $('#search');
+    $tableList = $('#table_list');
+
+    utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
     if (type === 'CUSTOMER') {
-        utils.loadCategory(["CUSTOMER_DATA"], ["instituteId"], [{width:"150px"}]);
+        utils.loadCategory(["CUSTOMER_DATA"], ["instituteId"], [{width: "150px", liveSearch: true}]);
     } else {
-        utils.loadCategory(["VENDOR_DATA"], ["instituteId"], [{width:"150px"}]);
+        utils.loadCategory(["VENDOR_DATA"], ["instituteId"], [{width: "150px", liveSearch: true}]);
     }
-    dataForm = $("#search");
+
     load();
 });
 
 function load() {
-
-    utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-
     $.jgrid.defaults.styleUI = 'Bootstrap';
-    tableGrid = $("#table_list").jqGrid(gridConfig);
+
+    tableGrid = $tableList.jqGrid(gridConfig);
 
     $(window).bind('resize', function () {
         let width = $('.jqGrid_wrapper').width();
@@ -82,15 +86,13 @@ function loadGrid() {
         url: prefix + "/sRecon",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(dataForm.serializeObject()),
+        data: JSON.stringify($dataForm.serializeObject()),
         success: function (r) {
             if (r.code === 0) {
                 let _gridConfig = $.extend({}, gridConfig, {data: r.result});
                 $.jgrid.gridUnload('#table_list');
                 tableGrid = $('#table_list').jqGrid( _gridConfig );
                 tableGrid.trigger("reloadGrid", { fromServer: true });
-                // tableGrid.jqGrid('clearGridData');
-                // tableGrid.jqGrid('setGridParam', _gridConfig).trigger('reloadGrid');
 
                 collectTotal();
 
@@ -121,7 +123,7 @@ function collectTotal(){
 }
 
 function exportExcel() {
-    let queryParam = dataForm.serialize();
+    let queryParam = $dataForm.serialize();
     let url = prefix + "/sRecon/export?" + queryParam //下载地址
-    utils.download(url ,'SReconResult.xls')
+    utils.downloadAjax(url, 'SReconResult.xls')
 }

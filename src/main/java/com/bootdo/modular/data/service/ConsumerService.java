@@ -1,48 +1,47 @@
 package com.bootdo.modular.data.service;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bootdo.core.factory.PageFactory;
+import com.bootdo.core.pojo.response.PageJQ;
+import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.modular.data.dao.ConsumerDao;
 import com.bootdo.modular.data.domain.ConsumerDO;
+import com.bootdo.modular.data.param.ConsumerQryParam;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
 
 
 /**
  * @author L
  */
 @Service
-public class ConsumerService {
-    @Resource
-    private ConsumerDao consumerDao;
+public class ConsumerService extends ServiceImpl<ConsumerDao, ConsumerDO> {
 
-    public ConsumerDO get(Integer id) {
-        return consumerDao.get(id);
+    public PageR page(ConsumerQryParam param) {
+        return new PageR(this.pageList(PageFactory.defaultPage(), param));
     }
 
-    public List<ConsumerDO> list(Map<String, Object> map) {
-        return consumerDao.list(map);
+    public PageJQ pageJQ(ConsumerQryParam param) {
+        return new PageJQ(this.pageList(PageFactory.defaultPage(), param));
     }
 
-    public int count(Map<String, Object> map) {
-        return consumerDao.count(map);
+    public Page<ConsumerDO> pageList(Page<ConsumerDO> page, ConsumerQryParam param) {
+        LambdaQueryWrapper<ConsumerDO> queryWrapper = Wrappers.lambdaQuery(ConsumerDO.class)
+                .in(ObjectUtil.isNotEmpty(param.getType()), ConsumerDO::getType, StrUtil.split(param.getType(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotNull(param.getStatus()), ConsumerDO::getStatus, StrUtil.split(param.getStatus(), StrUtil.COMMA))
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), ConsumerDO::getUpdateTime, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), ConsumerDO::getUpdateTime, param.getEnd())
+                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(ConsumerDO::getNo, param.getSearchText()).or().like(ConsumerDO::getName, param.getSearchText()));
+
+        return this.page(page, queryWrapper);
     }
 
-    public int save(ConsumerDO consumer) {
-        return consumerDao.save(consumer);
-    }
-
-    public int update(ConsumerDO consumer) {
-        return consumerDao.update(consumer);
-    }
-
-    public int remove(Integer id) {
-        return consumerDao.remove(id);
-    }
-
-    public int batchRemove(Integer[] ids) {
-        return consumerDao.batchRemove(ids);
+    public ConsumerDO getByNo(String no) {
+        return this.getOne(Wrappers.lambdaQuery(ConsumerDO.class).eq(ConsumerDO::getNo, no));
     }
 
 }

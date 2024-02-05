@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @author chglee
  * @email 1992lcg@163.com
- * @date 2017-10-09 17:18:45
+ * @since 2017-10-09 17:18:45
  */
 public interface NotifyRecordService {
 

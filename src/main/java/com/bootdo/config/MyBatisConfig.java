@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * mybatis扩展插件配置
  *
  * @author xuyuxiang
- * @date 2020/3/18 10:49
+ * @since 2020/3/18 10:49
  */
 @Configuration
 public class MyBatisConfig {
@@ -22,7 +22,7 @@ public class MyBatisConfig {
      * mybatis-plus分页插件
      *
      * @author xuyuxiang
-     * @date 2020/3/31 15:42
+     * @since 2020/3/31 15:42
      */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
@@ -37,7 +37,7 @@ public class MyBatisConfig {
      * 自定义公共字段自动注入
      *
      * @author xuyuxiang
-     * @date 2020/3/31 15:42
+     * @since 2020/3/31 15:42
      */
     @Bean
     public MetaObjectHandler metaObjectHandler() {
@@ -48,7 +48,7 @@ public class MyBatisConfig {
      * 数据库id选择器
      *
      * @author xuyuxiang
-     * @date 2020/6/20 21:23
+     * @since 2020/6/20 21:23
      */
     @Bean
     public SnowyDatabaseIdProvider snowyDatabaseIdProvider() {

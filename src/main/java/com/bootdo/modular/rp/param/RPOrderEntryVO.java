@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * @author yogiCai
- * @date 2018-02-01 10:44:23
+ * @since 2018-02-01 10:44:23
  */
 @Data
 public class RPOrderEntryVO {

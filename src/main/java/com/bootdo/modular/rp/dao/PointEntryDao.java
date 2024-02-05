@@ -1,37 +1,21 @@
 package com.bootdo.modular.rp.dao;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bootdo.modular.rp.domain.PointEntryDO;
+import com.github.yulichang.base.MPJBaseMapper;
+import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * 客户积分
  *
  * @author yogiCai
- * @date 2018-03-06 23:17:49
+ * @since 2018-03-06 23:17:49
  */
-public interface PointEntryDao {
+public interface PointEntryDao extends MPJBaseMapper<PointEntryDO> {
 
-    PointEntryDO get(Integer id);
+    Page<PointEntryDO> listG(IPage<PointEntryDO> page, @Param("param") Map<String, Object> param);
 
-    List<PointEntryDO> list(Map<String, Object> map);
-
-    List<PointEntryDO> listG(Map<String, Object> map);
-
-    int count(Map<String, Object> map);
-
-    int countG(Map<String, Object> map);
-
-    int save(PointEntryDO pointEntry);
-
-    int saveBatch(List<PointEntryDO> pointEntryList);
-
-    int update(PointEntryDO pointEntry);
-
-    int remove(Integer id);
-
-    int batchRemove(Integer[] ids);
-
-    int delete(Map<String, Object> map);
 }

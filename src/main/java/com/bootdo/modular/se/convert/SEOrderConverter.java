@@ -1,5 +1,6 @@
 package com.bootdo.modular.se.convert;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.core.consts.Constant;
@@ -29,7 +30,7 @@ import java.util.Map;
 
 /**
  * @author yogiCai
- * @date 2018-03-06 20:54
+ * @since 2018-03-06 20:54
  **/
 public class SEOrderConverter {
 
@@ -94,20 +95,17 @@ public class SEOrderConverter {
         return orderDO;
     }
 
-    public static List<RPOrderSettleDO> convertRPOrderSettle(RPOrderDO rpOrderDO, SEOrderDO orderDO, Map<String, AccountDO> accountDOMap) {
-        List<RPOrderSettleDO> rpOrderSettleDOList = Lists.newArrayList();
+    public static List<RPOrderSettleDO> convertRPOrderSettle(RPOrderDO rpOrderDO, SEOrderDO orderDO, AccountDO accountDO) {
         RPOrderSettleDO rpOrderSettleDO = new RPOrderSettleDO();
         rpOrderSettleDO.setBillNo(rpOrderDO.getBillNo());
         rpOrderSettleDO.setSettleAccount(orderDO.getSettleAccount());
-        rpOrderSettleDO.setSettleName(accountDOMap.get(orderDO.getSettleAccount()).getName());
+        rpOrderSettleDO.setSettleName(accountDO.getName());
         rpOrderSettleDO.setPaymentAmount(orderDO.getPaymentAmount());
         rpOrderSettleDO.setRemark("");
-        rpOrderSettleDOList.add(rpOrderSettleDO);
-        return rpOrderSettleDOList;
+        return CollUtil.newArrayList(rpOrderSettleDO);
     }
 
     public static List<RPOrderEntryDO> convertRPOrderEntry(RPOrderDO rpOrderDO, SEOrderDO orderDO) {
-        List<RPOrderEntryDO> rpOrderEntryDOList = Lists.newArrayList();
         RPOrderEntryDO rpOrderEntryDO = new RPOrderEntryDO();
         rpOrderEntryDO.setBillNo(rpOrderDO.getBillNo());
         rpOrderEntryDO.setSrcBillDate(orderDO.getBillDate());
@@ -116,8 +114,7 @@ public class SEOrderConverter {
         rpOrderEntryDO.setSrcTotalAmount(orderDO.getTotalAmount());
         rpOrderEntryDO.setSrcPaymentAmount(BigDecimal.ZERO);
         rpOrderEntryDO.setCheckAmount(orderDO.getPaymentAmount());
-        rpOrderEntryDOList.add(rpOrderEntryDO);
-        return rpOrderEntryDOList;
+        return CollUtil.newArrayList(rpOrderEntryDO);
     }
 
     public static RPOrderDO convertRPOrder(SEOrderDO orderDO) {

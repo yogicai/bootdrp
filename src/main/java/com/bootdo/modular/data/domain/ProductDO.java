@@ -1,28 +1,28 @@
 package com.bootdo.modular.data.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 
 /**
  * 商品信息表
  *
  * @author yogiCai
- * @date 2017-11-18 22:41:14
+ * @since 2017-11-18 22:41:14
  */
+@TableName(value = "data_product")
 @Data
-public class ProductDO implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class ProductDO extends BaseEntity {
     /**
      *
      */
     private Integer id;
     /**
-     *
+     * 商品编号
      */
     private Integer no;
     /**
@@ -48,6 +48,7 @@ public class ProductDO implements Serializable {
     /**
      * 库存数量
      */
+    @TableField(exist = false)
     private BigDecimal costQty;
     /**
      * 采购价
@@ -60,6 +61,7 @@ public class ProductDO implements Serializable {
     /**
      * 成本单价
      */
+    @TableField(exist = false)
     private BigDecimal costPrice;
     /**
      * 仓库编号
@@ -73,13 +75,5 @@ public class ProductDO implements Serializable {
      * 状态
      */
     private Integer status = 0;
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-    /**
-     * 修改时间
-     */
-    private Date updateTime;
 
 }

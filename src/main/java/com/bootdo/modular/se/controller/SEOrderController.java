@@ -1,27 +1,29 @@
 package com.bootdo.modular.se.controller;
 
 import com.bootdo.core.annotation.Log;
-import com.bootdo.core.pojo.request.QueryJQ;
+import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.core.utils.PoiUtil;
+import com.bootdo.modular.po.param.OrderAuditParam;
 import com.bootdo.modular.se.domain.SEOrderDO;
+import com.bootdo.modular.se.param.SeOrderQryParam;
 import com.bootdo.modular.se.service.SEOrderService;
 import com.bootdo.modular.se.validator.SEOrderValidator;
 import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 购货订单
  *
  * @author yogiCai
- * @date 2018-02-18 16:50:26
+ * @since 2018-02-18 16:50:26
  */
 @Api(tags = "销售单")
 @Controller
@@ -41,20 +43,16 @@ public class SEOrderController {
     @ResponseBody
     @PostMapping(value = "/list")
     @RequiresPermissions("se:order:order")
-    public PageJQ listP(@RequestBody Map<String, Object> params) {
-        return list(params);
+    public PageJQ listP(@RequestBody SeOrderQryParam param) {
+        return list(param);
     }
 
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("se:order:order")
-    public PageJQ list(@RequestParam Map<String, Object> params) {
+    public PageJQ list(SeOrderQryParam param) {
         //查询列表数据
-        QueryJQ query = new QueryJQ(params);
-        List<SEOrderDO> orderList = seOrderService.list(query);
-        int total = seOrderService.count(query);
-        int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
-        return new PageJQ(orderList, totalPage, query.getPage(), total);
+        return seOrderService.page(param);
     }
 
     /**
@@ -63,10 +61,9 @@ public class SEOrderController {
     @ResponseBody
     @GetMapping("/export")
     @RequiresPermissions("po:order:order")
-    public void export(@RequestParam Map<String, Object> params) {
+    public void export(SeOrderQryParam param) {
         //查询列表数据
-        QueryJQ query = new QueryJQ(params, false);
-        List<SEOrderDO> orderList = seOrderService.list(query);
+        List<SEOrderDO> orderList = seOrderService.pageList(PageFactory.defalultAllPage(), param).getRecords();
         PoiUtil.exportExcelWithStream("SEOrderResult.xls", SEOrderDO.class, orderList);
     }
 
@@ -77,9 +74,9 @@ public class SEOrderController {
     @PostMapping("/audit")
     @ResponseBody
     @RequiresPermissions("se:order:audit")
-    public R audit(@RequestBody Map<String, Object> params) {
-        seOrderValidator.validateAudit(params);
-        seOrderService.audit(params);
+    public R audit(@RequestBody @Validated OrderAuditParam param) {
+        seOrderValidator.validateAudit(param);
+        seOrderService.audit(param);
         return R.ok();
     }
 

@@ -11,7 +11,7 @@ $(function () {
 
     utils.selectpicker('shopId', {multiple: true, noneSelectedText: '店铺'}, '/data/shop/selectPicker')
 
-    utils.loadEnumTypes(["ORDER_CG_STATUS", "AUDIT_STATUS", "BILL_SOURCE"], ["status", "audit", "billSource"], [{width: "100px", noneSelectedText: '收款状态', multiple: true}, {width: "100px", noneSelectedText: '审核状态', multiple: true}, {width: "80px", noneSelectedText: '来源', multiple: true}]);
+    utils.loadEnumTypes(["ORDER_CG_STATUS", "AUDIT_STATUS", "BILL_SOURCE"], ["status", "auditStatus", "billSource"], [{width: "100px", noneSelectedText: '收款状态', multiple: true}, {width: "100px", noneSelectedText: '审核状态', multiple: true}, {width: "80px", noneSelectedText: '来源', multiple: true}]);
 
     utils.loadCategory(["CUSTOMER_DATA"], ["consumerId"], [{width: "100px", noneSelectedText: '客户', liveSearch: true, multiple: true}]);
 
@@ -24,7 +24,8 @@ function load() {
 
     tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
-        datatype: "json", postData: $dataForm.serializeObject(),
+        datatype: "json",
+        postData: $dataForm.serializeObject(),
         height: window.innerHeight - 180,
         autowidth: true,
         shrinkToFit: false,

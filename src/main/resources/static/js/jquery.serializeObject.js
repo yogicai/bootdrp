@@ -18,7 +18,7 @@
 
         let result = {};
         let extend = function (i, element) {
-            var node = result[element.name];
+            let node = result[element.name];
 
             // If node with same name exists already, need to convert it to an array as it
             // is a multi-value field (i.e., checkboxes)
@@ -74,41 +74,47 @@
         "use strict";
 
         let obj = this;
-        $.each(jsonValue, function (name, ival) {
-            let $oinput = obj.find("[name=" + name + "]");
-            if ($oinput.attr("type") === "checkbox") {
-                if (ival !== null) {
-                    var checkboxObj = $("[name=" + name + "]");
-                    var checkArray = ival.split(";");
-                    for (var i = 0; i < checkboxObj.length; i++) {
-                        for (var j = 0; j < checkArray.length; j++) {
-                            if (checkboxObj[i].value === checkArray[j]) {
-                                checkboxObj[i].click();
+
+        $.each(jsonValue, function (name, value) {
+            let $input = obj.find("[name=" + name + "]");
+
+            $.each($input, function (index, item) {
+                let $item = $(item);
+                if ($item.attr("type") === "checkbox") {
+                    if (value !== null) {
+                        let checkboxObj = $("[name=" + name + "]");
+                        let checkArray = value.split(";");
+                        for (let i = 0; i < checkboxObj.length; i++) {
+                            for (let j = 0; j < checkArray.length; j++) {
+                                if (checkboxObj[i].value === checkArray[j]) {
+                                    checkboxObj[i].click();
+                                }
                             }
                         }
                     }
-                }
-            } else if ($oinput.attr("type") === "radio") {
-                $oinput.each(function () {
-                    let radioObj = $("[name=" + name + "]");
-                    for (var i = 0; i < radioObj.length; i++) {
-                        if (radioObj[i].value === ival) {
-                            radioObj[i].click();
+                } else if ($item.attr("type") === "radio") {
+                    $item.each(function () {
+                        let radioObj = $("[name=" + name + "]");
+                        for (let i = 0; i < radioObj.length; i++) {
+                            if (radioObj[i].value === value) {
+                                radioObj[i].click();
+                            }
                         }
-                    }
-                });
-            } else if ($oinput.attr("type") === "textarea") {
-                obj.find("[name=" + name + "]").html(ival);
-            } else if ($oinput.parent().hasClass('bootstrap-select')) {
-                obj.find("[name=" + name + "]").val(ival).trigger("change");
-            } else if ($oinput.attr("type") === "chosen" || $oinput.prop("type") === "select-one") {
-                obj.find("[name=" + name + "]").val(ival).trigger("chosen:updated");
-            } else {
-                obj.find("[name=" + name + "]").val(ival);
-            }
-        })
+                    });
+                } else if ($item.attr("type") === "textarea") {
+                    obj.find("[name=" + name + "]").html(value);
+                } else if ($item.parent().hasClass('bootstrap-select')) {
+                    obj.find("[name=" + name + "]").val(value).trigger("change");
+                } else if ($item.attr("type") === "chosen" || $item.prop("type") === "select-one") {
+                    obj.find("[name=" + name + "]").val(value).trigger("chosen:updated");
+                } else if ($item.attr("type") === "span") {
+                    obj.find("[name=" + name + "]").html(value);
+                } else {
+                    obj.find("[name=" + name + "]").val(value);
+                }
+            });
+        });
     };
-
 
     /**
      * 将form对象清空,chosen下拉控件特殊处理
@@ -118,13 +124,17 @@
 
         let obj = this;
         $(obj)[0].reset(); //jQuery中是没有reset()方法, 通过调用 DOM 中的reset方法来重置表单
-        let $oinput = obj.find("select");
-        $.each($oinput, function (index, item) {
-            if ($(item).attr("type") === "chosen") {
-                $(item).val('').trigger("chosen:updated");
+        let $input = obj.find("select, span");
+        $.each($input, function (index, item) {
+            let $item = $(item);
+            if ($item.attr("type") === "span") {
+                $item.html('');
             }
-            if ($(item).parent().hasClass('bootstrap-select')) {
-                $(item).val('').trigger("change");
+            if ($item.attr("type") === "chosen") {
+                $item.val('').trigger("chosen:updated");
+            }
+            if ($item.parent().hasClass('bootstrap-select')) {
+                $item.val('').trigger("change");
             }
         })
     };

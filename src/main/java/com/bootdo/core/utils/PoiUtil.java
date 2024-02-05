@@ -36,6 +36,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -328,6 +331,17 @@ public class PoiUtil {
             moneyCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
             moneyCellStyle.setDataFormat((short) BuiltinFormats.getBuiltinFormat("#,##0.00"));
         }
+    }
+
+    /**
+     * Lambda去重
+     *
+     * @param keyExtractor 属性对象
+     * @return 属性对象列表
+     */
+    public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>(8);
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
 }

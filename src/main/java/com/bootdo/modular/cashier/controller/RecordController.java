@@ -1,7 +1,6 @@
 package com.bootdo.modular.cashier.controller;
 
 import com.bootdo.core.annotation.Log;
-import com.bootdo.core.pojo.request.QueryJQ;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.cashier.domain.RecordDO;
@@ -17,13 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 日记账
  *
  * @author yogiCai
- * @date 2018-07-14 22:31:58
+ * @since 2018-07-14 22:31:58
  */
 @Api(tags = "日记账明细")
 @Controller

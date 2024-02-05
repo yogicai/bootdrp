@@ -5,8 +5,8 @@ package com.bootdo.core.consts;
  * common(00)、create（01）、cancel（02）、update（03）、payment（04）、shipment（05）、refund（06）、rights（07）、search（08）、settle（09）
  * purse(20)、shop(21), wpOrder(22)
  *
- * @Author: yogiCai
- * @Date: 2018-02-04 10:23:43
+ * @author yogiCai
+ * @since 2018-02-04 10:23:43
  */
 public class OrderStatusCode {
 

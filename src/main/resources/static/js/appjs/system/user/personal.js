@@ -14,7 +14,7 @@ $("#base_save").click(function () {
             $.ajax({
                 cache : true,
                 type : "POST",
-                url :"/sys/user/updatePeronal",
+                url :"/sys/user/updatePersonal",
                 data : $('#basicInfoForm').serialize(),
                 async : false,
                 error : function(request) {

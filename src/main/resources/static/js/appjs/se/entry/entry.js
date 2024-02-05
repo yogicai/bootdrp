@@ -6,6 +6,8 @@ let $tableList;
 let $dataForm;
 let $mask;
 let $consumerId;
+let loginUserId = utils.dataCache.loginUserInfo.userId
+
 let prefix = "/se/entry";
 let prefixOrder = "/se/order";
 let initData = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
@@ -18,8 +20,8 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDatePicker('date_1');
-
-    utils.loadCategory(["CUSTOMER_DATA", "ACCOUNT_DATA", "USER_DATA"], ["consumerId", "settleAccountTotal", "billerId"], [{width: "200px", liveSearch: true}, {width: "200px"}, {width: "200px"},]);
+    utils.loadCategory(["CUSTOMER_DATA", "ACCOUNT_DATA", "USER_DATA"], ["consumerId", "settleAccountTotal", "billerId"], [{width: "200px", liveSearch: true}, {width: "200px"}, {width: "200px", setValue: [loginUserId]}]
+    );
 
     load();
 });
@@ -62,10 +64,10 @@ function load() {
             { name:'remark', index:'remark', editable:true, width:150, editoptions: utils.commonEditOptions() },
             { name:'requestBillNo', index:'requestBillNo', editable:false, width:200 }
         ],
-        beforeSelectRow: function(rowid) {
-            if (rowid !== lastSel) {
+        beforeSelectRow: function (rowId) {
+            if (rowId !== lastSel) {
                 tableGrid.jqGrid('saveRow',lastSel); // save row
-                lastSel = rowid;
+                lastSel = rowId;
             }
             return true;
         },
@@ -92,10 +94,10 @@ function load() {
     });
 
     // 触发订单金额计算事件
-    $('[name="discountRateTotal"]').bind('blur', {amountOrder: collectValueTotal()}, utils.collectAmount);
-    $('[name="discountAmountTotal"]').bind('blur', {amountOrder: collectValueTotal()}, utils.collectAmount);
-    $('[name="paymentAmountTotal"]').bind('blur', {amountOrder: collectValueTotal()}, utils.collectAmount);
-    $('[name="expenseFeeTotal"]').bind('blur', {amountOrder: collectValueTotal()}, utils.collectAmount);
+    $('[name="discountRateTotal"]').bind('blur', {amountOrderFun: collectValueTotal}, utils.collectAmount);
+    $('[name="discountAmountTotal"]').bind('blur', {amountOrderFun: collectValueTotal}, utils.collectAmount);
+    $('[name="paymentAmountTotal"]').bind('blur', {amountOrderFun: collectValueTotal}, utils.collectAmount);
+    $('[name="expenseFeeTotal"]').bind('blur', {amountOrderFun: collectValueTotal}, utils.collectAmount);
 
 }
 
@@ -135,7 +137,8 @@ function collectValueTotal() {
     let expenseFeeTotal = $("#expenseFeeTotal").val() || 0;
     let purchaseFeeTotal = $("#purchaseFeeTotal").val() || 0;
     let totalAmountTotal = $("#totalAmountTotal").val() || 0;
-    amountOrder.valueObj = {totalQtyTotal: totalQtyTotal, entryAmountTotal: entryAmountTotal, discountAmountTotal: discountAmountTotal, expenseFeeTotal:  expenseFeeTotal, purchaseFeeTotal:  purchaseFeeTotal,totalAmountTotal: totalAmountTotal };
+    let paymentAmountTotal = $("#paymentAmountTotal").val() || 0;
+    amountOrder.valueObj = {totalQtyTotal: totalQtyTotal, entryAmountTotal: entryAmountTotal, discountAmountTotal: discountAmountTotal, paymentAmountTotal: paymentAmountTotal, expenseFeeTotal: expenseFeeTotal, purchaseFeeTotal: purchaseFeeTotal, totalAmountTotal: totalAmountTotal};
     return amountOrder;
 }
 
@@ -178,8 +181,8 @@ amountEntry = {
 };
 
 //获取编辑状态行数据
-function collectRow(rowid) {
-    let rowId = rowid || $tableList.jqGrid("getGridParam", "selrow");
+function collectRow(_rowId) {
+    let rowId = _rowId || $tableList.jqGrid("getGridParam", "selrow");
     let originRow = $("#table_list tr[id=" + (rowId) + "]");
     let entryPrice = originRow.find("[name='entryPrice']").val();
     let totalQty = originRow.find("[name='totalQty']").val();
@@ -192,18 +195,18 @@ function collectRow(rowid) {
 }
 
 //增加行
-function addRow(rowid){
+function addRow(rowId) {
     let rowData = {};
     let ids = tableGrid.jqGrid('getDataIDs');
     let maxId = ids.length === 0 ? 1 : Math.max.apply(Math, ids);
-    tableGrid.jqGrid('addRowData', maxId+1, rowData, 'after', rowid);//插入行
+    tableGrid.jqGrid('addRowData', maxId + 1, rowData, 'after', rowId);//插入行
 }
 
 //删除行
-function delRow(rowid) {
+function delRow(rowId) {
     let ids = tableGrid.jqGrid('getDataIDs')
     if (ids.length > 1) {
-        tableGrid.jqGrid('delRowData', rowid);
+        tableGrid.jqGrid('delRowData', rowId);
     } else {
         layer.msg('至少保留一个分录',{time:1000});
     }
@@ -238,7 +241,7 @@ function save(add) {
         }
     });
 
-    if ((entryTotalAmount - order.finalAmountTotal - order.discountAmountTotal) !== 0) {
+    if (_.round((entryTotalAmount - order.finalAmountTotal - order.discountAmountTotal), 2) !== 0) {
         layer.msg("单据商品非空分录金额与总金额不相等！");
         return;
     }
@@ -334,7 +337,7 @@ function add() {
 
 //订单表格插入数据
 function insertData(datas) {
-    if (!datas || datas.length <= 0) return;
+    if (_.isEmpty(datas)) return;
     let ids = tableGrid.jqGrid('getDataIDs');
     let maxId = ids.length === 0 ? 1 : Math.max.apply(Math, ids);
     let rowId = tableGrid.jqGrid("getGridParam", "selrow")
@@ -374,8 +377,8 @@ function addHead() {
 
 //设置供应商下拉框值
 function insertHead(data) {
-    if (!data) return;
-    $consumerId.val(data.no).trigger('refresh');
+    if (_.isEmpty(data)) return;
+    $consumerId.val(data.no).trigger('change');
 }
 
 //初始化订单数据

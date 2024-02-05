@@ -10,7 +10,7 @@ import java.util.Map;
  * 
  * @author ${author}
  * @email ${email}
- * @date ${datetime}
+ * @since ${datetime}
  */
 public interface ${className}Service {
 	

@@ -12,7 +12,7 @@ import java.util.Properties;
  * 数据库id选择器
  *
  * @author xuyuxiang
- * @date 2019/3/30 22:26
+ * @since 2019/3/30 22:26
  */
 public class SnowyDatabaseIdProvider implements DatabaseIdProvider {
 

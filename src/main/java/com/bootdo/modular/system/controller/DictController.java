@@ -1,23 +1,20 @@
 package com.bootdo.modular.system.controller;
 
 import cn.hutool.json.JSONUtil;
-import com.bootdo.core.consts.Constant;
 import com.bootdo.core.enums.EnumCollection;
-import com.bootdo.core.pojo.request.Query;
+import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.system.domain.DictDO;
-import com.bootdo.modular.system.service.DictService;
-import com.google.common.collect.ImmutableMap;
+import com.bootdo.modular.system.param.SysDictParam;
+import com.bootdo.modular.system.service.impl.DictService;
 import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +23,7 @@ import java.util.Map;
  *
  * @author chglee
  * @email 1992lcg@163.com
- * @date 2017-09-29 18:28:07
+ * @since 2017-09-29 18:28:07
  */
 @Api(tags = "数据字典")
 @Controller
@@ -44,13 +41,9 @@ public class DictController extends BaseController {
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("common:sysDict:sysDict")
-    public PageR list(@RequestParam Map<String, Object> params) {
+    public PageR list(SysDictParam param) {
         // 查询列表数据
-        Query query = new Query(params);
-        List<DictDO> sysDictList = sysDictService.list(query);
-        int total = sysDictService.count(query);
-        PageR pageR = new PageR(sysDictList, total);
-        return pageR;
+        return sysDictService.page(param);
     }
 
     @GetMapping("/add")
@@ -62,68 +55,40 @@ public class DictController extends BaseController {
     @GetMapping("/edit/{id}")
     @RequiresPermissions("common:sysDict:edit")
     String edit(@PathVariable("id") Long id, Model model) {
-        DictDO sysDict = sysDictService.get(id);
+        DictDO sysDict = sysDictService.getById(id);
         model.addAttribute("sysDict", sysDict);
         return "system/dict/edit";
     }
 
-    /**
-     * 保存
-     */
     @ResponseBody
     @PostMapping("/save")
     @RequiresPermissions("common:sysDict:add")
     public R save(DictDO sysDict) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        if (sysDictService.save(sysDict) > 0) {
-            return R.ok();
-        }
-        return R.error();
+        sysDictService.save(sysDict);
+        return R.ok();
     }
 
-    /**
-     * 修改
-     */
     @ResponseBody
     @RequestMapping("/update")
     @RequiresPermissions("common:sysDict:edit")
     public R update(DictDO sysDict) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        sysDictService.update(sysDict);
+        sysDictService.updateById(sysDict);
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
     @PostMapping("/remove")
     @ResponseBody
     @RequiresPermissions("common:sysDict:remove")
     public R remove(Long id) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        if (sysDictService.remove(id) > 0) {
-            return R.ok();
-        }
+        sysDictService.removeById(id);
         return R.error();
     }
 
-    /**
-     * 删除
-     */
     @PostMapping("/batchRemove")
     @ResponseBody
     @RequiresPermissions("common:sysDict:batchRemove")
-    public R remove(@RequestParam("ids[]") Long[] ids) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        sysDictService.batchRemove(ids);
+    public R remove(@RequestParam("ids[]") List<Integer> ids) {
+        sysDictService.removeBatchByIds(ids);
         return R.ok();
     }
 
@@ -133,10 +98,9 @@ public class DictController extends BaseController {
         return sysDictService.listType();
     }
 
-    // 类别已经指定增加
-    @GetMapping("/add/{type}/{description}")
+    @GetMapping("/addNew")
     @RequiresPermissions("common:sysDict:add")
-    String addD(Model model, @PathVariable("type") String type, @PathVariable("description") String description) {
+    String addD(Model model, String type, String description) {
         model.addAttribute("type", type);
         model.addAttribute("description", description);
         return "system/dict/add";
@@ -146,10 +110,8 @@ public class DictController extends BaseController {
     @GetMapping("/list/{type}")
     public List<DictDO> listByType(@PathVariable("type") String type) {
         // 查询列表数据
-        Map<String, Object> map = new HashMap<>(16);
-        map.put("type", type);
-        List<DictDO> dictList = sysDictService.list(map);
-        return dictList;
+        SysDictParam sysDictParam = SysDictParam.builder().type(type).build();
+        return sysDictService.pageList(PageFactory.defalultAllPage(), sysDictParam).getRecords();
     }
 
     /**
@@ -159,10 +121,7 @@ public class DictController extends BaseController {
     @GetMapping("/lists/{types}")
     public Map<String, List<DictDO>> listByTypes(@PathVariable("types") String types) {
         // 查询列表数据
-        Map<String, Object> map = new HashMap<>(16);
-        map.put("types", StringUtils.split(types, ","));
-        Map<String, List<DictDO>> dictMaps = sysDictService.lists(map);
-        return dictMaps;
+        return sysDictService.listMap(SysDictParam.builder().type(types).build());
     }
 
     /**
@@ -170,11 +129,9 @@ public class DictController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/listExtra")
-    public Map<String, List<Map<String, String>>> listExtra() {
+    public Map<String, List<Map<String, Object>>> listExtra() {
         // 查询列表数据
-        Map<String, Object> map = ImmutableMap.of("status", 1);
-        Map<String, List<Map<String, String>>> extraMaps = sysDictService.listExtra(map);
-        return extraMaps;
+        return sysDictService.listExtra();
     }
 
     /**

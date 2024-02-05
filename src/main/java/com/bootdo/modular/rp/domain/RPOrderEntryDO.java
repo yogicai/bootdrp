@@ -1,9 +1,11 @@
 package com.bootdo.modular.rp.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.bootdo.core.enums.BillType;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
+import lombok.experimental.FieldNameConstants;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -12,12 +14,12 @@ import java.util.Date;
  * 应收、应付票据核销目标单据
  *
  * @author yogiCai
- * @date 2018-02-21 21:23:27
+ * @since 2018-02-21 21:23:27
  */
+@FieldNameConstants
+@TableName(value = "rp_order_entry")
 @Data
-public class RPOrderEntryDO implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class RPOrderEntryDO extends BaseEntity {
     /**
      *
      */
@@ -50,13 +52,5 @@ public class RPOrderEntryDO implements Serializable {
      * 本次核销金额
      */
     private BigDecimal checkAmount;
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-    /**
-     * 修改时间
-     */
-    private Date updateTime;
 
 }

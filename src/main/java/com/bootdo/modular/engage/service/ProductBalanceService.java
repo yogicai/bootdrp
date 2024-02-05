@@ -8,7 +8,6 @@ import com.bootdo.core.utils.NumberUtils;
 import com.bootdo.modular.data.service.CostAmountCalculator;
 import com.bootdo.modular.data.service.CostAmountIResult;
 import com.bootdo.modular.engage.dao.ProductBalanceDao;
-import com.bootdo.modular.engage.dao.ProductCostDao;
 import com.bootdo.modular.engage.domain.ProductCostDO;
 import com.bootdo.modular.engage.param.BalanceAdjustParam;
 import com.bootdo.modular.engage.result.BalanceResult;
@@ -16,7 +15,6 @@ import com.bootdo.modular.engage.result.BalanceTotalResult;
 import com.bootdo.modular.engage.result.EntryBalanceResult;
 import com.bootdo.modular.wh.result.WHProductInfo;
 import com.bootdo.modular.wh.result.WHStockInfo;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -41,14 +39,14 @@ public class ProductBalanceService {
     @Resource
     private ProductBalanceDao productBalanceDao;
     @Resource
-    private ProductCostDao productCostDao;
+    private ProductCostService productCostService;
     @Resource
     private CostAmountCalculator costAmountCalculator;
-
 
     private final Set<String> poBillSet = Sets.newHashSet(BillType.CG_ORDER.name(), BillType.WH_RK_ORDER.name());
     private final Set<String> seBillSet = Sets.newHashSet(BillType.TH_ORDER.name(), BillType.WH_CK_ORDER.name());
 
+    
     @Transactional(rollbackFor = Exception.class)
     public BalanceResult pBalance(Map<String, Object> params) {
         List<Map<String, Object>> list = productBalanceDao.pBalance(params);
@@ -70,7 +68,7 @@ public class ProductBalanceService {
         }
         //处理商品成本信息
         Map<String, ProductCostDO> costDOMap = Maps.newHashMap();
-        List<ProductCostDO> costDOList = productCostDao.listLate(ImmutableMap.of("latest", true));
+        List<ProductCostDO> costDOList = productCostService.listLate(null);
         for (ProductCostDO costDO : costDOList) {
             costDOMap.put(costDO.getProductNo(), costDO);
         }
@@ -154,7 +152,7 @@ public class ProductBalanceService {
         List<Map<String, Object>> list = productBalanceDao.pBalance(params);
         //处理商品成本信息
         Map<String, ProductCostDO> costDOMap = Maps.newHashMap();
-        List<ProductCostDO> costDOList = productCostDao.listLate(ImmutableMap.of("latest", true));
+        List<ProductCostDO> costDOList = productCostService.listLate(null);
         for (ProductCostDO costDO : costDOList) {
             costDOMap.put(costDO.getProductNo(), costDO);
         }
@@ -196,7 +194,7 @@ public class ProductBalanceService {
         if (StrUtil.isNotBlank(balanceAdjustParam.getProductNos())) {
             productNoList = StrUtil.split(balanceAdjustParam.getProductNos(), StrUtil.COMMA);
         } else {
-            productNoList = productCostDao.listLate(ImmutableMap.of("latest", true)).stream()
+            productNoList = productCostService.listLate(null).stream()
                     .map(ProductCostDO::getProductNo).collect(Collectors.toList());
         }
         CostAmountIResult result = costAmountCalculator.adjustBillCost(productNoList);

@@ -58,7 +58,7 @@
 		insert into sys_log
 		(
 			`user_id`, 
-			`username`, 
+			`username`,
 			`operation`, 
 			`time`, 
 			`method`, 
@@ -69,7 +69,7 @@
 		values
 		(
 			#{userId}, 
-			#{username}, 
+			#{username},
 			#{operation}, 
 			#{time}, 
 			#{method}, 

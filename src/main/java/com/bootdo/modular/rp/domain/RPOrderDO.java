@@ -1,11 +1,16 @@
 package com.bootdo.modular.rp.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.BillSource;
 import com.bootdo.core.enums.BillType;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import com.google.common.collect.Lists;
 import lombok.Data;
+import lombok.experimental.FieldNameConstants;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -16,10 +21,12 @@ import java.util.List;
  * 收付款单
  *
  * @author yogiCai
- * @date 2018-02-21 21:23:27
+ * @since 2018-02-21 21:23:27
  */
+@FieldNameConstants
+@TableName(value = "rp_order")
 @Data
-public class RPOrderDO {
+public class RPOrderDO extends BaseEntity {
 
     private Integer id;
 
@@ -116,22 +123,21 @@ public class RPOrderDO {
     /**
      * 备注
      */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     @Excel(name = "备注", width = 20)
     private String remark;
 
-    /**
-     * 创建时间
-     */
-    @Excel(name = "创建时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
-    private Date createTime;
 
     /**
-     * 修改时间
+     * 订单分录
      */
-    @Excel(name = "修改时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
-    private Date updateTime;
-
+    @TableField(exist = false)
     private final List<RPOrderEntryDO> entryDOList = Lists.newArrayList();
+
+    /**
+     * 结算分录
+     */
+    @TableField(exist = false)
     private final List<RPOrderSettleDO> settleDOList = Lists.newArrayList();
 
 }

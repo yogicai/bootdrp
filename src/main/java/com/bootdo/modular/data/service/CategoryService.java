@@ -1,170 +1,107 @@
 package com.bootdo.modular.data.service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
-import com.bootdo.core.pojo.node.AsyncTree;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.node.Tree;
 import com.bootdo.core.utils.BuildTree;
+import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.modular.data.dao.CategoryDao;
-import com.bootdo.modular.data.dao.ProductDao;
 import com.bootdo.modular.data.domain.CategoryDO;
-import com.bootdo.modular.data.domain.ProductDO;
-import com.google.common.collect.*;
+import com.bootdo.modular.data.param.CategoryQryParam;
+import com.bootdo.modular.data.result.CategoryDataResult;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
  * @author L
  */
 @Service
-public class CategoryService {
+public class CategoryService extends ServiceImpl<CategoryDao, CategoryDO> {
     @Resource
     private CategoryDao categoryDao;
-    @Resource
-    private ProductDao productDao;
 
-    public CategoryDO get(Long categoryId) {
-        return categoryDao.get(categoryId);
+
+    public Page<CategoryDO> pageList(Page<CategoryDO> page, CategoryQryParam param) {
+        LambdaQueryWrapper<CategoryDO> queryWrapper = Wrappers.lambdaQuery(CategoryDO.class)
+                .in(ObjectUtil.isNotEmpty(param.getType()), CategoryDO::getType, StrUtil.split(param.getType(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getStatus()), CategoryDO::getStatus, StrUtil.split(param.getStatus(), StrUtil.COMMA))
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), CategoryDO::getUpdateTime, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), CategoryDO::getUpdateTime, param.getEnd())
+                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(CategoryDO::getName, param.getSearchText()));
+
+        return this.page(page, queryWrapper);
     }
 
-    public List<CategoryDO> list(Map<String, Object> map) {
-        return categoryDao.list(map);
-    }
+    public Tree<CategoryDO> getTree(CategoryQryParam param) {
+        List<CategoryDO> categoryDOList = this.pageList(PageFactory.defalultAllPage(), param).getRecords();
+        List<Tree<CategoryDO>> treeNodeList = categoryDOList.stream().map(category -> {
+            Tree<CategoryDO> treeNode = new Tree<>();
+            treeNode.setId(category.getCategoryId().toString());
+            treeNode.setParentId(category.getParentId().toString());
+            treeNode.setText(category.getName());
+            treeNode.setState(MapUtil.of("opened", true));
+            treeNode.setAttributes(MapUtil.of("type", category.getType()));
+            return treeNode;
+        }).collect(Collectors.toList());
 
-    public int count(Map<String, Object> map) {
-        return categoryDao.count(map);
-    }
-
-    public int save(CategoryDO category) {
-        return categoryDao.save(category);
-    }
-
-    public int update(CategoryDO category) {
-        return categoryDao.update(category);
-    }
-
-    public int remove(Long categoryId) {
-        return categoryDao.remove(categoryId);
-    }
-
-    public int batchRemove(Long[] categoryIds) {
-        return categoryDao.batchRemove(categoryIds);
-    }
-
-    public Tree<CategoryDO> getTree(Map<String, Object> params) {
-        List<Tree<CategoryDO>> trees = new ArrayList<Tree<CategoryDO>>();
-        List<CategoryDO> categoryDOList = categoryDao.list(params);
-        for (CategoryDO categoryDO : categoryDOList) {
-            Tree<CategoryDO> tree = new Tree<CategoryDO>();
-            tree.setId(categoryDO.getCategoryId().toString());
-            tree.setParentId(categoryDO.getParentId().toString());
-            tree.setText(categoryDO.getName());
-            Map<String, Object> state = new HashMap<>(16);
-            state.put("opened", true);
-            tree.setState(state);
-            Map<String, Object> attributes = new HashMap<>(16);
-            attributes.put("type", categoryDO.getType());
-            tree.setAttributes(attributes);
-            trees.add(tree);
-        }
         // 默认顶级菜单为０，根据数据库实际情况调整
-        Tree<CategoryDO> t = BuildTree.build(trees);
-        return t;
+        return BuildTree.build(treeNodeList);
     }
 
-    public List<AsyncTree<CategoryDO>> getAsyncTree(Map<String, Object> params) {
-        List<AsyncTree<CategoryDO>> trees = new ArrayList<>();
-        List<CategoryDO> categoryDOList = categoryDao.list(params);
-        for (CategoryDO categoryDO : categoryDOList) {
-            AsyncTree<CategoryDO> tree = new AsyncTree<>();
-            tree.setId(categoryDO.getCategoryId().toString());
-            tree.setParentId(categoryDO.getParentId().toString());
-            tree.setText(categoryDO.getName());
-            trees.add(tree);
-        }
-        // 默认顶级菜单为０，根据数据库实际情况调整
-        return BuildTree.buildAsync(trees);
+    /**
+     * 缓存_类目树
+     */
+    public Map<String, List<Tree<CategoryDO>>> listTree(CategoryQryParam param) {
+        Tree<CategoryDO> trees = getTree(param);
+        return trees.getChildren().stream().collect(Collectors.groupingBy(Tree::getType, Collectors.toList()));
     }
 
-    public List<AsyncTree<CategoryDO>> getAsyncTreeLeaf(Map<String, Object> params) {
-        List<AsyncTree<CategoryDO>> nodeList = Lists.newArrayList();
-        List<ProductDO> productDOList = productDao.list(ImmutableMap.of("type", MapUtil.getStr(params, "id")));
-        for (ProductDO productDO : productDOList) {
-            AsyncTree<CategoryDO> tree = new AsyncTree<>();
-            tree.setId(productDO.getNo().toString());
-            tree.setText(productDO.getName());
-            tree.setParentId(MapUtil.getStr(params, "id"));
-            tree.setLeaf(true);
-            nodeList.add(tree);
-        }
-        return nodeList;
-    }
-
-    public Map<String, List<Tree<CategoryDO>>> listTree(Map<String, Object> params) {
-        Tree<CategoryDO> trees = getTree(params);
-        Map<String, List<Tree<CategoryDO>>> listTree = Maps.newHashMap();
-        for (Tree<CategoryDO> node : trees.getChildren()) {
-            String type = MapUtil.getStr(node.getAttributes(), "type");
-            if (!listTree.containsKey(type)) {
-                listTree.put(type, new ArrayList<>());
-            }
-            listTree.get(type).add(node);
-        }
-        return listTree;
-    }
-
+    /**
+     * 缓存_类目数据
+     */
     public Map<String, List<Tree<Object>>> listTreeData(Map<String, Object> params) {
-        List<Tree<Object>> trees = new ArrayList<>();
-        List<Map<String, Object>> categoryData = categoryDao.listTreeData(params);
-
-        Set<String> categorySet = Sets.newHashSet();
-        for (Map<String, Object> map : categoryData) {
-            Tree<Object> tree = new Tree<>();
-            if (categorySet.add(MapUtil.getStr(map, "categoryId"))) {
-                tree.setId(MapUtil.getStr(map, "categoryId"));
-                tree.setParentId("0");
-                tree.setText(MapUtil.getStr(map, "name"));
-                Map<String, Object> attributes = new HashMap<>(16);
-                attributes.put("type", MapUtil.getStr(map, "type") + "_DATA");
-                tree.setAttributes(attributes);
-                trees.add(tree);
-            }
-            tree = new Tree<>();
-            tree.setId(MapUtil.getStr(map, "dataId"));
-            tree.setParentId(MapUtil.getStr(map, "categoryId"));
-            tree.setText(MapUtil.getStr(map, "dataName"));
-            Map<String, Object> attributes = new HashMap<>(16);
-            attributes.put("type", MapUtil.getStr(map, "type") + "_DATA");
-            tree.setAttributes(attributes);
-            trees.add(tree);
-        }
+        //所有类目及类目数据
+        List<CategoryDataResult> categoryData = categoryDao.listTreeData(params);
+        //类目节点
+        List<Tree<Object>> treeNodeList = categoryData.stream()
+                .filter(PoiUtil.distinctByKey(CategoryDataResult::getCategoryId)).map(data -> {
+                    Tree<Object> treeNode = new Tree<>();
+                    treeNode.setId(data.getCategoryId());
+                    treeNode.setParentId("0");
+                    treeNode.setText(data.getName());
+                    treeNode.setAttributes(MapUtil.of("type", data.getType() + "_DATA"));
+                    return treeNode;
+                }).collect(Collectors.toList());
+        //类目数据
+        treeNodeList.addAll(categoryData.stream().map(data -> {
+            Tree<Object> treeNode = new Tree<>();
+            treeNode.setId(data.getDataId());
+            treeNode.setParentId(data.getCategoryId());
+            treeNode.setText(data.getDataName());
+            treeNode.setAttributes(MapUtil.of("type", data.getType() + "_DATA"));
+            return treeNode;
+        }).collect(Collectors.toList()));
 
         // 默认顶级菜单为０，根据数据库实际情况调整
-        List<Tree<Object>> treeList = BuildTree.buildList(trees, ImmutableSet.of("0"));
-        Map<String, List<Tree<Object>>> listTree = Maps.newHashMap();
-        for (Tree<Object> node : treeList) {
-            String type = MapUtil.getStr(node.getAttributes(), "type");
-            if (!listTree.containsKey(type)) {
-                listTree.put(type, new ArrayList<>());
-            }
-            listTree.get(type).add(node);
-        }
-        return listTree;
+        List<Tree<Object>> treeList = BuildTree.buildList(treeNodeList, CollUtil.newHashSet("0"));
+        return treeList.stream().collect(Collectors.groupingBy(Tree::getType, Collectors.toList()));
     }
 
+    public Map<String, List<CategoryDO>> lists() {
 
-    public Map<String, List<CategoryDO>> lists(Map<String, Object> map) {
-        Map<String, List<CategoryDO>> maps = new HashMap<>();
-        List<CategoryDO> list = categoryDao.list(map);
-        for (CategoryDO categoryDO : list) {
-            if (!maps.containsKey(categoryDO.getType())) {
-                maps.put(categoryDO.getType(), new ArrayList<>());
-            }
-            maps.get(categoryDO.getType()).add(categoryDO);
-        }
-        return maps;
+        return this.list().stream().collect(Collectors.groupingBy(CategoryDO::getType, Collectors.toList()));
     }
 
 }

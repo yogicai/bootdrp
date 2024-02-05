@@ -1,69 +1,67 @@
 package com.bootdo.modular.wh.service;
 
-import com.bootdo.modular.data.dao.ConsumerDao;
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bootdo.modular.data.domain.ConsumerDO;
 import com.bootdo.modular.data.domain.StockDO;
+import com.bootdo.modular.data.service.ConsumerService;
 import com.bootdo.modular.data.service.StockService;
-import com.bootdo.modular.engage.dao.ProductCostDao;
 import com.bootdo.modular.engage.domain.ProductCostDO;
+import com.bootdo.modular.engage.service.ProductCostService;
+import com.bootdo.modular.po.param.OrderDetailParam;
 import com.bootdo.modular.wh.convert.WHOrderConverter;
-import com.bootdo.modular.wh.dao.WHOrderDao;
 import com.bootdo.modular.wh.dao.WHOrderEntryDao;
 import com.bootdo.modular.wh.domain.WHOrderDO;
 import com.bootdo.modular.wh.domain.WHOrderEntryDO;
 import com.bootdo.modular.wh.param.WHOrderEntryVO;
 import com.bootdo.modular.wh.param.WHOrderVO;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 /**
  * @author L
  */
 @Service
-public class WHOrderEntryService {
+public class WHOrderEntryService extends ServiceImpl<WHOrderEntryDao, WHOrderEntryDO> {
     @Resource
-    private WHOrderDao whOrderDao;
+    private WHOrderService whOrderService;
     @Resource
-    private WHOrderEntryDao whOrderEntryDao;
-    @Resource
-    private ConsumerDao consumerDao;
+    private ConsumerService consumerService;
     @Resource
     private StockService stockService;
     @Resource
-    private ProductCostDao productCostDao;
+    private ProductCostService productCostService;
 
     @Transactional(rollbackFor = Exception.class)
     public WHOrderDO save(WHOrderVO orderVO) {
-        ConsumerDO consumerDO = consumerDao.get(NumberUtils.toInt(orderVO.getDebtorId()));
-        Map<String, StockDO> stockDOMap = stockService.listStock(Maps.newHashMap());
-        Map<String, ProductCostDO> costDOMap = convertProductCostMap(orderVO);
+        ConsumerDO consumerDO = consumerService.getByNo(orderVO.getDebtorId());
+        Map<String, StockDO> stockMap = stockService.listStock();
+        Map<String, ProductCostDO> costMap = convertProductCostMap(orderVO);
         WHOrderDO orderDO = WHOrderConverter.convertOrder(orderVO, consumerDO);
-        List<WHOrderEntryDO> orderEntryDOList = WHOrderConverter.convertOrderEntry(orderVO, orderDO, stockDOMap, costDOMap);
+        List<WHOrderEntryDO> orderEntryDOList = WHOrderConverter.convertOrderEntry(orderVO, orderDO, stockMap, costMap);
         //订单入库
-        whOrderDao.save(orderDO);
-        whOrderEntryDao.delete(ImmutableMap.of("billNo", orderDO.getBillNo()));
-        whOrderEntryDao.saveBatch(orderEntryDOList);
+        whOrderService.saveOrUpdate(orderDO, Wrappers.lambdaUpdate(WHOrderDO.class).eq(WHOrderDO::getBillNo, orderDO.getBillNo()));
+        this.remove(Wrappers.lambdaQuery(WHOrderEntryDO.class).eq(WHOrderEntryDO::getBillNo, orderDO.getBillNo()));
+        this.saveBatch(orderEntryDOList);
+
         return orderDO;
     }
 
-    public WHOrderVO getOrderVO(Map<String, Object> params) {
-        List<WHOrderDO> orderDOList = whOrderDao.list(params);
-        List<WHOrderEntryDO> orderEntryDOList = whOrderEntryDao.list(params);
-        if (CollectionUtils.isEmpty(orderDOList) || CollectionUtils.isEmpty(orderEntryDOList)) {
+    public WHOrderVO getOrderVO(OrderDetailParam param) {
+        WHOrderDO orderDO = whOrderService.getOne(Wrappers.lambdaQuery(WHOrderDO.class).eq(WHOrderDO::getBillNo, param.getBillNo()));
+        List<WHOrderEntryDO> orderEntryDOList = this.list(Wrappers.lambdaQuery(WHOrderEntryDO.class).eq(WHOrderEntryDO::getBillNo, param.getBillNo()));
+        if (ObjectUtil.isEmpty(orderDO) || ObjectUtil.isEmpty(orderEntryDOList)) {
             return new WHOrderVO();
         }
         WHOrderVO orderVO = new WHOrderVO();
-        WHOrderDO orderDO = orderDOList.get(0);
         orderVO.setBillDate(orderDO.getBillDate());
         orderVO.setBillNo(orderDO.getBillNo());
         orderVO.setBillType(orderDO.getBillType());
@@ -93,16 +91,9 @@ public class WHOrderEntryService {
     }
 
     private Map<String, ProductCostDO> convertProductCostMap(WHOrderVO orderVO) {
-        List<String> entryNos = Lists.newArrayList();
-        Map<String, ProductCostDO> result = Maps.newHashMap();
-        List<WHOrderEntryVO> entryVOList = orderVO.getEntryVOList();
-        for (WHOrderEntryVO entryVO : entryVOList) {
-            entryNos.add(entryVO.getEntryId());
-        }
-        List<ProductCostDO> productCostDOList = productCostDao.listLate(ImmutableMap.of("productNos", entryNos));
-        for (ProductCostDO productCostDO : productCostDOList) {
-            result.put(productCostDO.getProductNo(), productCostDO);
-        }
-        return result;
+        List<String> entryNos = orderVO.getEntryVOList().stream().map(WHOrderEntryVO::getEntryId).collect(Collectors.toList());
+
+        return productCostService.listLate(entryNos).stream()
+                .collect(Collectors.toMap(ProductCostDO::getProductNo, Function.identity(), (o, n) -> o));
     }
 }

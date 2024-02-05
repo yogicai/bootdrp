@@ -1,9 +1,11 @@
 package com.bootdo.modular.engage.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -12,12 +14,11 @@ import java.util.Date;
  * 商品成本表
  *
  * @author yogiCai
- * @date 2018-03-17 19:35:03
+ * @since 2018-03-17 19:35:03
  */
+@TableName(value = "data_product_cost")
 @Data
-public class ProductCostDO implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class ProductCostDO extends BaseEntity {
     /**
      *
      */
@@ -30,11 +31,13 @@ public class ProductCostDO implements Serializable {
     /**
      * 商品名称
      */
+    @TableField(exist = false)
     @Excel(name = "商品名称", width = 20)
     private String productName;
     /**
      * 商品类型
      */
+    @TableField(exist = false)
     @Excel(name = "商品类型", dict = "PRODUCT")
     private String productType;
     /**
@@ -87,15 +90,5 @@ public class ProductCostDO implements Serializable {
      */
     @Excel(name = "备注", width = 25)
     private String remark;
-    /**
-     * 创建时间
-     */
-    @Excel(name = "创建时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
-    private Date createTime;
-    /**
-     * 修改时间
-     */
-    @Excel(name = "修改时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
-    private Date updateTime;
 
 }

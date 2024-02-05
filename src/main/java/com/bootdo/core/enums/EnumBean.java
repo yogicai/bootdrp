@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 
 /**
  * @author yogiCai
- * @date 2018-01-21 11:45:46
+ * @since 2018-01-21 11:45:46
  */
 public interface EnumBean<E extends Enum<?>> {
 

@@ -6,7 +6,20 @@
         this.dataCache.sysDict = {};
         this.dataCache.sysEnum = {};
         this.dataCache.categoryData = {};
+        this.dataCache.loginUserInfo = {};
     }
+
+    /* ========================================================================
+     * 登录用户
+     * ======================================================================== */
+    Utils.prototype.initLoginUserInfo = function initLoginUserInfo() {
+        $.ajax({
+            url: '/sys/user/loginUserInfo',
+            success: function (data) {
+                $.extend(utils.dataCache.loginUserInfo, data);
+            }
+        });
+    };
 
     /* ========================================================================
      * 数据缓存：数据字典、类目数据、枚举
@@ -245,22 +258,12 @@
      * 下拉框：数据字典、类目数据、枚举
      * ======================================================================== */
     //数据字典
-    Utils.prototype.loadTypes = function loadTypes(types, elementIds) {
+    Utils.prototype.loadTypes = function loadTypes(types, elementIds, options) {
         if (types.length === elementIds.length) {
             let sysDict = utils.dataCache.sysDict;
             for (let t = 0; t < types.length; t++) {
-                let html = "", data = sysDict[types[t]];
-                let element = $("#" + elementIds[t]);
-                let value = element.attr("value")
-                for (let i = 0; data != null && i < data.length; i++) {
-                    if (data[i].value === value) {
-                        html += '<option value="' + data[i].value + '" selected>' + data[i].name + '</option>'
-                    } else {
-                        html += '<option value="' + data[i].value + '">' + data[i].name + '</option>'
-                    }
-                }
-                element.append(html);
-                element.chosen({maxHeight: 100});
+                let data = sysDict[types[t]];
+                Utils.prototype.selectpickerLocal(elementIds[t], options && options[t], data);
             }
         }
     };
@@ -290,11 +293,10 @@
     //数据字典
     Utils.prototype.loadChosenStatic = function loadChosenStatic(elementIds, options) {
         for (let t = 0; t < elementIds.length; t++) {
-            let opts = $.extend({}, {maxHeight: 100, width: "100%"}, options && options[t]);
-            $("#" + elementIds[t]).chosen(opts);
+            let opts = $.extend({}, {width: "100%"}, options && options[t]);
+            Utils.prototype.selectpickerLocal(elementIds[t], options && options[t], []);
         }
     };
-
 
     /* ========================================================================
     *  bootstrap-select ajax初始化
@@ -326,18 +328,18 @@
             noneSelectedText: "请选择"
         };
         let option = $.extend(o, options);
-        let value = $element.attr("value") || '';
+        let value = _.defaultTo($element.attr('value'), '');
         let valueArray = value.split(',').filter(Boolean);
+        let valueArraySet = option && option.setValue;
         let html = Utils.prototype.selectpickerBuildOption(data);
-        $element.html(html);
-        $element.prop('multiple', options && options.multiple === true);
+        $element.append(html);
+        $element.prop('multiple', option.multiple === true);
         $element.selectpicker(option);
-        $element.selectpicker('deselectAll');
-        $element.selectpicker('val', valueArray);
+        $element.selectpicker('val', _.defaultTo(valueArraySet, valueArray));
     }
     Utils.prototype.selectpickerBuildOption = function selectPickerBuildOption(data) {
         let html = "";
-        if (!data) {
+        if (_.isEmpty(data)) {
             return html
         }
         if ($.isArray(data)) {
@@ -432,10 +434,12 @@
     // 订单金额计算事件
     Utils.prototype.collectAmount = function collectAmount(e) {
         let srcElement = e.target.getAttribute('name');
-        let totalObj = e.data['amountOrder']['totalObj'];
-        let valueObj = e.data['amountOrder']['valueObj'];
-        let elements = e.data['amountOrder']['elements'];
-        let formulas = e.data['amountOrder']['formula'];
+        let amountOrderFun = e.data['amountOrderFun']
+        let amountOrder = amountOrderFun && amountOrderFun();
+        let totalObj = amountOrder['totalObj'];
+        let valueObj = amountOrder['valueObj'];
+        let elements = amountOrder['elements'];
+        let formulas = amountOrder['formula'];
 
         valueObj[srcElement] = this.value;
         let calElements = elements[srcElement];
@@ -459,17 +463,6 @@
             $('[name="' + element + '"]').val(valueObj[element])
         }
     };
-
-    if (win.parent.utils != null) {
-        win.utils = new Utils();
-        win.utils.dataCache = win.parent.utils.dataCache;
-    } else {
-        win.utils = new Utils();
-        win.utils.initSysEnum("CATEGORY_TYPE");
-        win.utils.initCategory();
-        win.utils.initSysDict("data_category,data_area,data_unit,yes_no,data_brand,data_type,data_grade,data_status,data_wh_rk,data_wh_ck,oa_notify_type");
-        win.utils.initExtra();
-    }
 
     //jqGrid edit 选择商品列
     Utils.prototype.myElementAndValue = function myElementAndValue() {
@@ -741,6 +734,21 @@
         } else {
             return cellValue;
         }
+    }
+
+    /* ========================================================================
+    *  数据初始化
+    * ======================================================================== */
+    if (win.parent.utils != null) {
+        win.utils = new Utils();
+        win.utils.dataCache = win.parent.utils.dataCache;
+    } else {
+        win.utils = new Utils();
+        win.utils.initSysEnum("CATEGORY_TYPE");
+        win.utils.initCategory();
+        win.utils.initSysDict("data_category,data_area,data_unit,yes_no,data_brand,data_type,data_grade,data_status,data_wh_rk,data_wh_ck,oa_notify_type");
+        win.utils.initExtra();
+        win.utils.initLoginUserInfo();
     }
 
 }(window));

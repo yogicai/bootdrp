@@ -1,10 +1,12 @@
 let lastSel; //jqGrid最后编辑未保存的行号
 let tableGrid;
-let dataForm;
+let $tableList;
+let $dataForm;
+let $mask;
+
 let prefix = "/wh/entry";
 let prefixOrder = "/wh/order";
 let initData = [{},{},{}];
-let mask;
 
 let colNames_RK = ['','','商品名称','商品ID', '条形码',  '单位', '仓库', '数量', '入库单价', '入库金额', '备注'];
 let colNames_CK = ['','','商品名称','商品ID', '条形码',  '单位', '仓库', '数量', '出库单位成本', '入库成本', '备注'];
@@ -12,26 +14,27 @@ let billType = $('#billType').val();
 let colNames = billType === 'WH_RK_ORDER' ? colNames_RK : colNames_CK;
 let dataUrl = billType === 'WH_RK_ORDER' ? '/wh/order?billType=WH_RK_ORDER' : '/wh/order?billType=WH_CK_ORDER';
 
+
 $(function() {
-    dataForm  = $('#data_form');
-    mask = $('#mask');
+    $mask = $('#mask');
+    $dataForm = $('#data_form');
+    $tableList = $('#table_list');
+
+    utils.createDatePicker('date_1');
     if (billType === 'WH_RK_ORDER') {
-        utils.loadTypes(["data_wh_rk"], ["serviceType"]);
+        utils.loadTypes(["data_wh_rk"], ["serviceType"], [{width: "200px"}]);
     } else {
-        utils.loadTypes(["data_wh_ck"], ["serviceType"]);
+        utils.loadTypes(["data_wh_ck"], ["serviceType"], [{width: "200px"}]);
     }
-    utils.loadCategory(["CUSTOMER_DATA"], ["debtorId"], [{width:"200px"}]);
+    utils.loadCategory(["CUSTOMER_DATA"], ["debtorId"], [{width: "200px"}]);
 
     load();
 });
 
 function load() {
-
-    utils.createDatePicker('date_1');
-
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
-    tableGrid = $("#table_list").jqGrid({
+    tableGrid = $tableList.jqGrid({
         datatype : "local",
         data: initData,
         height: 'auto',
@@ -44,11 +47,13 @@ function load() {
         editurl: "clientArray",
         colNames: colNames,
         colModel: [
-            { name: 'act', width:60, fixed:true, sortable:false, resize:false, formatter : function(cellValue, options, rowObject) {
-                    let e = '<a class="btn btn-primary btn-xs" href="#" mce_href="#" onclick="addRow(' + options.rowId + ', tableGrid)"><i class="fa  fa-plus"></i></a> ';
-                    let d = '<a class="btn btn-warning btn-xs" href="#" mce_href="#" onclick="delRow('+ options.rowId + ', tableGrid)"><i class="fa fa-minus"></i></a> ';
-                    return e + d ;
-                }},
+            {
+                name: 'act', width: 60, fixed: true, sortable: false, resize: false, formatter: function (cellValue, options, rowObject) {
+                    let e = `<a class="btn btn-primary btn-xs" href="#" onclick="addRow('${options.rowId}', ${tableGrid})"><i class="fa fa-plus"></i></a> `;
+                    let d = `<a class="btn btn-warning btn-xs" href="#" onclick="delRow('${options.rowId}', ${tableGrid})"><i class="fa fa-minus"></i></a> `;
+                    return e + d;
+                }
+            },
             { name:'id', index:'id', editable:false, hidedlg:true, hidden:true},
             { name:'entryName', index:'entryName', editable:true, edittype:'custom', width:300, editoptions: utils.myElementAndValue() },
             { name:'entryId', index:'entryId', editable:false, width:70 },
@@ -59,17 +64,15 @@ function load() {
             { name:'entryPrice', index:'entryPrice', editable:true, width:100, align:"right", editoptions: utils.numberEditOptions(collectRow) },
             { name:'entryAmount', index:'entryAmount', editable:true, width:120, align:"right", editoptions: utils.numberEditOptions(collectRow) },
             { name:'remark', index:'remark', editable:true, width:100, editoptions: utils.commonEditOptions()  }
-        ],
-        beforeSelectRow: function(rowid) {
-            if (rowid !== lastSel) {
-                tableGrid.jqGrid('saveRow',lastSel); // save row
-                lastSel = rowid;
+        ], beforeSelectRow: function (rowId) {
+            if (rowId !== lastSel) {
+                tableGrid.jqGrid('saveRow', lastSel); // save row
+                lastSel = rowId;
             }
             return true;
-        },
-        onCellSelect: function(rowId,iCol,contents,event) {
+        }, onCellSelect: function (rowId, iCol, contents, event) {
             if (iCol > 1) {
-                tableGrid.jqGrid('editRow', rowId, { focusField: iCol });
+                tableGrid.jqGrid('editRow', rowId, {focusField: iCol});
 
             }
         },
@@ -82,8 +85,8 @@ function load() {
     $('.jqGrid_wrapper .ui-jqgrid').attr('style','overflow:auto');
 
     // 表格失去焦点保存Row数据
-    $(document).click(function(e) {
-        if(tableGrid.has(e.target).size() < 1 &&　lastSel) {
+    $(document).click(function (e) {
+        if (tableGrid.has(e.target).size() < 1 && lastSel) {
             tableGrid.jqGrid('saveRow', lastSel);  // save row
             lastSel = undefined;
             collectTotal();
@@ -93,20 +96,18 @@ function load() {
 
 //计算表格合计行数据
 function collectTotal(){
-    let totalQtyTotal=$("#table_list").getCol('totalQty',false,'sum');
-    let entryAmountTotal=$("#table_list").getCol('entryAmount',false,'sum');
+    let totalQtyTotal = $tableList.getCol('totalQty', false, 'sum');
+    let entryAmountTotal = $tableList.getCol('entryAmount', false, 'sum');
     // 设置表格合计项金额
-    $("#table_list").footerData('set', { entryName: '合计:', totalQty: totalQtyTotal, entryAmount: utils.priceFormat(entryAmountTotal) });
+    $tableList.footerData('set', {entryName: '合计:', totalQty: totalQtyTotal, entryAmount: utils.priceFormat(entryAmountTotal)});
 }
 
 // 自定义表格编辑框
 function myelem (value, options) {
-    let el =
-        '<div class="input-group">' +
-        '<input type="text" name="entryName" class="form-control" value="'+ value +'">' +
+    return '<div class="input-group">' +
+        '<input type="text" name="entryName" class="form-control" value="' + value + '">' +
         '<span class="input-group-btn"> <button type="button" class="btn btn-white" onclick="add()">...</button> </span>' +
         '</div>';
-    return el;
 }
 
 // 自定义表格编辑框get set方法
@@ -136,22 +137,22 @@ amountEntry = {
 };
 
 //获取编辑状态行数据
-function collectRow($rowId){
-    let rowId = $rowId || $("#table_list").jqGrid("getGridParam", "selrow");
-    let originRow = $("#table_list tr[id="+(rowId)+"]");
-    let entryPrice=originRow.find("[name='entryPrice']").val();
-    let totalQty=originRow.find("[name='totalQty']").val();
-    let entryAmount=originRow.find("[name='entryAmount']").val();
-    amountEntry.totalObj = { entryPrice: entryPrice, totalQty: totalQty, entryAmount: entryAmount };
+function collectRow(rowId) {
+    let _rowId = rowId || $tableList.jqGrid("getGridParam", "selrow");
+    let originRow = $("#table_list tr[id=" + (_rowId) + "]");
+    let entryPrice = originRow.find("[name='entryPrice']").val();
+    let totalQty = originRow.find("[name='totalQty']").val();
+    let entryAmount = originRow.find("[name='entryAmount']").val();
+    amountEntry.totalObj = {entryPrice: entryPrice, totalQty: totalQty, entryAmount: entryAmount};
     return amountEntry;
 }
 
 //增加行
-function addRow(rowid, tableGrid){
-    let rowData = { };
+function addRow(rowId, tableGrid) {
+    let rowData = {};
     let ids = tableGrid.jqGrid('getDataIDs');
-    let maxId = ids.length == 0 ? 1 : Math.max.apply(Math,ids);
-    tableGrid.jqGrid('addRowData', maxId+1, rowData, 'after', rowid);//插入行
+    let maxId = ids.length === 0 ? 1 : Math.max.apply(Math, ids);
+    tableGrid.jqGrid('addRowData', maxId + 1, rowData, 'after', rowId);//插入行
 }
 
 //删除行
@@ -160,28 +161,28 @@ function delRow(rowid, tableGrid) {
     if (ids.length > 1) {
         tableGrid.jqGrid('delRowData', rowid);
     } else {
-        layer.msg('至少保留一个分录',{time:1000});
+        layer.msg('至少保留一个分录', {time: 1000});
     }
 }
 
 //保存
 function save(add) {
-    let order = dataForm.serializeObject();
+    let order = $dataForm.serializeObject();
     let entryArr = tableGrid.jqGrid("getRowData");
     order.entryVOList = [];
 
-    if (order.serviceType == "" || order.billDate == "") {
-        layer.msg((order.serviceType == "" ? "【业务类型】" : "") + (order.billDate == "" ? "【单据日期】" : "") + "不能为空！");
+    if (_.isEmpty(order.serviceType) || _.isEmpty(order.billDate)) {
+        layer.msg((order.serviceType === "" ? "【业务类型】" : "") + (order.billDate === "" ? "【单据日期】" : "") + "不能为空！");
         return;
     }
 
     let validateFlag = true;
     $.each(entryArr, function (key, val) {
         delete val['act'];
-        if (val['entryName'] != "" && val['entryId'] != "") {
+        if (!_.isEmpty(val['entryName']) && !_.isEmpty(val['entryId'])) {
             order.entryVOList.push(val);
         }
-    });
+    })
 
     if (order.entryVOList.length <= 0) {
         layer.msg("单据分录不能为空！");
@@ -190,16 +191,16 @@ function save(add) {
 
     if (validateFlag) {
         $.ajax({
-            url : prefix+"/save",
-            type : "post",
+            url: prefix + "/save",
+            type: "post",
             // dataType: "json",
             contentType: "application/json; charset=utf-8",
-            data : JSON.stringify(order),
-            success : function(r) {
-                if (r.code == 0 && add == 1) { //保存并新增
+            data: JSON.stringify(order),
+            success: function (r) {
+                if (r.code === 0 && add === 1) { //保存并新增
                     initBillNo();
                     clearGrid();
-                } else if (r.code == 0) {
+                } else if (r.code === 0) {
                     initBillNo(r.billNo);
                 }
                 layer.msg(r.msg);
@@ -211,17 +212,16 @@ function save(add) {
 //审核
 function audit(type) {
     let billNo = $("#billNo").val();
-    if (billNo &&　billNo != "") {
+    if (!_.isEmpty(billNo)) {
         $.ajax({
-            url : prefixOrder+"/audit",
-            type : "post",
+            url: prefixOrder + "/audit",
+            type: "post",
             dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            data : JSON.stringify({ 'billNos' : [billNo],  'auditStatus' : type == 0 ? 'YES' : 'NO' }),
-            success : function(r) {
-                if (r.code == 0) {
-                    mask.removeClass('util-has-audit');
-                    mask.addClass('util-has-audit');
+            contentType: "application/json; charset=utf-8", data: JSON.stringify({'billNos': [billNo], 'auditStatus': type === 0 ? 'YES' : 'NO'}),
+            success: function (r) {
+                if (r.code === 0) {
+                    $mask.removeClass('util-has-audit');
+                    $mask.addClass('util-has-audit');
                 }
                 layer.msg(r.msg);
             }
@@ -236,7 +236,7 @@ function listOrder() {
     let dataIndex;
     //触发菜单单击
     window.parent.$(".J_menuItem").each(function (index) {
-        if ($(this).attr('href') == dataUrl) {
+        if ($(this).attr('href') === dataUrl) {
             window.parent.$(this).trigger('click');
             dataIndex = window.parent.$(this).data('index');
             return false;
@@ -244,8 +244,8 @@ function listOrder() {
     });
     //重新刷订单列表
     window.parent.$('.J_mainContent .J_iframe').each(function () {
-        if ($(this).data('id') == dataUrl) {
-            let win = window.parent.$('iframe[name="iframe' + dataIndex +'"]')[0].contentWindow;
+        if ($(this).data('id') === dataUrl) {
+            let win = window.parent.$('iframe[name="iframe' + dataIndex + '"]')[0].contentWindow;
             if (win.reLoad) {
                 win.reLoad();
             }
@@ -274,9 +274,9 @@ function add() {
 
 //订单表格插入数据
 function insertData(datas) {
-    if (!datas || datas.length <= 0) return;
+    if (_.isEmpty(datas)) return;
     let ids = tableGrid.jqGrid('getDataIDs');
-    let maxId = ids.length == 0 ? 1 : Math.max.apply(Math, ids);
+    let maxId = ids.length === 0 ? 1 : Math.max.apply(Math, ids);
     let rowId = tableGrid.jqGrid("getGridParam", "selrow")
     for (let i = 0; i < datas.length; i++) {
         if (i === 0) {
@@ -292,7 +292,7 @@ function insertData(datas) {
     ids = tableGrid.jqGrid('getDataIDs');
     $.each(ids, function (key, val) {
         let data = tableGrid.jqGrid("getRowData", val);
-        if (data['entryName'] == "") {
+        if (_.isEmpty(data['entryName'])) {
             tableGrid.setSelection(val, false);
             return false;
         }
@@ -327,13 +327,14 @@ function initOrder(billNo) {
             contentType: "application/json; charset=utf-8",
             data: {"billNo": billNo},
             success: function (r) {
-                if (r.code == 0) {
+                if (r.code === 0) {
+                    $dataForm.setForm(r.order);
+
                     tableGrid.clearGridData();
                     tableGrid.jqGrid('setGridParam', {data: r.order.entryVOList}).trigger('reloadGrid');
 
-                    dataForm.setForm(r.order);
-                    mask.removeClass('util-has-audit');
-                    mask.addClass(r.order && r.order.auditStatus == 'YES' ? 'util-has-audit' :'');
+                    $mask.removeClass('util-has-audit');
+                    $mask.addClass(r.order && r.order.auditStatus === 'YES' ? 'util-has-audit' : '');
 
                     initBillNo(r.order.billNo);
                 } else {
@@ -344,8 +345,8 @@ function initOrder(billNo) {
     } else {
         initBillNo();
         clearGrid();
-        dataForm.resetForm();
-        mask.removeClass('util-has-audit');
+        $dataForm.resetForm();
+        $mask.removeClass('util-has-audit');
     }
 }
 
@@ -356,13 +357,13 @@ function clearGrid() {
 }
 
 //设置单据号隐藏域值
-function initBillNo(ival) {
-    ival = ival || "";
+function initBillNo(iVal) {
+    iVal = iVal || "";
     $("[name=billNo]").each(function (index, element) {
-        if ($(element).prop("tagName") == "SPAN") {
-            $(element).html("单据编号: " + ival);
+        if ($(element).prop("tagName") === "SPAN") {
+            $(element).html("单据编号: " + iVal);
         } else {
-            $(element).val(ival);
+            $(element).val(iVal);
         }
     });
 }

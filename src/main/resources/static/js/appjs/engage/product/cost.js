@@ -1,5 +1,4 @@
 let prefix = "/engage/product/cost";
-let prefixCost = "/data/product";
 let tableGrid;
 let dataForm;
 let currentRow = {};
@@ -138,7 +137,7 @@ function searchCost(rowData) {
         maxmin : true,
         shadeClose : false, // 点击遮罩关闭层
         area : [ '1300px', '650px' ],
-        content : prefixCost + '/productCostB' // iframe的url
+        content: prefix + '/productCostB' // iframe的url
     });
 }
 

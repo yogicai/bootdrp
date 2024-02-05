@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * @author yogicai
- * @date 2018-01-20 18:28:07
+ * @since 2018-01-20 18:28:07
  */
 public interface EnumService {
 

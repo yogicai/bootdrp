@@ -53,8 +53,8 @@ public class PageFactory {
         return new Page<>(pageNo, pageSize);
     }
 
-    public static <T> Page<T> postPage(Integer pageNo, Integer pageSize) {
-        return new Page<>(pageNo, pageSize);
+    public static <T> Page<T> defalultAllPage() {
+        return new Page<>(1, Integer.MAX_VALUE);
     }
 
 }

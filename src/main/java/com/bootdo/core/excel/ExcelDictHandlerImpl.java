@@ -10,7 +10,8 @@ import com.bootdo.core.enums.EnumCollection;
 import com.bootdo.modular.data.domain.CategoryDO;
 import com.bootdo.modular.data.service.CategoryService;
 import com.bootdo.modular.system.domain.DictDO;
-import com.bootdo.modular.system.service.DictService;
+import com.bootdo.modular.system.param.SysDictParam;
+import com.bootdo.modular.system.service.impl.DictService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -43,9 +44,9 @@ public class ExcelDictHandlerImpl implements IExcelDictHandler {
     @PostConstruct
     public void init() {
         //字典
-        listDic = dictService.lists(null);
+        listDic = dictService.listMap(SysDictParam.builder().build());
         //类目管理
-        Map<String, List<CategoryDO>> listCategory = categoryService.lists(null);
+        Map<String, List<CategoryDO>> listCategory = categoryService.lists();
         listCategory.forEach((key, value) -> {
                     List<DictDO> dictDOList = value.stream().map(categoryDO -> {
                         DictDO dictDO = new DictDO();

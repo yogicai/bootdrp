@@ -1,19 +1,19 @@
 package com.bootdo.modular.data.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
-
-import java.io.Serializable;
 
 
 /**
  * 类别管理
  *
  * @author yogiCai
- * @date 2018-02-04 17:12:20
+ * @since 2018-02-04 17:12:20
  */
+@TableName(value = "data_category")
 @Data
-public class CategoryDO implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class CategoryDO extends BaseEntity {
 
     /**
      *

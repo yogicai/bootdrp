@@ -83,12 +83,12 @@ public class OrderConverter {
         return orderDO;
     }
 
-    public static List<RPOrderSettleDO> convertRPOrderSettle(RPOrderDO rpOrderDO, OrderDO orderDO, Map<String, AccountDO> accountDOMap) {
+    public static List<RPOrderSettleDO> convertRPOrderSettle(RPOrderDO rpOrderDO, OrderDO orderDO, AccountDO accountDO) {
         List<RPOrderSettleDO> rpOrderSettleDOList = Lists.newArrayList();
         RPOrderSettleDO rpOrderSettleDO = new RPOrderSettleDO();
         rpOrderSettleDO.setBillNo(rpOrderDO.getBillNo());
         rpOrderSettleDO.setSettleAccount(orderDO.getSettleAccount());
-        rpOrderSettleDO.setSettleName(accountDOMap.get(orderDO.getSettleAccount()).getName());
+        rpOrderSettleDO.setSettleName(accountDO.getName());
         rpOrderSettleDO.setPaymentAmount(orderDO.getPaymentAmount());
         rpOrderSettleDO.setRemark("");
         rpOrderSettleDOList.add(rpOrderSettleDO);

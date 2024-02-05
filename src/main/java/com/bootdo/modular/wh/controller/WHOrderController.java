@@ -2,12 +2,14 @@ package com.bootdo.modular.wh.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.Log;
-import com.bootdo.core.pojo.request.QueryJQ;
+import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.core.utils.PoiUtil;
+import com.bootdo.modular.po.param.OrderAuditParam;
 import com.bootdo.modular.system.controller.BaseController;
 import com.bootdo.modular.wh.domain.WHOrderDO;
+import com.bootdo.modular.wh.param.WHOrderQryParam;
 import com.bootdo.modular.wh.service.WHOrderService;
 import com.bootdo.modular.wh.validator.WHOrderValidator;
 import io.swagger.annotations.Api;
@@ -24,7 +26,7 @@ import java.util.Map;
  * 入库出库单
  *
  * @author yogiCai
- * @date 2018-02-25 11:17:02
+ * @since 2018-02-25 11:17:02
  */
 @Api(tags = "出库、入库单")
 @Controller
@@ -51,13 +53,9 @@ public class WHOrderController extends BaseController {
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("wh:order:order")
-    public PageJQ list(@RequestParam Map<String, Object> params) {
+    public PageJQ list(WHOrderQryParam param) {
         //查询列表数据
-        QueryJQ query = new QueryJQ(params);
-        List<WHOrderDO> orderList = whOrderService.list(query);
-        int total = whOrderService.count(query);
-        int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
-        return new PageJQ(orderList, totalPage, query.getPage(), total);
+        return whOrderService.page(param);
     }
 
     /**
@@ -66,10 +64,9 @@ public class WHOrderController extends BaseController {
     @ResponseBody
     @GetMapping("/export")
     @RequiresPermissions("po:order:order")
-    public void export(@RequestParam Map<String, Object> params) {
+    public void export(WHOrderQryParam param) {
         //查询列表数据
-        QueryJQ query = new QueryJQ(params, false);
-        List<WHOrderDO> orderList = whOrderService.list(query);
+        List<WHOrderDO> orderList = whOrderService.pageList(PageFactory.defalultAllPage(), param).getRecords();
         PoiUtil.exportExcelWithStream("WHOrderResult.xls", WHOrderDO.class, orderList);
     }
 
@@ -80,9 +77,9 @@ public class WHOrderController extends BaseController {
     @PostMapping("/audit")
     @ResponseBody
     @RequiresPermissions("wh:order:audit")
-    public R audit(@RequestBody Map<String, Object> params) {
-        whOrderValidator.validateAudit(params);
-        whOrderService.audit(params);
+    public R audit(@RequestBody OrderAuditParam param) {
+        whOrderValidator.validateAudit(param);
+        whOrderService.audit(param);
         return R.ok();
     }
 
