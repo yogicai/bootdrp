@@ -1,12 +1,11 @@
 package com.bootdo.modular.system.controller;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bootdo.core.consts.Constant;
 import com.bootdo.core.pojo.node.Tree;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.system.domain.DeptDO;
 import com.bootdo.modular.system.param.SysDeptParam;
-import com.bootdo.modular.system.service.impl.DeptService;
+import com.bootdo.modular.system.service.DeptService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -30,12 +29,12 @@ import java.util.List;
 public class DeptController extends BaseController {
     @Resource
     private DeptService sysDeptService;
-    private final String prefix = "system/dept";
+
 
     @GetMapping()
     @RequiresPermissions("system:sysDept:sysDept")
     String dept() {
-        return prefix + "/dept";
+        return "system/dept/dept";
     }
 
     @ApiOperation(value = "获取部门列表")
@@ -55,7 +54,7 @@ public class DeptController extends BaseController {
         } else {
             model.addAttribute("pName", sysDeptService.getById(pId).getName());
         }
-        return prefix + "/add";
+        return "system/dept/add";
     }
 
     @GetMapping("/edit/{deptId}")
@@ -69,7 +68,7 @@ public class DeptController extends BaseController {
             DeptDO parDept = sysDeptService.getById(sysDept.getParentId());
             model.addAttribute("parentDeptName", parDept.getName());
         }
-        return prefix + "/edit";
+        return "system/dept/edit";
     }
 
     @ResponseBody
@@ -92,17 +91,11 @@ public class DeptController extends BaseController {
     @ResponseBody
     @RequiresPermissions("system:sysDept:remove")
     public R remove(Long deptId) {
-        if (sysDeptService.count(Wrappers.lambdaQuery(DeptDO.class).eq(DeptDO::getParentId, deptId)) > 0) {
-            return R.error(1, "包含下级部门,不允许修改");
-        }
         if (sysDeptService.checkDeptHasUser(deptId)) {
-            if (sysDeptService.removeById(deptId)) {
-                return R.ok();
-            }
-        } else {
-            return R.error(1, "部门包含用户,不允许修改");
+            return R.error("部门包含部门或用户,不允许修改");
         }
-        return R.error();
+        sysDeptService.removeById(deptId);
+        return R.ok();
     }
 
     @PostMapping("/batchRemove")
@@ -121,7 +114,7 @@ public class DeptController extends BaseController {
 
     @GetMapping("/treeView")
     String treeView() {
-        return prefix + "/deptTree";
+        return "system/dept/deptTree";
     }
 
 }

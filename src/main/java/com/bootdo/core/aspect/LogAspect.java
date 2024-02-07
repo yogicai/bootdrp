@@ -89,6 +89,6 @@ public class LogAspect {
         Date date = new Date();
         sysLog.setGmtCreate(date);
         // 保存系统日志
-        logDao.save(sysLog);
+        logDao.insert(sysLog);
     }
 }

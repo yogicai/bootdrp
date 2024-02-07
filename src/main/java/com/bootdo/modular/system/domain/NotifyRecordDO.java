@@ -1,5 +1,6 @@
 package com.bootdo.modular.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.Date;
  * @email 1992lcg@163.com
  * @since 2017-10-10 11:08:06
  */
+@TableName(value = "oa_notify_record")
 @Data
 public class NotifyRecordDO {
     /**

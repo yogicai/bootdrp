@@ -1,5 +1,7 @@
 package com.bootdo.modular.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,9 +14,11 @@ import java.util.Date;
  * @email 1992lcg@163.com
  * @since 2017-09-22 13:16:10
  */
+@TableName(value = "blog_content")
 @Data
 public class ContentDO {
     //
+    @TableId
     private Long cid;
     //标题
     private String title;

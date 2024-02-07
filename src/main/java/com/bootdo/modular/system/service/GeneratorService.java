@@ -1,21 +1,43 @@
-/**
- *
- */
 package com.bootdo.modular.system.service;
 
+import cn.hutool.core.io.IoUtil;
+import com.bootdo.core.utils.GenUtils;
+import com.bootdo.modular.system.dao.GeneratorDao;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipOutputStream;
+
 
 /**
- * @author 1992lcg@163.com
- * @Time 2017年9月6日
- * @description
+ * @author L
  */
 @Service
-public interface GeneratorService {
-    List<Map<String, Object>> list();
+public class GeneratorService {
+    @Resource
+    private GeneratorDao generatorDao;
 
-    byte[] generatorCode(String[] tableNames);
+    public List<Map<String, Object>> list() {
+        List<Map<String, Object>> list = generatorDao.list();
+        return list;
+    }
+
+    public byte[] generatorCode(String[] tableNames) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ZipOutputStream zip = new ZipOutputStream(outputStream);
+        for (String tableName : tableNames) {
+            //查询表信息
+            Map<String, String> table = generatorDao.get(tableName);
+            //查询列信息
+            List<Map<String, String>> columns = generatorDao.listColumns(tableName);
+            //生成代码
+            GenUtils.generatorCode(table, columns, zip);
+        }
+        IoUtil.close(zip);
+        return outputStream.toByteArray();
+    }
+
 }

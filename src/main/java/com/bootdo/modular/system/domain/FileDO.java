@@ -1,5 +1,6 @@
 package com.bootdo.modular.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.Date;
  * @email 1992lcg@163.com
  * @since 2017-09-19 16:02:20
  */
+@TableName(value = "sys_file")
 @Data
 @NoArgsConstructor
 public class FileDO {
@@ -25,7 +27,6 @@ public class FileDO {
     private Date createDate;
 
     public FileDO(Integer type, String url, Date createDate) {
-        super();
         this.type = type;
         this.url = url;
         this.createDate = createDate;

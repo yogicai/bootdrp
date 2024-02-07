@@ -1,7 +1,6 @@
 $().ready(function() {
-	//loadType();
 	validateRule();
-    utils.loadTypes(["oa_notify_type"], ["type"]);
+	utils.loadTypes(["oa_notify_type"], ["type"], [{width: "100%"}]);
 });
 
 $.validator.setDefaults({
@@ -9,6 +8,7 @@ $.validator.setDefaults({
 		save();
 	}
 });
+
 function save() {
 	$.ajax({
 		cache : true,
@@ -20,10 +20,10 @@ function save() {
 			parent.layer.alert("Connection error");
 		},
 		success : function(data) {
-			if (data.code == 0) {
+			if (data.code === 0) {
 				parent.layer.msg("操作成功");
 				parent.reLoad();
-				var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+				let index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
 				parent.layer.close(index);
 
 			} else {
@@ -35,7 +35,7 @@ function save() {
 
 }
 function validateRule() {
-	var icon = "<i class='fa fa-times-circle'></i> ";
+	let icon = "<i class='fa fa-times-circle'></i> ";
 	$("#signupForm").validate({
 		rules : {
 			name : {
@@ -50,12 +50,12 @@ function validateRule() {
 	})
 }
 function loadType(){
-	var html = "";
+	let html = "";
 	$.ajax({
 		url : '/common/sysDict/list/oa_notify_type',
 		success : function(data) {
 			//加载数据
-			for (var i = 0; i < data.length; i++) {
+			for (let i = 0; i < data.length; i++) {
 				html += '<option value="' + data[i].value + '">' + data[i].name + '</option>'
 			}
 			$(".chosen-select").append(html);
@@ -65,10 +65,8 @@ function loadType(){
 			//点击事件
 			$('.chosen-select').on('change', function(e, params) {
 				console.log(params.selected);
-				var opt = {
-					query : {
-						type : params.selected,
-					}
+				let opt = {
+					query: {type: params.selected,}
 				}
 				$('#exampleTable').bootstrapTable('refresh', opt);
 			});
@@ -76,7 +74,7 @@ function loadType(){
 	});
 }
 
-var openUser = function(){
+let openUser = function () {
 	layer.open({
 		type:2,
 		title:"选择人员",

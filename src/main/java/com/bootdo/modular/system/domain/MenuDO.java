@@ -1,5 +1,7 @@
 package com.bootdo.modular.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
@@ -7,9 +9,11 @@ import java.util.Date;
 /**
  * @author L
  */
+@TableName(value = "sys_menu")
 @Data
 public class MenuDO {
     //
+    @TableId
     private Long menuId;
     // 父菜单ID，一级菜单为0
     private Long parentId;

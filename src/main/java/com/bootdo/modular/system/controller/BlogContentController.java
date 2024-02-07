@@ -1,10 +1,10 @@
 package com.bootdo.modular.system.controller;
 
-import com.bootdo.core.consts.Constant;
-import com.bootdo.core.pojo.request.Query;
+import cn.hutool.core.util.ObjectUtil;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.system.domain.ContentDO;
+import com.bootdo.modular.system.param.SysBlogParam;
 import com.bootdo.modular.system.service.BlogContentService;
 import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 文章内容
@@ -29,7 +28,7 @@ import java.util.Map;
 @RequestMapping("/blog/bContent")
 public class BlogContentController extends BaseController {
     @Resource
-    BlogContentService bBlogContentService;
+    private BlogContentService bBlogContentService;
 
     @GetMapping()
     @RequiresPermissions("blog:bContent:bContent")
@@ -40,12 +39,8 @@ public class BlogContentController extends BaseController {
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("blog:bContent:bContent")
-    public PageR list(@RequestParam Map<String, Object> params) {
-        Query query = new Query(params);
-        List<ContentDO> bContentList = bBlogContentService.list(query);
-        int total = bBlogContentService.count(query);
-        PageR pageR = new PageR(bContentList, total);
-        return pageR;
+    public PageR list(SysBlogParam param) {
+        return bBlogContentService.page(param);
     }
 
     @GetMapping("/add")
@@ -57,7 +52,7 @@ public class BlogContentController extends BaseController {
     @GetMapping("/edit/{cid}")
     @RequiresPermissions("blog:bContent:edit")
     String edit(@PathVariable("cid") Long cid, Model model) {
-        ContentDO bContentDO = bBlogContentService.get(cid);
+        ContentDO bContentDO = bBlogContentService.getById(cid);
         model.addAttribute("bContent", bContentDO);
         return "system/blog/bContent/edit";
     }
@@ -69,30 +64,13 @@ public class BlogContentController extends BaseController {
     @RequiresPermissions("blog:bContent:add")
     @PostMapping("/save")
     public R save(ContentDO bContent) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        if (bContent.getAllowComment() == null) {
-            bContent.setAllowComment(0);
-        }
-        if (bContent.getAllowFeed() == null) {
-            bContent.setAllowFeed(0);
-        }
-        if (null == bContent.getType()) {
-            bContent.setType("article");
-        }
+        bContent.setAllowComment(ObjectUtil.defaultIfNull(bContent.getAllowComment(), 0));
+        bContent.setAllowFeed(ObjectUtil.defaultIfNull(bContent.getAllowFeed(), 0));
+        bContent.setType(ObjectUtil.defaultIfNull(bContent.getType(), "article"));
         bContent.setGtmCreate(new Date());
         bContent.setGtmModified(new Date());
-        int count;
-        if (bContent.getCid() == null) {
-            count = bBlogContentService.save(bContent);
-        } else {
-            count = bBlogContentService.update(bContent);
-        }
-        if (count > 0) {
-            return R.ok().put("cid", bContent.getCid());
-        }
-        return R.error();
+        bBlogContentService.saveOrUpdate(bContent);
+        return R.ok().put("cid", bContent.getCid());
     }
 
     /**
@@ -102,11 +80,8 @@ public class BlogContentController extends BaseController {
     @ResponseBody
     @RequestMapping("/update")
     public R update(ContentDO bContent) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
         bContent.setGtmCreate(new Date());
-        bBlogContentService.update(bContent);
+        bBlogContentService.updateById(bContent);
         return R.ok();
     }
 
@@ -117,13 +92,8 @@ public class BlogContentController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     public R remove(Long id) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        if (bBlogContentService.remove(id) > 0) {
-            return R.ok();
-        }
-        return R.error();
+        bBlogContentService.removeById(id);
+        return R.ok();
     }
 
     /**
@@ -132,11 +102,8 @@ public class BlogContentController extends BaseController {
     @RequiresPermissions("blog:bContent:batchRemove")
     @PostMapping("/batchRemove")
     @ResponseBody
-    public R remove(@RequestParam("ids[]") Long[] cids) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        bBlogContentService.batchRemove(cids);
+    public R remove(@RequestParam("ids[]") List<Integer> cids) {
+        bBlogContentService.removeBatchByIds(cids);
         return R.ok();
     }
 }

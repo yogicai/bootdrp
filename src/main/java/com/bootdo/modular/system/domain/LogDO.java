@@ -1,5 +1,6 @@
 package com.bootdo.modular.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import java.util.Date;
 /**
  * @author L
  */
+@TableName(value = "sys_log")
 @Data
 public class LogDO {
     private Long id;

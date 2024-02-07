@@ -1,10 +1,10 @@
 package com.bootdo.modular.system.controller;
 
 import com.bootdo.core.annotation.Log;
-import com.bootdo.core.consts.Constant;
 import com.bootdo.core.pojo.node.Tree;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.system.domain.MenuDO;
+import com.bootdo.modular.system.param.SysMenuParam;
 import com.bootdo.modular.system.service.MenuService;
 import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -23,22 +23,20 @@ import java.util.List;
 @Controller
 public class MenuController extends BaseController {
     @Resource
-    MenuService menuService;
+    private MenuService menuService;
 
-    String prefix = "system/menu";
 
     @RequiresPermissions("sys:menu:menu")
     @GetMapping()
-    String menu(Model model) {
-        return prefix + "/menu";
+    String menu() {
+        return "system/menu/menu";
     }
 
     @RequiresPermissions("sys:menu:menu")
     @RequestMapping("/list")
     @ResponseBody
     List<MenuDO> list() {
-        List<MenuDO> menus = menuService.list();
-        return menus;
+        return menuService.list(new SysMenuParam());
     }
 
     @Log("添加菜单")
@@ -49,25 +47,25 @@ public class MenuController extends BaseController {
         if (pId == 0) {
             model.addAttribute("pName", "根目录");
         } else {
-            model.addAttribute("pName", menuService.get(pId).getName());
+            model.addAttribute("pName", menuService.getById(pId).getName());
         }
-        return prefix + "/add";
+        return "system/menu/add";
     }
 
     @Log("编辑菜单")
     @RequiresPermissions("sys:menu:edit")
     @GetMapping("/edit/{id}")
     String edit(Model model, @PathVariable("id") Long id) {
-        MenuDO mdo = menuService.get(id);
+        MenuDO mdo = menuService.getById(id);
         Long pId = mdo.getParentId();
         model.addAttribute("pId", pId);
         if (pId == 0) {
             model.addAttribute("pName", "根目录");
         } else {
-            model.addAttribute("pName", menuService.get(pId).getName());
+            model.addAttribute("pName", menuService.getById(pId).getName());
         }
         model.addAttribute("menu", mdo);
-        return prefix + "/edit";
+        return "system/menu/edit";
     }
 
     @Log("保存菜单")
@@ -75,14 +73,8 @@ public class MenuController extends BaseController {
     @PostMapping("/save")
     @ResponseBody
     R save(MenuDO menu) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        if (menuService.save(menu) > 0) {
-            return R.ok();
-        } else {
-            return R.error(1, "保存失败");
-        }
+        menuService.save(menu);
+        return R.ok();
     }
 
     @Log("更新菜单")
@@ -90,14 +82,8 @@ public class MenuController extends BaseController {
     @PostMapping("/update")
     @ResponseBody
     R update(MenuDO menu) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        if (menuService.update(menu) > 0) {
-            return R.ok();
-        } else {
-            return R.error(1, "更新失败");
-        }
+        menuService.updateById(menu);
+        return R.ok();
     }
 
     @Log("删除菜单")
@@ -105,29 +91,19 @@ public class MenuController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     R remove(Long id) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        if (menuService.remove(id) > 0) {
-            return R.ok();
-        } else {
-            return R.error(1, "删除失败");
-        }
+        menuService.removeById(id);
+        return R.ok();
     }
 
     @GetMapping("/tree")
     @ResponseBody
     Tree<MenuDO> tree() {
-        Tree<MenuDO> tree = new Tree<MenuDO>();
-        tree = menuService.getTree();
-        return tree;
+        return menuService.getTree();
     }
 
     @GetMapping("/tree/{roleId}")
     @ResponseBody
     Tree<MenuDO> tree(@PathVariable("roleId") Long roleId) {
-        Tree<MenuDO> tree = new Tree<MenuDO>();
-        tree = menuService.getTree(roleId);
-        return tree;
+        return menuService.getTree(roleId);
     }
 }

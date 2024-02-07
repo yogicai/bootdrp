@@ -1,4 +1,4 @@
-package com.bootdo.modular.system.service.impl;
+package com.bootdo.modular.system.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -21,7 +21,6 @@ import com.bootdo.core.utils.ImageUtils;
 import com.bootdo.core.utils.MD5Utils;
 import com.bootdo.core.utils.ShiroUtils;
 import com.bootdo.modular.system.dao.UserDao;
-import com.bootdo.modular.system.dao.UserRoleDao;
 import com.bootdo.modular.system.domain.DeptDO;
 import com.bootdo.modular.system.domain.FileDO;
 import com.bootdo.modular.system.domain.UserDO;
@@ -29,7 +28,6 @@ import com.bootdo.modular.system.domain.UserRoleDO;
 import com.bootdo.modular.system.param.SysUserParam;
 import com.bootdo.modular.system.result.LoginUserResult;
 import com.bootdo.modular.system.result.UserVO;
-import com.bootdo.modular.system.service.FileService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,7 +47,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService extends ServiceImpl<UserDao, UserDO> {
     @Resource
-    private UserRoleDao userRoleMapper;
+    private UserRoleService userRoleService;
     @Resource
     private DeptService deptService;
     @Resource
@@ -76,7 +74,7 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
 
     public UserDO getUser(Long id) {
         UserDO user = this.getById(id);
-        List<Long> roleIds = userRoleMapper.listRoleId(id);
+        List<Long> roleIds = userRoleService.listRoleId(id);
         user.setDeptName(deptService.getById(user.getDeptId()).getName());
         user.setRoleIds(roleIds);
         return user;
@@ -85,42 +83,40 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
     @Transactional
     public boolean save(UserDO user) {
         this.saveOrUpdate(user);
-        Long userId = user.getUserId();
-        List<Long> roles = user.getRoleIds();
-        userRoleMapper.removeByUserId(userId);
-        List<UserRoleDO> list = new ArrayList<>();
-        for (Long roleId : roles) {
-            UserRoleDO ur = new UserRoleDO();
-            ur.setUserId(userId);
-            ur.setRoleId(roleId);
-            list.add(ur);
-        }
-        if (!list.isEmpty()) {
-            userRoleMapper.batchSave(list);
-        }
-        return true;
+        userRoleService.removeByUserId(user.getUserId());
+
+        List<UserRoleDO> userRoleList = user.getRoleIds()
+                .stream()
+                .map(roleId -> UserRoleDO
+                        .builder()
+                        .userId(user.getUserId())
+                        .roleId(roleId)
+                        .build()
+                ).collect(Collectors.toList());
+
+        return userRoleService.saveBatch(userRoleList);
     }
 
-    public void update(UserDO user) {
+    @Transactional
+    public boolean update(UserDO user) {
         this.updateById(user);
-        Long userId = user.getUserId();
-        List<Long> roles = user.getRoleIds();
-        userRoleMapper.removeByUserId(userId);
-        List<UserRoleDO> list = new ArrayList<>();
-        for (Long roleId : roles) {
-            UserRoleDO ur = new UserRoleDO();
-            ur.setUserId(userId);
-            ur.setRoleId(roleId);
-            list.add(ur);
-        }
-        if (!list.isEmpty()) {
-            userRoleMapper.batchSave(list);
-        }
+        userRoleService.removeByUserId(user.getUserId());
+
+        List<UserRoleDO> userRoleList = user.getRoleIds()
+                .stream()
+                .map(roleId -> UserRoleDO
+                        .builder()
+                        .userId(user.getUserId())
+                        .roleId(roleId)
+                        .build()
+                ).collect(Collectors.toList());
+
+        return userRoleService.saveBatch(userRoleList);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void removeUser(Long userId) {
-        userRoleMapper.removeByUserId(userId);
+        userRoleService.removeByUserId(userId);
         this.removeById(userId);
     }
 
@@ -153,7 +149,7 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
     @Transactional
     public void batchRemove(List<Integer> userIds) {
         this.removeByIds(userIds);
-        userRoleMapper.batchRemoveByUserId(userIds);
+        userRoleService.removeByUserId(userIds);
     }
 
     public Tree<DeptDO> getTree() {
@@ -218,7 +214,7 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
             throw new Exception("图片裁剪错误！！");
         }
         Map<String, Object> result = new HashMap<>();
-        if (sysFileService.save(sysFile) > 0) {
+        if (sysFileService.save(sysFile)) {
             UserDO userDO = new UserDO();
             userDO.setUserId(userId);
             userDO.setPicId(sysFile.getId());

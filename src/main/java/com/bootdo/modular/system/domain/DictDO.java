@@ -5,7 +5,6 @@ import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 
 /**
@@ -32,17 +31,9 @@ public class DictDO extends BaseEntity {
     private BigDecimal sort;
     //父级编号
     private Long parentId;
-    //创建者
-    private Integer createBy;
-    //创建时间
-    private Date createDate;
-    //更新者
-    private Long updateBy;
-    //更新时间
-    private Date updateDate;
     //备注信息
     private String remarks;
-    //删除标记
-    private String delFlag;
+    //删除标记 1：已删除  0：正常
+    private Integer delFlag;
 
 }

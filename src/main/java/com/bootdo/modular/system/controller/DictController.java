@@ -7,7 +7,7 @@ import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.system.domain.DictDO;
 import com.bootdo.modular.system.param.SysDictParam;
-import com.bootdo.modular.system.service.impl.DictService;
+import com.bootdo.modular.system.service.DictService;
 import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
@@ -81,7 +81,7 @@ public class DictController extends BaseController {
     @RequiresPermissions("common:sysDict:remove")
     public R remove(Long id) {
         sysDictService.removeById(id);
-        return R.error();
+        return R.ok();
     }
 
     @PostMapping("/batchRemove")

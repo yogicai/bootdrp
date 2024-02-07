@@ -1,10 +1,7 @@
 package com.bootdo.modular.system.dao;
 
 import com.bootdo.modular.system.domain.NotifyDO;
-import com.bootdo.modular.system.domain.NotifyDTO;
-
-import java.util.List;
-import java.util.Map;
+import com.github.yulichang.base.MPJBaseMapper;
 
 /**
  * 通知通告
@@ -13,25 +10,6 @@ import java.util.Map;
  * @email 1992lcg@163.com
  * @since 2017-10-05 17:11:16
  */
-public interface NotifyDao {
+public interface NotifyDao extends MPJBaseMapper<NotifyDO> {
 
-    NotifyDO get(Long id);
-
-    List<NotifyDO> list(Map<String, Object> map);
-
-    int count(Map<String, Object> map);
-
-    int save(NotifyDO notify);
-
-    int update(NotifyDO notify);
-
-    int remove(Long id);
-
-    int batchRemove(Long[] ids);
-
-    List<NotifyDO> listByIds(Long[] ids);
-
-    int countDTO(Map<String, Object> map);
-
-    List<NotifyDTO> listDTO(Map<String, Object> map);
 }

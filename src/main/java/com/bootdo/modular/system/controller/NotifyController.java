@@ -1,11 +1,11 @@
 package com.bootdo.modular.system.controller;
 
 import com.bootdo.core.consts.Constant;
-import com.bootdo.core.pojo.request.Query;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.system.domain.NotifyDO;
 import com.bootdo.modular.system.domain.NotifyRecordDO;
+import com.bootdo.modular.system.param.SysNotifyParam;
 import com.bootdo.modular.system.service.NotifyRecordService;
 import com.bootdo.modular.system.service.NotifyService;
 import io.swagger.annotations.Api;
@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 通知通告
@@ -45,13 +43,9 @@ public class NotifyController extends BaseController {
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("oa:notify:notify")
-    public PageR list(@RequestParam Map<String, Object> params) {
+    public PageR list(SysNotifyParam param) {
         // 查询列表数据
-        Query query = new Query(params);
-        List<NotifyDO> notifyList = notifyService.list(query);
-        int total = notifyService.count(query);
-        PageR pageR = new PageR(notifyList, total);
-        return pageR;
+        return notifyService.page(param);
     }
 
     @GetMapping("/add")
@@ -63,7 +57,7 @@ public class NotifyController extends BaseController {
     @GetMapping("/edit/{id}")
     @RequiresPermissions("oa:notify:edit")
     String edit(@PathVariable("id") Long id, Model model) {
-        NotifyDO notify = notifyService.get(id);
+        NotifyDO notify = notifyService.getById(id);
         model.addAttribute("notify", notify);
         return "system/notify/edit";
     }
@@ -75,14 +69,9 @@ public class NotifyController extends BaseController {
     @PostMapping("/save")
     @RequiresPermissions("oa:notify:add")
     public R save(NotifyDO notify) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
         notify.setCreateBy(getUserId());
-        if (notifyService.save(notify) > 0) {
-            return R.ok();
-        }
-        return R.error();
+        notifyService.saveNotify(notify);
+        return R.ok();
     }
 
     /**
@@ -92,10 +81,7 @@ public class NotifyController extends BaseController {
     @RequestMapping("/update")
     @RequiresPermissions("oa:notify:edit")
     public R update(NotifyDO notify) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        notifyService.update(notify);
+        notifyService.updateById(notify);
         return R.ok();
     }
 
@@ -106,13 +92,8 @@ public class NotifyController extends BaseController {
     @ResponseBody
     @RequiresPermissions("oa:notify:remove")
     public R remove(Long id) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        if (notifyService.remove(id) > 0) {
-            return R.ok();
-        }
-        return R.error();
+        notifyService.removeNotify(id);
+        return R.ok();
     }
 
     /**
@@ -121,44 +102,32 @@ public class NotifyController extends BaseController {
     @PostMapping("/batchRemove")
     @ResponseBody
     @RequiresPermissions("oa:notify:batchRemove")
-    public R remove(@RequestParam("ids[]") Long[] ids) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        notifyService.batchRemove(ids);
+    public R remove(@RequestParam("ids[]") List<Long> ids) {
+        notifyService.batchRemoveNotify(ids);
         return R.ok();
     }
 
     @ResponseBody
     @GetMapping("/message")
     PageR message() {
-        Map<String, Object> params = new HashMap<>(16);
-        params.put("offset", 0);
-        params.put("limit", 3);
-        Query query = new Query(params);
-        query.put("userId", getUserId());
-        query.put("isRead", Constant.OA_NOTIFY_READ_NO);
-        return notifyService.selfList(query);
+        return notifyService.selfList(SysNotifyParam.builder().userId(getUserId()).isRead(Constant.OA_NOTIFY_READ_NO).build());
     }
 
     @GetMapping("/selfNotify")
-    String selefNotify() {
+    String selfNotify() {
         return "system/notify/selfNotify";
     }
 
     @ResponseBody
     @GetMapping("/selfList")
-    PageR selfList(@RequestParam Map<String, Object> params) {
-        Query query = new Query(params);
-        query.put("userId", getUserId());
-
-        return notifyService.selfList(query);
+    PageR selfList() {
+        return notifyService.selfList(SysNotifyParam.builder().userId(getUserId()).build());
     }
 
     @GetMapping("/read/{id}")
     @RequiresPermissions("oa:notify:edit")
     String read(@PathVariable("id") Long id, Model model) {
-        NotifyDO notify = notifyService.get(id);
+        NotifyDO notify = notifyService.getById(id);
         //更改阅读状态
         NotifyRecordDO notifyRecordDO = new NotifyRecordDO();
         notifyRecordDO.setNotifyId(id);

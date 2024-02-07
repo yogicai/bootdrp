@@ -1,5 +1,7 @@
 package com.bootdo.modular.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,6 +14,7 @@ import java.util.Date;
  * @email 1992lcg@163.com
  * @since 2017-10-05 17:11:16
  */
+@TableName(value = "oa_notify")
 @Data
 public class NotifyDO {
     //编号
@@ -37,8 +40,9 @@ public class NotifyDO {
     //备注信息
     private String remarks;
     //删除标记
-    private String delFlag;
+    private Integer delFlag;
 
+    @TableField(exist = false)
     private Long[] userIds;
 
 }

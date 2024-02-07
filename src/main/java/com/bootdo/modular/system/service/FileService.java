@@ -1,38 +1,61 @@
 package com.bootdo.modular.system.service;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bootdo.config.properties.BootdoProperties;
+import com.bootdo.core.factory.PageFactory;
+import com.bootdo.core.pojo.response.PageR;
+import com.bootdo.modular.system.dao.FileDao;
 import com.bootdo.modular.system.domain.FileDO;
+import com.bootdo.modular.system.param.SysFileParam;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
+
 
 /**
- * 文件上传
- *
- * @author chglee
- * @email 1992lcg@163.com
- * @since 2017-09-19 16:02:20
+ * @author L
  */
-public interface FileService {
+@Service
+public class FileService extends ServiceImpl<FileDao, FileDO> {
+    @Resource
+    private BootdoProperties bootdoProperties;
 
-    FileDO get(Long id);
+    public PageR page(SysFileParam param) {
+        return new PageR(this.pageList(PageFactory.defaultPage(), param));
+    }
 
-    List<FileDO> list(Map<String, Object> map);
+    public List<FileDO> list(SysFileParam param) {
+        return this.pageList(PageFactory.defalultAllPage(), param).getRecords();
+    }
 
-    int count(Map<String, Object> map);
+    public Page<FileDO> pageList(Page<FileDO> page, SysFileParam param) {
+        LambdaQueryWrapper<FileDO> queryWrapper = Wrappers.lambdaQuery(FileDO.class)
+                .in(ObjectUtil.isNotEmpty(param.getType()), FileDO::getType, StrUtil.split(param.getType(), StrUtil.COMMA))
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), FileDO::getCreateDate, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), FileDO::getCreateDate, param.getEnd());
 
-    int save(FileDO sysFile);
+        return this.page(page, queryWrapper);
+    }
 
-    int update(FileDO sysFile);
+    public void removeFile(Long id) {
+        FileDO fileDO = this.getById(id);
+        this.removeById(id);
+        FileUtil.del(bootdoProperties.getUploadPath() + fileDO.getUrl().replace("/files/", ""));
+    }
 
-    int remove(Long id);
-
-    int batchRemove(Long[] ids);
-
-    /**
-     * 判断一个文件是否存在
-     *
-     * @param url FileDO中存的路径
-     * @return
-     */
-    Boolean isExist(String url);
+    public Boolean isExist(String url) {
+        boolean isExist = false;
+        if (StrUtil.isNotBlank(url)) {
+            String filePath = bootdoProperties.getUploadPath() + url.replace("/files/", "");
+            return FileUtil.exist(filePath);
+        }
+        return isExist;
+    }
 }

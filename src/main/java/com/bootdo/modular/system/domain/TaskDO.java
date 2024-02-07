@@ -1,5 +1,6 @@
 package com.bootdo.modular.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.Date;
  * @email 1992lcg@163.com
  * @since 2017-09-25 15:09:21
  */
+@TableName(value = "sys_task")
 @Data
 public class TaskDO {
     //

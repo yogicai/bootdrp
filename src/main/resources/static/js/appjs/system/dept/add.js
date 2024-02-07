@@ -1,4 +1,6 @@
 $().ready(function() {
+	utils.loadEnumTypes(["STATUS_TYPE"], ["delFlag"], [{width: "100p%", multiple: false}]);
+
 	validateRule();
 });
 

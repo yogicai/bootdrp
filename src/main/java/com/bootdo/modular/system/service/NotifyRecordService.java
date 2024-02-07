@@ -1,37 +1,29 @@
 package com.bootdo.modular.system.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bootdo.modular.system.dao.NotifyRecordDao;
 import com.bootdo.modular.system.domain.NotifyRecordDO;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
 
 /**
- * 通知通告发送记录
- *
- * @author chglee
- * @email 1992lcg@163.com
- * @since 2017-10-09 17:18:45
+ * @author L
  */
-public interface NotifyRecordService {
+@Service
+public class NotifyRecordService extends ServiceImpl<NotifyRecordDao, NotifyRecordDO> {
 
-    NotifyRecordDO get(Long id);
+    @Transactional(rollbackFor = Exception.class)
+    public boolean changeRead(NotifyRecordDO notifyRecord) {
+        Wrapper<NotifyRecordDO> updateEntityWrapper = Wrappers.lambdaUpdate(NotifyRecordDO.class)
+                .set(NotifyRecordDO::getReadDate, notifyRecord.getReadDate())
+                .set(NotifyRecordDO::getIsRead, notifyRecord.getIsRead())
+                .eq(NotifyRecordDO::getNotifyId, notifyRecord.getNotifyId())
+                .eq(NotifyRecordDO::getUserId, notifyRecord.getUserId());
 
-    List<NotifyRecordDO> list(Map<String, Object> map);
+        return this.update(updateEntityWrapper);
+    }
 
-    int count(Map<String, Object> map);
-
-    int save(NotifyRecordDO notifyRecord);
-
-    int update(NotifyRecordDO notifyRecord);
-
-    int remove(Long id);
-
-    int batchRemove(Long[] ids);
-
-    /**
-     * 更改阅读状态
-     *
-     * @return
-     */
-    int changeRead(NotifyRecordDO notifyRecord);
 }

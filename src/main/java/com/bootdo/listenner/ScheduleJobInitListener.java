@@ -17,12 +17,12 @@ import javax.annotation.Resource;
 @Order(value = 1)
 public class ScheduleJobInitListener implements CommandLineRunner {
     @Resource
-    private JobService scheduleJobService;
+    private JobService jobService;
 
     @Override
     public void run(String... arg0) throws Exception {
         try {
-            scheduleJobService.initSchedule();
+            jobService.initSchedule();
         } catch (Exception e) {
             log.error("ScheduleJobInitListener.run error!", e);
         }

@@ -1,4 +1,4 @@
-package com.bootdo.modular.system.service.impl;
+package com.bootdo.modular.system.service;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -12,10 +12,13 @@ import com.bootdo.core.pojo.node.Tree;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.utils.BuildTree;
 import com.bootdo.modular.system.dao.DeptDao;
+import com.bootdo.modular.system.dao.UserDao;
 import com.bootdo.modular.system.domain.DeptDO;
+import com.bootdo.modular.system.domain.UserDO;
 import com.bootdo.modular.system.param.SysDeptParam;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +28,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class DeptService extends ServiceImpl<DeptDao, DeptDO> {
+    @Resource
+    private UserDao userDao;
+
 
     public PageR page(SysDeptParam param) {
         return new PageR(this.pageList(PageFactory.defaultPage(), param));
@@ -60,9 +66,9 @@ public class DeptService extends ServiceImpl<DeptDao, DeptDO> {
     }
 
     public boolean checkDeptHasUser(Long deptId) {
-        // TODO Auto-generated method stub
         //查询部门以及此部门的下级部门
-        return this.count(Wrappers.lambdaQuery(DeptDO.class).eq(DeptDO::getDeptId, deptId)) == 0;
+        return userDao.selectCount(Wrappers.lambdaQuery(UserDO.class).eq(UserDO::getDeptId, deptId)) > 0 ||
+                this.count(Wrappers.lambdaQuery(DeptDO.class).eq(DeptDO::getParentId, deptId)) > 0;
     }
 
 }

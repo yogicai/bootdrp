@@ -1,10 +1,9 @@
 package com.bootdo.modular.system.controller;
 
-import com.bootdo.core.consts.Constant;
-import com.bootdo.core.pojo.request.Query;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.system.domain.TaskDO;
+import com.bootdo.modular.system.param.SysTaskParam;
 import com.bootdo.modular.system.service.JobService;
 import io.swagger.annotations.Api;
 import org.springframework.stereotype.Controller;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author chglee
@@ -25,7 +23,7 @@ import java.util.Map;
 @RequestMapping("/common/job")
 public class JobController extends BaseController {
     @Resource
-    private JobService taskScheduleJobService;
+    private JobService jobService;
 
     @GetMapping()
     String taskScheduleJob() {
@@ -34,13 +32,9 @@ public class JobController extends BaseController {
 
     @ResponseBody
     @GetMapping("/list")
-    public PageR list(@RequestParam Map<String, Object> params) {
+    public PageR list(SysTaskParam param) {
         // 查询列表数据
-        Query query = new Query(params);
-        List<TaskDO> taskScheduleJobList = taskScheduleJobService.list(query);
-        int total = taskScheduleJobService.count(query);
-        PageR pageR = new PageR(taskScheduleJobList, total);
-        return pageR;
+        return jobService.page(param);
     }
 
     @GetMapping("/add")
@@ -50,7 +44,7 @@ public class JobController extends BaseController {
 
     @GetMapping("/edit/{id}")
     String edit(@PathVariable("id") Long id, Model model) {
-        TaskDO job = taskScheduleJobService.get(id);
+        TaskDO job = jobService.getById(id);
         model.addAttribute("job", job);
         return "system/job/edit";
     }
@@ -60,7 +54,7 @@ public class JobController extends BaseController {
      */
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id) {
-        TaskDO taskScheduleJob = taskScheduleJobService.get(id);
+        TaskDO taskScheduleJob = jobService.getById(id);
         return R.ok().put("taskScheduleJob", taskScheduleJob);
     }
 
@@ -70,13 +64,8 @@ public class JobController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     public R save(TaskDO taskScheduleJob) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        if (taskScheduleJobService.save(taskScheduleJob) > 0) {
-            return R.ok();
-        }
-        return R.error();
+        jobService.save(taskScheduleJob);
+        return R.ok();
     }
 
     /**
@@ -84,11 +73,8 @@ public class JobController extends BaseController {
      */
     @ResponseBody
     @PostMapping("/update")
-    public R update(TaskDO taskScheduleJob) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        taskScheduleJobService.update(taskScheduleJob);
+    public R update(TaskDO taskDO) {
+        jobService.updateById(taskDO);
         return R.ok();
     }
 
@@ -98,13 +84,8 @@ public class JobController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     public R remove(Long id) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        if (taskScheduleJobService.remove(id) > 0) {
-            return R.ok();
-        }
-        return R.error();
+        jobService.removeTask(id);
+        return R.ok();
     }
 
     /**
@@ -112,29 +93,17 @@ public class JobController extends BaseController {
      */
     @PostMapping("/batchRemove")
     @ResponseBody
-    public R remove(@RequestParam("ids[]") Long[] ids) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        taskScheduleJobService.batchRemove(ids);
-
+    public R remove(@RequestParam("ids[]") List<Integer> ids) {
+        jobService.batchRemoveTask(ids);
         return R.ok();
     }
 
     @PostMapping(value = "/changeJobStatus")
     @ResponseBody
     public R changeJobStatus(Long id, String cmd) {
-        if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
-            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
-        }
-        String label = "停止";
-        if ("start".equals(cmd)) {
-            label = "启动";
-        } else {
-            label = "停止";
-        }
+        String label = "start".equals(cmd) ? "启动" : "停止";
         try {
-            taskScheduleJobService.changeStatus(id, cmd);
+            jobService.changeStatus(id, cmd);
             return R.ok("任务" + label + "成功");
         } catch (Exception e) {
             e.printStackTrace();

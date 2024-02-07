@@ -20,7 +20,7 @@ import com.bootdo.modular.rp.param.RPOrderEntryVO;
 import com.bootdo.modular.rp.param.RPOrderSettleVO;
 import com.bootdo.modular.rp.param.RPOrderVO;
 import com.bootdo.modular.system.domain.UserDO;
-import com.bootdo.modular.system.service.impl.UserService;
+import com.bootdo.modular.system.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

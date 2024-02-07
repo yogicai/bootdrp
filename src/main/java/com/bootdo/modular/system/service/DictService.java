@@ -1,4 +1,4 @@
-package com.bootdo.modular.system.service.impl;
+package com.bootdo.modular.system.service;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;

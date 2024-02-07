@@ -11,7 +11,7 @@ import com.bootdo.modular.data.domain.CategoryDO;
 import com.bootdo.modular.data.service.CategoryService;
 import com.bootdo.modular.system.domain.DictDO;
 import com.bootdo.modular.system.param.SysDictParam;
-import com.bootdo.modular.system.service.impl.DictService;
+import com.bootdo.modular.system.service.DictService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
