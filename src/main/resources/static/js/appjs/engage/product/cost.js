@@ -1,27 +1,24 @@
 let prefix = "/engage/product/cost";
 let tableGrid;
-let dataForm;
+let $dataForm;
+let $tableList;
 let currentRow = {};
 
 $(function() {
-    load();
+    $dataForm = $('#search');
+    $tableList = $("#table_list");
+
+    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100px"}]);
     utils.loadEnumTypes(["COST_VERSION", "COST_TYPE"], ["version", "costType"], [{width:"120px"}, {width:"120px"}]);
     utils.loadCategory(["PRODUCT"], ["productType"], [{width:"120px"}]);
+
+    load();
 });
 
 function load() {
-    $('.input-daterange').datepicker({
-        language: "zh-CN",
-        todayBtn: "linked",
-        autoclose: true,
-        todayHighlight: true
-    });
-
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
-    dataForm  = $('#search');
-
-    tableGrid = $("#table_list").jqGrid({
+    tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
         datatype: "json",
         postData: {"version" : "CURRENT"},
@@ -33,10 +30,11 @@ function load() {
         rownumbers: true,
         rowNum: 50,
         rowList: [10, 20, 50, 100],
-        colNames: ['', '商品编号', '商品名称', '商品类别', '采购价', '成本单价', '库存数量', '库存变更', '库存余额', '成本', '成本时间', '类型', '关联单号', '备注', '修改时间'],
+        colNames: ['', '店铺', '商品编号', '商品名称', '商品类别', '采购价', '成本单价', '库存数量', '库存变更', '库存余额', '成本', '成本时间', '类型', '关联单号', '备注', '修改时间'],
         colModel: [
             { name:'id', index:'id', editable:false, width:50, hidden:true },
-            { name:'productNo', index:'productNo', editable:false, width:70 },
+            {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 70, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
+            {name: 'productNo', index: 'productNo', editable: false, width: 70},
             { name:'productName', index:'productName', editable:false, width:160 },
             { name:'productType', index:'productType', editable:false, width:70, formatter : function (value,row,index){ return utils.formatCategory(value, "PRODUCT") } },
             { name:'entryPrice', index:'entryPrice', editable:false, width:70, align:"right", formatter:"number" },
@@ -104,12 +102,12 @@ function search(pageBtn) {
     }
     inputPage = inputPage > totalPage ? totalPage : inputPage;
     inputPage = inputPage < 1 ? 1 : inputPage;
-    let postData = $.extend({}, dataForm.serializeObject(), { 'page': inputPage, 'rows': rowNum });
+    let postData = $.extend({}, $dataForm.serializeObject(), {'page': inputPage, 'rows': rowNum});
     tableGrid.jqGrid('setGridParam', {postData:  $.param(postData)}).trigger("reloadGrid");
 }
 
 function reLoad(type) {
-    let postData = $.extend({}, dataForm.serializeObject(), {'page': 1, 'rows': tableGrid.jqGrid('getGridParam', 'rowNum')});
+    let postData = $.extend({}, $dataForm.serializeObject(), {'page': 1, 'rows': tableGrid.jqGrid('getGridParam', 'rowNum')});
     tableGrid.jqGrid('setGridParam', {postData:  $.param(postData)}).trigger("reloadGrid");
 }
 
@@ -146,7 +144,7 @@ function getCurrentRow() {
 }
 
 function exportExcel() {
-    let queryParam = dataForm.serialize();
+    let queryParam = $dataForm.serialize();
     let url = prefix + "/export?" + queryParam //下载地址
-    utils.download(url ,'ProductCostResult.xls')
+    utils.downloadAjax(url, 'ProductCostResult.xls')
 }

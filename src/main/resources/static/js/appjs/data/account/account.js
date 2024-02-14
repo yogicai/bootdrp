@@ -1,16 +1,19 @@
-var prefix = "/data/account";
-var searchForm;
+let prefix = "/data/account";
+let $searchForm;
+let $exampleTable;
+
 $(function() {
-    searchForm  = $('#search');
+	$searchForm = $('#search');
+	$exampleTable = $('#exampleTable');
+
+	utils.createDateRangePicker('datepicker');
+	utils.loadCategory(["ACCOUNT"], ["type"], [{width: "120px"}]);
+
 	load();
-    utils.loadCategory(["ACCOUNT"], ["type"], [{width:"180px"}]);
 });
 
 function load() {
-
-    utils.createDateRangePicker('datepicker');
-
-    $('#exampleTable') .bootstrapTable(
+	$exampleTable.bootstrapTable(
             {
                 method : 'get', // 服务器数据的请求方式 get or post
                 url : prefix + "/list", // 服务器数据的加载地址
@@ -33,14 +36,14 @@ function load() {
                 showColumns : false, // 是否显示内容下拉框（选择显示的列）
                 sidePagination : "server", // 设置在哪里进行分页，可选值为"client" 或者 "server"
                 queryParams : function(params) {
-                    var param = {
+					let param = {
                         //说明：传入后台的参数包括offset开始索引，limit步长，sort排序列，order：desc或者,以及所有列的键值对
                         limit: params.limit,
                         offset:params.offset
                        // name:$('#searchName').val(),
                        // username:$('#searchName').val()
                     };
-                    return $.extend({}, param, searchForm.serializeObject());
+					return $.extend({}, param, $searchForm.serializeObject());
                 },
                 // //请求服务器数据时，你可以通过重写参数的方式添加一些额外的参数，例如 toolbar 中的参数 如果
                 // queryParamsType = 'limit' ,返回参数必须包含
@@ -60,26 +63,20 @@ function load() {
                     { field : 'status', title : '状态', formatter : utils.formatYN },
                     { field : 'createTime', title : '创建时间' },
                     { field : 'updateTime', title : '更新余额' },
-                    { field : 'id', title : '操作', align : 'center',
-                            formatter : function(value, row, index) {
-                                var e = '<a class="btn btn-primary btn-sm '+s_edit_h+'" href="#" mce_href="#" title="编辑" onclick="edit(\''
-                                        + row.id
-                                        + '\')"><i class="fa fa-edit"></i></a> ';
-                                var d = '<a class="btn btn-warning btn-sm '+s_remove_h+'" href="#" title="删除"  mce_href="#" onclick="remove(\''
-                                        + row.id
-                                        + '\')"><i class="fa fa-remove"></i></a> ';
-                                var f = '<a class="btn btn-success btn-sm" href="#" title="备用"  mce_href="#" onclick="resetPwd(\''
-                                        + row.id
-                                        + '\')"><i class="fa fa-key"></i></a> ';
-                                return e + d ;
-                            }
+					{
+						field: 'id', title: '操作', align: 'center', formatter: (value, row, index) => {
+							let e = `<a class="btn btn-primary btn-sm ${s_edit_h}" href="#" title="编辑" onclick="edit('${row.id}')"><i class="fa fa-edit"></i></a> `;
+							let d = `<a class="btn btn-warning btn-sm ${s_remove_h}" href="#" title="删除" onclick="remove('${row.id}')"><i class="fa fa-remove"></i></a> `;
+							let f = `<a class="btn btn-success btn-sm" href="#" title="备用" onclick="resetPwd('${row.id}')"><i class="fa fa-key"></i></a> `;
+							return e + d;
+						}
                     }
                 ]
             }
     );
 }
 function search() {
-    $('#exampleTable').bootstrapTable('refresh', { query: $.extend({offset:0}, searchForm.serializeObject()) });
+	$exampleTable.bootstrapTable('refresh', {query: $.extend({offset: 0}, $searchForm.serializeObject())});
 }
 function add() {
 	layer.open({
@@ -112,7 +109,7 @@ function remove(id) {
 				'id' : id
 			},
 			success : function(r) {
-				if (r.code==0) {
+				if (r.code === 0) {
 					layer.msg(r.msg);
                     search();
 				}else{
@@ -126,8 +123,8 @@ function remove(id) {
 function resetPwd(id) {
 }
 function batchRemove() {
-	var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
-	if (rows.length == 0) {
+	let rows = $exampleTable.bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
+	if (rows.length === 0) {
 		layer.msg("请选择要删除的数据");
 		return;
 	}
@@ -135,19 +132,17 @@ function batchRemove() {
 		btn : [ '确定', '取消' ]
 	// 按钮
 	}, function() {
-		var ids = new Array();
+		let ids = [];
 		// 遍历所有选择的行数据，取每条数据对应的ID
 		$.each(rows, function(i, row) {
 			ids[i] = row['id'];
 		});
 		$.ajax({
 			type : 'POST',
-			data : {
-				"ids" : ids
-			},
+			data: {"ids": ids},
 			url : prefix + '/batchRemove',
 			success : function(r) {
-				if (r.code == 0) {
+				if (r.code === 0) {
 					layer.msg(r.msg);
                     search();
 				} else {
@@ -156,6 +151,5 @@ function batchRemove() {
 			}
 		});
 	}, function() {
-
 	});
 }

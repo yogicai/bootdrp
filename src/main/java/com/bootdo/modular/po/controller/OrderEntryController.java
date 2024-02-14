@@ -44,7 +44,7 @@ public class OrderEntryController {
     @ResponseBody
     @PostMapping("/save")
     @RequiresPermissions("po:entry:add")
-    public R save(@RequestBody OrderVO order) {
+    public R save(@RequestBody @Validated OrderVO order) {
         orderValidator.validateSave(order);
         OrderDO orderDO = orderEntryService.save(order);
         return R.ok(MapUtil.of("billNo", orderDO.getBillNo()));

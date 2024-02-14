@@ -72,6 +72,17 @@ public class CategoryService extends ServiceImpl<CategoryDao, CategoryDO> {
      * 缓存_类目数据
      */
     public Map<String, List<Tree<Object>>> listTreeData(Map<String, Object> params) {
+        Map<String, List<Tree<Object>>> result = listTreeData(params, false);
+        result.putAll(listTreeData(params, true));
+        return result;
+    }
+
+    /**
+     * 缓存_类目数据
+     * @param params 查询参数
+     * @param filterScope 是否按店铺权限分类
+     */
+    public Map<String, List<Tree<Object>>> listTreeData(Map<String, Object> params, boolean filterScope) {
         //所有类目及类目数据
         List<CategoryDataResult> categoryData = categoryDao.listTreeData(params);
         //类目节点
@@ -81,7 +92,7 @@ public class CategoryService extends ServiceImpl<CategoryDao, CategoryDO> {
                     treeNode.setId(data.getCategoryId());
                     treeNode.setParentId("0");
                     treeNode.setText(data.getName());
-                    treeNode.setAttributes(MapUtil.of("type", data.getType() + "_DATA"));
+                    treeNode.setAttributes(MapUtil.of("type", data.getType() + "_DATA" + (filterScope ? ("_" + data.getShopNo()) : StrUtil.EMPTY)));
                     return treeNode;
                 }).collect(Collectors.toList());
         //类目数据
@@ -90,7 +101,7 @@ public class CategoryService extends ServiceImpl<CategoryDao, CategoryDO> {
             treeNode.setId(data.getDataId());
             treeNode.setParentId(data.getCategoryId());
             treeNode.setText(data.getDataName());
-            treeNode.setAttributes(MapUtil.of("type", data.getType() + "_DATA"));
+            treeNode.setAttributes(MapUtil.of("type", data.getType() + "_DATA" + (filterScope ? ("_" + data.getShopNo()) : StrUtil.EMPTY)));
             return treeNode;
         }).collect(Collectors.toList()));
 

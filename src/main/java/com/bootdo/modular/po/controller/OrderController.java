@@ -1,6 +1,7 @@
 package com.bootdo.modular.po.controller;
 
 import cn.hutool.core.map.MapUtil;
+import com.bootdo.core.annotation.DataScope;
 import com.bootdo.core.annotation.Log;
 import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
@@ -44,6 +45,7 @@ public class OrderController extends BaseController {
         return "po/order/order";
     }
 
+    @DataScope
     @ResponseBody
     @PostMapping(value = "/list")
     @RequiresPermissions("se:order:order")
@@ -51,17 +53,18 @@ public class OrderController extends BaseController {
         return list(param);
     }
 
+    @DataScope
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("po:order:order")
     public PageJQ list(OrderQryParam param) {
-        //查询列表数据
         return orderService.page(param);
     }
 
     /**
      * 单据列表导出
      */
+    @DataScope
     @ResponseBody
     @GetMapping("/export")
     @RequiresPermissions("po:order:order")

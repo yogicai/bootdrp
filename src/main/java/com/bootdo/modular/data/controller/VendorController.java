@@ -1,5 +1,7 @@
 package com.bootdo.modular.data.controller;
 
+import com.bootdo.core.annotation.DataScope;
+import com.bootdo.core.pojo.base.param.BaseParam.edit;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
@@ -13,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -38,19 +41,19 @@ public class VendorController extends BaseController {
         return "data/vendor/vendor";
     }
 
+    @DataScope
     @ResponseBody
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
     public PageR list(VendorQryParam param) {
-        //查询列表数据
         return vendorService.page(param);
     }
 
+    @DataScope
     @ResponseBody
     @GetMapping("/listJQ")
     @ApiOperation(value = "分页查询")
     public PageJQ listJQ(VendorQryParam param) {
-        //查询列表数据
         return vendorService.pageJQ(param);
     }
 
@@ -69,7 +72,7 @@ public class VendorController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     @ApiOperation(value = "保存")
-    public R save(VendorDO vendor) {
+    public R save(@Validated VendorDO vendor) {
         dataValidator.validateVendor(vendor);
         vendorService.save(vendor);
         return R.ok();
@@ -78,7 +81,7 @@ public class VendorController extends BaseController {
     @ResponseBody
     @PostMapping("/update")
     @ApiOperation(value = "修改")
-    public R update(VendorDO vendor) {
+    public R update(@Validated(edit.class) VendorDO vendor) {
         dataValidator.validateVendor(vendor);
         vendorService.updateById(vendor);
         return R.ok();

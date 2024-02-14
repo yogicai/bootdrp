@@ -119,6 +119,7 @@ public class OrderImportService {
 
                     seOrderVo = new SEOrderVO();
                     seOrderVo.setBillDate(date);
+                    seOrderVo.setShopNo(orderImportParam.getShopNo());
                     seOrderVo.setConsumerId(consumerDo.getNo().toString());
                     seOrderVo.setConsumerName(entity.getConsumerName());
                     seOrderVo.setDiscountAmountTotal(ObjUtil.defaultIfNull(entity.getDiscountAmount(), BigDecimal.ZERO));

@@ -24,6 +24,10 @@ public class CashierSalary extends BaseEntity {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
+    /**
+     * 店铺编号
+     */
+    private String shopNo;
 
     /**
      * 工资日期

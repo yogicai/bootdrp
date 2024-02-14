@@ -100,6 +100,7 @@ public class CostAmountCalculator {
             //退货单不影响单位成本，但要重新计算商品总成本及库存数量；没有历史单位成本的商品，单位成本价取采购价
             if (BillType.TH_ORDER.equals(orderDO.getBillType())) {
                 BigDecimal costPrice = ObjectUtil.defaultIfNull(costDOMap.get(entry.getEntryId()), ProductCostDO::getCostPrice, purchaseMap.get(entry.getEntryId()));
+                productCostDO.setShopNo(orderDO.getShopNo());
                 productCostDO.setProductNo(entry.getEntryId());
                 productCostDO.setEntryPrice(entry.getEntryPrice());
                 productCostDO.setEntryQty(entry.getTotalQty());
@@ -125,6 +126,7 @@ public class CostAmountCalculator {
                     //库存单位成本
                     BigDecimal costPrice = NumberUtils.div(amountFee, NumberUtils.toBigDecimal(entry.getTotalQty()), 6);
 
+                    productCostDO.setShopNo(orderDO.getShopNo());
                     productCostDO.setProductNo(entry.getEntryId());
                     productCostDO.setEntryPrice(entry.getEntryPrice());
                     productCostDO.setEntryQty(entry.getTotalQty());
@@ -144,6 +146,7 @@ public class CostAmountCalculator {
                     //库存成本 +　本次费用　+ 本次商品金额
                     BigDecimal amountFeeCost = NumberUtils.mul(costPrice, inventory).add(NumberUtils.mul(amountFee, mulFactor));
 
+                    productCostDO.setShopNo(orderDO.getShopNo());
                     productCostDO.setProductNo(entry.getEntryId());
                     productCostDO.setEntryPrice(entry.getEntryPrice());
                     productCostDO.setEntryQty(entry.getTotalQty());
@@ -159,6 +162,7 @@ public class CostAmountCalculator {
             } else {
                 //当前库存小于等于0则，库存成本、单价成本 都为0（已经没有库存了审核可能是因为采购单维护错误，所以不用上次计算出来的历史成本，用采购价）
                 if (inventoryC.compareTo(BigDecimal.ZERO) <= 0) {
+                    productCostDO.setShopNo(orderDO.getShopNo());
                     productCostDO.setProductNo(entry.getEntryId());
                     productCostDO.setEntryPrice(entry.getEntryPrice());
                     productCostDO.setEntryQty(entry.getTotalQty());
@@ -178,6 +182,7 @@ public class CostAmountCalculator {
                     //库存成本 +　本次费用　+ 本次商品金额
                     BigDecimal amountFeeCost = NumberUtils.mul(costPrice, inventory).add(NumberUtils.mul(amountFee, mulFactor));
 
+                    productCostDO.setShopNo(orderDO.getShopNo());
                     productCostDO.setProductNo(entry.getEntryId());
                     productCostDO.setEntryPrice(entry.getEntryPrice());
                     productCostDO.setEntryQty(entry.getTotalQty());
@@ -227,6 +232,7 @@ public class CostAmountCalculator {
 
             //销售单库存计算，不影响单位成本，但要重新计算商品总成本及库存数量
             ProductCostDO productCostDO = new ProductCostDO();
+            productCostDO.setShopNo(entry.getShopNo());
             productCostDO.setProductNo(entry.getEntryId());
             productCostDO.setEntryPrice(preProductCostDO.getEntryPrice());
             productCostDO.setEntryQty(entry.getTotalQty());
@@ -282,6 +288,7 @@ public class CostAmountCalculator {
             //仓库调整库存不影响单位成本，但要重新计算商品总成本及库存数量（因为仓库调整单没有商品进货价信息重新计算单位成本不合理）
             //没有历史单位成本的商品，单位成本价取采购价
             ProductCostDO productCostDO = new ProductCostDO();
+            productCostDO.setShopNo(orderDO.getShopNo());
             productCostDO.setProductNo(entry.getEntryId());
             productCostDO.setEntryPrice(entry.getEntryPrice());
             productCostDO.setEntryQty(entry.getTotalQty());
@@ -328,6 +335,7 @@ public class CostAmountCalculator {
                 String remark = inventory.compareTo(inventoryC) > 0 ? "减少" : "增加";
 
                 //仓库调整库存不影响单位成本，但要重新计算商品总成本及库存数量（因为仓库调整单没有商品进货价信息重新计算单位成本不合理）
+                productCostDO.setShopNo(v.getShopNo());
                 productCostDO.setProductNo(v.getProductNo());
                 productCostDO.setEntryPrice(v.getEntryPrice());
                 productCostDO.setEntryQty(inventory.subtract(inventoryC).abs());

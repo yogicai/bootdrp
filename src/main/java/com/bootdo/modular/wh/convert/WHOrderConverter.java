@@ -30,6 +30,7 @@ public class WHOrderConverter {
         BigDecimal qtyTotal = BigDecimal.ZERO;
         for (WHOrderEntryVO vo : orderVO.getEntryVOList()) {
             WHOrderEntryDO orderEntryDO = new WHOrderEntryDO();
+            orderEntryDO.setShopNo(orderDO.getShopNo());
             orderEntryDO.setBillNo(orderDO.getBillNo());
             orderEntryDO.setEntryId(vo.getEntryId());
             orderEntryDO.setEntryName(vo.getEntryName());
@@ -52,6 +53,7 @@ public class WHOrderConverter {
 
     public static WHOrderDO convertOrder(WHOrderVO orderVO, ConsumerDO consumerDO) {
         WHOrderDO orderDO = new WHOrderDO();
+        orderDO.setShopNo(orderDO.getShopNo());
         orderDO.setBillNo(StrUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoWH(orderVO.getBillType()) : orderVO.getBillNo());
         orderDO.setBillType(orderVO.getBillType());
         orderDO.setServiceType(orderVO.getServiceType());

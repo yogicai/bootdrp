@@ -1,10 +1,10 @@
 let prefix = "/data/consumer";
-let prefixCategory = "/data/category";
 let tableGrid;
 let $tableList;
 let $searchText;
 let $jsTree;
 
+let shopNo = window.parent.$('#shopNo').val();
 
 $(function() {
     $searchText = $('#searchText');
@@ -22,7 +22,7 @@ function load(categoryId) {
     tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
         datatype: "json",
-        postData: { "status": 1 },
+        postData: {status: 1, shopNo: shopNo},
         colNames: ['', '客户编号', '客户名称', '客户类别', '客户级别', '联系人电话', '客户地址', '状态'],
         colModel: [
             { name:'rowId', index:'', hidden: true, key: true, frozen : true },
@@ -88,10 +88,7 @@ function cancel() {
 //类目树加载
 function getTreeData() {
     $.ajax({
-        type : "GET",
-        data: { "type": "CUSTOMER" },
-        url : prefixCategory + "/tree",
-        success : function(tree) {
+        type: "GET", data: {"type": "CUSTOMER"}, url: "/data/category/tree", success: function (tree) {
             loadTree(tree);
         }
     });

@@ -14,8 +14,10 @@ import com.bootdo.modular.data.dao.DataShopDao;
 import com.bootdo.modular.data.domain.DataShop;
 import com.bootdo.modular.data.param.ShopQryParam;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 店铺表
@@ -39,6 +41,7 @@ public class ShopService extends ServiceImpl<DataShopDao, DataShop> {
         return new PageR(page);
     }
 
+    @Transactional
     public void add(DataShop dataShop) {
         if (ObjectUtil.isNull(dataShop.getId())) {
             DataShop dataShopDo = this.getOne(Wrappers.<DataShop>query().select("max(no) as no"));
@@ -51,6 +54,12 @@ public class ShopService extends ServiceImpl<DataShopDao, DataShop> {
         Wrapper<DataShop> queryWrapper = Wrappers.lambdaQuery(DataShop.class)
                 .like(DataShop::getManagerId, ShiroUtils.getUserId());
         return this.list(queryWrapper);
+    }
+
+    public List<Long> listShopNo(Long managerId) {
+        return this.list(Wrappers.lambdaQuery(DataShop.class).select(DataShop::getNo).like(DataShop::getManagerId, managerId))
+                .stream()
+                .map(DataShop::getNo).collect(Collectors.toList());
     }
 
 }

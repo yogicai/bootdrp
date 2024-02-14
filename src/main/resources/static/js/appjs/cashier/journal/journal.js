@@ -91,6 +91,7 @@ $(function () {
     $tableList3 = $("#table_list3");
 
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
+    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "120px"}]);
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
@@ -159,7 +160,7 @@ function collectTotal1() {
     let forCashTotal = $tableList1.getCol('forCash', false, 'sum');
     let loansTotal = $tableList1.getCol('loans', false, 'sum');
     let operationTotal = $tableList1.getCol('operation', false, 'sum');
-    let salaryTotal = $tableList1.getCol('balance', false, 'sum');
+    let salaryTotal = $tableList1.getCol('salary', false, 'sum');
     let marketTotal = $tableList1.getCol('market', false, 'sum');
     let totalAmountObj = {
         account: '合计:',
@@ -191,7 +192,7 @@ function collectTotal2() {
     let forCashTotal = $tableList2.getCol('forCash', false, 'sum');
     let loansTotal = $tableList2.getCol('loans', false, 'sum');
     let operationTotal = $tableList2.getCol('operation', false, 'sum');
-    let salaryTotal = $tableList2.getCol('balance', false, 'sum');
+    let salaryTotal = $tableList2.getCol('salary', false, 'sum');
     let marketTotal = $tableList2.getCol('market', false, 'sum');
     let totalAmountObj = {
         year: '合计:',

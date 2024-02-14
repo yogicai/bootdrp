@@ -2,7 +2,11 @@ package com.bootdo.modular.data.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.bootdo.core.pojo.base.entity.BaseEntity;
+import com.bootdo.core.pojo.base.param.BaseParam.edit;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -17,14 +21,17 @@ public class VendorDO extends BaseEntity {
     /**
      *
      */
+    @NotNull(groups = {edit.class})
     private Integer id;
     /**
      * 编号
      */
+    @NotNull
     private Integer no;
     /**
      * 供应商名称
      */
+    @NotBlank
     private String name;
     /**
      * 供应商类别
@@ -46,5 +53,10 @@ public class VendorDO extends BaseEntity {
      * 状态
      */
     private Integer status = 0;
+    /**
+     * 店铺编号
+     */
+    @NotBlank
+    private String shopNo;
 
 }

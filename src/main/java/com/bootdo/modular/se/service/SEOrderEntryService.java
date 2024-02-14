@@ -74,6 +74,7 @@ public class SEOrderEntryService extends ServiceImpl<SEOrderEntryDao, SEOrderEnt
         }
         SEOrderVO orderVO = new SEOrderVO();
         orderVO.setBillDate(orderDO.getBillDate());
+        orderVO.setShopNo(orderDO.getShopNo());
         orderVO.setBillNo(orderDO.getBillNo());
         orderVO.setBillerId(orderDO.getBillerId());
         orderVO.setConsumerId(orderDO.getConsumerId());

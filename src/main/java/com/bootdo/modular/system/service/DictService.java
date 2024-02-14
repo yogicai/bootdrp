@@ -3,6 +3,7 @@ package com.bootdo.modular.system.service;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -11,7 +12,10 @@ import com.bootdo.core.enums.CommonStatus;
 import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.utils.PoiUtil;
+import com.bootdo.core.utils.ShiroUtils;
+import com.bootdo.modular.data.dao.DataShopDao;
 import com.bootdo.modular.data.dao.StockDao;
+import com.bootdo.modular.data.domain.DataShop;
 import com.bootdo.modular.data.domain.StockDO;
 import com.bootdo.modular.system.dao.DictDao;
 import com.bootdo.modular.system.domain.DictDO;
@@ -32,6 +36,8 @@ import java.util.stream.Collectors;
 public class DictService extends ServiceImpl<DictDao, DictDO> {
     @Resource
     private StockDao stockDao;
+    @Resource
+    private DataShopDao dataShopDao;
 
 
     public PageR page(SysDictParam param) {
@@ -81,12 +87,31 @@ public class DictService extends ServiceImpl<DictDao, DictDO> {
     }
 
     public Map<String, List<Map<String, Object>>> listExtra() {
-        List<StockDO> list = stockDao.selectList(Wrappers.lambdaQuery(StockDO.class).eq(StockDO::getStatus, CommonStatus.ENABLE.getValue()));
+        return listExtra(true);
+    }
 
+    /**
+     * 所有的基础数据
+     *
+     * @param filterScope 是否权限过滤
+     */
+    public Map<String, List<Map<String, Object>>> listExtra(boolean filterScope) {
+        //仓库
+        List<StockDO> list = stockDao.selectList(Wrappers.lambdaQuery(StockDO.class).eq(StockDO::getStatus, CommonStatus.ENABLE.getValue()));
         List<Map<String, Object>> listMap = list.stream()
                 .map(stock -> MapUtil.<String, Object>builder().put("name", stock.getStockName()).put("value", stock.getStockNo()).build())
                 .collect(Collectors.toList());
+        //店铺
+        Wrapper<DataShop> shopWrapper = filterScope ? Wrappers.lambdaQuery(DataShop.class).like(DataShop::getManagerId, ShiroUtils.getUserId()) :
+                Wrappers.lambdaQuery(DataShop.class);
+        List<Map<String, Object>> listShopMap = dataShopDao.selectList(shopWrapper)
+                .stream()
+                .map(shop -> MapUtil.<String, Object>builder().put("name", shop.getName()).put("value", shop.getNo().toString()).build())
+                .collect(Collectors.toList());
 
-        return MapUtil.of("data_stock", listMap);
+        return MapUtil.<String, List<Map<String, Object>>>builder()
+                .put("data_stock", listMap)
+                .put("data_shop", listShopMap)
+                .build();
     }
 }

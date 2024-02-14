@@ -1,6 +1,7 @@
 package com.bootdo.modular.report.controller;
 
 import cn.hutool.json.JSONUtil;
+import com.bootdo.core.annotation.DataScope;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.modular.report.param.SReconParam;
@@ -31,9 +32,6 @@ public class ReportController extends BaseController {
     @Resource
     private ReportService reportService;
 
-    /**
-     * 客户 供应商 应收应付款统计页面
-     */
     @GetMapping("/sRecon")
     @RequiresPermissions("report:recon:recon")
     public String sRecon(@RequestParam String type, Model model) {
@@ -41,9 +39,7 @@ public class ReportController extends BaseController {
         return "report/sRecon";
     }
 
-    /**
-     * 客户 供应商 应收应付款统计（statistics reconciliation）
-     */
+    @DataScope
     @ResponseBody
     @PostMapping(value = "/sRecon")
     @ApiOperation(value = "客户、供应商应收应付款")
@@ -52,9 +48,7 @@ public class ReportController extends BaseController {
         return reportService.sRecon(param);
     }
 
-    /**
-     * 客户 供应商 应收应付款统计（statistics reconciliation）
-     */
+    @DataScope
     @ResponseBody
     @GetMapping(value = "/sRecon/export")
     @ApiOperation(value = "客户、供应商应收应付款-导出")
@@ -74,7 +68,7 @@ public class ReportController extends BaseController {
         return "report/saleProduct";
     }
 
-
+    @DataScope
     @ResponseBody
     @PostMapping(value = "/saleProduct")
     @ApiOperation(value = "销售统计报表")

@@ -24,6 +24,11 @@ import java.util.Date;
 public class WHOrderDO extends BaseEntity {
 
     private Integer id;
+    /**
+     * 店铺编号
+     */
+    @Excel(name = "店铺", dict = "data_shop")
+    private String shopNo;
 
     /**
      * 单据日期

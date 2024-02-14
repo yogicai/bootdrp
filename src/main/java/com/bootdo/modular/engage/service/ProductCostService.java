@@ -67,8 +67,8 @@ public class ProductCostService extends ServiceImpl<ProductCostDao, ProductCostD
 
     public boolean adjust(ProductCostDO productCost) {
         ProductCostDO productCostDO = this.getById(productCost.getId());
-        ProductCostDO productCostDO1 = BeanUtil.copyProperties(productCostDO, ProductCostDO.class, "id");
-
+        ProductCostDO productCostDO1 = BeanUtil.copyProperties(productCostDO, ProductCostDO.class, "id", "createTime", "createUser", "updateTime", "updateUser");
+        
         productCostDO1.setCostQty(productCost.getCostQty());
         productCostDO1.setCostPrice(productCost.getCostPrice());
         productCostDO1.setCostDate(DateUtils.nowDate());

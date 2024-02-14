@@ -1,5 +1,7 @@
 package com.bootdo.modular.data.controller;
 
+import com.bootdo.core.annotation.DataScope;
+import com.bootdo.core.pojo.base.param.BaseParam.edit;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
@@ -15,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -43,6 +46,7 @@ public class ProductController extends BaseController {
         return "data/product/product";
     }
 
+    @DataScope
     @ResponseBody
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")
@@ -50,6 +54,7 @@ public class ProductController extends BaseController {
         return productService.page(param);
     }
 
+    @DataScope
     @ResponseBody
     @GetMapping("/listJQ")
     @ApiOperation(value = "分页查询")
@@ -75,7 +80,7 @@ public class ProductController extends BaseController {
     @PostMapping("/save")
     @ApiOperation(value = "保存")
     @RequiresPermissions("data:product:add")
-    public R save(ProductDO product) {
+    public R save(@Validated ProductDO product) {
         dataValidator.validateProduct(product);
         productService.save(product);
         return R.ok();
@@ -84,7 +89,7 @@ public class ProductController extends BaseController {
     @ResponseBody
     @PostMapping("/update")
     @ApiOperation(value = "修改")
-    public R update(ProductDO product) {
+    public R update(@Validated(edit.class) ProductDO product) {
         dataValidator.validateProduct(product);
         productService.updateById(product);
         return R.ok();

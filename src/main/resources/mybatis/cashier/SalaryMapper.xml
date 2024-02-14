@@ -11,6 +11,14 @@
             SUM(a.total_amount)       AS totalAmount
         FROM
             cashier_salary a
+        <where>
+            <if test="param.start != null and param.end != null">
+                and date >= #{param.start} and date <![CDATA[ <= ]]> #{param.end}
+            </if>
+            <if test="param.shopNo != null and param.shopNo.size() > 0">and shop_no in
+                <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+        </where>
         GROUP BY
             DATE_FORMAT(a.date, '%Y')
     </select>

@@ -31,6 +31,7 @@ public class RPOrderConverter {
         BigDecimal paymentAmountTotal = BigDecimal.ZERO;
         for (RPOrderSettleVO vo : orderVO.getSettleVOList()) {
             RPOrderSettleDO orderSettleDO = new RPOrderSettleDO();
+            orderSettleDO.setShopNo(orderDO.getShopNo());
             orderSettleDO.setBillNo(orderDO.getBillNo());
             orderSettleDO.setSettleAccount(vo.getSettleAccount());
             orderSettleDO.setSettleName(accountDOMap.get(vo.getSettleAccount()).getName());
@@ -48,6 +49,7 @@ public class RPOrderConverter {
         BigDecimal checkAmountTotal = BigDecimal.ZERO;
         for (RPOrderEntryVO vo : orderVO.getEntryVOList()) {
             RPOrderEntryDO orderEntryDO = new RPOrderEntryDO();
+            orderEntryDO.setShopNo(orderDO.getShopNo());
             orderEntryDO.setBillNo(orderDO.getBillNo());
             orderEntryDO.setSrcBillNo(vo.getSrcBillNo());
             orderEntryDO.setSrcBillType(vo.getSrcBillType());
@@ -65,6 +67,7 @@ public class RPOrderConverter {
 
     public static RPOrderDO convertOrder(RPOrderVO orderVO, UserDO usrDO, String detectName) {
         RPOrderDO orderDO = new RPOrderDO();
+        orderDO.setShopNo(orderVO.getShopNo());
         orderDO.setBillNo(StrUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoCW(orderVO.getBillType()) : orderVO.getBillNo());
         orderDO.setBillType(orderVO.getBillType());
         orderDO.setBillDate(orderVO.getBillDate());

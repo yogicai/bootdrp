@@ -1,6 +1,6 @@
 let prefix = "/se/order";
-let $dataForm;
 let tableGrid;
+let $dataForm;
 let $tableList;
 
 $(function () {
@@ -8,11 +8,8 @@ $(function () {
     $tableList = $("#table_list");
 
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-
-    utils.selectpicker('shopId', {multiple: true, noneSelectedText: '店铺'}, '/data/shop/selectPicker')
-
+    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100px", noneSelectedText: '店铺', multiple: true}]);
     utils.loadEnumTypes(["ORDER_CG_STATUS", "AUDIT_STATUS", "BILL_SOURCE"], ["status", "auditStatus", "billSource"], [{width: "100px", noneSelectedText: '收款状态', multiple: true}, {width: "100px", noneSelectedText: '审核状态', multiple: true}, {width: "80px", noneSelectedText: '来源', multiple: true}]);
-
     utils.loadCategory(["CUSTOMER_DATA"], ["consumerId"], [{width: "100px", noneSelectedText: '客户', liveSearch: true, multiple: true}]);
 
     load();
@@ -33,10 +30,11 @@ function load() {
         multiselect: true,
         rowNum: 20,
         rowList: [20, 50, 100],
-        colNames: ['单据日期', '编号', '类型', '销售人员', '客户', '数量', '商品金额', '优惠率', '优惠金额', '采购费用', '已付金额', '优惠后商品金额', '客户承担金额', '合计金额', '状态', '审核状态', '结算帐户', '来源', '备注', '创建时间', '更新时间'],
+        colNames: ['单据日期', '编号', '店铺', '类型', '销售人员', '客户', '数量', '商品金额', '优惠率', '优惠金额', '采购费用', '已付金额', '优惠后商品金额', '客户承担金额', '合计金额', '状态', '审核状态', '结算帐户', '来源', '备注', '创建时间', '更新时间'],
         colModel: [
             {name: 'billDate', index: 'billDate', editable: true, width: 80, sorttype: "date", formatter: "date", frozen: true},
             {name: 'billNo', index: 'billNo', editable: true, sorttype: "text", width: 170, frozen: true},
+            {name: 'shopNo', index: 'shopNo', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
             {name: 'billType', index: 'billType', editable: true, sorttype: "text", width: 60, formatter: cellValue => utils.formatEnum(cellValue, 'BILL_TYPE')},
             {name: 'billerName', index: 'billerName', editable: true, sorttype: "text", width: 70},
             {name: 'consumerName', index: 'consumerName', editable: true, sorttype: "text", width: 70},
@@ -107,7 +105,7 @@ function search(pageBtn) {
     }
     inputPage = inputPage > totalPage ? totalPage : inputPage;
     inputPage = inputPage < 1 ? 1 : inputPage;
-    let postData = $.extend({}, $('#search').serializeObject(), {'page': inputPage, 'rows': rowNum});
+    let postData = $.extend({}, $dataForm.serializeObject(), {'page': inputPage, 'rows': rowNum});
     tableGrid.jqGrid('setGridParam', {postData: $.param(postData)}).trigger("reloadGrid");
 }
 

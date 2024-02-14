@@ -7,11 +7,12 @@ let $dataForm;
 let $mask;
 let $consumerId;
 let loginUserId = utils.dataCache.loginUserInfo.userId
+let loginShopNo = utils.dataCache.loginUserInfo.shopNo
+let initFormData = {billerId: loginUserId, shopNo: loginShopNo, billDate: new Date().format('yyyy-MM-dd')}
 
 let prefix = "/se/entry";
 let prefixOrder = "/se/order";
 let initData = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
-
 
 $(function() {
     $mask = $('#mask');
@@ -20,11 +21,13 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDatePicker('date_1');
-    utils.loadCategory(["CUSTOMER_DATA", "ACCOUNT_DATA", "USER_DATA"], ["consumerId", "settleAccountTotal", "billerId"], [{width: "200px", liveSearch: true}, {width: "200px"}, {width: "200px", setValue: [loginUserId]}]
-    );
+    utils.loadTypes(["data_shop"], ["shopNo"],
+        [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["CUSTOMER_DATA"], elementIds: ["consumerId"]}}]);
+    utils.loadCategory(["CUSTOMER_DATA", "ACCOUNT_DATA", "USER_DATA"], ["consumerId", "settleAccountTotal", "billerId"],
+        [{width: "120px", liveSearch: true}, {width: "200px"}, {width: "120px", setValue: [loginUserId]}]);
 
     load();
-});
+})
 
 function load() {
     $.jgrid.defaults.styleUI = 'Bootstrap';
@@ -218,8 +221,8 @@ function save(add) {
     let entryArr = tableGrid.jqGrid("getRowData");
     order.entryVOList = [];
 
-    if (_.isEmpty(order.consumerId) || _.isEmpty(order.billerId) || _.isEmpty(order.billDate) || _.isEmpty(order.settleAccountTotal) || amountOrder.totalObj.totalQtyTotal <= 0) {
-        layer.msg((_.isEmpty(order.consumerId) ? "[客户信息]" : "") + (_.isEmpty(order.billerId) ? "[销售人员信息]" : "") + (_.isEmpty(order.billDate) ? "[单据日期]" : "") + (_.isEmpty(order.settleAccountTotal) ? "[结算帐户]" : "") + (amountOrder.totalObj.totalQtyTotal <= 0 ? "[合计数量]" : "") + "不能为空！");
+    if (_.some([order.shopNo, order.consumerId, order.billerId, order.billDate, order.settleAccountTotal], _.isEmpty) || amountOrder.totalObj.totalQtyTotal <= 0) {
+        layer.msg((_.isEmpty(order.shopNo) ? "[所属店铺]" : "") + (_.isEmpty(order.consumerId) ? "[客户信息]" : "") + (_.isEmpty(order.billerId) ? "[销售人员信息]" : "") + (_.isEmpty(order.billDate) ? "[单据日期]" : "") + (_.isEmpty(order.settleAccountTotal) ? "[结算帐户]" : "") + (amountOrder.totalObj.totalQtyTotal <= 0 ? "[合计数量]" : "") + "不能为空！");
         return;
     }
 
@@ -407,6 +410,7 @@ function initOrder(billNo) {
         tableGrid.clearGridData();
         tableGrid.jqGrid('setGridParam', {data: [{}, {}, {}]}).trigger('reloadGrid');
         $dataForm.resetForm();
+        $dataForm.setForm(initFormData);
         $mask.removeClass('util-has-audit');
     }
 }

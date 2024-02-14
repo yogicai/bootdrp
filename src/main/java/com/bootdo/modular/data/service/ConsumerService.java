@@ -32,7 +32,7 @@ public class ConsumerService extends ServiceImpl<ConsumerDao, ConsumerDO> {
     public Page<ConsumerDO> pageList(Page<ConsumerDO> page, ConsumerQryParam param) {
         LambdaQueryWrapper<ConsumerDO> queryWrapper = Wrappers.lambdaQuery(ConsumerDO.class)
                 .in(ObjectUtil.isNotEmpty(param.getType()), ConsumerDO::getType, StrUtil.split(param.getType(), StrUtil.COMMA))
-                .in(ObjectUtil.isNotNull(param.getStatus()), ConsumerDO::getStatus, StrUtil.split(param.getStatus(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getStatus()), ConsumerDO::getStatus, StrUtil.split(param.getStatus(), StrUtil.COMMA))
                 .ge(ObjectUtil.isNotEmpty(param.getStart()), ConsumerDO::getUpdateTime, param.getStart())
                 .le(ObjectUtil.isNotEmpty(param.getEnd()), ConsumerDO::getUpdateTime, param.getEnd())
                 .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(ConsumerDO::getNo, param.getSearchText()).or().like(ConsumerDO::getName, param.getSearchText()));

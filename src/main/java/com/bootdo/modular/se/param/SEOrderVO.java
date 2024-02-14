@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.collect.Lists;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,11 @@ public class SEOrderVO {
      */
     @JsonFormat(locale = "zh", pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date billDate;
+    /**
+     * 店铺编号
+     */
+    @NotBlank
+    private String shopNo;
     /**
      * 单据编号
      */

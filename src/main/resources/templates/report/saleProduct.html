@@ -4,46 +4,51 @@
 <head th:include="include :: header">
 </head>
 <body class="gray-bg">
-    <div class="col-sm-12">
-        <div class="ibox-body">
-            <div class="fixed-table-toolbar form-inline">
-                <form id="search">
-                    <div class="input-daterange input-group columns pull-left" style="margin-left: 5px; width: 300px;" id="datepicker">
-                        <span class="input-group-addon tool-span-addon">日期：</span>
-                        <input type="text" class="form-control" name="start" autocomplete="off"/>
-                        <span class="input-group-addon tool-span-addon">-</span>
-                        <input type="text" class="form-control" name="end" autocomplete="off"/>
-                    </div>
-                </form>
-
+<div class="col-sm-12">
+    <div class="ibox-body">
+        <div class="fixed-table-toolbar form-inline">
+            <form id="search">
+                <div class="input-daterange input-group columns pull-left" style="margin-left: 5px; width: 300px;" id="datepicker">
+                    <span class="input-group-addon tool-span-addon">日期：</span>
+                    <input type="text" class="form-control" name="start" autocomplete="off"/>
+                    <span class="input-group-addon tool-span-addon">-</span>
+                    <input type="text" class="form-control" name="end" autocomplete="off"/>
+                </div>
                 <div class="input-group columns pull-left tool-pull-left">
-                    <button class="btn btn-success" onclick="search()">查询</button>
+                    <select data-placeholder="请选择" name="shopNo" id="shopNo" class="form-control">
+                        <option value="">选择店铺</option>
+                    </select>
                 </div>
+            </form>
 
-                <div class="input-group columns pull-right">
-                    <span class="input-group-addon" name="toDate">单据日期: 000-00-00_000-00-00</span>
-                </div>
+            <div class="input-group columns pull-left tool-pull-left">
+                <button class="btn btn-success" onclick="search()">查询</button>
             </div>
 
-            <div class="ibox-content">
-                <div class="jqGrid_wrapper">
-                    <table id="table_list"></table>
-                    <div id="pager_list"></div>
-                </div>
+            <div class="input-group columns pull-right">
+                <span class="input-group-addon" name="toDate">单据日期: 000-00-00_000-00-00</span>
+            </div>
+        </div>
+
+        <div class="ibox-content">
+            <div class="jqGrid_wrapper">
+                <table id="table_list"></table>
+                <div id="pager_list"></div>
             </div>
         </div>
     </div>
-    <!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
-    <div>
-        <script type="text/javascript">
-            var s_edit_h = 'hidden';
-        </script>
-    </div>
-    <div shiro:hasPermission="report:report:report">
-        <script type="text/javascript">
-            s_edit_h = '';
-        </script>
-    </div>
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+<div>
+    <script type="text/javascript">
+        var s_edit_h = 'hidden';
+    </script>
+</div>
+<div shiro:hasPermission="report:report:report">
+    <script type="text/javascript">
+        s_edit_h = '';
+    </script>
+</div>
 
 <div th:include="include :: footer"></div>
 <script type="text/javascript" src="/js/appjs/report/saleProduct.js"></script>

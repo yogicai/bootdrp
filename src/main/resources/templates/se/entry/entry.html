@@ -10,19 +10,24 @@
                 <div class="ibox-title">
                     <div class="form-inline">
                         <div class="input-group col-md-2">
-                            <span class="input-group-addon"><span style="color:red">*</span>客户: </span>
-                            <select data-placeholder="选择客户" name="consumerId" id="consumerId" class="form-control">
+                            <span class="input-group-addon"><span style="color:red">*</span>店铺: </span>
+                            <select data-placeholder="店铺" name="shopNo" id="shopNo" class="form-control" required>
                             </select>
-                            <span class="input-group-btn"> <button type="button" class="btn btn-white" onclick="addHead()">...</button> </span>
+                        </div>
+                        <div class="input-group col-md-2">
+                            <span class="input-group-addon"><span style="color:red">*</span>客户: </span>
+                            <select data-placeholder="选择客户" name="consumerId" id="consumerId" class="form-control" required>
+                            </select>
+<!--                            <span class="input-group-btn"> <button type="button" class="btn btn-white" onclick="addHead()">...</button> </span>-->
                         </div>
                         <div class="input-group col-md-2">
                             <span class="input-group-addon"><span style="color:red">*</span>销售人员: </span>
-                            <select data-placeholder="销售人员" name="billerId" id="billerId" class="form-control">
+                            <select data-placeholder="销售人员" name="billerId" id="billerId" class="form-control" required>
                             </select>
                         </div>
                         <div class="input-group date col-md-2">
                             <span class="input-group-addon"><span style="color:red">*</span>单据日期: </span>
-                            <input  id="date_1" type="text" name="billDate" class="form-control" autocomplete="off">
+                            <input  id="date_1" type="text" name="billDate" class="form-control" autocomplete="off" required>
                         </div>
                         <input type="hidden" id="billNo" name="billNo" class="form-control">
                         <div class="input-group pull-right">

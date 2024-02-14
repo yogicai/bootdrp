@@ -68,11 +68,9 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
     public JournalGeneralResult general(JournalGeneralParam param) {
         JournalGeneralResult result = new JournalGeneralResult();
 
-        param.setStart(DateUtil.beginOfDay(param.getStart()).toJdkDate());
-        param.setEnd(DateUtil.endOfDay(param.getEnd()).toJdkDate());
-
+        Map<String, Object> beanToMap = BeanUtil.beanToMap(param);
         //账户支出流水明细
-        List<Map<String, Object>> flowRecordList = journalDao.flowRecordList(BeanUtil.beanToMap(param));
+        List<Map<String, Object>> flowRecordList = journalDao.flowRecordList(beanToMap);
 
         //按年份+账户，统计资金流水
         List<AccountItem> flowRecordBeanList = flowRecordList.stream()
@@ -129,10 +127,11 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
                 );
 
         //设置工资
-        Map<String, SalaryRecord> salaryRecordMap = salaryDao.salaryRecordList().stream().collect(Collectors.toMap(SalaryRecord::getYear, Function.identity(), (o, n) -> o));
+        Map<String, SalaryRecord> salaryRecordMap = salaryDao.salaryRecordList(beanToMap)
+                .stream().collect(Collectors.toMap(SalaryRecord::getYear, Function.identity(), (o, n) -> o));
 
         //经营年度统计
-        List<OperateItem> operateItemList = journalDao.generalFlowYear(BeanUtil.beanToMap(param));
+        List<OperateItem> operateItemList = journalDao.generalFlowYear(beanToMap);
 
         //2017年销售额来年excel手工数据，毛利率按28.12%算
         Date billStart = Date.from(LocalDate.of(2017, 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
@@ -166,12 +165,12 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
         });
 
         //月现金流
-        List<OperateMonthItem> operateItemMonthList = journalDao.generalFlowMonth(BeanUtil.beanToMap(param));
+        List<OperateMonthItem> operateItemMonthList = journalDao.generalFlowMonth(beanToMap);
         //欠款明细
-        List<DebtItem> debtItemList = journalDao.debtRecordList(BeanUtil.beanToMap(param));
+        List<DebtItem> debtItemList = journalDao.debtRecordList(beanToMap);
 
         //账户流水明细
-        Map<String, List<RecordDO>> flowRecordMap = recordService.list(BeanUtil.beanToMap(param)).stream()
+        Map<String, List<RecordDO>> flowRecordMap = recordService.list(beanToMap).stream()
                 .collect(Collectors.groupingBy(RecordDO::getAccount, Collectors.toList()));
 
         //经营年份

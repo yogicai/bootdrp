@@ -20,6 +20,7 @@ import com.bootdo.core.utils.BuildTree;
 import com.bootdo.core.utils.ImageUtils;
 import com.bootdo.core.utils.MD5Utils;
 import com.bootdo.core.utils.ShiroUtils;
+import com.bootdo.modular.data.service.ShopService;
 import com.bootdo.modular.system.dao.UserDao;
 import com.bootdo.modular.system.domain.DeptDO;
 import com.bootdo.modular.system.domain.FileDO;
@@ -51,6 +52,8 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
     @Resource
     private DeptService deptService;
     @Resource
+    private ShopService shopService;
+    @Resource
     private FileService sysFileService;
     @Resource
     private BootdoProperties bootdoProperties;
@@ -74,9 +77,9 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
 
     public UserDO getUser(Long id) {
         UserDO user = this.getById(id);
-        List<Long> roleIds = userRoleService.listRoleId(id);
         user.setDeptName(deptService.getById(user.getDeptId()).getName());
-        user.setRoleIds(roleIds);
+        user.setRoleIds(userRoleService.listRoleId(id));
+        user.setShopNos(shopService.listShopNo(id));
         return user;
     }
 
@@ -227,7 +230,9 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
 
     public LoginUserResult loginUserInfo() {
         UserDO userDO = this.getUser(ShiroUtils.getUserId());
-        return BeanUtil.copyProperties(userDO, LoginUserResult.class);
+        LoginUserResult loginUserResult = BeanUtil.copyProperties(userDO, LoginUserResult.class);
+        loginUserResult.setShopNo(CollUtil.isNotEmpty(userDO.getShopNos()) ? userDO.getShopNos().get(0).toString() : StrUtil.EMPTY);
+        return loginUserResult;
     }
 
 }

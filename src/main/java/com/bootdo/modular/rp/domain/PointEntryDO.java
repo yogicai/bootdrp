@@ -21,6 +21,10 @@ public class PointEntryDO extends BaseEntity {
      */
     private Integer id;
     /**
+     * 店铺编号
+     */
+    private String shopNo;
+    /**
      * 客户ID
      */
     private String consumerId;

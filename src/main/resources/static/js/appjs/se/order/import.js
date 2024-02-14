@@ -1,7 +1,14 @@
 let prefix = "/order";
+let billType = "XS_ORDER";
+let loginShopNo = utils.dataCache.loginUserInfo.shopNo
+
 $(function () {
-    let billType = "XS_ORDER";
-    let recordDate = utils.createDateRangePicker('datepicker', {},  new Date(), new Date());
+
+    let $recordDate = $('#datepicker');
+    let $shopNo = $('#shopNo');
+
+    utils.createDateRangePicker('datepicker', {}, new Date(), new Date())
+    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100%", setValue: [loginShopNo]}]);
 
     //配置dropzone
     Dropzone.autoDiscover = false; //取消自动提交
@@ -35,8 +42,9 @@ $(function () {
             myDropzone.on('sending', function (data, xhr, formData) {
                 //向后台发送该文件的参数
                 formData.append('billType', billType);
-                formData.append('billDateB', recordDate.data("datepicker").pickers[0].getDate().format('yyyy-MM-dd'));
-                formData.append('billDateE', recordDate.data("datepicker").pickers[1].getDate().format('yyyy-MM-dd'));
+                formData.append('shopNo', $shopNo.val());
+                formData.append('billDateB', $recordDate.data("datepicker").pickers[0].getDate().format('yyyy-MM-dd'));
+                formData.append('billDateE', $recordDate.data("datepicker").pickers[1].getDate().format('yyyy-MM-dd'));
             });
             myDropzone.on('success', function (files, response) {
                 //文件上传成功之后的操作
@@ -67,47 +75,5 @@ $(function () {
             });
         }
     });
-
-    /*    $("div#dropzSe").dropzone({
-            url: prefix + "/importExcel",
-            method: "post",  // 也可用put
-            paramName: "file", // 提交的参数,默认为file
-            autoProcessQueue: false, // 取消自动提交
-            uploadMultiple: false, // 关闭多文件上传
-            disablePreviews: true,
-            accept: function (file, done) {
-                let recordDateS = recordDate.data("datepicker").pickers[0].getDate();
-                let recordDateE = recordDate.data("datepicker").pickers[1].getDate();
-                if (!recordDateS || !recordDateE) {
-                    parent.layer.msg("先选择单据日期！");
-                    parent.layer.closeAll('loading');
-                } else {
-                    done();
-                }
-            },
-            addedfile: function (file) {
-                parent.layer.load(1, {
-                    shadeClose: false,
-                    title: '加载中..',
-                    shade: [0.5, '#000']
-                });
-            },
-            sending: function (file, xhr, formData) {
-                formData.append('billDateB', recordDate.data("datepicker").pickers[0].getDate().format('yyyy-MM-dd'));
-                formData.append('billDateE', recordDate.data("datepicker").pickers[1].getDate().format('yyyy-MM-dd'));
-            },
-            success: function (file, message) {
-                parent.layer.msg(message.msg);
-                parent.layer.closeAll('loading');
-            },
-            queuecomplete: function () {
-                //全部上传后重置文件队列
-                Dropzone.forElement("#dropzSe").removeAllFiles(true);
-            },
-            error: function (file, message) {
-                parent.layer.msg(message);
-                parent.layer.closeAll('loading');
-            }
-        });*/
 });
 

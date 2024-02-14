@@ -1,5 +1,6 @@
 package com.bootdo.modular.se.controller;
 
+import com.bootdo.core.annotation.DataScope;
 import com.bootdo.core.annotation.Log;
 import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
@@ -34,12 +35,14 @@ public class SEOrderController {
     @Resource
     private SEOrderService seOrderService;
 
+    
     @GetMapping()
     @RequiresPermissions("se:order:order")
     public String order() {
         return "se/order/order";
     }
 
+    @DataScope
     @ResponseBody
     @PostMapping(value = "/list")
     @RequiresPermissions("se:order:order")
@@ -47,17 +50,15 @@ public class SEOrderController {
         return list(param);
     }
 
+    @DataScope
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("se:order:order")
     public PageJQ list(SeOrderQryParam param) {
-        //查询列表数据
         return seOrderService.page(param);
     }
 
-    /**
-     * 单据列表导出
-     */
+    @DataScope
     @ResponseBody
     @GetMapping("/export")
     @RequiresPermissions("po:order:order")
@@ -67,9 +68,6 @@ public class SEOrderController {
         PoiUtil.exportExcelWithStream("SEOrderResult.xls", SEOrderDO.class, orderList);
     }
 
-    /**
-     * 审核、反审核
-     */
     @Log("销售单审核、反审核")
     @PostMapping("/audit")
     @ResponseBody
@@ -80,9 +78,6 @@ public class SEOrderController {
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
     @Log("销售单删除")
     @PostMapping("/remove")
     @ResponseBody

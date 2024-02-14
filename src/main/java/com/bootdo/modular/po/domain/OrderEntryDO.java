@@ -21,6 +21,10 @@ public class OrderEntryDO extends BaseEntity {
      */
     private Integer id;
     /**
+     * 店铺编号
+     */
+    private String shopNo;
+    /**
      * 单据编号
      */
     private String billNo;

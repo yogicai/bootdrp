@@ -7,6 +7,9 @@
             <if test="param.id != null">and id = #{param.id}</if>
             <if test="param.nick != null and param.nick != ''">and nick = #{param.nick}</if>
             <if test="param.account != null and param.account != ''">and account = #{param.account}</if>
+            <if test="param.shopNo != null and param.shopNo.size() > 0">and shop_no in
+                <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
             <if test="param.type != null and param.type != ''">and type in
                 <foreach collection="param.type.split(',')" item="item" open="(" separator="," close=")">#{item}</foreach>
             </if>

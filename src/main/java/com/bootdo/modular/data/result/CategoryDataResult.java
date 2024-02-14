@@ -28,5 +28,7 @@ public class CategoryDataResult {
     private String dataName;
     @ApiModelProperty(value = "数据状态")
     private String status;
+    @ApiModelProperty(value = "店铺编号")
+    private String shopNo;
 
 }

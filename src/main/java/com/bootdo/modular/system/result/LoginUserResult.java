@@ -31,5 +31,9 @@ public class LoginUserResult {
      * 部门名称
      */
     private String deptName;
+    /**
+     * 店铺编号
+     */
+    private String shopNo;
 
 }

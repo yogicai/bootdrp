@@ -20,7 +20,6 @@ import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.domain.RPOrderEntryDO;
 import com.bootdo.modular.rp.domain.RPOrderSettleDO;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -38,6 +37,7 @@ public class OrderConverter {
         BigDecimal qtyTotal = BigDecimal.ZERO;
         for (OrderEntryVO vo : orderVO.getEntryVOList()) {
             OrderEntryDO orderEntryDO = new OrderEntryDO();
+            orderEntryDO.setShopNo(orderDO.getShopNo());
             orderEntryDO.setBillNo(orderDO.getBillNo());
             orderEntryDO.setEntryId(vo.getEntryId());
             orderEntryDO.setEntryName(vo.getEntryName());
@@ -63,6 +63,7 @@ public class OrderConverter {
 
     public static OrderDO convertOrder(OrderVO orderVO, VendorDO vendorDO) {
         OrderDO orderDO = new OrderDO();
+        orderDO.setShopNo(orderVO.getShopNo());
         orderDO.setBillNo(StrUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoCG(orderVO.getBillType()) : orderVO.getBillNo());
         orderDO.setBillType(orderVO.getBillType());
         orderDO.setBillDate(orderVO.getBillDate());
@@ -86,6 +87,7 @@ public class OrderConverter {
     public static List<RPOrderSettleDO> convertRPOrderSettle(RPOrderDO rpOrderDO, OrderDO orderDO, AccountDO accountDO) {
         List<RPOrderSettleDO> rpOrderSettleDOList = Lists.newArrayList();
         RPOrderSettleDO rpOrderSettleDO = new RPOrderSettleDO();
+        rpOrderSettleDO.setShopNo(rpOrderDO.getShopNo());
         rpOrderSettleDO.setBillNo(rpOrderDO.getBillNo());
         rpOrderSettleDO.setSettleAccount(orderDO.getSettleAccount());
         rpOrderSettleDO.setSettleName(accountDO.getName());
@@ -98,6 +100,7 @@ public class OrderConverter {
     public static List<RPOrderEntryDO> convertRPOrderEntry(RPOrderDO rpOrderDO, OrderDO orderDO) {
         List<RPOrderEntryDO> rpOrderEntryDOList = Lists.newArrayList();
         RPOrderEntryDO rpOrderEntryDO = new RPOrderEntryDO();
+        rpOrderEntryDO.setShopNo(rpOrderDO.getShopNo());
         rpOrderEntryDO.setBillNo(rpOrderDO.getBillNo());
         rpOrderEntryDO.setSrcBillDate(orderDO.getBillDate());
         rpOrderEntryDO.setSrcBillType(orderDO.getBillType());
@@ -113,6 +116,7 @@ public class OrderConverter {
         BillType billType = BillType.CG_ORDER.equals(orderDO.getBillType()) ? BillType.CW_FK_ORDER : BillType.CW_SK_ORDER;
         RPOrderDO rpOrderDO = new RPOrderDO();
         rpOrderDO.setBillDate(orderDO.getBillDate());
+        rpOrderDO.setShopNo(orderDO.getShopNo());
         rpOrderDO.setBillNo(OrderUtils.generateOrderNoCW(billType));
         rpOrderDO.setBillType(billType);
         rpOrderDO.setDebtorId(orderDO.getVendorId());
@@ -128,12 +132,4 @@ public class OrderConverter {
         return rpOrderDO;
     }
 
-
-    public static Map<String, OrderDO> convertOrderMap(List<OrderDO> list) {
-        Map<String, OrderDO> result = Maps.newHashMap();
-        for (OrderDO orderDO : list) {
-            result.put(orderDO.getBillNo(), orderDO);
-        }
-        return result;
-    }
 }

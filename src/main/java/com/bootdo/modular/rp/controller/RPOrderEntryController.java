@@ -14,6 +14,7 @@ import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,6 +35,7 @@ public class RPOrderEntryController {
     @Resource
     private RPOrderEntryService rpOrderEntryService;
 
+    
     @GetMapping()
     @RequiresPermissions("rp:entry:entry")
     public String orderEntry(@RequestParam Map<String, Object> params, Model model) {
@@ -55,14 +57,11 @@ public class RPOrderEntryController {
         return "rp/entry/edit";
     }
 
-    /**
-     * 保存
-     */
     @Log("财务单保存")
     @ResponseBody
     @PostMapping("/save")
     @RequiresPermissions("rp:entry:add")
-    public R save(@RequestBody RPOrderVO order) {
+    public R save(@RequestBody @Validated RPOrderVO order) {
         rpOrderValidator.validateSave(order);
         RPOrderDO orderDO = rpOrderEntryService.save(order);
         return R.ok(ImmutableMap.of("billNo", orderDO.getBillNo()));

@@ -20,6 +20,13 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-3 control-label">所属店铺：</label>
+                            <div class="col-sm-8">
+                                <select data-placeholder="请选择" name="shopNo" id="shopNo" class="form-control" th:value="${record.shopNo}" readonly>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-3 control-label">账号：</label>
                             <div class="col-sm-8">
                                 <input id="account" name="account" class="form-control" th:value="${record.account}" readonly>

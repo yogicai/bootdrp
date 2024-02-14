@@ -49,6 +49,12 @@ public enum BootServiceExceptionEnum implements BizServiceAssert {
      */
     CHART_CATEGORY_NOT_FOUND(7000, "Chart category record (X Axis) not found! clazz:{0}.", "图表X轴数据不存在！"),
 
+
+    /**
+     * 数据权限
+     */
+    DATA_PERMISSION_NOT_VALID(7000, "Data permission not valid! method:{0}, param:{1}", "没有数据权限！"),
+
     ;
 
     /**

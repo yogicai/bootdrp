@@ -1,20 +1,23 @@
 let prefix = "/engage/product";
 let tableGrid;
-let dataForm;
+let $tableList;
+let $dataForm;
+
 let initData = [];
 let currentRow = {};
-let colNames = ['商品编号', '商品名称', '条形码',  '单位', '累计入库数量', '入库单价', '入库金额', '库存数量', '库存单价', '库存金额'];
+let colNames = ['店铺', '商品编号', '商品名称', '条形码', '单位', '累计入库数量', '入库单价', '入库金额', '库存数量', '库存单价', '库存金额'];
 let colModel = [
-    { name:'entryId', index:'entryId', editable:false, width:50 },
-    { name:'entryName', index:'entryName', editable:false, sorttype:"text", width:150, frozen: true },
-    { name:'entryBarcode', index:'entryBarcode', editable:false, sorttype:"text", width:60 },
-    { name:'entryUnit', index:'entryUnit', editable:false, sorttype:"float", align: "center", width:30, formatter : function (value,row,index){ return utils.formatType(value, "data_unit")} },
-    { name:'qtyTotal', index:'qtyTotal', editable:false, width:70, align:"right", sorttype:"float", formatter:"number" },
-    { name:'entryPrice', index:'entryPrice', editable:false, width:70, align:"right", sorttype:"float", formatter:"number" },
-    { name:'entryAmount', index:'entryAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
-    { name:'inventory', index:'inventory', editable:false, align:"right", sorttype:"float", width:70 },
-    { name:'costPrice', index:'costPrice', editable:false, width:70, align:"right", sorttype:"float", formatter:"number" },
-    { name:'costAmount', index:'costAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }];
+    {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 50, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
+    {name: 'entryId', index: 'entryId', editable: false, width: 50},
+    {name: 'entryName', index: 'entryName', editable: false, sorttype: "text", width: 150, frozen: true},
+    {name: 'entryBarcode', index: 'entryBarcode', editable: false, sorttype: "text", width: 60},
+    {name: 'entryUnit', index: 'entryUnit', editable: false, sorttype: "float", align: "center", width: 30, formatter: (value, row, index) => utils.formatType(value, "data_unit")},
+    {name: 'qtyTotal', index: 'qtyTotal', editable: false, width: 70, align: "right", sorttype: "float", formatter: "number"},
+    {name: 'entryPrice', index: 'entryPrice', editable: false, width: 70, align: "right", sorttype: "float", formatter: "number"},
+    {name: 'entryAmount', index: 'entryAmount', editable: false, width: 80, align: "right", sorttype: "float", formatter: "number"},
+    {name: 'inventory', index: 'inventory', editable: false, align: "right", sorttype: "float", width: 70},
+    {name: 'costPrice', index: 'costPrice', editable: false, width: 70, align: "right", sorttype: "float", formatter: "number"},
+    {name: 'costAmount', index: 'costAmount', editable: false, width: 80, align: "right", sorttype: "float", formatter: "number"}];
 
 let rowTemplate = { name:'totalQty', index:'totalQty', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" };
 let rowTemplateFun = function (columnName) {  return $.extend({}, rowTemplate, {name:columnName}); };
@@ -43,17 +46,20 @@ let gridConfig = {
 };
 
 $(function() {
-    utils.loadTypes(["data_stock"], ["stock"], [{width:"120px"}]);
-    utils.loadCategory(["PRODUCT_DATA","PRODUCT"], ["product","type"], [{width:"150px"},{width:"120px"}]);
-    dataForm = $("#search");
+    $dataForm = $('#search');
+    $tableList = $("#table_list");
+
+    utils.createDatePicker('date_1', {}, new Date());
+    utils.loadTypes(["data_stock", "data_shop"], ["stock", "shopNo"], [{width: "120px"}, {width: "120px"}]);
+    utils.loadCategory(["PRODUCT_DATA", "PRODUCT"], ["product", "type"], [{width: "120px", liveSearch: true}, {width: "120px"}]);
+
     load();
 });
 
 function load() {
-    utils.createDatePicker('date_1', {}, new Date());
-
     $.jgrid.defaults.styleUI = 'Bootstrap';
-    tableGrid = $("#table_list").jqGrid(gridConfig);
+
+    tableGrid = $tableList.jqGrid(gridConfig);
 
     $(window).bind('resize', function () {
         let width = $('.jqGrid_wrapper').width();
@@ -70,7 +76,7 @@ function loadGrid() {
         url: prefix + "/balance/list",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(dataForm.serializeObject()),
+        data: JSON.stringify($dataForm.serializeObject()),
         success: function (r) {
             if (r.code === 0) {
                 let stockList = r.result.stockList;
@@ -136,11 +142,11 @@ function searchEntryBalance(rowData) {
 }
 
 function getCurrentRow() {
-    return $.extend(currentRow || {}, {"searchObj": dataForm.serializeObject()});
+    return $.extend(currentRow || {}, {"searchObj": $dataForm.serializeObject()});
 }
 
 function exportExcel() {
-    let queryParam = dataForm.serialize();
+    let queryParam = $dataForm.serialize();
     let url = prefix + "/balance/export?" + queryParam //下载地址
-    utils.download(url ,'ProductBalanceResult.xls');
+    utils.downloadAjax(url, 'ProductBalanceResult.xls');
 }

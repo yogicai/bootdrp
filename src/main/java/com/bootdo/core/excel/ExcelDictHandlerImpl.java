@@ -45,6 +45,20 @@ public class ExcelDictHandlerImpl implements IExcelDictHandler {
     public void init() {
         //字典
         listDic = dictService.listMap(SysDictParam.builder().build());
+
+        //基础信息
+        dictService.listExtra(false).forEach((key, value) -> {
+            List<DictDO> dictDOList = value.stream().map(m -> {
+                DictDO dictDO = new DictDO();
+                dictDO.setType(key);
+                dictDO.setName(MapUtil.getStr(m, "name"));
+                dictDO.setValue(MapUtil.getStr(m, "value"));
+                return dictDO;
+            }).collect(Collectors.toList());
+
+            listDic.put(key, dictDOList);
+        });
+
         //类目管理
         Map<String, List<CategoryDO>> listCategory = categoryService.lists();
         listCategory.forEach((key, value) -> {
@@ -59,6 +73,7 @@ public class ExcelDictHandlerImpl implements IExcelDictHandler {
                     listDic.put(key, dictDOList);
                 }
         );
+
         //枚举类型
         Map<String, List<Map<String, String>>> listEnum = EnumCollection.listEnumMap();
         listEnum.forEach((key, value) -> {

@@ -11,17 +11,22 @@
                 <div class="ibox-title">
                     <div class="form-inline">
                         <div class="input-group col-md-2">
-                            <span class="input-group-addon"><span style="color:red">*</span><span th:text="(${billType=='CW_SK_ORDER'} ? '零售客户: ' : '供应商: ')"></span></span>
-                            <select data-placeholder="选择客户" type="chosen" name="debtorId" id="debtorId" class="form-control chosen-select" tabindex="2" style="width: 200px;">
-                                <option value="">请选择</option>
+                            <span class="input-group-addon"><span style="color:red">*</span>店铺: </span>
+                            <select data-placeholder="请选择" name="shopNo" id="shopNo" class="form-control">
+                            </select>
+                        </div>
+                        <div class="input-group col-md-2">
+                            <span class="input-group-addon"><span style="color:red">*</span><span th:text="(${billType=='CW_SK_ORDER'} ? '客户: ' : '供应商: ')"></span></span>
+                            <select data-placeholder="请选择" type="chosen" name="debtorId" id="debtorId" class="form-control">
+                                <option value="">选择客户</option>
                             </select>
                             <span class="input-group-btn"> <button type="button" class="btn btn-white" onclick="addHead()">...</button> </span>
                         </div>
 
                         <div class="input-group col-md-2">
                             <span class="input-group-addon"><span style="color:red">*</span><span th:text="(${billType=='CW_SK_ORDER'} ? '收款人:' : '付款人:')"> </span></span>
-                            <select data-placeholder="收款人" type="chosen" name="checkId" id="checkId" class="form-control chosen-select" tabindex="2" style="width: 200px;">
-                                <option value="">请选择</option>
+                            <select data-placeholder="请选择" type="chosen" name="checkId" id="checkId" class="form-control">
+                                <option value="">选择收款人</option>
                             </select>
                         </div>
 

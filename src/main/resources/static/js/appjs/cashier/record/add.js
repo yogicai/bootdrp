@@ -1,6 +1,7 @@
 $().ready(function() {
 	validateRule();
 	utils.createDateTimePicker('tradeTime');
+	utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100%"}]);
 });
 
 $.validator.setDefaults({

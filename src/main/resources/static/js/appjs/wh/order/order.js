@@ -1,39 +1,37 @@
 let prefix = "/wh/order";
 let tableGrid;
-let colNames_RK = ['单据日期', '编号', '类型', '业务类型',  '供应商', '入库数量', '入库金额', '审核状态', '备注', '创建时间', '修改时间'];
-let colNames_CK = ['单据日期', '编号', '类型', '业务类型',  '供应商', '出库数量', '出库成本', '审核状态', '备注', '创建时间', '修改时间'];
-var billType = $('#billType').val();
+let $dataForm;
+let $tableList;
+
+let colNames_RK = ['单据日期', '编号', '店铺', '类型', '业务类型', '供应商', '入库数量', '入库金额', '审核状态', '备注', '创建时间', '修改时间'];
+let colNames_CK = ['单据日期', '编号', '店铺', '类型', '业务类型', '供应商', '出库数量', '出库成本', '审核状态', '备注', '创建时间', '修改时间'];
+let billType = $('#billType').val();
 let colNames = billType === 'WH_RK_ORDER' ? colNames_RK : colNames_CK;
 let dataUrl = billType === 'WH_RK_ORDER' ? '/wh/entry?billType=WH_RK_ORDER' : '/wh/entry?billType=WH_CK_ORDER';
 let data_type = billType === 'WH_RK_ORDER' ? 'data_wh_rk' : 'data_wh_ck';
 
-
 $(function() {
+    $dataForm = $('#search');
+    $tableList = $("#table_list");
 
+    utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
     if (billType === 'WH_RK_ORDER') {
-        utils.loadTypes(["data_wh_rk"], ["serviceType"]);
+        utils.loadTypes(["data_wh_rk"], ["serviceType"], [{width: "100px"}]);
     } else {
-        utils.loadTypes(["data_wh_ck"], ["serviceType"]);
+        utils.loadTypes(["data_wh_ck"], ["serviceType"], [{width: "100px"}]);
     }
-    utils.loadEnumTypes(["AUDIT_STATUS"], ["auditStatus"]);
+    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100px", noneSelectedText: '店铺', multiple: true}]);
+    utils.loadEnumTypes(["AUDIT_STATUS"], ["auditStatus"], [{width: "100px"}]);
 
     load();
 });
-
 function load() {
-
-    recordDate = utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-    recordDateS= recordDate.data("datepicker").pickers[0];
-    recordDateE= recordDate.data("datepicker").pickers[1];
-
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
-    dataForm  = $('#search');
-
-    tableGrid = $("#table_list").jqGrid({
+    tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
         datatype: "json",
-        postData: $.extend({}, dataForm.serializeObject(), {'start' : recordDateS.getDate().format('yyyy-MM-dd'), 'end' : recordDateE.getDate().format('yyyy-MM-dd'), "billType": billType}),
+        postData: $.extend({}, $dataForm.serializeObject(), {"billType": billType}),
         height: window.innerHeight - 180,
         autowidth: true,
         shrinkToFit: false,
@@ -43,17 +41,18 @@ function load() {
         rowList: [20, 50, 100],
         colNames: colNames,
         colModel: [
-            { name:'billDate', index:'billDate', editable:true, width:80, sorttype:"date", formatter:"date", frozen: true },
-            { name:'billNo', index:'billNo', editable:true, sorttype:"text", width:200, frozen: true },
-            { name:'billType', index:'billType', editable:true, sorttype:"text", width:80, formatter:function (cellValue){return utils.formatEnum(cellValue, 'BILL_TYPE')} },
-            { name:'serviceType', index:'serviceType', editable:true, sorttype:"text", width:80, formatter:function (cellValue){return utils.formatType(cellValue, data_type)} },
-            { name:'debtorName', index:'debtorName', editable:true, sorttype:"text", width:90 },
-            { name:'totalQty', index:'totalQty', editable:true, width:80, align:"right", sorttype:"float", formatter:"number" },
-            { name:'entryAmount', index:'entryAmount', editable:true, width:100, align:"right", sorttype:"float", formatter:"number" },
-            { name:'auditStatus', index:'auditStatus', editable:true, sorttype:"text", width:70, formatter:function (cellValue){return utils.formatEnumS(cellValue, 'AUDIT_STATUS')} },
-            { name:'remark', index:'remark', editable:true, sorttype:"text", width:140 },
-            { name:'createTime', index:'createTime', editable:true, width:140 },
-            { name:'updateTime', index:'updateTime', editable:true, width:140 }
+            {name: 'billDate', index: 'billDate', editable: true, width: 80, sorttype: "date", formatter: "date", frozen: true},
+            {name: 'billNo', index: 'billNo', editable: true, sorttype: "text", width: 200, frozen: true},
+            {name: 'shopNo', index: 'shopNo', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
+            {name: 'billType', index: 'billType', editable: true, sorttype: "text", width: 80, formatter: cellValue => utils.formatEnum(cellValue, 'BILL_TYPE')},
+            {name: 'serviceType', index: 'serviceType', editable: true, sorttype: "text", width: 80, formatter: cellValue => utils.formatType(cellValue, data_type)},
+            {name: 'debtorName', index: 'debtorName', editable: true, sorttype: "text", width: 90},
+            {name: 'totalQty', index: 'totalQty', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},
+            {name: 'entryAmount', index: 'entryAmount', editable: true, width: 100, align: "right", sorttype: "float", formatter: "number"},
+            {name: 'auditStatus', index: 'auditStatus', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatEnumS(cellValue, 'AUDIT_STATUS')},
+            {name: 'remark', index: 'remark', editable: true, sorttype: "text", width: 140},
+            {name: 'createTime', index: 'createTime', editable: true, width: 140},
+            {name: 'updateTime', index: 'updateTime', editable: true, width: 140}
         ],
         pager: "#pager_list",
         viewrecords: true,
@@ -102,7 +101,7 @@ function search(pageBtn) {
     }
     inputPage = inputPage > totalPage ? totalPage : inputPage;
     inputPage = inputPage < 1 ? 1 : inputPage;
-    let postData = $.extend({}, $('#search').serializeObject(), { 'page': inputPage, 'rows': rowNum });
+    let postData = $.extend({}, $dataForm.serializeObject(), {'page': inputPage, 'rows': rowNum});
     tableGrid.jqGrid('setGridParam', {postData:  $.param(postData)}).trigger("reloadGrid");
 }
 
@@ -158,9 +157,7 @@ function remove() {
         $.ajax({
             url : prefix+"/remove",
             type : "post",
-            data : {
-                'billNos' : selectData
-            },
+            data: {'billNos': selectData},
             success : function(r) {
                 if (r.code===0) {
                     layer.msg(r.msg);
@@ -208,7 +205,7 @@ function triggerMenu(dataUrl, billNo) {
 }
 
 function exportExcel() {
-    let queryParam = dataForm.serialize();
+    let queryParam = $dataForm.serialize();
     let url = prefix + "/export?" + queryParam //下载地址
-    utils.download(url ,'WHOrderResult.xls');
+    utils.downloadAjax(url, 'WHOrderResult.xls');
 }

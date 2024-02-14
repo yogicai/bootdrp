@@ -89,7 +89,7 @@
         let data = utils.dataCache.sysDict[type];
         if (data === undefined) return value;
         for (let t = 0; t < data.length; t++) {
-            if (data[t].value === value) {
+            if (data[t].value === String(value)) {
                 return data[t].name;
             }
         }
@@ -99,7 +99,7 @@
         let data = utils.dataCache.sysDict[type];
         if (data === undefined) return value;
         for (let t = 0; t < data.length; t++) {
-            if (data[t].name === value) {
+            if (data[t].name === String(value)) {
                 return data[t].value;
             }
         }
@@ -336,6 +336,12 @@
         $element.prop('multiple', option.multiple === true);
         $element.selectpicker(option);
         $element.selectpicker('val', _.defaultTo(valueArraySet, valueArray));
+        //下拉框联动
+        if (option && option.changeOption && option.multiple !== true) {
+            $element.on('change', function () {
+                Utils.prototype.selectpickerChangeCascade(option.changeOption.types, option.changeOption.elementIds, this)
+            })
+        }
     }
     Utils.prototype.selectpickerBuildOption = function selectPickerBuildOption(data) {
         let html = "";
@@ -347,8 +353,8 @@
                 html += selectPickerBuildOption(item);
             });
         } else {
-            let name = data.text || data.name;
-            let value = data.id || data.value;
+            let name = data.name || data.text;
+            let value = data.value || data.id;
             if (!data.children || data.children.length === 0) {
                 html += `<option value="${value}">${name}</option>`
             } else if (data.children && data.children.length > 0) {
@@ -360,6 +366,20 @@
             }
         }
         return html;
+    }
+    //bootstrap-select联级刷新下拉框
+    Utils.prototype.selectpickerChangeCascade = function selectPickerChangeCascade(types, elementIds, that) {
+        let selectedValue = $(that).val();
+        if (types.length === elementIds.length) {
+            let categoryData = utils.dataCache.categoryData;
+            for (let t = 0; t < types.length; t++) {
+                let $element = $(`#${elementIds[t]}`);
+                let data = categoryData[types[t] + '_' + selectedValue];
+                let html = Utils.prototype.selectpickerBuildOption(data);
+                $element.html(html);
+                $element.selectpicker('refresh');
+            }
+        }
     }
 
     /* ========================================================================
@@ -467,17 +487,15 @@
     //jqGrid edit 选择商品列
     Utils.prototype.myElementAndValue = function myElementAndValue() {
         // 自定义表格编辑框
-        function myelem(value, options) {
-            let el =
-                '<div class="input-group">' +
+        function myElem(value, options) {
+            return '<div class="input-group">' +
                 '<input type="text" name="entryName" class="form-control" value="' + value + '" autocomplete="off">' +
                 '<span class="input-group-btn"> <button type="button" class="btn btn-white" onclick="add()">...</button> </span>' +
                 '</div>';
-            return el;
         }
 
         // 自定义表格编辑框get set方法
-        function myvalue(elem, operation, value) {
+        function myValue(elem, operation, value) {
             if (operation === 'get') {
                 return $('input', elem).val();
             } else if (operation === 'set') {
@@ -486,7 +504,7 @@
         }
 
         return {
-            custom_element: myelem, custom_value: myvalue
+            custom_element: myElem, custom_value: myValue
         }
     };
 

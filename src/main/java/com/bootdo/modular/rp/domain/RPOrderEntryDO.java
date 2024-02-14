@@ -25,6 +25,10 @@ public class RPOrderEntryDO extends BaseEntity {
      */
     private Integer id;
     /**
+     * 店铺编号
+     */
+    private String shopNo;
+    /**
      * 应收、应付票据编号
      */
     private String billNo;

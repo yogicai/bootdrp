@@ -24,6 +24,11 @@ public class ProductCostDO extends BaseEntity {
      */
     private Integer id;
     /**
+     * 店铺编号
+     */
+    @Excel(name = "shopNo")
+    private String shopNo;
+    /**
      * 商品编号
      */
     @Excel(name = "商品编号")

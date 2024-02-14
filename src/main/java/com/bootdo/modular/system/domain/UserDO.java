@@ -62,5 +62,8 @@ public class UserDO extends BaseEntity {
     //角色
     @TableField(exist = false)
     private List<Long> roleIds;
+    //店铺
+    @TableField(exist = false)
+    private List<Long> shopNos;
 
 }

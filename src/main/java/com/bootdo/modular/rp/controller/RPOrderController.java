@@ -1,6 +1,7 @@
 package com.bootdo.modular.rp.controller;
 
 import cn.hutool.core.map.MapUtil;
+import com.bootdo.core.annotation.DataScope;
 import com.bootdo.core.annotation.Log;
 import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
@@ -38,6 +39,7 @@ public class RPOrderController extends BaseController {
     @Resource
     private RPOrderService rpOrderService;
 
+    
     @GetMapping()
     @RequiresPermissions("rp:order:order")
     public String order(@RequestParam Map<String, Object> params, Model model) {
@@ -45,17 +47,15 @@ public class RPOrderController extends BaseController {
         return "rp/order/order";
     }
 
+    @DataScope
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("rp:order:order")
     public PageJQ list(RPOrderQryParam param) {
-        //查询列表数据
         return rpOrderService.selectJoinPage(param);
     }
 
-    /**
-     * 单据列表导出
-     */
+    @DataScope
     @ResponseBody
     @GetMapping("/export")
     @RequiresPermissions("po:order:order")
@@ -65,9 +65,6 @@ public class RPOrderController extends BaseController {
         PoiUtil.exportExcelWithStream("RPOrderResult.xls", RPOrderDO.class, orderList);
     }
 
-    /**
-     * 审核、反审核
-     */
     @Log("财务单审核、反审核")
     @PostMapping("/audit")
     @ResponseBody
@@ -78,9 +75,6 @@ public class RPOrderController extends BaseController {
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
     @Log("财务单删除")
     @PostMapping("/remove")
     @ResponseBody

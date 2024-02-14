@@ -41,7 +41,7 @@ public class SEOrderEntryController {
     @ResponseBody
     @PostMapping("/save")
     @RequiresPermissions("se:entry:add")
-    public R save(@RequestBody SEOrderVO order) {
+    public R save(@RequestBody @Validated SEOrderVO order) {
         seOrderValidator.validateSave(order);
         SEOrderDO orderDO = seOrderEntryService.save(order);
         return R.ok(MapUtil.of("billNo", orderDO.getBillNo()));

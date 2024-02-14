@@ -3,9 +3,9 @@ package com.bootdo.core.shiro.realm;
 import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bootdo.core.utils.ShiroUtils;
-import com.bootdo.modular.system.dao.UserDao;
 import com.bootdo.modular.system.domain.UserDO;
 import com.bootdo.modular.system.service.MenuService;
+import com.bootdo.modular.system.service.UserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -34,9 +34,9 @@ public class UserRealm extends AuthorizingRealm {
         String username = (String) token.getPrincipal();
         String password = new String((char[]) token.getCredentials());
 
-        UserDao userDao = SpringUtil.getBean(UserDao.class);
+        UserService userService = SpringUtil.getBean(UserService.class);
         // 查询用户信息
-        UserDO user = userDao.selectList(Wrappers.lambdaQuery(UserDO.class).eq(UserDO::getUsername, username)).get(0);
+        UserDO user = userService.list(Wrappers.lambdaQuery(UserDO.class).eq(UserDO::getUsername, username)).get(0);
 
         // 账号不存在
         if (user == null) {
@@ -53,7 +53,10 @@ public class UserRealm extends AuthorizingRealm {
             throw new LockedAccountException("账号已被锁定,请联系管理员");
         }
 
-        return new SimpleAuthenticationInfo(user, password, getName());
+        //登录用户、角色、店铺
+        UserDO loginUser = userService.getUser(user.getUserId());
+
+        return new SimpleAuthenticationInfo(loginUser, password, getName());
     }
 
 }

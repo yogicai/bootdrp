@@ -1,11 +1,13 @@
 let prefix = "/report";
 let tableGrid;
-let dataForm;
+let $tableList;
+let $dataForm;
 let start;
 let end;
 let initData = [];
-let colNames = ['商品编号', '商品名称', '单位', '均价', '销售开单量', '商品数量', '商品成本', '销售金额', '销售毛利'];
+let colNames = ['店铺', '商品编号', '商品名称', '单位', '均价', '销售开单量', '商品数量', '商品成本', '销售金额', '销售毛利'];
 let colModel = [
+    {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 40, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
     { name:'entryId', index:'entryId', editable:false, align: "center", width:30 },
     { name:'entryName', index:'entryName', editable:false, sorttype:"text", align: "center", width:60 },
     { name:'entryUnit', index:'entryUnit', editable:false, sorttype:"text", align: "center", width:30 },
@@ -33,16 +35,19 @@ let gridConfig = {
 };
 
 $(function() {
-    dataForm = $("#search");
+    $dataForm = $("#search");
+    $tableList = $('#table_list');
+
+    utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
+    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "120px"}]);
+
     load();
 });
 
 function load() {
-
-    utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-
     $.jgrid.defaults.styleUI = 'Bootstrap';
-    tableGrid = $("#table_list").jqGrid(gridConfig);
+
+    tableGrid = $tableList.jqGrid(gridConfig);
 
     $(window).bind('resize', function () {
         let width = $('.jqGrid_wrapper').width();
@@ -59,20 +64,13 @@ function loadGrid() {
         url: prefix + "/saleProduct",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(dataForm.serializeObject()),
+        data: JSON.stringify($dataForm.serializeObject()),
         success: function (r) {
             if (r.code === 0) {
-                let _gridConfig = $.extend({}, gridConfig, {data: r.result});
-                $.jgrid.gridUnload('#table_list');
-                tableGrid = $('#table_list').jqGrid( _gridConfig );
-                tableGrid.trigger("reloadGrid", { fromServer: true });
-                // tableGrid.jqGrid('clearGridData');
-                // tableGrid.jqGrid('setGridParam', _gridConfig).trigger('reloadGrid');
-
+                tableGrid.jqGrid('clearGridData');
+                tableGrid.jqGrid('setGridParam', {data: r.result}).trigger('reloadGrid');
                 collectTotal();
 
-                dataForm.setForm(r);
-                // start = r.start; end = r.end;
                 $('span[name=toDate]').html("单据日期: " + r.billRegion);
             } else {
                 layer.msg(r.msg);
@@ -95,4 +93,4 @@ function collectTotal(){
     let totalAmountObj = { entryId: '合计:', entryName:'数量：' + recordNum, billCount: billCountTotal, costAmount: costAmountTotal, entryAmount: entryAmountTotal, billProfit: billProfitTotal };
     // 设置表格合计项金额
     tableGrid.footerData('set', totalAmountObj);
-};
+}

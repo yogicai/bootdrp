@@ -28,6 +28,12 @@ public class SEOrderDO extends BaseEntity {
     private Integer id;
 
     /**
+     * 店铺编号
+     */
+    @Excel(name = "店铺", dict = "data_shop")
+    private String shopNo;
+
+    /**
      * 单据日期
      */
     @Excel(name = "单据日期", exportFormat = "yyyy-MM-dd", width = 15)

@@ -2,6 +2,7 @@ package com.bootdo.core.pojo.base.param;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.bootdo.config.converter.JsonListFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -22,14 +23,10 @@ public class BaseParam {
     private String searchText;
 
     /**
-     * 数据权限
-     */
-    private List<Long> dataScope;
-
-    /**
      * 店铺权限
      */
-    private List<Long> shopScope;
+    @JsonListFormat
+    private List<Long> shopNo;
 
     /**
      * 开始时间

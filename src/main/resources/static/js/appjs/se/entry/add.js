@@ -1,20 +1,29 @@
 let prefix = "/data/product";
 let prefixCategory = "/data/category";
 let tableGrid;
+let $tableList;
+let $searchText;
+let $jsTree;
+
+let shopNo = window.parent.$('#shopNo').val();
+
 $(function() {
-    let categoryId = '';
+    $searchText = $('#searchText');
+    $tableList = $('#table_list');
+    $jsTree = $('#jstree');
+
     getTreeData();
-    load(categoryId);
+    load();
     bindEvent();
 });
 
-function load(categoryId) {
+function load() {
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
-    tableGrid = $("#table_list").jqGrid({
+    tableGrid = $tableList.jqGrid({
         url: prefix + "/listJQ",
         datatype: "json",
-        postData: { "status": 1 },
+        postData: {status: 1, shopNo: shopNo},
         colNames: ['', '商品编号', '商品名称', '库存', '成本价', '采购价', '零售价', '条形码', '类别', '品牌', '单位', '仓库', '仓库编号', '状态'],
         colModel: [
             { name:'rowId', index:'', hidden: true, key: true, frozen : true },
@@ -56,8 +65,8 @@ function load(categoryId) {
     // Add responsive to jqGrid
     $(window).bind('resize', function () {
         let width = $('.jqGrid_wrapper').width();
-        $('#table_list').setGridWidth(width);
-        $('#table_list').setGridHeight(window.innerHeight - 180);
+        $tableList.setGridWidth(width);
+        $tableList.setGridHeight(window.innerHeight - 180);
     });
 }
 
@@ -110,25 +119,27 @@ function getTreeData() {
     });
 }
 function loadTree(tree) {
-    $('#jstree').jstree({
+    $jsTree.jstree({
         "core": { 'data' : tree },
         "plugins": [ "search" ]
     });
-    $('#jstree').jstree().open_all();
+
+    $jsTree.on("changed.jstree", function (e, data) {
+        if (_.isEmpty(data.selected) || data.selected[0] === '-1') {
+            tableGrid.jqGrid('setGridParam', {postData: {"type": ""}}).trigger("reloadGrid");
+        } else {
+            tableGrid.jqGrid('setGridParam', {postData: {"type": data.selected[0]}}).trigger("reloadGrid");
+        }
+    });
+
+    $jsTree.jstree().open_all();
 }
 
-$('#jstree').on("changed.jstree", function(e, data) {
-    if (data.selected == -1) {
-        tableGrid.jqGrid('setGridParam', {postData: {"type": ""} }).trigger("reloadGrid");
-    } else {
-        tableGrid.jqGrid('setGridParam', { postData: {"type" : data.selected[0]} }).trigger("reloadGrid");
-    }
-});
 
 //绑定事件
 function bindEvent() {
     let timeoutID;
-    $('#searchText').bind('keyup', function () {
+    $searchText.bind('keyup', function () {
         clearTimeout(timeoutID);
         timeoutID= window.setTimeout(function(){
             reLoad();

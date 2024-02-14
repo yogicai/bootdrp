@@ -19,12 +19,12 @@ public class DataShop extends BaseEntity {
      *
      */
     @TableId(type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 店铺名称
      */
-    private Integer no;
+    private Long no;
 
     /**
      * 店铺名称

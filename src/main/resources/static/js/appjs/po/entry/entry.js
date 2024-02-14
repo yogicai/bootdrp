@@ -6,6 +6,8 @@ let $tableList;
 let $dataForm;
 let $vendorId;
 let $mask;
+let loginShopNo = utils.dataCache.loginUserInfo.shopNo
+let initFormData = {shopNo: loginShopNo, billDate: new Date().format('yyyy-MM-dd')}
 
 let prefix = "/po/entry";
 let prefixOrder = "/po/order";
@@ -18,7 +20,10 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDatePicker('date_1');
-    utils.loadCategory(["VENDOR_DATA", "ACCOUNT_DATA"], ["vendorId", "settleAccountTotal"], [{width: "300px"}, {width: "200px", selectedIndex: 1}]);
+    utils.loadTypes(["data_shop"], ["shopNo"],
+        [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["VENDOR_DATA"], elementIds: ["vendorId"]}}]);
+    utils.loadCategory(["VENDOR_DATA", "ACCOUNT_DATA"], ["vendorId", "settleAccountTotal"],
+        [{width: "200px"}, {width: "200px"}]);
 
     load();
 });
@@ -212,8 +217,8 @@ function save(add) {
     let entryArr = tableGrid.jqGrid("getRowData");
     order.entryVOList = [];
 
-    if (_.isEmpty(order.vendorId) || _.isEmpty(order.billDate) || _.isEmpty(order.settleAccountTotal) || amountOrder.totalObj.totalQtyTotal <= 0) {
-        layer.msg((_.isEmpty(order.vendorId) ? "[客户信息]" : "") + (_.isEmpty(order.billDate) ? "[单据日期]" : "") + (_.isEmpty(order.settleAccountTotal) ? "[结算帐户]" : "") + (amountOrder.totalObj.totalQtyTotal <= 0 ? "[合计数量]" : "") + "不能为空！");
+    if (_.some([order.shopNo, order.vendorId, order.billDate, order.settleAccountTotal], _.isEmpty) || amountOrder.totalObj.totalQtyTotal <= 0) {
+        layer.msg((_.isEmpty(order.shopNo) ? "[所属店铺]" : "") + (_.isEmpty(order.vendorId) ? "[客户信息]" : "") + (_.isEmpty(order.billDate) ? "[单据日期]" : "") + (_.isEmpty(order.settleAccountTotal) ? "[结算帐户]" : "") + (amountOrder.totalObj.totalQtyTotal <= 0 ? "[合计数量]" : "") + "不能为空！");
         return;
     }
 
@@ -401,6 +406,7 @@ function initOrder(billNo) {
         tableGrid.clearGridData();
         tableGrid.jqGrid('setGridParam', {data: [{}, {}, {}]}).trigger('reloadGrid');
         $dataForm.resetForm();
+        $dataForm.setForm(initFormData);
         $mask.removeClass('util-has-audit');
     }
 }

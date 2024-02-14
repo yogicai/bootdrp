@@ -21,6 +21,10 @@ public class WHOrderEntryDO extends BaseEntity {
      */
     private Integer id;
     /**
+     * 店铺编号
+     */
+    private String shopNo;
+    /**
      * 单据号
      */
     private String billNo;

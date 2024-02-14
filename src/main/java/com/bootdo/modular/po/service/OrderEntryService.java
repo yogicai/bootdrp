@@ -55,6 +55,7 @@ public class OrderEntryService extends ServiceImpl<OrderEntryDao, OrderEntryDO> 
         }
         OrderVO orderVO = new OrderVO();
         orderVO.setBillDate(orderDO.getBillDate());
+        orderVO.setShopNo(orderDO.getShopNo());
         orderVO.setBillNo(orderDO.getBillNo());
         orderVO.setBillType(orderDO.getBillType());
         orderVO.setVendorId(orderDO.getVendorId());

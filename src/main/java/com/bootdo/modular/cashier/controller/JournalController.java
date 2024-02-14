@@ -1,5 +1,6 @@
 package com.bootdo.modular.cashier.controller;
 
+import com.bootdo.core.annotation.DataScope;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.cashier.param.JournalGeneralParam;
 import com.bootdo.modular.cashier.service.JournalService;
@@ -33,6 +34,7 @@ public class JournalController {
         return "cashier/journal/journal";
     }
 
+    @DataScope
     @ResponseBody
     @PostMapping("/general")
     @RequiresPermissions("cashier:journal:journal")
@@ -40,6 +42,7 @@ public class JournalController {
         return R.ok(journalService.general(param));
     }
 
+    @DataScope
     @ResponseBody
     @GetMapping("/general/export")
     @RequiresPermissions("cashier:journal:journal")

@@ -23,13 +23,13 @@ public class UserRoleService extends ServiceImpl<UserRoleDao, UserRoleDO> {
                 .map(UserRoleDO::getRoleId).collect(Collectors.toList());
     }
 
-    public boolean removeByUserId(Long userId) {
-        return this.remove(Wrappers.lambdaQuery(UserRoleDO.class).eq(UserRoleDO::getUserId, userId));
+    public void removeByUserId(Long userId) {
+        this.remove(Wrappers.lambdaQuery(UserRoleDO.class).eq(UserRoleDO::getUserId, userId));
     }
 
 
-    public boolean removeByUserId(List<Integer> userIds) {
-        return this.remove(Wrappers.lambdaQuery(UserRoleDO.class).in(UserRoleDO::getUserId, userIds));
+    public void removeByUserId(List<Integer> userIds) {
+        this.remove(Wrappers.lambdaQuery(UserRoleDO.class).in(UserRoleDO::getUserId, userIds));
     }
 
 }

@@ -3,6 +3,8 @@ let tableGrid;
 let $tableList;
 let $dataForm;
 let $mask;
+let loginShopNo = utils.dataCache.loginUserInfo.shopNo
+let initFormData = {shopNo: loginShopNo, billDate: new Date().format('yyyy-MM-dd')}
 
 let prefix = "/wh/entry";
 let prefixOrder = "/wh/order";
@@ -21,15 +23,17 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDatePicker('date_1');
+    utils.loadTypes(["data_shop"], ["shopNo"],
+        [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["CUSTOMER_DATA"], elementIds: ["debtorId"]}}]);
+    utils.loadCategory(["CUSTOMER_DATA"], ["debtorId"], [{width: "200px"}]);
     if (billType === 'WH_RK_ORDER') {
         utils.loadTypes(["data_wh_rk"], ["serviceType"], [{width: "200px"}]);
     } else {
         utils.loadTypes(["data_wh_ck"], ["serviceType"], [{width: "200px"}]);
     }
-    utils.loadCategory(["CUSTOMER_DATA"], ["debtorId"], [{width: "200px"}]);
 
     load();
-});
+})
 
 function load() {
     $.jgrid.defaults.styleUI = 'Bootstrap';
@@ -171,8 +175,8 @@ function save(add) {
     let entryArr = tableGrid.jqGrid("getRowData");
     order.entryVOList = [];
 
-    if (_.isEmpty(order.serviceType) || _.isEmpty(order.billDate)) {
-        layer.msg((order.serviceType === "" ? "【业务类型】" : "") + (order.billDate === "" ? "【单据日期】" : "") + "不能为空！");
+    if (_.some([order.shopNo, order.serviceType, order.billDate], _.isEmpty)) {
+        layer.msg((order.shopNo === "" ? "【所属】" : "") + (order.serviceType === "" ? "【业务类型】" : "") + (order.billDate === "" ? "【单据日期】" : "") + "不能为空！");
         return;
     }
 
@@ -346,6 +350,7 @@ function initOrder(billNo) {
         initBillNo();
         clearGrid();
         $dataForm.resetForm();
+        $dataForm.setForm(initFormData);
         $mask.removeClass('util-has-audit');
     }
 }

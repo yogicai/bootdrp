@@ -1,14 +1,16 @@
 let tableGrid;
 let $tableList;
+let $searchText;
 
 let debtorId = window.parent.$('#debtorId').val();
 let billType = window.parent.$('#billType').val();
+let shopNo = window.parent.$('#shopNo').val();
 
 let prefix = _.eq(billType, 'CW_SK_ORDER') ? "/se/order" : "/po/order";
-let postData = {"statusNot": ["FINISH_PAY", "ORDER_CANCEL"], "auditStatus": "YES", "consumerId": debtorId, "vendorId": debtorId};
-
+let postData = {"statusNot": ["FINISH_PAY", "ORDER_CANCEL"], "auditStatus": "YES", "consumerId": debtorId, "vendorId": debtorId, "shopNo": shopNo};
 
 $(function() {
+    $searchText = $('#searchText');
     $tableList = $('#table_list');
 
     load();
@@ -78,7 +80,7 @@ function load() {
 
 //刷新表格数据
 function reLoad() {
-    tableGrid.jqGrid('setGridParam', {postData: $.extend({}, {"searchText": $('#searchText').val()}, postData) }).trigger("reloadGrid");
+    tableGrid.jqGrid('setGridParam', {postData: $.extend({}, {"searchText": $searchText.val()}, postData)}).trigger("reloadGrid");
 }
 
 //添加商品到订单分录

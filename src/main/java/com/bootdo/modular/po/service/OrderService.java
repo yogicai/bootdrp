@@ -66,8 +66,8 @@ public class OrderService extends ServiceImpl<OrderDao, OrderDO> {
                 .in(ObjectUtil.isNotEmpty(param.getAuditStatus()), OrderDO::getAuditStatus, StrUtil.split(param.getAuditStatus(), StrUtil.COMMA))
                 .in(ObjectUtil.isNotEmpty(param.getStatus()), OrderDO::getStatus, StrUtil.split(param.getStatus(), StrUtil.COMMA))
                 .notIn(ObjectUtil.isNotEmpty(param.getStatusNot()), OrderDO::getStatus, param.getStatusNot())
-                .ge(ObjectUtil.isNotEmpty(param.getStart()), OrderDO::getUpdateTime, param.getStart())
-                .le(ObjectUtil.isNotEmpty(param.getEnd()), OrderDO::getUpdateTime, param.getEnd())
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), OrderDO::getBillDate, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), OrderDO::getBillDate, param.getEnd())
                 .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(OrderDO::getBillNo, param.getSearchText()).or().like(OrderDO::getVendorName, param.getSearchText()).or().like(OrderDO::getRemark, param.getSearchText()))
                 .orderByDesc(OrderDO::getBillDate).orderByDesc(OrderDO::getUpdateTime);
 

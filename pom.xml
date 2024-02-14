@@ -31,7 +31,7 @@
         <lombok.versin>1.18.12</lombok.versin>
         <easypoi.version>4.5.0</easypoi.version>
         <velocity.version>1.7</velocity.version>
-        <hutool.version>5.8.11</hutool.version>
+        <hutool.version>5.8.26</hutool.version>
         <shiro.version>1.11.0</shiro.version>
         <thymeleaf.extras.shiro.version>2.1.0</thymeleaf.extras.shiro.version>
         <quartz.version>2.2.1</quartz.version>

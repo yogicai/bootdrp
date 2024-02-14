@@ -5,6 +5,7 @@
 
     <select id="sReconC" resultType="java.util.Map">
         SELECT
+            a.`shop_no`                                                                                             AS shopNo,
             a.`consumer_id`                                                                                         AS instituteId,
             a.`consumer_name`                                                                                       AS instituteName,
             CONCAT(DATE_FORMAT(MIN(a.`bill_date`), '%Y-%m-%d'), ' - ', DATE_FORMAT(MAX(a.`bill_date`), '%Y-%m-%d')) AS billRegion,
@@ -29,6 +30,7 @@
 
     <select id="sReconV" resultType="java.util.Map">
         SELECT
+            a.`shop_no`                                                                                             AS shopNo,
             a.`vendor_id`                                                                                           AS instituteId,
             a.`vendor_name`                                                                                         AS instituteName,
             CONCAT(DATE_FORMAT(MIN(a.`bill_date`), '%Y-%m-%d'), ' - ', DATE_FORMAT(MAX(a.`bill_date`), '%Y-%m-%d')) AS billRegion,
@@ -51,6 +53,7 @@
 
     <select id="saleProduct" resultType="java.util.Map">
         SELECT
+            a.`shop_no`                                    as shopNo,
             a.`entry_id`                                   as entryId,
             a.`entry_name`                                 as entryName,
             a.`entry_unit`                                 as entryUnit,

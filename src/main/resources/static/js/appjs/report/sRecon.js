@@ -7,10 +7,11 @@ let start;
 let end;
 
 let initData = [];
-let colNamesC = ['编号', '客户名称', '年度',  '应收金额', '收款金额', '商品成本', '销售毛利', '欠款金额'];
-let colNamesV = ['编号', '供应商名称', '年度',  '应付金额', '付款金额', '', '', '欠款金额'];
+let colNamesC = ['店铺', '编号', '客户名称', '年度', '应收金额', '收款金额', '商品成本', '销售毛利', '欠款金额'];
+let colNamesV = ['店铺', '编号', '供应商名称', '年度', '应付金额', '付款金额', '', '', '欠款金额'];
 let colNames = type === 'CUSTOMER' ? colNamesC : colNamesV;
 let colModelC = [
+    {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 40, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
     { name:'instituteId', index:'instituteId', editable:false, align: "center", width:30 },
     { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", width:60 },
     { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center", width:80 },
@@ -21,6 +22,7 @@ let colModelC = [
     { name:'debtAmount', index:'debtAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }
 ];
 let colModelV = [
+    {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 40, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
     { name:'instituteId', index:'instituteId', editable:false, align: "center", width:30 },
     { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", width:60 },
     { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center", width:80 },
@@ -57,10 +59,11 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
+    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "120px"}]);
     if (type === 'CUSTOMER') {
-        utils.loadCategory(["CUSTOMER_DATA"], ["instituteId"], [{width: "150px", liveSearch: true}]);
+        utils.loadCategory(["CUSTOMER_DATA"], ["instituteId"], [{width: "120px", liveSearch: true}]);
     } else {
-        utils.loadCategory(["VENDOR_DATA"], ["instituteId"], [{width: "150px", liveSearch: true}]);
+        utils.loadCategory(["VENDOR_DATA"], ["instituteId"], [{width: "120px", liveSearch: true}]);
     }
 
     load();
@@ -89,14 +92,11 @@ function loadGrid() {
         data: JSON.stringify($dataForm.serializeObject()),
         success: function (r) {
             if (r.code === 0) {
-                let _gridConfig = $.extend({}, gridConfig, {data: r.result});
-                $.jgrid.gridUnload('#table_list');
-                tableGrid = $('#table_list').jqGrid( _gridConfig );
                 tableGrid.trigger("reloadGrid", { fromServer: true });
-
+                tableGrid.jqGrid('clearGridData');
+                tableGrid.jqGrid('setGridParam', {data: r.result}).trigger('reloadGrid');
                 collectTotal();
 
-                start = r.start; end = r.end;
                 $('span[name=toDate]').html("欠款日期: " + r.billRegion);
             } else {
                 layer.msg(r.msg);

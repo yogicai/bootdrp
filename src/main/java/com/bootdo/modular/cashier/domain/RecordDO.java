@@ -19,6 +19,11 @@ public class RecordDO extends BaseEntity {
 
     private Long id;
     /**
+     * 店铺编号
+     */
+    @Excel(name = "店铺编号")
+    private String shopNo;
+    /**
      * 昵称
      */
     @Excel(name = "编号")

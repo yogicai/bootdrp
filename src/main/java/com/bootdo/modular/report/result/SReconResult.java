@@ -12,6 +12,9 @@ import java.math.BigDecimal;
 @Data
 public class SReconResult {
 
+    @Excel(name = "店铺", dict = "data_shop")
+    private String shopNo;
+
     @Excel(name = "编号")
     private String instituteId;
 

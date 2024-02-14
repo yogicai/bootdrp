@@ -76,8 +76,8 @@ public class SEOrderService extends ServiceImpl<SEOrderDao, SEOrderDO> {
                 .in(ObjectUtil.isNotEmpty(param.getStatus()), SEOrderDO::getStatus, StrUtil.split(param.getStatus(), StrUtil.COMMA))
                 .notIn(ObjectUtil.isNotEmpty(param.getStatusNot()), SEOrderDO::getStatus, param.getStatusNot())
                 .in(ObjectUtil.isNotEmpty(param.getBillSource()), SEOrderDO::getBillSource, StrUtil.split(param.getBillSource(), StrUtil.COMMA))
-                .ge(ObjectUtil.isNotEmpty(param.getStart()), SEOrderDO::getUpdateTime, param.getStart())
-                .le(ObjectUtil.isNotEmpty(param.getEnd()), SEOrderDO::getUpdateTime, param.getEnd())
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), SEOrderDO::getBillDate, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), SEOrderDO::getBillDate, param.getEnd())
                 .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(SEOrderDO::getBillNo, param.getSearchText()).or().like(SEOrderDO::getConsumerName, param.getSearchText()).or().like(SEOrderDO::getRemark, param.getSearchText()))
                 .orderByDesc(SEOrderDO::getBillDate).orderByDesc(SEOrderDO::getUpdateTime);
 

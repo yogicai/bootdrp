@@ -51,7 +51,7 @@ public class WHOrderEntryController {
     @ResponseBody
     @PostMapping("/save")
     @RequiresPermissions("se:entry:add")
-    public R save(@RequestBody WHOrderVO order) {
+    public R save(@RequestBody @Validated WHOrderVO order) {
         whOrderValidator.validateSave(order);
         WHOrderDO orderDO = whOrderEntryService.save(order);
         return R.ok(ImmutableMap.of("billNo", orderDO.getBillNo()));

@@ -1,5 +1,6 @@
 package com.bootdo.modular.rp.controller;
 
+import com.bootdo.core.annotation.DataScope;
 import com.bootdo.core.annotation.Log;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
@@ -38,11 +39,11 @@ public class RPPointController {
         return "rp/point/point";
     }
 
+    @DataScope
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("rp:point:point")
     public PageJQ list(PointQryParam param) {
-        //查询列表数据
         return pointEntryService.page(param);
     }
 

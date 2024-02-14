@@ -1,6 +1,7 @@
 package com.bootdo.modular.wh.controller;
 
 import cn.hutool.core.map.MapUtil;
+import com.bootdo.core.annotation.DataScope;
 import com.bootdo.core.annotation.Log;
 import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
@@ -37,9 +38,7 @@ public class WHOrderController extends BaseController {
     @Resource
     private WHOrderService whOrderService;
 
-    /**
-     * 左侧菜单单据列表页URL
-     */
+
     @GetMapping()
     @RequiresPermissions("wh:order:order")
     public String order(@RequestParam Map<String, Object> params, Model model) {
@@ -47,32 +46,23 @@ public class WHOrderController extends BaseController {
         return "wh/order/order";
     }
 
-    /**
-     * 单据列表页
-     */
+    @DataScope
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("wh:order:order")
     public PageJQ list(WHOrderQryParam param) {
-        //查询列表数据
         return whOrderService.page(param);
     }
 
-    /**
-     * 单据列表导出
-     */
+    @DataScope
     @ResponseBody
     @GetMapping("/export")
     @RequiresPermissions("po:order:order")
     public void export(WHOrderQryParam param) {
-        //查询列表数据
         List<WHOrderDO> orderList = whOrderService.pageList(PageFactory.defalultAllPage(), param).getRecords();
         PoiUtil.exportExcelWithStream("WHOrderResult.xls", WHOrderDO.class, orderList);
     }
 
-    /**
-     * 审核、反审核
-     */
     @Log("库存单审核、反审核")
     @PostMapping("/audit")
     @ResponseBody
@@ -83,9 +73,6 @@ public class WHOrderController extends BaseController {
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
     @Log("库存单删除")
     @PostMapping("/remove")
     @ResponseBody

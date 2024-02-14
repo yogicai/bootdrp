@@ -46,8 +46,8 @@ public class WHOrderService extends ServiceImpl<WHOrderDao, WHOrderDO> {
                 .in(ObjectUtil.isNotEmpty(param.getServiceType()), WHOrderDO::getServiceType, StrUtil.split(param.getServiceType(), StrUtil.COMMA))
                 .in(ObjectUtil.isNotEmpty(param.getBillType()), WHOrderDO::getBillType, StrUtil.split(param.getBillType(), StrUtil.COMMA))
                 .in(ObjectUtil.isNotEmpty(param.getAuditStatus()), WHOrderDO::getAuditStatus, StrUtil.split(param.getAuditStatus(), StrUtil.COMMA))
-                .ge(ObjectUtil.isNotEmpty(param.getStart()), WHOrderDO::getUpdateTime, param.getStart())
-                .le(ObjectUtil.isNotEmpty(param.getEnd()), WHOrderDO::getUpdateTime, param.getEnd())
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), WHOrderDO::getBillDate, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), WHOrderDO::getBillDate, param.getEnd())
                 .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(WHOrderDO::getBillNo, param.getSearchText()).or().like(WHOrderDO::getDebtorName, param.getSearchText()).or().like(WHOrderDO::getRemark, param.getSearchText()))
                 .orderByDesc(WHOrderDO::getBillDate).orderByDesc(WHOrderDO::getUpdateTime);
 

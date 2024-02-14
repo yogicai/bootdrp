@@ -8,11 +8,12 @@ let $dataForm;
 let $mask;
 let $debtorId;
 let loginUserId = utils.dataCache.loginUserInfo.userId
+let loginShopNo = utils.dataCache.loginUserInfo.shopNo
+let initFormData = {checkId: loginUserId, shopNo: loginShopNo, billDate: new Date().format('yyyy-MM-dd')}
 
 let prefix = "/rp/entry";
 let prefixOrder = "/rp/order";
 let initData = [{}, {}, {}];
-let initFormData = {checkId: loginUserId, billDate: new Date().format('yyyy-MM-dd')};
 
 let colNames_SK = ['', 'ID', '结算帐户', '收款金额', '备注'];
 let colNames_FK = ['', 'ID', '结算帐户', '付款金额', '备注'];
@@ -30,14 +31,21 @@ $(function () {
     $tableList1 = $('#table_list1');
 
     utils.createDatePicker('date_1', {}, new Date());
+
     if (_.eq(billType, 'CW_SK_ORDER')) {
-        utils.loadCategory(["CUSTOMER_DATA", "USER_DATA"], ["debtorId", "checkId"], [{width: "200px"}, {width: "200px", setValue: [loginUserId]}]);
+        utils.loadTypes(["data_shop"], ["shopNo"],
+            [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["CUSTOMER_DATA"], elementIds: ["debtorId"]}}]);
+        utils.loadCategory(["CUSTOMER_DATA", "USER_DATA"], ["debtorId", "checkId"],
+            [{width: "200px", liveSearch: true}, {width: "200px", setValue: [loginUserId]}]);
     } else {
-        utils.loadCategory(["VENDOR_DATA", "USER_DATA"], ["debtorId", "checkId"], [{width: "200px"}, {width: "200px", setValue: [loginUserId]}]);
+        utils.loadTypes(["data_shop"], ["shopNo"],
+            [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["VENDOR_DATA"], elementIds: ["debtorId"]}}]);
+        utils.loadCategory(["VENDOR_DATA", "USER_DATA"], ["debtorId", "checkId"],
+            [{width: "200px", liveSearch: true}, {width: "200px", setValue: [loginUserId]}]);
     }
 
     load();
-});
+})
 
 function load() {
     $.jgrid.defaults.styleUI = 'Bootstrap';
@@ -202,11 +210,11 @@ function save(add) {
     order.settleVOList = [];
     order.entryVOList = [];
 
-    if (_.some([order.debtorId, order.checkId, order.billDate], _.isEmpty)) {
+    if (_.some([order.shopNo, order.debtorId, order.checkId, order.billDate], _.isEmpty)) {
         if (billType === 'CW_SK_ORDER') {
-            layer.msg((order.debtorId === "" ? "【零售客户】" : "") + (order.checkId === "" ? "【收款人】" : "") + (order.billDate === "" ? "【单据日期】" : "") + "不能为空！")
+            layer.msg((order.shopNo === "" ? "【属性店铺】" : "") + (order.debtorId === "" ? "【零售客户】" : "") + (order.checkId === "" ? "【收款人】" : "") + (order.billDate === "" ? "【单据日期】" : "") + "不能为空！")
         } else {
-            layer.msg((order.debtorId === "" ? "【供应商】" : "") + (order.checkId === "" ? "【付款人】" : "") + (order.billDate === "" ? "【单据日期】" : "") + "不能为空！")
+            layer.msg((order.shopNo === "" ? "【属性店铺】" : "") + (order.debtorId === "" ? "【供应商】" : "") + (order.checkId === "" ? "【付款人】" : "") + (order.billDate === "" ? "【单据日期】" : "") + "不能为空！")
         }
         return;
     }

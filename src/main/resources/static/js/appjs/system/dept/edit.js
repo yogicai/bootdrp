@@ -4,11 +4,13 @@ $().ready(function() {
 	validateRule();
 });
 
-$.validator.setDefaults({
-	submitHandler : function() {
-		update();
-	}
-});
+function validateRule() {
+	$("#signupForm").validate({
+		submitHandler: function () {
+			update();
+		}
+	})
+}
 
 function update() {
 	$.ajax({
@@ -31,20 +33,4 @@ function update() {
 			}
 		}
 	});
-
-}
-function validateRule() {
-	let icon = "<i class='fa fa-times-circle'></i> ";
-	$("#signupForm").validate({
-		rules : {
-			name : {
-				required : true
-			}
-		},
-		messages : {
-			name : {
-				required : icon + "请输入名字"
-			}
-		}
-	})
 }

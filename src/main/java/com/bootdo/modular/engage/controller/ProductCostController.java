@@ -1,5 +1,6 @@
 package com.bootdo.modular.engage.controller;
 
+import com.bootdo.core.annotation.DataScope;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.core.utils.PoiUtil;
@@ -36,11 +37,11 @@ public class ProductCostController extends BaseController {
         return "engage/product/cost";
     }
 
+    @DataScope
     @ResponseBody
     @GetMapping("/list")
     @RequiresPermissions("engage:product:cost")
     public PageJQ list(ProductCostQryParam param) {
-        //查询列表数据
         return productCostService.page(param);
     }
 
@@ -51,7 +52,6 @@ public class ProductCostController extends BaseController {
     @GetMapping("/export")
     @RequiresPermissions("engage:product:cost")
     public void export(ProductCostQryParam param) {
-        //查询列表数据
         List<ProductCostDO> productList = productCostService.list(param);
         PoiUtil.exportExcelWithStream("ProductCostResult.xls", ProductCostDO.class, productList);
     }

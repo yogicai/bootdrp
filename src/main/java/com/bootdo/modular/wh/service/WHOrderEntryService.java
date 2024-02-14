@@ -63,6 +63,7 @@ public class WHOrderEntryService extends ServiceImpl<WHOrderEntryDao, WHOrderEnt
         }
         WHOrderVO orderVO = new WHOrderVO();
         orderVO.setBillDate(orderDO.getBillDate());
+        orderVO.setShopNo(orderDO.getShopNo());
         orderVO.setBillNo(orderDO.getBillNo());
         orderVO.setBillType(orderDO.getBillType());
         orderVO.setServiceType(orderDO.getServiceType());

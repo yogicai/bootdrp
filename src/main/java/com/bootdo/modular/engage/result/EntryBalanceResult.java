@@ -18,6 +18,11 @@ import java.util.Date;
 public class EntryBalanceResult {
 
     /**
+     * 店铺编号
+     */
+    @Excel(name = "店铺编号")
+    private String shopNo;
+    /**
      * 单据日期
      */
     @Excel(name = "单据日期", exportFormat = "yyyy-MM-dd", width = 15)

@@ -66,8 +66,8 @@ public class RPOrderService extends ServiceImpl<RPOrderDao, RPOrderDO> {
                 .in(ObjectUtil.isNotEmpty(param.getBillType()), RPOrderDO::getBillType, StrUtil.split(param.getBillType(), StrUtil.COMMA))
                 .in(ObjectUtil.isNotEmpty(param.getAuditStatus()), RPOrderDO::getAuditStatus, StrUtil.split(param.getAuditStatus(), StrUtil.COMMA))
                 .in(ObjectUtil.isNotEmpty(param.getCheckId()), RPOrderDO::getCheckId, StrUtil.split(param.getCheckId(), StrUtil.COMMA))
-                .ge(ObjectUtil.isNotEmpty(param.getStart()), RPOrderDO::getUpdateTime, param.getStart())
-                .le(ObjectUtil.isNotEmpty(param.getEnd()), RPOrderDO::getUpdateTime, param.getEnd())
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), RPOrderDO::getBillDate, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), RPOrderDO::getBillDate, param.getEnd())
                 .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(RPOrderDO::getBillNo, param.getSearchText()).or().like(RPOrderDO::getRemark, param.getSearchText()))
                 .orderByDesc(RPOrderDO::getBillDate).orderByDesc(RPOrderDO::getUpdateTime);
 
@@ -117,8 +117,8 @@ public class RPOrderService extends ServiceImpl<RPOrderDao, RPOrderDO> {
                 .in(ObjectUtil.isNotEmpty(param.getBillType()), RPOrderDO::getBillType, StrUtil.split(param.getBillType(), StrUtil.COMMA))
                 .in(ObjectUtil.isNotEmpty(param.getAuditStatus()), RPOrderDO::getAuditStatus, StrUtil.split(param.getAuditStatus(), StrUtil.COMMA))
                 .in(ObjectUtil.isNotEmpty(param.getCheckId()), RPOrderDO::getCheckId, StrUtil.split(param.getCheckId(), StrUtil.COMMA))
-                .ge(ObjectUtil.isNotEmpty(param.getStart()), RPOrderDO::getUpdateTime, param.getStart())
-                .le(ObjectUtil.isNotEmpty(param.getEnd()), RPOrderDO::getUpdateTime, param.getEnd())
+                .ge(ObjectUtil.isNotEmpty(param.getStart()), RPOrderDO::getBillDate, param.getStart())
+                .le(ObjectUtil.isNotEmpty(param.getEnd()), RPOrderDO::getBillDate, param.getEnd())
                 .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(RPOrderDO::getBillNo, param.getSearchText())
                         .or().like(RPOrderDO::getRemark, param.getSearchText()).or().like(RPOrderEntryDO::getSrcBillNo, param.getSearchText()))
                 .orderByDesc(RPOrderDO::getBillDate).orderByDesc(RPOrderDO::getUpdateTime);

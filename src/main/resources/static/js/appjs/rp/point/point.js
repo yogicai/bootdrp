@@ -1,24 +1,25 @@
-var prefix = "/rp/point";
-var tableGrid;
-var searchType='DETAIL';
-$(function() {
-    load();
-    utils.loadEnumTypes(["POINT_STATUS"], ["status"], [{width:"120px"}]);
+let prefix = "/rp/point";
+let tableGrid;
+let $dataForm;
+let $tableList;
+let searchType = 'DETAIL';
 
+$(function() {
+    $dataForm = $('#search');
+    $tableList = $("#table_list");
+
+    utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
+    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100px"}]);
+    utils.loadEnumTypes(["POINT_STATUS"], ["status"], [{width:"120px"}]);
     utils.loadCategory(["CUSTOMER_DATA"], ["consumerId"], [{width:"120px"}]);
+
+    load();
 });
 
 function load() {
-    $('.input-daterange').datepicker({
-        language: "zh-CN",
-        todayBtn: "linked",
-        autoclose: true,
-        todayHighlight: true
-    });
-
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
-    tableGrid = $("#table_list").jqGrid({
+    tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
         datatype: "json",
         height: window.innerHeight - 170,
@@ -56,38 +57,38 @@ function load() {
     });
     // Add responsive to jqGrid
     $(window).bind('resize', function () {
-        var width = $('.jqGrid_wrapper').width();
-        $('#table_list').setGridWidth(width);
+        let width = $('.jqGrid_wrapper').width();
+        $tableList.setGridWidth(width);
     });
 }
 
 function search(pageBtn) {
-    var inputPage = 1;
-    var rowNum = tableGrid.getGridParam('rowNum');//获取每页数
-    var curPage = tableGrid.getGridParam('page');//获取返回的当前页
-    var totalPage = tableGrid.getGridParam('lastpage');//获取总页数
-    if (pageBtn == 'first') {
+    let inputPage = 1;
+    let rowNum = tableGrid.getGridParam('rowNum');//获取每页数
+    let curPage = tableGrid.getGridParam('page');//获取返回的当前页
+    let totalPage = tableGrid.getGridParam('lastpage');//获取总页数
+    if (pageBtn === 'first') {
         inputPage = 0;
-    } else if (pageBtn == 'last') {
+    } else if (pageBtn === 'last') {
         inputPage = totalPage;
-    } else if (pageBtn == 'prev') {
+    } else if (pageBtn === 'prev') {
         inputPage = curPage - 1;
-    } else if (pageBtn == 'next') {
+    } else if (pageBtn === 'next') {
         inputPage = curPage + 1;
-    } else if (pageBtn == 'user') {
+    } else if (pageBtn === 'user') {
         inputPage = $('.ui-pg-input').val();//输入框页数
-    } else if (pageBtn == 'records') {
+    } else if (pageBtn === 'records') {
         rowNum = $('.ui-pg-selbox').val();//输入框页数
     }
     inputPage = inputPage > totalPage ? totalPage : inputPage;
     inputPage = inputPage < 1 ? 1 : inputPage;
-    var postData = $.extend({type: searchType}, $('#search').serializeObject(), { 'page': inputPage, 'rows': rowNum });
+    let postData = $.extend({type: searchType}, $dataForm.serializeObject(), {'page': inputPage, 'rows': rowNum});
     tableGrid.jqGrid('setGridParam', {postData:  $.param(postData)}).trigger("reloadGrid");
 }
 
 function reLoad(type) {
     searchType = type ? type : searchType;
-    var postData = $.extend({type: type}, $('#search').serializeObject(), {'page': 1, 'rows': tableGrid.jqGrid('getGridParam', 'rowNum')});
+    let postData = $.extend({type: type}, $dataForm.serializeObject(), {'page': 1, 'rows': tableGrid.jqGrid('getGridParam', 'rowNum')});
     tableGrid.jqGrid('setGridParam', {postData:  $.param(postData)}).trigger("reloadGrid");
 }
 
@@ -102,13 +103,13 @@ function add() {
     });
 }
 function edit(id) {
-    if (searchType == 'COLLECT') {
+    if (searchType === 'COLLECT') {
         layer.msg("汇总记录无法修改!");
         return;
     }
-    var ids = tableGrid.jqGrid("getGridParam", "selarrrow");
-    if (ids.length != 1) {
-        layer.msg(ids.length == 0 ? "请选择要修改的记录" : "一次只能修改一条记录");
+    let ids = tableGrid.jqGrid("getGridParam", "selarrrow");
+    if (ids.length !== 1) {
+        layer.msg(ids.length === 0 ? "请选择要修改的记录" : "一次只能修改一条记录");
         return;
     }
     layer.open({
@@ -122,12 +123,12 @@ function edit(id) {
 }
 
 function remove() {
-    if (searchType == 'COLLECT') {
+    if (searchType === 'COLLECT') {
         layer.msg("汇总记录无法删除!");
         return;
     }
-    var ids = tableGrid.jqGrid("getGridParam", "selarrrow");
-    if (ids.length == 0) {
+    let ids = tableGrid.jqGrid("getGridParam", "selarrrow");
+    if (ids.length === 0) {
         layer.msg("请选择要删除的数据");
         return;
     }
@@ -137,11 +138,9 @@ function remove() {
         $.ajax({
             url : prefix+"/remove",
             type : "post",
-            data : {
-                'ids' : ids
-            },
+            data: {'ids': ids},
             success : function(r) {
-                if (r.code==0) {
+                if (r.code === 0) {
                     layer.msg(r.msg);
                     reLoad();
                 }else{

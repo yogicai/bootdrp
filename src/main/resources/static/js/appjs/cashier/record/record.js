@@ -1,32 +1,35 @@
 let prefix = "/cashier/record";
-let dataForm;
 let tableGrid;
-let recordDate;
+let $tableList;
+let $dataForm;
 let loading;
 $(function() {
-    dataForm = $("#search");
+    $dataForm = $("#search");
+    $tableList = $('#table_list');
+
+    utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
+    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100px"}]);
+
     initMultiSelect();
     load();
 });
 
 function initMultiSelect() {
     utils.loadMultiSelect(
-        ["type","account","payDirect","payStatus","tradeClass","source","costType"],
-        ["type","account","payDirect","payStatus","tradeClass","source","costType"],
-        [{nonSelectedText: '交易渠道'},{nonSelectedText: '交易账号'},{nonSelectedText: '交易方向'},{nonSelectedText: '交易状态'},{nonSelectedText: '交易类型'},{nonSelectedText: '数据来源'},{nonSelectedText: '资金用途'}],
+        ["type", "account", "payDirect", "payStatus", "source", "costType"],
+        ["type", "account", "payDirect", "payStatus", "source", "costType"],
+        [{nonSelectedText: '交易渠道'}, {nonSelectedText: '交易账号'}, {nonSelectedText: '交易方向'}, {nonSelectedText: '交易状态'}, {nonSelectedText: '数据来源'}, {nonSelectedText: '资金用途'}],
         prefix + '/multiSelect'
     )
 }
 
 function load() {
-    recordDate = utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-
     $.jgrid.defaults.styleUI = 'Bootstrap';
 
-    tableGrid = $("#table_list").jqGrid({
+    tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
         datatype: "json",
-        postData: dataForm.serializeObject(),
+        postData: $dataForm.serializeObject(),
         height: window.innerHeight - 210,
         autowidth: true,
         shrinkToFit: true,
@@ -35,23 +38,24 @@ function load() {
         rownumbers: true, //行号
         rowNum: 20,
         rowList: [20, 50, 100],
-        colNames: ['编号', '昵称', '账号', '渠道', '交易时间', '交易分类', '交易对方', '交易对方账户', '商品说明', '交易方式', '资金用途', '金额(元)', '收/支', '交易状态', '数据来源'],
+        colNames: ['编号', '店铺', '昵称', '账号', '渠道', '交易时间', '交易分类', '交易对方', '交易对方账户', '商品说明', '交易方式', '资金用途', '金额(元)', '收/支', '交易状态', '数据来源'],
         colModel: [
-            { name:'id', index:'id', editable:false, width:90, hidedlg:true, hidden:true },
-            { name:'nick', index:'nick', editable:true, sorttype:"text", width:70 },
-            { name:'account', index:'account', editable:true, sorttype:"text", width:100 },
-            { name:'type', index:'type', editable:true, sorttype:"text", width:60 },
-            { name:'tradeTime', index:'tradeTime', editable:true, edittype:'custom', width:120 },
-            { name:'tradeClass', index:'tradeClass', editable:true, sorttype:"text", width:80 },
-            { name:'targetName', index:'targetName', editable:true, sorttype:"text", width:120 },
-            { name:'targetAccount', index:'targetAccount', editable:true, sorttype:"text", width:120 },
-            { name:'tradeGoods', index:'tradeGoods', editable:true, sorttype:"text", width:120 },
-            { name:'tradeType', index:'tradeType', editable:true, sorttype:"text", width:60 },
-            { name:'costType', index:'costType', editable:true, sorttype:"text", width:80 },
-            { name:'payAmount', index:'payAmount', editable:true, sorttype:"float", width:80, align:"right", formatter: utils.priceFormat},
-            { name:'payDirect', index:'payDirect', editable:true, sorttype:"text", width:50 },
-            { name:'payStatus', index:'payStatus', editable:true, sorttype:"text", width:80 },
-            { name:'source', index:'source', editable:true, sorttype:"text", width:80 }
+            {name: 'id', index: 'id', editable: false, width: 90, hidedlg: true, hidden: true},
+            {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 70, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
+            {name: 'nick', index: 'nick', editable: true, sorttype: "text", width: 70},
+            {name: 'account', index: 'account', editable: true, sorttype: "text", width: 70},
+            {name: 'type', index: 'type', editable: true, sorttype: "text", width: 60},
+            {name: 'tradeTime', index: 'tradeTime', editable: true, edittype: 'custom', width: 120},
+            {name: 'tradeClass', index: 'tradeClass', editable: true, sorttype: "text", width: 80},
+            {name: 'targetName', index: 'targetName', editable: true, sorttype: "text", width: 120},
+            {name: 'targetAccount', index: 'targetAccount', editable: true, sorttype: "text", width: 120},
+            {name: 'tradeGoods', index: 'tradeGoods', editable: true, sorttype: "text", width: 120},
+            {name: 'tradeType', index: 'tradeType', editable: true, sorttype: "text", width: 60},
+            {name: 'costType', index: 'costType', editable: true, sorttype: "text", width: 80},
+            {name: 'payAmount', index: 'payAmount', editable: true, sorttype: "float", width: 80, align: "right", formatter: utils.priceFormat},
+            {name: 'payDirect', index: 'payDirect', editable: true, sorttype: "text", width: 50},
+            {name: 'payStatus', index: 'payStatus', editable: true, sorttype: "text", width: 80},
+            {name: 'source', index: 'source', editable: true, sorttype: "text", width: 80}
         ],
         pager: "#pager_list",
         viewrecords: true, //是否显示总记录数
@@ -158,7 +162,7 @@ function search(pageBtn) {
     }
     inputPage = inputPage > totalPage ? totalPage : inputPage;
     inputPage = inputPage < 1 ? 1 : inputPage;
-    let postData = $.extend({}, dataForm.serializeObject(), { 'page': inputPage, 'rows': rowNum });
+    let postData = $.extend({}, $dataForm.serializeObject(), {'page': inputPage, 'rows': rowNum});
 
     Object.keys(postData).forEach((element, index, array) => {
         if (Array.isArray(postData[element])) {
@@ -229,7 +233,7 @@ function remove() {
 }
 
 function exportExcel() {
-    let queryParam = dataForm.serialize();
+    let queryParam = $dataForm.serialize();
     let url = prefix + "/export?" + queryParam //下载地址
     utils.downloadAjax(url ,'TradeRecord.xls')
 }

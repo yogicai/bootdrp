@@ -23,6 +23,9 @@
             <if test="param.start != null and param.end != null">
                 and bill_date >= #{param.start} and bill_date <![CDATA[ <= ]]> #{param.end}
             </if>
+            <if test="param.shopNo != null and param.shopNo.size() > 0">and shop_no in
+                <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
             and audit_status = 'YES'
             and a.total_amount - a.cost_amount > 0
         </where>
@@ -48,6 +51,9 @@
             <if test="param.start != null and param.end != null">
                 and bill_date >= #{param.start} and bill_date <![CDATA[ <= ]]> #{param.end}
             </if>
+            <if test="param.shopNo != null and param.shopNo.size() > 0">and shop_no in
+                <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
             and audit_status = 'YES'
             and a.total_amount - a.cost_amount > 0
         </where>
@@ -67,6 +73,9 @@
         <where>
             <if test="param.start != null and param.end != null">
                 and trade_time >= #{param.start} and trade_time <![CDATA[ <= ]]> #{param.end}
+            </if>
+            <if test="param.shopNo != null and param.shopNo.size() > 0">and shop_no in
+                <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
             </if>
             and cost_type != '/' and pay_status not like '%退%'
         </where>
@@ -91,6 +100,9 @@
         <where>
             <if test="param.start != null and param.end != null">
                 and bill_date >= #{param.start} and bill_date <![CDATA[ <= ]]> #{param.end}
+            </if>
+            <if test="param.shopNo != null and param.shopNo.size() > 0">and shop_no in
+                <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
             </if>
             and audit_status = 'YES'
         </where>
