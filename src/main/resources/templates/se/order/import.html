@@ -7,16 +7,18 @@
 <div class="">
     <div class="col-sm-12">
         <div class="ibox">
-            <form action="" method="post" enctype="multipart/form-data">
+            <form id="data_form" action="" method="post" enctype="multipart/form-data">
                 <div class="ibox-content util-ibox-content">
                     <div class="row m-t-sm">
-                        <div class="input-daterange input-group columns pull-left" style="margin-left: 5px; width: 300px;" id="datepicker">
-                            <span class="input-group-addon tool-span-addon">单据日期：</span>
-                            <input type="text" class="form-control" name="start" autocomplete="off"/>
-                            <span class="input-group-addon tool-span-addon">-</span>
-                            <input type="text" class="form-control" name="end" autocomplete="off"/>
+                        <div class="col-xs-6 col-md-3">
+                            <div class="input-daterange input-group columns" id="datepicker">
+                                <span class="input-group-addon tool-span-addon">单据日期：</span>
+                                <input type="text" class="form-control" name="start" autocomplete="off"/>
+                                <span class="input-group-addon tool-span-addon">-</span>
+                                <input type="text" class="form-control" name="end" autocomplete="off"/>
+                            </div>
                         </div>
-                        <div class="input-group columns">
+                        <div class="input-group columns col-xs-6 col-md-3">
                             <span class="input-group-addon tool-span-addon">店铺: </span>
                             <select data-placeholder="请选择" name="shopNo" id="shopNo" class="form-control">
                             </select>
@@ -29,8 +31,8 @@
             </form>
             <div class="ibox-content util-ibox-content row m-n">
                 <div class="columns pull-right">
-                    <a shiro:hasPermission="po:entry:save" class="btn btn-primary btn-rounded" href="#" id="submit">导入订单</a>
-                    <a shiro:hasPermission="po:entry:save" class="btn btn-primary btn-rounded" href="#" id="cancel">清除文件</a>
+                    <a shiro:hasPermission="po:entry:save" class="btn btn-primary btn-rounded" href="#" id="submit">导入</a>
+                    <a shiro:hasPermission="po:entry:save" class="btn btn-primary btn-rounded" href="#" id="cancel">清空</a>
                 </div>
             </div>
         </div>

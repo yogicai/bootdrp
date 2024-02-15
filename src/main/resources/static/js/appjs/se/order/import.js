@@ -1,23 +1,30 @@
-let prefix = "/order";
-let billType = "XS_ORDER";
 let loginShopNo = utils.dataCache.loginUserInfo.shopNo
 
 $(function () {
 
+    let $dataForm = $('#data_form');
     let $recordDate = $('#datepicker');
     let $shopNo = $('#shopNo');
+
+    let billType = window.parent.sharedVariable.billType;
+    let prefixUrl = window.parent.sharedVariable.prefixUrl;
+    let dateHidden = window.parent.sharedVariable.dateHidden;
 
     utils.createDateRangePicker('datepicker', {}, new Date(), new Date())
     utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100%", setValue: [loginShopNo]}]);
 
+    if (dateHidden === true) {
+        $recordDate.hide()
+    }
+
     //配置dropzone
     Dropzone.autoDiscover = false; //取消自动提交
     $("#dropzSe").dropzone({
-        url: prefix + "/import/excel", //文件上传的路径
+        url: prefixUrl, //文件上传的路径
         method: "post",
         maxFiles: 1, //一次上传的量
         maxFilesize: 1024, //M为单位
-        acceptedFiles: ".xls,.xlsx", //可接受的上传类型
+        acceptedFiles: ".xls,.xlsx,.csv", //可接受的上传类型
         autoProcessQueue: false, //是否自动上传，false时需要触发上传
         parallelUploads: 100, //手动触发时一次最大可以上传多少个文件
         paramName: "file", //后台接受文件参数名
@@ -42,9 +49,8 @@ $(function () {
             myDropzone.on('sending', function (data, xhr, formData) {
                 //向后台发送该文件的参数
                 formData.append('billType', billType);
-                formData.append('shopNo', $shopNo.val());
-                formData.append('billDateB', $recordDate.data("datepicker").pickers[0].getDate().format('yyyy-MM-dd'));
-                formData.append('billDateE', $recordDate.data("datepicker").pickers[1].getDate().format('yyyy-MM-dd'));
+                let formObject = $dataForm.serializeObject();
+                Object.keys(formObject).forEach(key => formData.append(key, formObject[key]));
             });
             myDropzone.on('success', function (files, response) {
                 //文件上传成功之后的操作

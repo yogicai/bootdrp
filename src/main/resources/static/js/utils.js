@@ -328,14 +328,17 @@
             noneSelectedText: "请选择"
         };
         let option = $.extend(o, options);
-        let value = _.defaultTo($element.attr('value'), '');
-        let valueArray = value.split(',').filter(Boolean);
-        let valueArraySet = option && option.setValue;
         let html = Utils.prototype.selectpickerBuildOption(data);
         $element.append(html);
         $element.prop('multiple', option.multiple === true);
         $element.selectpicker(option);
-        $element.selectpicker('val', _.defaultTo(valueArraySet, valueArray));
+        //默认值
+        let value = _.defaultTo($element.attr('value'), '');
+        let valueArray = value.split(',').filter(Boolean);
+        let setValueArray = option && option.setValue;
+        let setIndexArray = (option && option.setIndex !== undefined) ? [$element.find('option')[option.setIndex].value] : [];
+        let valueArraySet = _.find([valueArray, setValueArray, setIndexArray], (arr) => !_.isEmpty(arr), 0) || []
+        $element.selectpicker('val', valueArraySet);
         //下拉框联动
         if (option && option.changeOption && option.multiple !== true) {
             $element.on('change', function () {

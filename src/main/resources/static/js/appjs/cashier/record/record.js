@@ -3,6 +3,9 @@ let tableGrid;
 let $tableList;
 let $dataForm;
 let loading;
+
+window.sharedVariable = {prefixUrl: prefix + "/importCsv", dateHidden: true}
+
 $(function() {
     $dataForm = $("#search");
     $tableList = $('#table_list');
@@ -236,4 +239,16 @@ function exportExcel() {
     let queryParam = $dataForm.serialize();
     let url = prefix + "/export?" + queryParam //下载地址
     utils.downloadAjax(url ,'TradeRecord.xls')
+}
+
+function importExcel() {
+    layer.open({
+        type : 2,
+        title : '导入',
+        maxmin : true,
+        shadeClose : false, // 点击遮罩关闭层
+        area : [ '600px', '410px' ],
+        content : '/order/import/excel', // iframe的url
+        // end: reLoad
+    });
 }

@@ -62,10 +62,10 @@ public class OrderImportService {
     public void importExcel(OrderImportParam orderImportParam) throws Exception {
 
         String filename = orderImportParam.getFile().getOriginalFilename();
-        String billDateYm = DateUtil.format(orderImportParam.getBillDateB(), "yyyy-MM");
+        String billDateYm = DateUtil.format(orderImportParam.getStart(), "yyyy-MM");
         //单据日期校验（文件名规则：单据日期yyyy-MM）
-        boolean billDateFlag = StrUtil.startWith(filename, billDateYm) && DateUtil.formatDate(orderImportParam.getBillDateB()).startsWith(billDateYm);
-        BootServiceExceptionEnum.BILL_DATE_INVALID.assertIsTrue(billDateFlag, orderImportParam.getBillDateB());
+        boolean billDateFlag = StrUtil.startWith(filename, billDateYm) && DateUtil.formatDate(orderImportParam.getStart()).startsWith(billDateYm);
+        BootServiceExceptionEnum.BILL_DATE_INVALID.assertIsTrue(billDateFlag, orderImportParam.getStart());
         //结算账户 默认取第一个
         AccountDO accountDo = accountDao.selectList(Wrappers.query()).get(0);
         //客户用户信息
@@ -79,7 +79,7 @@ public class OrderImportService {
         Workbook hssfWorkbook = PoiUtil.getWorkBook(orderImportParam.getFile());
 
         //订单导入
-        for (Date date = orderImportParam.getBillDateB(); date.compareTo(orderImportParam.getBillDateE()) <= 0; date = DateUtil.offsetDay(date, 1)) {
+        for (Date date = orderImportParam.getStart(); date.compareTo(orderImportParam.getEnd()) <= 0; date = DateUtil.offsetDay(date, 1)) {
 
             String sheetName = StrUtil.toString(DateUtil.dayOfMonth(date));
             //是否存在当前单据日期的Sheet（不存在返回-1）

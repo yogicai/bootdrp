@@ -4,6 +4,7 @@ import com.bootdo.core.annotation.Log;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.cashier.domain.RecordDO;
+import com.bootdo.modular.cashier.param.RecordImportParam;
 import com.bootdo.modular.cashier.param.RecordQryParam;
 import com.bootdo.modular.cashier.result.MultiSelect;
 import com.bootdo.modular.cashier.service.RecordService;
@@ -12,7 +13,6 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -92,8 +92,8 @@ public class RecordController {
     @PostMapping("/importCsv")
     @ResponseBody
     @RequiresPermissions("cashier:record:record")
-    public R importCsv(@RequestPart("file") MultipartFile file) throws Exception {
-        recordService.importCvs(file);
+    public R importCsv(RecordImportParam importParam) throws Exception {
+        recordService.importCvs(importParam);
         return R.ok();
     }
 

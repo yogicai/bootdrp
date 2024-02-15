@@ -19,6 +19,7 @@ import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.modular.cashier.dao.RecordDao;
 import com.bootdo.modular.cashier.domain.RecordDO;
+import com.bootdo.modular.cashier.param.RecordImportParam;
 import com.bootdo.modular.cashier.param.RecordQryParam;
 import com.bootdo.modular.cashier.result.MultiSelect;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,6 @@ import javax.annotation.Resource;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -67,20 +67,23 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
 
     public void export(RecordQryParam param) {
         List<RecordDO> orderList = recordDao.list(BeanUtil.beanToMap(param));
-        String fileName = StrUtil.format("支付对账单{}-{}.xlsx", DateUtil.format(param.getStart(), DatePattern.PURE_DATE_FORMAT), DateUtil.format(param.getEnd(), DatePattern.PURE_DATE_FORMAT));
+        String pureStart = DateUtil.format(param.getStart(), DatePattern.PURE_DATE_FORMAT);
+        String pureEnd = DateUtil.format(param.getEnd(), DatePattern.PURE_DATE_FORMAT);
+        String shopNo = StrUtil.blankToDefault(StrUtil.join(StrUtil.UNDERLINE, param.getShopNo()), StrUtil.AT);
+        String fileName = StrUtil.format("支付对账单_{}_{}-{}.xlsx", shopNo, pureStart, pureEnd);
         PoiUtil.exportExcelWithStream(fileName, RecordDO.class, orderList);
     }
 
-    public void importCvs(MultipartFile file) throws Exception {
-        String filename = file.getOriginalFilename();
+    public void importCvs(RecordImportParam importParam) throws Exception {
+        String filename = importParam.getFile().getOriginalFilename();
         if (StrUtil.startWith(filename, ALIPAY)) {
-            readAliCvs(file);
+            readAliCvs(importParam.getFile(), importParam.getShopNo());
         } else {
-            readWxCvs(file);
+            readWxCvs(importParam.getFile(), importParam.getShopNo());
         }
     }
 
-    private void readAliCvs(MultipartFile file) throws Exception {
+    private void readAliCvs(MultipartFile file, String shopNo) throws Exception {
         List<RecordDO> recordDOList = new ArrayList<>();
         // 获取字符编码
         Charset charset = CharsetDetector.detect(file.getInputStream());
@@ -108,6 +111,7 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
             } else if (row.getFieldCount() > 5 && !StrUtil.startWith(row.get(0), "收/支")) {
                 RecordDO recordDO = new RecordDO();
                 recordDO.setType("支付宝");
+                recordDO.setShopNo(shopNo);
                 recordDO.setPayDirect(trimStr(row.get(0)));
                 recordDO.setTargetName(trimStr(row.get(1)));
                 recordDO.setTargetAccount(trimStr(row.get(2)));
@@ -135,7 +139,7 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
         }
     }
 
-    private void readWxCvs(MultipartFile file) throws Exception {
+    private void readWxCvs(MultipartFile file, String shopNo) throws Exception {
         List<RecordDO> recordDOList = new ArrayList<>();
         //获取字符编码
         Charset charset = CharsetDetector.detect(file.getInputStream());
@@ -160,6 +164,7 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
             } else if (row.getOriginalLineNumber() >= 17) {
                 RecordDO recordDO = new RecordDO();
                 recordDO.setType("微信");
+                recordDO.setShopNo(shopNo);
                 recordDO.setTradeTime(DateUtil.parse(row.get(0)));
                 recordDO.setTradeClass(trimStr(row.get(1)));
                 recordDO.setTargetName(trimStr(row.get(2)));

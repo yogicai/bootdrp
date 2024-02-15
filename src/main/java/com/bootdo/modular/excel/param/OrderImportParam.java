@@ -22,12 +22,12 @@ public class OrderImportParam {
     @NotNull
     @ApiModelProperty(value = "单据日期_开始")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date billDateB;
+    private Date start;
 
     @NotNull
     @ApiModelProperty(value = "单据日期_开始")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date billDateE;
+    private Date end;
 
     @NotNull
     @ApiModelProperty(value = "单据类型")

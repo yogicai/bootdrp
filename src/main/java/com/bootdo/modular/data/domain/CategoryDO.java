@@ -1,5 +1,6 @@
 package com.bootdo.modular.data.domain;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class CategoryDO extends BaseEntity {
     /**
      *
      */
+    @TableId
     private Long categoryId;
     /**
      * 上级ID，顶级为0

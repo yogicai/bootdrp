@@ -8,6 +8,7 @@ $(function() {
 
 	utils.createDateRangePicker('datepicker');
 	utils.loadCategory(["ACCOUNT"], ["type"], [{width: "120px"}]);
+	utils.loadTypes(["data_shop"], ["shopNo"], [{width: "120px"}]);
 
 	load();
 });
@@ -60,7 +61,8 @@ function load() {
                     { field : 'startDate', title : '期初日期' },
                     { field : 'startBalance', title : '期初余额' },
                     { field : 'currentBalance', title : '当前余额' },
-                    { field : 'status', title : '状态', formatter : utils.formatYN },
+					{field: 'shopNo', title: '店铺', formatter: (value, row, index) => utils.formatType(value, "data_shop")},
+					{field: 'status', title: '状态', formatter: utils.formatYN},
                     { field : 'createTime', title : '创建时间' },
                     { field : 'updateTime', title : '更新余额' },
 					{

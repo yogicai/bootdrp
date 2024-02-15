@@ -3,6 +3,8 @@ let tableGrid;
 let $dataForm;
 let $tableList;
 
+window.sharedVariable = {prefixUrl: '/order/import/excel', billType: 'XS_ORDER'}
+
 $(function () {
     $dataForm = $('#search');
     $tableList = $("#table_list");

@@ -5,6 +5,7 @@ import com.bootdo.core.pojo.base.entity.BaseEntity;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -52,5 +53,10 @@ public class AccountDO extends BaseEntity {
      * 状态
      */
     private Integer status = 0;
+    /**
+     * 店铺编号
+     */
+    @NotBlank
+    private String shopNo;
 
 }
