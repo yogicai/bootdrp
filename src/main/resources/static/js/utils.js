@@ -335,10 +335,10 @@
         $element.selectpicker(option);
         //默认值
         let value = _.defaultTo($element.attr('value'), '');
-        let valueArray = value.split(',').filter(Boolean);
+        let valueArray = value.split(',').filter(item => item !== undefined);
         let setValueArray = option && option.setValue;
         let setIndexArray = (option && option.setIndex !== undefined) ? [$element.find('option')[option.setIndex].value] : [];
-        let valueArraySet = _.find([valueArray, setValueArray, setIndexArray], (arr) => !_.isEmpty(arr), 0) || []
+        let valueArraySet = _.find([setValueArray, setIndexArray, valueArray], (arr) => !_.isEmpty(arr), 0) || []
         $element.selectpicker('val', valueArraySet);
         //下拉框联动
         if (option && option.changeOption && option.multiple !== true) {

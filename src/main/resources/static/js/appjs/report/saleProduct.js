@@ -4,6 +4,8 @@ let $tableList;
 let $dataForm;
 let start;
 let end;
+let loginShopNo = utils.dataCache.loginShopInfo.no
+
 let initData = [];
 let colNames = ['店铺', '商品编号', '商品名称', '单位', '均价', '销售开单量', '商品数量', '商品成本', '销售金额', '销售毛利'];
 let colModel = [
@@ -39,7 +41,7 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "120px"}]);
+    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "120px", setValue: [loginShopNo]}]);
 
     load();
 });

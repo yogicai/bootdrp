@@ -3,15 +3,15 @@ let tableGrid;
 let $tableList;
 let $dataForm;
 let loading;
+let loginShopNo = utils.dataCache.loginShopInfo.no
 
 window.sharedVariable = {prefixUrl: prefix + "/importCsv", dateHidden: true}
-
 $(function() {
     $dataForm = $("#search");
     $tableList = $('#table_list');
 
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100px"}]);
+    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100px", setValue: [loginShopNo]}]);
 
     initMultiSelect();
     load();

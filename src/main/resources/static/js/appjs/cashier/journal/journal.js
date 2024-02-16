@@ -9,6 +9,8 @@ let $tableList1;
 let $tableList2;
 let $tableList3;
 
+let loginShopNo = utils.dataCache.loginShopInfo.no
+
 let initData = [];
 
 let groupHeaders1 = [{startColumnName: 'account', numberOfColumns: 13, titleText: '<b>账户现金流统计</b>'}];
@@ -91,7 +93,7 @@ $(function () {
     $tableList3 = $("#table_list3");
 
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "120px"}]);
+    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "120px", setValue: [loginShopNo]}]);
 
     $.jgrid.defaults.styleUI = 'Bootstrap';
 

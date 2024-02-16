@@ -5,6 +5,7 @@ let $tableList;
 let $dataForm;
 let start;
 let end;
+let loginShopNo = utils.dataCache.loginShopInfo.no
 
 let initData = [];
 let colNamesC = ['店铺', '编号', '客户名称', '年度', '应收金额', '收款金额', '商品成本', '销售毛利', '欠款金额'];
@@ -59,11 +60,15 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-    utils.loadTypes(["data_shop"], ["shopNo"], [{width: "120px"}]);
+
     if (type === 'CUSTOMER') {
         utils.loadCategory(["CUSTOMER_DATA"], ["instituteId"], [{width: "120px", liveSearch: true}]);
+        utils.loadTypes(["data_shop"], ["shopNo"],
+            [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["CUSTOMER_DATA"], elementIds: ["instituteId"]}}]);
     } else {
         utils.loadCategory(["VENDOR_DATA"], ["instituteId"], [{width: "120px", liveSearch: true}]);
+        utils.loadTypes(["data_shop"], ["shopNo"],
+            [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["VENDOR_DATA"], elementIds: ["instituteId"]}}]);
     }
 
     load();
