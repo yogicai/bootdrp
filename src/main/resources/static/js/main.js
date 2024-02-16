@@ -351,22 +351,26 @@ let option4 = {
 
 
 $(function() {
-    searchPBalance();
-    searchPSeTotal('MONTH');
-    searchPDebtTotal();
-    searchPBillTrend('DAY');
-    searchPBillTrendPie('DAY');
-    searchPCashTotal();
-    searchPCashTrend("DAY");
+
+    let urlSearchParams = new URLSearchParams(window.location.search);
+    let shopNo = urlSearchParams.get('shopNo');
+
+    searchPBalance(shopNo);
+    searchPSeTotal('MONTH', shopNo);
+    searchPDebtTotal(shopNo);
+    searchPBillTrend('DAY', shopNo);
+    searchPBillTrendPie('DAY', shopNo);
+    searchPCashTotal(shopNo);
+    searchPCashTrend("DAY", shopNo);
     //营业额
-    searchHisPCashTrend("SALE");
+    searchHisPCashTrend("SALE", shopNo);
 
 });
 
 /**
  * 订单趋势图
  */
-function searchPBillTrend(type) {
+function searchPBillTrend(type, shopNo) {
     // 基于准备好的dom，初始化echarts实例
     let myChart = echarts.init(document.getElementById('bill-bar-chart'));
     let _option = $.extend({}, option1);
@@ -374,9 +378,9 @@ function searchPBillTrend(type) {
         url : prefix+"/pBillTrend",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify({ type: type }),
+        data: JSON.stringify({type: type, shopNo: shopNo}),
         success : function(r) {
-            if (r.code==0) {
+            if (r.code === 0) {
                 _option.xAxis[0].data = r.result.xAxis[0].data;
                 _option.yAxis[0] = r.result.yAxis[0];
                 _option.yAxis[1] = r.result.yAxis[1];
@@ -393,7 +397,7 @@ function searchPBillTrend(type) {
 /**
  * 利润趋势饼图
  */
-function searchPBillTrendPie(type) {
+function searchPBillTrendPie(type, shopNo) {
     // 基于准备好的dom，初始化echarts实例
     let myChart = echarts.init(document.getElementById('bill-pie-chart'));
     let _option = $.extend({}, option2);
@@ -401,9 +405,9 @@ function searchPBillTrendPie(type) {
         url : prefix+"/pBillTrendPie",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify({ type: type }),
+        data: JSON.stringify({type: type, shopNo: shopNo}),
         success : function(r) {
-            if (r.code==0) {
+            if (r.code === 0) {
                 _option.legend.data = r.result.legend.data;
                 _option.series[0].data = r.result.series[0].data;
                 _option.series[1].data = r.result.series[1].data;
@@ -417,7 +421,7 @@ function searchPBillTrendPie(type) {
 /**
  * 利润趋势图
  */
-function searchPCashTrend(type) {
+function searchPCashTrend(type, shopNo) {
     // 基于准备好的dom，初始化echarts实例
     let myChart = echarts.init(document.getElementById('cash-bar-chart'));
     let _option = $.extend({}, option3);
@@ -425,9 +429,9 @@ function searchPCashTrend(type) {
         url : prefix+"/pCashTrend",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify({ type: type }),
+        data: JSON.stringify({type: type, shopNo: shopNo}),
         success : function(r) {
-            if (r.code==0) {
+            if (r.code === 0) {
                 _option.xAxis[0].data = r.result.xAxis[0].data;
                 _option.yAxis[0] = r.result.yAxis[0];
                 _option.series[0].data = r.result.series[0].data;
@@ -442,7 +446,7 @@ function searchPCashTrend(type) {
 /**
  * 订单同比趋势图
  */
-function searchHisPCashTrend(type) {
+function searchHisPCashTrend(type, shopNo) {
 
     let myChart = echarts.init(document.getElementById('bill-bar-chart-his'));
     let _option = $.extend({}, option4);
@@ -450,9 +454,9 @@ function searchHisPCashTrend(type) {
         url : prefix+"/pHisCashTrend",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify({ type: type }),
+        data: JSON.stringify({type: type, shopNo: shopNo}),
         success : function(r) {
-            if (r.code==0) {
+            if (r.code === 0) {
                 _option.title = r.result.title;
                 _option.xAxis[0].data = r.result.xAxis[0].data;
                 _option.yAxis[0] = r.result.yAxis[0];
@@ -497,14 +501,14 @@ function thousandBitSeparator(num) {
     return num && num.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
 }
 
-function searchPBalance() {
+function searchPBalance(shopNo) {
     $.ajax({
         url : prefix+"/pBalanceTotal",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify({ }),
+        data: JSON.stringify({shopNo: shopNo}),
         success : function(r) {
-            if (r.code==0) {
+            if (r.code === 0) {
                 animateNUM('qtyTotalWH', r.result.qtyTotal);
                 animateNUM('totalAmountWH', r.result.totalAmount);
             }
@@ -512,14 +516,14 @@ function searchPBalance() {
     });
 }
 
-function searchPSeTotal(type) {
+function searchPSeTotal(type, shopNo) {
     $.ajax({
         url : prefix+"/pSeTotal",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify({ type: type }),
+        data: JSON.stringify({type: type, shopNo: shopNo}),
         success : function(r) {
-            if (type == 'WEEK') {
+            if (type === 'WEEK') {
                 animateNUM('totalAmountSEW', r.result.totalAmount);
                 animateNUM('profitSEW', r.result.profit);
             } else {
@@ -530,14 +534,14 @@ function searchPSeTotal(type) {
     });
 }
 
-function searchPDebtTotal() {
+function searchPDebtTotal(shopNo) {
     $.ajax({
         url : prefix+"/pDebtTotal",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify({ }),
+        data: JSON.stringify({shopNo: shopNo}),
         success : function(r) {
-            if (r.code==0) {
+            if (r.code === 0) {
                 animateNUM('debtAmountSE', r.result.debtAmount);
                 animateNUM('debtVAmountSE', r.result.debtVAmount);
             }
@@ -545,14 +549,14 @@ function searchPDebtTotal() {
     });
 }
 
-function searchPCashTotal() {
+function searchPCashTotal(shopNo) {
     $.ajax({
         url : prefix+"/pCashTotal",
         type : "post",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify({ }),
+        data: JSON.stringify({shopNo: shopNo}),
         success : function(r) {
-            if (r.code==0) {
+            if (r.code === 0) {
                 animateNUM('profitAmountT', r.profitAmountT);
                 animateNUM('cashFlowAmountT', r.cashFlowAmountT);
             }

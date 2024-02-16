@@ -1,6 +1,9 @@
 package com.bootdo.modular.system.result;
 
+import com.bootdo.modular.data.domain.DataShop;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 登录用户信息
@@ -35,5 +38,9 @@ public class LoginUserResult {
      * 店铺编号
      */
     private String shopNo;
+    /**
+     * 店铺列表
+     */
+    private List<DataShop> shopList;
 
 }

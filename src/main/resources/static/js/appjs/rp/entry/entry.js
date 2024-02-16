@@ -8,7 +8,7 @@ let $dataForm;
 let $mask;
 let $debtorId;
 let loginUserId = utils.dataCache.loginUserInfo.userId
-let loginShopNo = utils.dataCache.loginUserInfo.shopNo
+let loginShopNo = utils.dataCache.loginShopInfo.no
 let initFormData = {checkId: loginUserId, shopNo: loginShopNo, billDate: new Date().format('yyyy-MM-dd')}
 
 let prefix = "/rp/entry";

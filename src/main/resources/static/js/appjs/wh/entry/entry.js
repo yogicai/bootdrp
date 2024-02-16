@@ -3,7 +3,7 @@ let tableGrid;
 let $tableList;
 let $dataForm;
 let $mask;
-let loginShopNo = utils.dataCache.loginUserInfo.shopNo
+let loginShopNo = utils.dataCache.loginShopInfo.no;
 let initFormData = {shopNo: loginShopNo, billDate: new Date().format('yyyy-MM-dd')}
 
 let prefix = "/wh/entry";
@@ -23,9 +23,10 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDatePicker('date_1');
+    utils.loadCategory(["CUSTOMER_DATA"], ["debtorId"], [{width: "200px"}]);
+
     utils.loadTypes(["data_shop"], ["shopNo"],
         [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["CUSTOMER_DATA"], elementIds: ["debtorId"]}}]);
-    utils.loadCategory(["CUSTOMER_DATA"], ["debtorId"], [{width: "200px"}]);
     if (billType === 'WH_RK_ORDER') {
         utils.loadTypes(["data_wh_rk"], ["serviceType"], [{width: "200px"}]);
     } else {

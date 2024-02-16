@@ -7,6 +7,7 @@
         this.dataCache.sysEnum = {};
         this.dataCache.categoryData = {};
         this.dataCache.loginUserInfo = {};
+        this.dataCache.loginShopInfo = {};
     }
 
     /* ========================================================================
@@ -341,10 +342,11 @@
         $element.selectpicker('val', valueArraySet);
         //下拉框联动
         if (option && option.changeOption && option.multiple !== true) {
-            $element.on('change', function () {
+            $element.on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
                 Utils.prototype.selectpickerChangeCascade(option.changeOption.types, option.changeOption.elementIds, this)
             })
         }
+        $element.trigger('change');
     }
     Utils.prototype.selectpickerBuildOption = function selectPickerBuildOption(data) {
         let html = "";

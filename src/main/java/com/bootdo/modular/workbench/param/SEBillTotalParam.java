@@ -1,4 +1,4 @@
-package com.bootdo.modular.report.param;
+package com.bootdo.modular.workbench.param;
 
 import com.bootdo.core.enums.AuditStatus;
 import lombok.AllArgsConstructor;
@@ -20,5 +20,7 @@ public class SEBillTotalParam {
     private String billDateStart;
 
     private AuditStatus auditStatus;
+
+    private String shopNo;
 
 }

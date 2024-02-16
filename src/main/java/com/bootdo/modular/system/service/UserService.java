@@ -20,6 +20,7 @@ import com.bootdo.core.utils.BuildTree;
 import com.bootdo.core.utils.ImageUtils;
 import com.bootdo.core.utils.MD5Utils;
 import com.bootdo.core.utils.ShiroUtils;
+import com.bootdo.modular.data.domain.DataShop;
 import com.bootdo.modular.data.service.ShopService;
 import com.bootdo.modular.system.dao.UserDao;
 import com.bootdo.modular.system.domain.DeptDO;
@@ -79,7 +80,10 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
         UserDO user = this.getById(id);
         user.setDeptName(deptService.getById(user.getDeptId()).getName());
         user.setRoleIds(userRoleService.listRoleId(id));
-        user.setShopNos(shopService.listShopNo(id));
+        //店铺信息
+        List<DataShop> dataShopList = shopService.listShop(id);
+        user.setShopNos(dataShopList.stream().map(DataShop::getNo).collect(Collectors.toList()));
+        user.setShopList(dataShopList);
         return user;
     }
 
@@ -232,6 +236,7 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
         UserDO userDO = this.getUser(ShiroUtils.getUserId());
         LoginUserResult loginUserResult = BeanUtil.copyProperties(userDO, LoginUserResult.class);
         loginUserResult.setShopNo(CollUtil.isNotEmpty(userDO.getShopNos()) ? userDO.getShopNos().get(0).toString() : StrUtil.EMPTY);
+        loginUserResult.setShopList(userDO.getShopList());
         return loginUserResult;
     }
 

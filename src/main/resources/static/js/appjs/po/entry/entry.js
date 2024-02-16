@@ -6,7 +6,7 @@ let $tableList;
 let $dataForm;
 let $vendorId;
 let $mask;
-let loginShopNo = utils.dataCache.loginUserInfo.shopNo
+let loginShopNo = utils.dataCache.loginShopInfo.no
 let initFormData = {shopNo: loginShopNo, billDate: new Date().format('yyyy-MM-dd')}
 
 let prefix = "/po/entry";

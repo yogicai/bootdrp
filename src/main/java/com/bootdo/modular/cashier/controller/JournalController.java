@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 
 /**
- * 日记账
+ * 经营业绩
  *
  * @author yogiCai
  * @since 2018-07-14 22:31:58
  */
-@Api(tags = "经营概况")
+@Api(tags = "经营业绩")
 @Controller
 @RequestMapping("/cashier/journal")
 public class JournalController {

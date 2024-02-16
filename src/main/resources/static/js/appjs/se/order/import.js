@@ -1,4 +1,4 @@
-let loginShopNo = utils.dataCache.loginUserInfo.shopNo
+let loginShopNo = utils.dataCache.loginShopInfo.no
 
 $(function () {
 

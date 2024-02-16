@@ -31,7 +31,7 @@
                     <div>
                         <span><img alt="image" class="img-circle" height="60" width="60" th:src="${picUrl}"/></span>
                         <h3 class="" style="color: #ffffff">
-                            <i>五州永福</i>
+                            <i>{{currentShop.name}}</i>
                         </h3>
                     </div>
                     <div class="dropdown profile-element hidden">
@@ -91,6 +91,16 @@
                     </form>
                 </div>
                 <ul class="nav navbar-top-links navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                            <i class="fa fa-paw"></i>店铺
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li v-for="shop in shopList">
+                                <a href="#" @click="switchShop(shop.no)"> {{shop.name}} </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li class="hidden-xs">
                         <a href="/blog" target="_Blank" class=""><i class="fa fa-rss-square"></i>博客</a>
                     </li>
@@ -159,7 +169,7 @@
                     class="fa fa fa-sign-out"></i> 退出</a>
         </div>
         <div class="row J_mainContent" id="content-main">
-            <iframe class="J_iframe" name="iframe00" width="100%" height="100%" src="" th:src="@{/main}" frameborder="0" data-id="index_v1.html" seamless></iframe>
+            <iframe class="J_iframe" id="iframe00" name="iframe00" width="100%" height="100%" :src="'/main?shopNo=' + currentShop.no" frameborder="0" data-id="index_v1.html" seamless></iframe>
         </div>
         <!--<div class="footer">-->
         <!--<div class="pull-right">BootDo面向学习型的开源框架</div>-->
@@ -308,6 +318,8 @@
         data: {
             total: '',
             rows: '',
+            shopList: [],
+            currentShop: {}
         },
         methods: {
             notify: function () {
@@ -325,10 +337,23 @@
                     area: ['1024px', '720px'],
                     content: '/sys/user/personal'
                 });
+            },
+            switchShop: function (shopNo) {
+                $('#iframe00').attr('src', `/main?shopNo=${shopNo}`);
+                utils.dataCache.loginShopInfo = wrapper.shopList.find(element => element.no === shopNo);
+                wrapper.currentShop = utils.dataCache.loginShopInfo;
+            },
+            shopInfo: function () {
+                $.getJSON('/data/shop/selectManageShop', function (r) {
+                    wrapper.shopList = r.data;
+                    wrapper.currentShop = r.data[0];
+                    utils.dataCache.loginShopInfo = r.data[0];
+                });
             }
         },
         created: function () {
             this.notify()
+            this.shopInfo()
         }
     })
 </script>

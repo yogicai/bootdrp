@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.bootdo.core.pojo.base.entity.BaseEntity;
+import com.bootdo.modular.data.domain.DataShop;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -65,5 +66,8 @@ public class UserDO extends BaseEntity {
     //店铺
     @TableField(exist = false)
     private List<Long> shopNos;
+    //店铺列表
+    @TableField(exist = false)
+    private List<DataShop> shopList;
 
 }

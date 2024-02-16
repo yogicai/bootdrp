@@ -63,9 +63,9 @@ public class ShopController {
     }
 
     @ResponseBody
-    @GetMapping("/selectPicker")
+    @GetMapping("/selectManageShop")
     public R selectPicker() {
-        return R.ok(shopService.selectPicker());
+        return R.ok(shopService.selectManageShop());
     }
 
 }

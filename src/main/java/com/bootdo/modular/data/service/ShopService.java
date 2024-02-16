@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 店铺表
@@ -50,16 +49,14 @@ public class ShopService extends ServiceImpl<DataShopDao, DataShop> {
         this.saveOrUpdate(dataShop);
     }
 
-    public List<DataShop> selectPicker() {
+    public List<DataShop> selectManageShop() {
         Wrapper<DataShop> queryWrapper = Wrappers.lambdaQuery(DataShop.class)
                 .like(DataShop::getManagerId, ShiroUtils.getUserId());
         return this.list(queryWrapper);
     }
 
-    public List<Long> listShopNo(Long managerId) {
-        return this.list(Wrappers.lambdaQuery(DataShop.class).select(DataShop::getNo).like(DataShop::getManagerId, managerId))
-                .stream()
-                .map(DataShop::getNo).collect(Collectors.toList());
+    public List<DataShop> listShop(Long managerId) {
+        return this.list(Wrappers.lambdaQuery(DataShop.class).select(DataShop::getNo).like(DataShop::getManagerId, managerId));
     }
 
 }

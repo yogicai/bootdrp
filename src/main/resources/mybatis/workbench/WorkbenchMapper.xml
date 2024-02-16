@@ -17,6 +17,7 @@
             se_order so
         where
             so.`audit_status` = 'YES'
+            <if test="shopNo != null and shopNo != ''">and shop_no = #{shopNo}</if>
         GROUP BY
             DATE_FORMAT(so.`bill_date`, '%Y%m')
         order by
@@ -35,6 +36,7 @@
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             so.`audit_status`='YES'
             <if test="billDate != null and billDate != ''">and bill_date >= #{billDate}</if>
+            <if test="shopNo != null and shopNo != ''">and shop_no = #{shopNo}</if>
         </trim>
         <choose>
             <when test="type != null and type.trim == 'DAY'">GROUP BY DATE_FORMAT(so.`bill_date`, '%Y%m%d') order by DATE_FORMAT(so.`bill_date`, '%Y%m%d')</when>
@@ -59,6 +61,7 @@
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
             so.`audit_status`='YES'
             <if test="billDate != null and billDate != ''"> and so.bill_date >= #{billDate} </if>
+            <if test="shopNo != null and shopNo != ''">and so.shop_no = #{shopNo}</if>
         </trim>
         GROUP BY
             dp.`type`
@@ -76,11 +79,13 @@
         </choose>
         SUM(spo.`total_amount`) - SUM(spo.`cost_amount`) AS profitAmount, SUM(spo.`payment_amount`) AS cashFlowAmount FROM
         (
-            select so.`bill_date`,so.`total_amount`,so.`cost_amount`,so.`payment_amount` from se_order so where so.`audit_status`='YES'<if test="billDate != null and billDate != ''"> and so.bill_date >= #{billDate}</if>
-            union ALL
-            select po.`bill_date`,0 as `total_amount`, 0 as `cost_amount`, po.`payment_amount` * -1 as `payment_amount` from po_order po where po.`audit_status`='YES'<if test="billDate != null and billDate != ''"> and po.bill_date >= #{billDate}</if>
-            union ALL
-            SELECT cj.`date` AS bill_date,0 AS `total_amount`, 0 AS `cost_amount`, cj.`debit` - cj.`credit` AS `payment_amount` FROM cashier_journal cj where 1=1 <if test="billDate != null and billDate != ''"> and cj.date >= #{billDate}</if>
+        select so.`bill_date`,so.`total_amount`,so.`cost_amount`,so.`payment_amount` from se_order so where so.`audit_status`='YES'
+            <if test="billDate != null and billDate != ''">and so.bill_date >= #{billDate}</if>
+            <if test="shopNo != null and shopNo != ''">and shop_no = #{shopNo}</if>
+        union ALL
+        select po.`bill_date`,0 as `total_amount`, 0 as `cost_amount`, po.`payment_amount` * -1 as `payment_amount` from po_order po where po.`audit_status`='YES'
+            <if test="billDate != null and billDate != ''">and po.bill_date >= #{billDate}</if>
+            <if test="shopNo != null and shopNo != ''">and shop_no = #{shopNo}</if>
         ) spo
         <choose>
             <when test="type != null and type.trim == 'DAY'"> GROUP BY DATE_FORMAT(spo.`bill_date`, '%Y%m%d') order by DATE_FORMAT(spo.`bill_date`, '%Y%m%d')</when>
