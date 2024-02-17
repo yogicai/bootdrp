@@ -21,10 +21,10 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDatePicker('date_1');
-    utils.loadTypes(["data_shop"], ["shopNo"],
-        [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["CUSTOMER_DATA"], elementIds: ["consumerId"]}}]);
     utils.loadCategory(["CUSTOMER_DATA", "ACCOUNT_DATA", "USER_DATA"], ["consumerId", "settleAccountTotal", "billerId"],
         [{width: "120px", liveSearch: true}, {width: "200px", setIndex: 0}, {width: "120px", setValue: [loginUserId]}]);
+    utils.loadTypes(["data_shop"], ["shopNo"],
+        [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["CUSTOMER_DATA"], elementIds: ["consumerId"]}}]);
 
     load();
 })

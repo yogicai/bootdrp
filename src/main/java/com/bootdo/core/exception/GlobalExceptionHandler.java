@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public R noHandlerFoundException(org.springframework.web.servlet.NoHandlerFoundException e) {
+    public R noHandlerFoundException(NoHandlerFoundException e) {
         log.error(e.getMessage(), e);
         return R.error("没找找到页面");
     }

@@ -92,7 +92,7 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
         //文件标题
         RecordDO recordHead = new RecordDO();
 
-        LambdaQueryWrapper<RecordDO> queryWrapper = Wrappers.lambdaQuery(RecordDO.class);
+        LambdaQueryWrapper<RecordDO> queryWrapper = Wrappers.lambdaQuery(RecordDO.class).ne(RecordDO::getSource, "手工录入");
 
         csvData.getRows().forEach(row -> {
             if (row.getFieldCount() == 1 && StrUtil.startWith(row.get(0), ALIPAY_NAME)) {
@@ -148,7 +148,7 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
         //文件标题
         RecordDO recordHead = new RecordDO();
 
-        LambdaQueryWrapper<RecordDO> queryWrapper = Wrappers.lambdaQuery(RecordDO.class);
+        LambdaQueryWrapper<RecordDO> queryWrapper = Wrappers.lambdaQuery(RecordDO.class).ne(RecordDO::getSource, "手工录入");
 
         csvData.getRows().forEach(row -> {
             if (row.getOriginalLineNumber() == 1 && StrUtil.startWith(row.get(0), WX_NAME)) {
