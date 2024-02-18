@@ -17,7 +17,7 @@
                         </div>
                         <div class="input-group col-md-2">
                             <span class="input-group-addon"><span style="color:red">*</span><span th:text="(${billType=='CW_SK_ORDER'} ? '客户: ' : '供应商: ')"></span></span>
-                            <select data-placeholder="请选择" type="chosen" name="debtorId" id="debtorId" class="form-control">
+                            <select data-placeholder="请选择" name="debtorId" id="debtorId" class="form-control">
                                 <option value="">选择客户</option>
                             </select>
                             <span class="input-group-btn"> <button type="button" class="btn btn-white" onclick="addHead()">...</button> </span>
@@ -25,7 +25,7 @@
 
                         <div class="input-group col-md-2">
                             <span class="input-group-addon"><span style="color:red">*</span><span th:text="(${billType=='CW_SK_ORDER'} ? '收款人:' : '付款人:')"> </span></span>
-                            <select data-placeholder="请选择" type="chosen" name="checkId" id="checkId" class="form-control">
+                            <select data-placeholder="请选择" name="checkId" id="checkId" class="form-control">
                                 <option value="">选择收款人</option>
                             </select>
                         </div>

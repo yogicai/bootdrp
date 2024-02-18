@@ -23,7 +23,7 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDatePicker('date_1');
-    utils.loadCategory(["CUSTOMER_DATA"], ["debtorId"], [{width: "200px"}]);
+    utils.loadCategory(["CUSTOMER_DATA"], ["debtorId"], [{width: "200px", liveSearch: true}]);
 
     utils.loadTypes(["data_shop"], ["shopNo"],
         [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["CUSTOMER_DATA"], elementIds: ["debtorId"]}}]);
