@@ -1,5 +1,6 @@
 package com.bootdo.modular.data.controller;
 
+import com.bootdo.core.annotation.DataScope;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.data.domain.AccountDO;
@@ -35,6 +36,7 @@ public class AccountController extends BaseController {
         return "data/account/account";
     }
 
+    @DataScope
     @ResponseBody
     @GetMapping("/list")
     @ApiOperation(value = "列表查询")

@@ -53,7 +53,7 @@ public class ReportController extends BaseController {
     @GetMapping(value = "/sRecon/export")
     @ApiOperation(value = "客户、供应商应收应付款-导出")
     @RequiresPermissions("report:recon:recon")
-    public void sReconVCExport(@RequestParam SReconParam param) {
+    public void sReconVCExport(SReconParam param) {
         R r = reportService.sRecon(param);
         List<SReconResult> result = JSONUtil.toList(JSONUtil.toJsonStr(r.get("result")), SReconResult.class);
         PoiUtil.exportExcelWithStream("SReconResult.xls", SReconResult.class, result);

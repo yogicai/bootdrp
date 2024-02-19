@@ -34,12 +34,14 @@ $(function () {
 
     if (_.eq(billType, 'CW_SK_ORDER')) {
         utils.loadCategory(["CUSTOMER_DATA", "USER_DATA"], ["debtorId", "checkId"],
-            [{width: "200px", liveSearch: true}, {width: "200px", setValue: [loginUserId]}]);
+            [{width: "200px", liveSearch: true, setData: []}, {width: "200px", setValue: [loginUserId]}]);
+        
         utils.loadTypes(["data_shop"], ["shopNo"],
             [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["CUSTOMER_DATA"], elementIds: ["debtorId"]}}]);
     } else {
         utils.loadCategory(["VENDOR_DATA", "USER_DATA"], ["debtorId", "checkId"],
-            [{width: "200px", liveSearch: true}, {width: "200px", setValue: [loginUserId]}]);
+            [{width: "200px", liveSearch: true, setData: []}, {width: "200px", setValue: [loginUserId]}]);
+
         utils.loadTypes(["data_shop"], ["shopNo"],
             [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["VENDOR_DATA"], elementIds: ["debtorId"]}}]);
     }

@@ -62,7 +62,7 @@ $(function() {
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
 
     if (type === 'CUSTOMER') {
-        utils.loadCategory(["CUSTOMER_DATA"], ["instituteId"], [{width: "120px", liveSearch: true}]);
+        utils.loadCategory(["CUSTOMER_DATA"], ["instituteId"], [{width: "120px", liveSearch: true, setData: []}]);
         utils.loadTypes(["data_shop"], ["shopNo"],
             [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["CUSTOMER_DATA"], elementIds: ["instituteId"]}}]);
     } else {
@@ -93,6 +93,7 @@ function loadGrid() {
     $.ajax({
         url: prefix + "/sRecon",
         type : "post",
+        datatype: "json",
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify($dataForm.serializeObject()),
         success: function (r) {

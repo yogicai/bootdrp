@@ -47,7 +47,8 @@ public @interface JsonListFormat {
                 // 处理单个字符串
                 list.add(p.getValueAsLong());
                 // 移动到下一个令牌
-                p.nextToken();
+                // jackson BeanDeserializer 398会移到下一个token
+                //p.nextToken();
             }
 
             return list;

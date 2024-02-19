@@ -263,8 +263,9 @@
         if (types.length === elementIds.length) {
             let sysDict = utils.dataCache.sysDict;
             for (let t = 0; t < types.length; t++) {
-                let data = sysDict[types[t]];
-                Utils.prototype.selectpickerLocal(elementIds[t], options && options[t], data);
+                let option = options && options[t];
+                let data = option.setData || sysDict[types[t]];
+                Utils.prototype.selectpickerLocal(elementIds[t], option, data);
             }
         }
     };
@@ -274,8 +275,9 @@
         if (types.length === elementIds.length) {
             let categoryData = utils.dataCache.categoryData;
             for (let t = 0; t < types.length; t++) {
-                let data = categoryData[types[t]];
-                Utils.prototype.selectpickerLocal(elementIds[t], options && options[t], data);
+                let option = options && options[t];
+                let data = option.setData || categoryData[types[t]];
+                Utils.prototype.selectpickerLocal(elementIds[t], option, data);
             }
         }
     };
@@ -285,8 +287,9 @@
         if (types.length === elementIds.length) {
             let sysEnumMap = utils.dataCache.sysEnumMap;
             for (let t = 0; t < types.length; t++) {
-                let data = sysEnumMap[types[t]];
-                Utils.prototype.selectpickerLocal(elementIds[t], options && options[t], data);
+                let option = options && options[t];
+                let data = option.setData || sysEnumMap[types[t]];
+                Utils.prototype.selectpickerLocal(elementIds[t], option, data);
             }
         }
     };
@@ -381,7 +384,11 @@
                 let $element = $(`#${elementIds[t]}`);
                 let data = categoryData[types[t] + '_' + selectedValue];
                 let html = Utils.prototype.selectpickerBuildOption(data);
-                $element.html(html);
+                $element.find('option').filter(function () {
+                    //只保留 value 为空字符串的 option 作为全选默认值
+                    return $(this).val() !== '';
+                }).remove();
+                $element.append(html);
                 $element.selectpicker('refresh');
             }
         }

@@ -23,10 +23,11 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDatePicker('date_1');
-    utils.loadCategory(["CUSTOMER_DATA"], ["debtorId"], [{width: "200px", liveSearch: true}]);
+    utils.loadCategory(["CUSTOMER_DATA"], ["debtorId"], [{width: "200px", liveSearch: true, setData: []}]);
 
     utils.loadTypes(["data_shop"], ["shopNo"],
         [{width: "120px", setValue: [loginShopNo], changeOption: {types: ["CUSTOMER_DATA"], elementIds: ["debtorId"]}}]);
+
     if (billType === 'WH_RK_ORDER') {
         utils.loadTypes(["data_wh_rk"], ["serviceType"], [{width: "200px"}]);
     } else {
