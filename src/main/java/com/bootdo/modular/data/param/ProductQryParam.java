@@ -2,7 +2,10 @@ package com.bootdo.modular.data.param;
 
 import com.bootdo.core.pojo.base.param.BaseParam;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 商品管理
@@ -10,6 +13,9 @@ import lombok.Data;
  * @author L
  * @since 2024-01-26 15:48
  */
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class ProductQryParam extends BaseParam {
 

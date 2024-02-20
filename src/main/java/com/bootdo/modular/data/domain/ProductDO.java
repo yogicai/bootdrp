@@ -52,6 +52,11 @@ public class ProductDO extends BaseEntity {
      */
     private String unit;
     /**
+     * 单位名称
+     */
+    @TableField(exist = false)
+    private String unitName;
+    /**
      * 库存数量
      */
     @TableField(exist = false)

@@ -14,10 +14,13 @@ import com.bootdo.modular.data.domain.ProductDO;
 import com.bootdo.modular.data.param.ProductQryParam;
 import com.bootdo.modular.engage.domain.ProductCostDO;
 import com.bootdo.modular.engage.service.ProductCostService;
+import com.bootdo.modular.system.dao.DictDao;
+import com.bootdo.modular.system.domain.DictDO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,6 +32,8 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService extends ServiceImpl<ProductDao, ProductDO> {
     @Resource
+    private DictDao dictDao;
+    @Resource
     private ProductCostService productCostService;
 
     public PageR page(ProductQryParam param) {
@@ -37,6 +42,10 @@ public class ProductService extends ServiceImpl<ProductDao, ProductDO> {
 
     public PageJQ pageJQ(ProductQryParam param) {
         return new PageJQ(this.pageList(PageFactory.defaultPage(), param));
+    }
+
+    public List<ProductDO> selectList(ProductQryParam param) {
+        return this.pageList(PageFactory.defalultAllPage(), param).getRecords();
     }
 
     public Page<ProductDO> pageList(Page<ProductDO> page, ProductQryParam param) {
@@ -51,6 +60,9 @@ public class ProductService extends ServiceImpl<ProductDao, ProductDO> {
         Set<Integer> productNoSet = pageList.getRecords().stream().map(ProductDO::getNo).collect(Collectors.toSet());
         Map<String, ProductCostDO> productCostDoMap = productCostService.listLate(productNoSet).stream()
                 .collect(Collectors.toMap(ProductCostDO::getProductNo, v -> v, (o, n) -> n));
+        //商品单位
+        Map<String, DictDO> unitMap = dictDao.selectList(Wrappers.lambdaQuery(DictDO.class).eq(DictDO::getType, "data_unit"))
+                .stream().collect(Collectors.toMap(DictDO::getValue, v -> v, (o, n) -> n));
 
         pageList.getRecords().forEach(productDo -> {
             String productNo = productDo.getNo().toString();
@@ -61,9 +73,10 @@ public class ProductService extends ServiceImpl<ProductDao, ProductDO> {
                 productDo.setCostPrice(productDo.getPurchasePrice());
                 productDo.setCostQty(BigDecimal.ZERO);
             }
+            productDo.setUnitName(ObjectUtil.defaultIfNull(unitMap.get(productDo.getUnit()), DictDO::getName, productDo.getUnit()));
         });
 
-        return this.page(page, queryWrapper);
+        return pageList;
     }
 
 }

@@ -1,8 +1,8 @@
 package com.bootdo.modular.data.dao;
 
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bootdo.modular.data.domain.ProductDO;
+import com.github.yulichang.base.MPJBaseMapper;
 
 /**
  * 商品信息表
@@ -10,6 +10,6 @@ import com.bootdo.modular.data.domain.ProductDO;
  * @author yogiCai
  * @since 2017-11-18 22:41:14
  */
-public interface ProductDao extends BaseMapper<ProductDO> {
+public interface ProductDao extends MPJBaseMapper<ProductDO> {
 
 }

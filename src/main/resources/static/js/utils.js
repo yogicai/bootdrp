@@ -94,6 +94,7 @@
                 return data[t].name;
             }
         }
+        return value;
     };
     Utils.prototype.unformatType = function unFormatType(value, type) {
         if (type === undefined) return value;
@@ -104,6 +105,7 @@
                 return data[t].value;
             }
         }
+        return value;
     };
 
     //类目数据格式化

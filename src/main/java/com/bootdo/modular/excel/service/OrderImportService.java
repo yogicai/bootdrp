@@ -11,6 +11,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bootdo.core.consts.Constant;
 import com.bootdo.core.enums.BillSource;
+import com.bootdo.core.enums.CommonStatus;
 import com.bootdo.core.excel.ClassExcelVerifyHandler;
 import com.bootdo.core.excel.enums.VerifyResultEnum;
 import com.bootdo.core.exception.BootServiceExceptionEnum;
@@ -19,10 +20,11 @@ import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.core.utils.ShiroUtils;
 import com.bootdo.modular.data.dao.AccountDao;
 import com.bootdo.modular.data.dao.ConsumerDao;
-import com.bootdo.modular.data.dao.ProductDao;
 import com.bootdo.modular.data.domain.AccountDO;
 import com.bootdo.modular.data.domain.ConsumerDO;
 import com.bootdo.modular.data.domain.ProductDO;
+import com.bootdo.modular.data.param.ProductQryParam;
+import com.bootdo.modular.data.service.ProductService;
 import com.bootdo.modular.excel.param.OrderImportEntityParam;
 import com.bootdo.modular.excel.param.OrderImportParam;
 import com.bootdo.modular.se.param.SEOrderEntryVO;
@@ -49,9 +51,9 @@ public class OrderImportService {
     @Resource
     private ConsumerDao consumerDao;
     @Resource
-    private ProductDao productDao;
-    @Resource
     private AccountDao accountDao;
+    @Resource
+    private ProductService productService;
     @Resource
     private SEOrderEntryService seOrderEntryService;
     @Resource
@@ -72,7 +74,7 @@ public class OrderImportService {
         Map<String, ConsumerDO> comsumerDoMap = consumerDao.selectList(Wrappers.query()).stream()
                 .collect(Collectors.toMap(k -> joinKey(k.getNo(), k.getName()), v -> v, (o, n) -> n));
         //商品信息
-        Map<String, ProductDO> productDoMap = productDao.selectList(Wrappers.lambdaQuery(ProductDO.class).eq(ProductDO::getStatus, 1))
+        Map<String, ProductDO> productDoMap = productService.selectList(ProductQryParam.builder().status(CommonStatus.ENABLE.getValue()).build())
                 .stream()
                 .collect(Collectors.toMap(k -> joinKey(k.getNo(), k.getName()), v -> v, (o, n) -> n));
         //导入excel文件
@@ -139,7 +141,7 @@ public class OrderImportService {
                 SEOrderEntryVO seOrderEntryVO = new SEOrderEntryVO();
                 seOrderEntryVO.setEntryId(productDo.getNo().toString());
                 seOrderEntryVO.setEntryName(productDo.getName());
-                seOrderEntryVO.setEntryUnit(productDo.getUnit());
+                seOrderEntryVO.setEntryUnit(productDo.getUnitName());
                 seOrderEntryVO.setEntryPrice(entity.getEntryPrice());
                 seOrderEntryVO.setStockNo(productDo.getStockNo());
                 seOrderEntryVO.setStockName(productDo.getStockName());
