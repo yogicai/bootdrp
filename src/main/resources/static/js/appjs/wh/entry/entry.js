@@ -55,8 +55,8 @@ function load() {
         colModel: [
             {
                 name: 'act', width: 60, fixed: true, sortable: false, resize: false, formatter: function (cellValue, options, rowObject) {
-                    let e = `<a class="btn btn-primary btn-xs" href="#" onclick="addRow('${options.rowId}', ${tableGrid})"><i class="fa fa-plus"></i></a> `;
-                    let d = `<a class="btn btn-warning btn-xs" href="#" onclick="delRow('${options.rowId}', ${tableGrid})"><i class="fa fa-minus"></i></a> `;
+                    let e = `<a class="btn btn-primary btn-xs" href="#" onclick="addRow('${options.rowId}')"><i class="fa fa-plus"></i></a> `;
+                    let d = `<a class="btn btn-warning btn-xs" href="#" onclick="delRow('${options.rowId}')"><i class="fa fa-minus"></i></a> `;
                     return e + d;
                 }
             },
@@ -154,7 +154,7 @@ function collectRow(rowId) {
 }
 
 //增加行
-function addRow(rowId, tableGrid) {
+function addRow(rowId) {
     let rowData = {};
     let ids = tableGrid.jqGrid('getDataIDs');
     let maxId = ids.length === 0 ? 1 : Math.max.apply(Math, ids);
@@ -162,7 +162,7 @@ function addRow(rowId, tableGrid) {
 }
 
 //删除行
-function delRow(rowid, tableGrid) {
+function delRow(rowid) {
     let ids = tableGrid.jqGrid('getDataIDs')
     if (ids.length > 1) {
         tableGrid.jqGrid('delRowData', rowid);

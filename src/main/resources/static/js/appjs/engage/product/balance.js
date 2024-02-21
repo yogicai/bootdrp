@@ -51,7 +51,7 @@ $(function() {
 
     utils.createDatePicker('date_1', {}, new Date());
     utils.loadTypes(["data_stock", "data_shop"], ["stock", "shopNo"], [{width: "120px"}, {width: "120px"}]);
-    utils.loadCategory(["PRODUCT_DATA", "PRODUCT"], ["product", "type"], [{width: "120px", liveSearch: true}, {width: "120px"}]);
+    utils.loadCategory(["PRODUCT_DATA", "PRODUCT"], ["productNo", "type"], [{width: "120px", liveSearch: true}, {width: "120px"}]);
 
     load();
 });

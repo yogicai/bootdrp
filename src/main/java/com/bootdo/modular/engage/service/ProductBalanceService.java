@@ -1,5 +1,6 @@
 package com.bootdo.modular.engage.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.core.enums.BillType;
@@ -10,6 +11,7 @@ import com.bootdo.modular.data.service.CostAmountIResult;
 import com.bootdo.modular.engage.dao.ProductBalanceDao;
 import com.bootdo.modular.engage.domain.ProductCostDO;
 import com.bootdo.modular.engage.param.BalanceAdjustParam;
+import com.bootdo.modular.engage.param.BalanceQryParam;
 import com.bootdo.modular.engage.result.BalanceResult;
 import com.bootdo.modular.engage.result.BalanceTotalResult;
 import com.bootdo.modular.engage.result.EntryBalanceResult;
@@ -48,7 +50,8 @@ public class ProductBalanceService {
 
     
     @Transactional(rollbackFor = Exception.class)
-    public BalanceResult pBalance(Map<String, Object> params) {
+    public BalanceResult pBalance(BalanceQryParam param) {
+        Map<String, Object> params = BeanUtil.beanToMap(param);
         List<Map<String, Object>> list = productBalanceDao.pBalance(params);
         TreeMap<String, List<Map<String, Object>>> listMap = Maps.newTreeMap();
         TreeMap<String, String> stockMap = Maps.newTreeMap();
@@ -132,6 +135,7 @@ public class ProductBalanceService {
             }
         }
         ProductCostDO costDO = costDOMap.get(MapUtil.getStr(mapList.get(0), "no"));
+        productInfo.setShopNo(MapUtil.getStr(mapList.get(0), "shop_no"));
         productInfo.setEntryId(MapUtil.getStr(mapList.get(0), "no"));
         productInfo.setEntryName(MapUtil.getStr(mapList.get(0), "name"));
         productInfo.setEntryBarcode(MapUtil.getStr(mapList.get(0), "bar_code"));

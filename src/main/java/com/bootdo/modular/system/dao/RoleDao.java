@@ -1,5 +1,6 @@
 package com.bootdo.modular.system.dao;
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.bootdo.modular.system.domain.RoleDO;
 import com.github.yulichang.base.MPJBaseMapper;
 
@@ -10,6 +11,7 @@ import com.github.yulichang.base.MPJBaseMapper;
  * @email 1992lcg@163.com
  * @since 2017-10-02 20:24:47
  */
+@InterceptorIgnore
 public interface RoleDao extends MPJBaseMapper<RoleDO> {
 
 }

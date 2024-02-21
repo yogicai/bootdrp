@@ -1,5 +1,6 @@
 package com.bootdo.modular.system.dao;
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.bootdo.modular.system.domain.RoleMenuDO;
 import com.github.yulichang.base.MPJBaseMapper;
 
@@ -10,6 +11,7 @@ import com.github.yulichang.base.MPJBaseMapper;
  * @email 1992lcg@163.com
  * @since 2017-10-03 11:08:59
  */
+@InterceptorIgnore
 public interface RoleMenuDao extends MPJBaseMapper<RoleMenuDO> {
 
 }

@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bootdo.core.consts.Constant;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.BillType;
+import com.bootdo.core.enums.CommonStatus;
 import com.bootdo.core.enums.CostType;
 import com.bootdo.core.exception.BootServiceExceptionEnum;
 import com.bootdo.core.utils.DateUtils;
@@ -421,7 +422,7 @@ public class CostAmountCalculator {
      */
     private Map<String, BigDecimal> convertInventoryMap(List<String> entryNoList) {
         //采购、销售、其他入出库 商品
-        List<Map<String, Object>> list = whReportDao.pBalance(ImmutableMap.of("products", entryNoList, "status", 1));
+        List<Map<String, Object>> list = whReportDao.pBalance(ImmutableMap.of("productNos", entryNoList, "status", CommonStatus.ENABLE.getValue()));
         //商品库存
         return list.stream()
                 .collect(Collectors.groupingBy(

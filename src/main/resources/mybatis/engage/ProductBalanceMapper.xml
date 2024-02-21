@@ -29,21 +29,21 @@
                     wo.`audit_status`='YES'
             ) bb LEFT JOIN data_product aa ON aa.`no`=bb.entry_id
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
-            <if test="toDate != null and toDate != ''">and bb.bill_date <![CDATA[ <= ]]> #{toDate}</if>
+            <if test="toDate != null">and bb.bill_date <![CDATA[ <= ]]> #{toDate}</if>
             <if test="status != null and status != ''">and aa.status = #{status}</if>
             <if test="type != null and type != ''">and aa.type = #{type}</if>
             <if test="stock != null and stock != ''">and bb.stock_no = #{stock}</if>
-            <if test="product != null and product != ''">and aa.no = #{product}</if>
-            <if test="shopNo != null">and aa.shop_no in
+            <if test="productNo != null and productNo != ''">and aa.no = #{productNo}</if>
+            <if test="shopNo != null and shopNo.size() > 0">and aa.shop_no in
                 <foreach collection="shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
             </if>
-            <if test="types != null">and aa.type in
+            <if test="types != null and types.size() > 0">and aa.type in
                 <foreach collection="types" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
             </if>
-            <if test="stocks != null">and bb.stock_no in
+            <if test="stocks != null and stocks.size() > 0">and bb.stock_no in
                 <foreach collection="stocks" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
             </if>
-            <if test="products != null">and aa.no in
+            <if test="productNos != null and productNos.size() > 0">and aa.no in
                 <foreach collection="products" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
             </if>
             <if test="searchText != null and searchText != ''">

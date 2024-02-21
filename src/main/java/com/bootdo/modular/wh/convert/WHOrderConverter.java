@@ -53,7 +53,7 @@ public class WHOrderConverter {
 
     public static WHOrderDO convertOrder(WHOrderVO orderVO, ConsumerDO consumerDO) {
         WHOrderDO orderDO = new WHOrderDO();
-        orderDO.setShopNo(orderDO.getShopNo());
+        orderDO.setShopNo(orderVO.getShopNo());
         orderDO.setBillNo(StrUtil.isEmpty(orderVO.getBillNo()) ? OrderUtils.generateOrderNoWH(orderVO.getBillType()) : orderVO.getBillNo());
         orderDO.setBillType(orderVO.getBillType());
         orderDO.setServiceType(orderVO.getServiceType());

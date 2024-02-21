@@ -1,11 +1,13 @@
 package com.bootdo.modular.engage.controller;
 
 import cn.hutool.core.map.MapUtil;
+import com.bootdo.core.enums.CommonStatus;
 import com.bootdo.core.pojo.request.QueryJQ;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.modular.engage.param.BalanceAdjustParam;
+import com.bootdo.modular.engage.param.BalanceQryParam;
 import com.bootdo.modular.engage.result.BalanceResult;
 import com.bootdo.modular.engage.result.EntryBalanceResult;
 import com.bootdo.modular.engage.service.ProductBalanceService;
@@ -50,9 +52,9 @@ public class ProductBalanceController extends BaseController {
     @ResponseBody
     @PostMapping(value = "/balance/list")
     @RequiresPermissions("engage:product:balance")
-    public R pBalance(@RequestBody Map<String, Object> params, Model model) {
-        params.put("status", 1);
-        BalanceResult result = productBalanceService.pBalance(params);
+    public R pBalance(@RequestBody BalanceQryParam param) {
+        param.setStatus(CommonStatus.ENABLE.getValue());
+        BalanceResult result = productBalanceService.pBalance(param);
         return R.ok().put("result", result);
     }
 
@@ -62,9 +64,9 @@ public class ProductBalanceController extends BaseController {
     @ResponseBody
     @GetMapping(value = "/balance/export")
     @RequiresPermissions("engage:product:balance")
-    public void pBalanceExport(@RequestParam Map<String, Object> params, Model model) {
-        params.put("status", 1);
-        BalanceResult result = productBalanceService.pBalance(params);
+    public void pBalanceExport(BalanceQryParam param) {
+        param.setStatus(CommonStatus.ENABLE.getValue());
+        BalanceResult result = productBalanceService.pBalance(param);
         PoiUtil.exportExcelWithStream("ProductBalanceResult.xls", WHProductInfo.class, result.getProductInfoList());
     }
 

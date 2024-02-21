@@ -29,7 +29,7 @@
                 order by ${sort} ${order}
             </when>
             <otherwise>
-                order by parentId, orderNum
+                order by parentId, categoryId, orderNum, dataId
             </otherwise>
         </choose>
         <if test="offset != null and limit != null">

@@ -1,6 +1,7 @@
 package com.bootdo.modular.data.dao;
 
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bootdo.modular.data.domain.DataShop;
 
@@ -10,6 +11,7 @@ import com.bootdo.modular.data.domain.DataShop;
  * @author L
  * @since 2024-01-26 15:40
  */
+@InterceptorIgnore
 public interface DataShopDao extends BaseMapper<DataShop> {
 
 }

@@ -1,5 +1,6 @@
 package com.bootdo.modular.system.dao;
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bootdo.modular.system.domain.DictDO;
 
@@ -10,6 +11,7 @@ import com.bootdo.modular.system.domain.DictDO;
  * @email 1992lcg@163.com
  * @since 2017-10-03 15:45:42
  */
+@InterceptorIgnore
 public interface DictDao extends BaseMapper<DictDO> {
 
 }

@@ -19,6 +19,11 @@ import java.util.Map;
 @Data
 public class WHProductInfo {
     /**
+     * 店铺编号
+     */
+    @Excel(name = "店铺", dict = "data_shop", needMerge = true)
+    private String shopNo;
+    /**
      * 商品ID
      */
     @Excel(name = "商品ID", needMerge = true)

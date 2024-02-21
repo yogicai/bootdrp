@@ -181,7 +181,7 @@ function collectTotal1() {
 }
 
 //增加行
-function addRow(rowid, tableGrid) {
+function addRow(rowid) {
     let rowData = {};
     let ids = tableGrid.jqGrid('getDataIDs');
     let maxId = ids.length === 0 ? 1 : Math.max.apply(Math, ids);
@@ -189,7 +189,7 @@ function addRow(rowid, tableGrid) {
 }
 
 //删除行
-function delRow(rowid, tableGrid) {
+function delRow(rowid) {
     let ids = tableGrid.jqGrid('getDataIDs')
     if (ids.length > 1) {
         tableGrid.jqGrid('delRowData', rowid);
