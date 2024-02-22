@@ -30,7 +30,7 @@ function load() {
         rownumbers: true,
         rowNum: 50,
         rowList: [10, 20, 50, 100],
-        colNames: ['', '店铺', '商品编号', '商品名称', '商品类别', '采购价', '成本单价', '库存数量', '库存变更', '库存余额', '成本', '成本时间', '类型', '关联单号', '备注', '修改时间'],
+        colNames: ['', '店铺', '商品编号', '商品名称', '商品类别', '采购价', '成本单价', '库存数量', '库存变更', '上期库存', '成本', '成本时间', '类型', '关联单号', '备注', '修改时间'],
         colModel: [
             { name:'id', index:'id', editable:false, width:50, hidden:true },
             {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 70, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
