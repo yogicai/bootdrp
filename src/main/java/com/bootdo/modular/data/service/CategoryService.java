@@ -85,6 +85,10 @@ public class CategoryService extends ServiceImpl<CategoryDao, CategoryDO> {
     public Map<String, List<Tree<Object>>> listTreeData(Map<String, Object> params, boolean filterScope) {
         //所有类目及类目数据
         List<CategoryDataResult> categoryData = categoryDao.listTreeData(params);
+        //去重，1、若不区别店铺：按类目ID + 数据ID；2、区分店铺时：按类目ID + 数据ID + 店铺编号
+        if (!filterScope) {
+            categoryData = categoryData.stream().filter(PoiUtil.distinctByKey(data -> data.getCategoryId() + data.getDataId())).collect(Collectors.toList());
+        }
         //类目节点
         List<Tree<Object>> treeNodeList = categoryData.stream()
                 .filter(PoiUtil.distinctByKey(CategoryDataResult::getCategoryId)).map(data -> {
