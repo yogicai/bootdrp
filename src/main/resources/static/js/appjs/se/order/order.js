@@ -115,6 +115,11 @@ function reLoad() {
     tableGrid.trigger("reloadGrid", {fromServer: true});
 }
 
+function reLoadData(formData) {
+    $dataForm.setForm(formData);
+    search();
+}
+
 function audit(type) {
     let ids = tableGrid.jqGrid("getGridParam", "selarrrow");
     if (ids.length === 0) {

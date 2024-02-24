@@ -587,7 +587,7 @@
     /* ========================================================================
     *  报表模块展示订单明细列表(只适用于采购单、销售单)
     * ======================================================================== */
-    Utils.prototype.listDataGrid = function listDataGrid(dataUrl, opttion) {
+    Utils.prototype.listDataGrid = function listDataGrid(dataUrl, formData) {
         let dataIndex;
         //触发菜单单击
         window.parent.$(".J_menuItem").each(function (index) {
@@ -608,18 +608,12 @@
             window.parent.$('.J_mainContent .J_iframe').each(function () {
                 if ($(this).data('id') === dataUrl) {
                     let win = window.parent.$('iframe[name="iframe' + dataIndex + '"]')[0].contentWindow;
-                    if (win.tableGrid) {
-                        let postData = $.extend({}, opttion, {'page': 1, 'rows': 100});
-                        win.tableGrid.jqGrid('setGridParam', {rowNum: 100, postData: $.param(postData)}).trigger("reloadGrid");
-                        win.$('.ui-pg-selbox').val(100); //设置jqGrid rowNum 展示值
-                        win.dataForm.setForm(postData); //搜索条件的值
+                    if (win.reLoadData) {
+                        win.reLoadData(formData);
                         loadFlag = true;
                     } else if (win.frameElement) {
                         win.frameElement.onload = win.frameElement.onreadystatechange = function () {
-                            let postData = $.extend({}, opttion, {'page': 1, 'rows': 100});
-                            win.tableGrid.jqGrid('setGridParam', {rowNum: 100, postData: $.param(postData)}).trigger("reloadGrid");
-                            win.$('.ui-pg-selbox').val(100); //设置jqGrid rowNum 展示值
-                            win.dataForm.setForm(postData); //搜索条件的值
+                            win.reLoadData(formData);
                         };
                         loadFlag = true;
                     }

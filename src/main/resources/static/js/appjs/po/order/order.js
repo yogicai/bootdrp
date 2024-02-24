@@ -132,9 +132,13 @@ function search(pageBtn) {
     let postData = $.extend({}, $dataForm.serializeObject(), {'page': inputPage, 'rows': rowNum});
     tableGrid.jqGrid('setGridParam', {postData: $.param(postData)}).trigger("reloadGrid");
 }
-
 function reLoad() {
     tableGrid.trigger("reloadGrid", { fromServer: true });
+}
+
+function reLoadData(formData) {
+    $dataForm.setForm(formData);
+    search();
 }
 
 function audit(type) {

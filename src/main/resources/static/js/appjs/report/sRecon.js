@@ -3,8 +3,6 @@ let type = $('#type').val();
 let tableGrid;
 let $tableList;
 let $dataForm;
-let start;
-let end;
 let loginShopNo = utils.dataCache.loginShopInfo.no
 
 let initData = [];
@@ -48,7 +46,9 @@ let gridConfig = {
     colModel: colModel,
     ondblClickRow: function (rowid, iRow, iCol, e) {
         let rowData = tableGrid.jqGrid('getRowData', rowid);
-        let postData = {start: start, end: end};
+        let postData = {
+            start: $('#start').val(), end: $('#end').val(), status: ['WAITING_PAY', 'PART_PAY']
+        };
         postData[type === 'CUSTOMER' ? 'consumerId' : 'vendorId'] = rowData.instituteId;
         let postUrl = type === 'CUSTOMER' ? '/se/order' : '/po/order';
         utils.listDataGrid(postUrl, postData);
