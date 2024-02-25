@@ -15,8 +15,8 @@ $(function() {
 
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
     utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100px", noneSelectedText: '店铺', multiple: true}]);
-    utils.loadEnumTypes(["AUDIT_STATUS"], ["auditStatus"]);
-    utils.loadCategory(["USER_DATA"], ["checkId"], [{width: "120px"}]);
+    utils.loadEnumTypes(["AUDIT_STATUS"], ["auditStatus"], [{width: "100px"}]);
+    utils.loadCategory(["USER_DATA"], ["checkId"], [{width: "100px"}]);
 
     load();
 });

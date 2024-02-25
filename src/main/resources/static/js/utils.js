@@ -266,7 +266,7 @@
             let sysDict = utils.dataCache.sysDict;
             for (let t = 0; t < types.length; t++) {
                 let option = options && options[t];
-                let data = option.setData || sysDict[types[t]];
+                let data = option && option.setData || sysDict[types[t]];
                 Utils.prototype.selectpickerLocal(elementIds[t], option, data);
             }
         }
@@ -278,7 +278,7 @@
             let categoryData = utils.dataCache.categoryData;
             for (let t = 0; t < types.length; t++) {
                 let option = options && options[t];
-                let data = option.setData || categoryData[types[t]];
+                let data = option && option.setData || categoryData[types[t]];
                 Utils.prototype.selectpickerLocal(elementIds[t], option, data);
             }
         }
@@ -290,7 +290,7 @@
             let sysEnumMap = utils.dataCache.sysEnumMap;
             for (let t = 0; t < types.length; t++) {
                 let option = options && options[t];
-                let data = option.setData || sysEnumMap[types[t]];
+                let data = option && option.setData || sysEnumMap[types[t]];
                 Utils.prototype.selectpickerLocal(elementIds[t], option, data);
             }
         }
