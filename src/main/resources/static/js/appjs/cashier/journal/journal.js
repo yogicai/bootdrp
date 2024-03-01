@@ -13,13 +13,13 @@ let loginShopNo = utils.dataCache.loginShopInfo.no
 
 let initData = [];
 
-let groupHeaders1 = [{startColumnName: 'account', numberOfColumns: 13, titleText: '<b>账户现金流统计</b>'}];
-let groupHeaders2 = [{startColumnName: 'year', numberOfColumns: 13, titleText: '<b>年度现金流统计</b>'}];
-let groupHeaders3 = [{startColumnName: 'year', numberOfColumns: 13, titleText: '<b>经营业绩情况</b>'}];
+let groupHeaders1 = [{startColumnName: 'account', numberOfColumns: 14, titleText: '<b>账户现金流统计</b>'}];
+let groupHeaders2 = [{startColumnName: 'year', numberOfColumns: 14, titleText: '<b>年度现金流统计</b>'}];
+let groupHeaders3 = [{startColumnName: 'year', numberOfColumns: 14, titleText: '<b>经营业绩情况</b>'}];
 
-let colNames1 = ['账户', '打款', '经销商', '调货', '调账', '店内调账', '父母', '个人消费', '换现金', '贷款综合', '运营费用', '支付工资', '营销费用'];
-let colNames2 = ['年份', '打款', '经销商', '调货', '调账', '店内调账', '父母', '个人消费', '换现金', '贷款综合', '运营费用', '支付工资', '营销费用'];
-let colNames3 = ['年份', '营业额', '收款', '成本', '欠款', '毛利', '毛利率', '父母', '运营费用', '工资', '营销费用', '净利润', '净利润率', '已实现净利润', '已支付工资'];
+let colNames1 = ['账户', '打款', '经销商', '调货', '调账', '店内调账', '换现金', '贷款综合', '父母', '个人消费', '生活开支', '运营费用', '支付工资', '营销费用'];
+let colNames2 = ['年份', '打款', '经销商', '调货', '调账', '店内调账', '换现金', '贷款综合', '父母', '个人消费', '生活开支', '运营费用', '支付工资', '营销费用'];
+let colNames3 = ['年份', '营业额', '收款', '成本', '欠款', '毛利', '毛利率', '父母', '工资', '运营费用', '生活开支', '营销费用', '净利润', '净利润率', '已实现净利润', '已支付工资'];
 
 let colModel1 = [
     {name: 'account', index: 'account', editable: false, width: 90, align: "center"},
@@ -28,10 +28,11 @@ let colModel1 = [
     {name: 'exchange', index: 'exchange', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'adjust', index: 'adjust', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'innerAdjust', index: 'innerAdjust', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
-    {name: 'parent', index: 'parent', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
-    {name: 'consume', index: 'consume', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'forCash', index: 'forCash', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'loans', index: 'loans', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
+    {name: 'parent', index: 'parent', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
+    {name: 'consume', index: 'consume', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
+    {name: 'living', index: 'living', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'operation', index: 'operation', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'salary', index: 'salary', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'market', index: 'market', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"}
@@ -43,10 +44,11 @@ let colModel2 = [
     {name: 'exchange', index: 'exchange', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'adjust', index: 'adjust', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'innerAdjust', index: 'innerAdjust', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
-    {name: 'parent', index: 'parent', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
-    {name: 'consume', index: 'consume', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'forCash', index: 'forCash', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'loans', index: 'loans', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
+    {name: 'parent', index: 'parent', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
+    {name: 'consume', index: 'consume', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
+    {name: 'living', index: 'living', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'operation', index: 'operation', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'salary', index: 'salary', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'market', index: 'market', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"}
@@ -60,8 +62,9 @@ let colModel3 = [
     {name: 'profitAmount', index: 'profitAmount', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'profitRate', index: 'profitRate', editable: true, sorttype: "float", width: 90, align: "right", formatter: "currency", formatoptions: {suffix: ""}},
     {name: 'parentFee', index: 'parentFee', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
-    {name: 'operationFee', index: 'operationFee', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'salaryFee', index: 'salaryFee', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
+    {name: 'operationFee', index: 'operationFee', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
+    {name: 'livingFee', index: 'livingFee', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'marketFee', index: 'marketFee', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'netProfit', index: 'netProfit', editable: true, sorttype: "float", width: 90, align: "right", formatter: "number"},
     {name: 'netProfitRate', index: 'netProfitRate', editable: true, sorttype: "float", width: 90, align: "right", formatter: "currency", formatoptions: {suffix: ""}},
@@ -157,10 +160,11 @@ function collectTotal1() {
     let exchangeTotal = $tableList1.getCol('exchange', false, 'sum');
     let adjustTotal = $tableList1.getCol('adjust', false, 'sum');
     let innerAdjustTotal = $tableList1.getCol('innerAdjust', false, 'sum');
-    let parentTotal = $tableList1.getCol('parent', false, 'sum');
-    let consumeTotal = $tableList1.getCol('consume', false, 'sum');
     let forCashTotal = $tableList1.getCol('forCash', false, 'sum');
     let loansTotal = $tableList1.getCol('loans', false, 'sum');
+    let parentTotal = $tableList1.getCol('parent', false, 'sum');
+    let consumeTotal = $tableList1.getCol('consume', false, 'sum');
+    let livingTotal = $tableList1.getCol('living', false, 'sum');
     let operationTotal = $tableList1.getCol('operation', false, 'sum');
     let salaryTotal = $tableList1.getCol('salary', false, 'sum');
     let marketTotal = $tableList1.getCol('market', false, 'sum');
@@ -171,10 +175,11 @@ function collectTotal1() {
         exchange: exchangeTotal,
         adjust: adjustTotal,
         innerAdjust: innerAdjustTotal,
-        parent: parentTotal,
-        consume: consumeTotal,
         forCash: forCashTotal,
         loans: loansTotal,
+        parent: parentTotal,
+        consume: consumeTotal,
+        living: livingTotal,
         operation: operationTotal,
         salary: salaryTotal,
         market: marketTotal
@@ -189,10 +194,11 @@ function collectTotal2() {
     let exchangeTotal = $tableList2.getCol('exchange', false, 'sum');
     let adjustTotal = $tableList2.getCol('adjust', false, 'sum');
     let innerAdjustTotal = $tableList2.getCol('innerAdjust', false, 'sum');
-    let parentTotal = $tableList2.getCol('parent', false, 'sum');
-    let consumeTotal = $tableList2.getCol('consume', false, 'sum');
     let forCashTotal = $tableList2.getCol('forCash', false, 'sum');
     let loansTotal = $tableList2.getCol('loans', false, 'sum');
+    let parentTotal = $tableList2.getCol('parent', false, 'sum');
+    let consumeTotal = $tableList2.getCol('consume', false, 'sum');
+    let livingTotal = $tableList2.getCol('living', false, 'sum');
     let operationTotal = $tableList2.getCol('operation', false, 'sum');
     let salaryTotal = $tableList2.getCol('salary', false, 'sum');
     let marketTotal = $tableList2.getCol('market', false, 'sum');
@@ -203,10 +209,11 @@ function collectTotal2() {
         exchange: exchangeTotal,
         adjust: adjustTotal,
         innerAdjust: innerAdjustTotal,
-        parent: parentTotal,
-        consume: consumeTotal,
         forCash: forCashTotal,
         loans: loansTotal,
+        parent: parentTotal,
+        consume: consumeTotal,
+        living: livingTotal,
         operation: operationTotal,
         salary: salaryTotal,
         market: marketTotal
@@ -223,6 +230,7 @@ function collectTotal3() {
     let profitAmountTotal = $tableList3.getCol('profitAmount', false, 'sum');
     let profitRateTotal = (profitAmountTotal / totalAmountTotal).toFixed(2);
     let parentFeeTotal = $tableList3.getCol('parentFee', false, 'sum');
+    let livingFeeTotal = $tableList3.getCol('livingFee', false, 'sum');
     let operationFeeTotal = $tableList3.getCol('operationFee', false, 'sum');
     let salaryFeeTotal = $tableList3.getCol('salaryFee', false, 'sum');
     let marketFeeTotal = $tableList3.getCol('marketFee', false, 'sum');
@@ -239,6 +247,7 @@ function collectTotal3() {
         profitAmount: profitAmountTotal,
         profitRate: profitRateTotal,
         parentFee: parentFeeTotal,
+        livingFee: livingFeeTotal,
         operationFee: operationFeeTotal,
         salaryFee: salaryFeeTotal,
         marketFee: marketFeeTotal,

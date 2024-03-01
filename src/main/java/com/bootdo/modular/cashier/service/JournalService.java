@@ -148,6 +148,8 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
             item.setProfitRate(NumberUtil.div(item.getProfitAmount(), item.getTotalAmount(), 2));
             //父母费用
             item.setParentFee(ObjectUtil.defaultIfNull(flowRecordYearMap.get(item.getYear()), AccountItem::getParent, BigDecimal.ZERO));
+            //生活开支
+            item.setLivingFee(ObjectUtil.defaultIfNull(flowRecordYearMap.get(item.getYear()), AccountItem::getLiving, BigDecimal.ZERO));
             //运营费用
             item.setOperationFee(ObjectUtil.defaultIfNull(flowRecordYearMap.get(item.getYear()), AccountItem::getOperation, BigDecimal.ZERO));
             //工资费用
@@ -155,7 +157,7 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
             //营销费用
             item.setMarketFee(ObjectUtil.defaultIfNull(flowRecordYearMap.get(item.getYear()), AccountItem::getMarket, BigDecimal.ZERO));
             //净利润
-            item.setNetProfit(NumberUtil.sub(item.getProfitAmount(), item.getParentFee(), item.getOperationFee(), item.getSalaryFee(), item.getMarketFee(), 2));
+            item.setNetProfit(NumberUtil.sub(item.getProfitAmount(), item.getParentFee(), item.getLivingFee(), item.getOperationFee(), item.getSalaryFee(), item.getMarketFee(), 2));
             //净利润率
             item.setNetProfitRate(NumberUtil.div(item.getNetProfit(), item.getTotalAmount(), 2));
             //已实现净利润 = 净利润 - 欠款

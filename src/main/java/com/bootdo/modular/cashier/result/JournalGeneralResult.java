@@ -88,6 +88,8 @@ public class JournalGeneralResult {
         private BigDecimal forCash;
         @Excel(name = "贷款综合", numFormat = "#,##0.00", type = 10)
         private BigDecimal loans;
+        @Excel(name = "生活开支", numFormat = "#,##0.00", type = 10)
+        private BigDecimal living;
         @Excel(name = "运营费用", numFormat = "#,##0.00", type = 10)
         private BigDecimal operation;
         @Excel(name = "支付工资", numFormat = "#,##0.00", type = 10)
@@ -126,6 +128,8 @@ public class JournalGeneralResult {
         private BigDecimal profitRate;
         @Excel(name = "父母", numFormat = "0.00", type = 10)
         private BigDecimal parentFee;
+        @Excel(name = "生活开支", numFormat = "0.00", type = 10)
+        private BigDecimal livingFee;
         @Excel(name = "运营费用", numFormat = "0.00", type = 10)
         private BigDecimal operationFee;
         @Excel(name = "工资", numFormat = "0.00", type = 10)

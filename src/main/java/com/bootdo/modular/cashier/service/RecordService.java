@@ -117,7 +117,7 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
                 recordDO.setTargetAccount(trimStr(row.get(2)));
                 recordDO.setTradeGoods(trimStr(row.get(3)));
                 recordDO.setTradeType(trimStr(row.get(4)));
-                recordDO.setPayAmount(NumberUtil.parseDouble(row.get(5)));
+                recordDO.setPayAmount(NumberUtil.parseDouble(StrUtil.removeAny(row.get(5), "¥", "￥")));
                 recordDO.setPayStatus(trimStr(row.get(6)));
                 recordDO.setTradeClass(trimStr(row.get(7)));
                 recordDO.setTxnNo(trimStr(row.get(8)));
@@ -171,7 +171,7 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
                 recordDO.setTargetAccount(trimStr(row.get(2)));
                 recordDO.setTradeGoods(trimStr(row.get(3)));
                 recordDO.setPayDirect(trimStr(row.get(4)));
-                recordDO.setPayAmount(NumberUtil.parseDouble(StrUtil.removeAny(row.get(5), "¥")));
+                recordDO.setPayAmount(NumberUtil.parseDouble(StrUtil.removeAny(row.get(5), "¥", "￥")));
                 recordDO.setTradeType(trimStr(row.get(6)));
                 recordDO.setPayStatus(trimStr(row.get(7)));
                 recordDO.setTxnNo(trimStr(row.get(8)));
