@@ -13,6 +13,7 @@ import com.bootdo.modular.data.dao.ConsumerDao;
 import com.bootdo.modular.data.domain.ConsumerDO;
 import com.bootdo.modular.data.param.ConsumerQryParam;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -42,6 +43,15 @@ public class ConsumerService extends ServiceImpl<ConsumerDao, ConsumerDO> {
 
     public ConsumerDO getByNo(String no) {
         return this.getOne(Wrappers.lambdaQuery(ConsumerDO.class).eq(ConsumerDO::getNo, no));
+    }
+
+    @Transactional
+    public void add(ConsumerDO consumer) {
+        if (ObjectUtil.isNull(consumer.getId())) {
+            ConsumerDO consumerDO = this.getOne(Wrappers.<ConsumerDO>query().select("max(no) as no"));
+            consumer.setNo(consumerDO.getNo() + 1);
+        }
+        this.saveOrUpdate(consumer);
     }
 
 }

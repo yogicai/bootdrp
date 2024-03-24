@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.bootdo.config.converter.JsonListFormat;
 import lombok.Data;
 
+import javax.validation.groups.Default;
 import java.util.Date;
 import java.util.List;
 
@@ -51,37 +52,37 @@ public class BaseParam {
     /**
      * 参数校验分组：分页
      */
-    public @interface page {
+    public interface page extends Default {
     }
 
     /**
      * 参数校验分组：列表
      */
-    public @interface list {
+    public interface list extends Default {
     }
 
     /**
      * 参数校验分组：增加
      */
-    public @interface add {
+    public interface add extends Default {
     }
 
     /**
      * 参数校验分组：编辑
      */
-    public @interface edit {
+    public interface edit extends Default {
     }
 
     /**
      * 参数校验分组：删除
      */
-    public @interface delete {
+    public interface delete extends Default {
     }
 
     /**
      * 参数校验分组：详情
      */
-    public @interface detail {
+    public interface detail extends Default {
     }
 
 }

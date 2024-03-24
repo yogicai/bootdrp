@@ -1,6 +1,7 @@
 package com.bootdo.modular.data.controller;
 
 import com.bootdo.core.annotation.DataScope;
+import com.bootdo.core.pojo.base.param.BaseParam.edit;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.data.domain.AccountDO;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -60,16 +62,16 @@ public class AccountController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     @ApiOperation(value = "保存")
-    public R save(AccountDO account) {
+    public R save(@Validated AccountDO account) {
         dataValidator.validateAccount(account);
-        accountService.save(account);
+        accountService.add(account);
         return R.ok();
     }
 
     @ResponseBody
     @PostMapping("/update")
     @ApiOperation(value = "修改")
-    public R update(AccountDO account) {
+    public R update(@Validated(edit.class) AccountDO account) {
         dataValidator.validateAccount(account);
         accountService.updateById(account);
         return R.ok();

@@ -12,6 +12,7 @@ import com.bootdo.modular.data.dao.AccountDao;
 import com.bootdo.modular.data.domain.AccountDO;
 import com.bootdo.modular.data.param.AccountQryParam;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -32,6 +33,15 @@ public class AccountService extends ServiceImpl<AccountDao, AccountDO> {
                 .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(AccountDO::getNo, param.getSearchText()).or().like(AccountDO::getName, param.getSearchText()));
 
         return this.page(page, queryWrapper);
+    }
+
+    @Transactional
+    public void add(AccountDO account) {
+        if (ObjectUtil.isNull(account.getId())) {
+            AccountDO accountDO = this.getOne(Wrappers.<AccountDO>query().select("max(no) as no"));
+            account.setNo(accountDO.getNo() + 1);
+        }
+        this.saveOrUpdate(account);
     }
 
 }

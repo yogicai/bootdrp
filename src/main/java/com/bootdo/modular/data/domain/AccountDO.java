@@ -2,10 +2,12 @@ package com.bootdo.modular.data.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.bootdo.core.pojo.base.entity.BaseEntity;
+import com.bootdo.core.pojo.base.param.BaseParam.edit;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -19,10 +21,12 @@ public class AccountDO extends BaseEntity {
     /**
      *
      */
+    @NotNull(groups = {edit.class})
     private Integer id;
     /**
      * 编号
      */
+    @NotNull(groups = {edit.class})
     private Integer no;
     /**
      * 帐户名称

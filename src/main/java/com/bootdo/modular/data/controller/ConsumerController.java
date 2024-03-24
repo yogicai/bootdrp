@@ -74,7 +74,7 @@ public class ConsumerController extends BaseController {
     @ApiOperation(value = "保存")
     public R save(@Validated ConsumerDO consumer) {
         dataValidator.validateConsumer(consumer);
-        consumerService.save(consumer);
+        consumerService.add(consumer);
         return R.ok();
     }
 

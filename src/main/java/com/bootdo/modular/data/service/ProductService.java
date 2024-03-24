@@ -17,6 +17,7 @@ import com.bootdo.modular.engage.service.ProductCostService;
 import com.bootdo.modular.system.dao.DictDao;
 import com.bootdo.modular.system.domain.DictDO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -77,6 +78,15 @@ public class ProductService extends ServiceImpl<ProductDao, ProductDO> {
         });
 
         return pageList;
+    }
+
+    @Transactional
+    public void add(ProductDO product) {
+        if (ObjectUtil.isNull(product.getId())) {
+            ProductDO productDO = this.getOne(Wrappers.<ProductDO>query().select("max(no) as no"));
+            product.setNo(productDO.getNo() + 1);
+        }
+        this.saveOrUpdate(product);
     }
 
 }

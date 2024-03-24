@@ -28,7 +28,7 @@ public class ProductDO extends BaseEntity {
     /**
      * 商品编号
      */
-    @NotNull
+    @NotNull(groups = {edit.class})
     private Integer no;
     /**
      * 商品名称

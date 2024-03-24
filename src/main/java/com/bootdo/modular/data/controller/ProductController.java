@@ -82,7 +82,7 @@ public class ProductController extends BaseController {
     @RequiresPermissions("data:product:add")
     public R save(@Validated ProductDO product) {
         dataValidator.validateProduct(product);
-        productService.save(product);
+        productService.add(product);
         return R.ok();
     }
 

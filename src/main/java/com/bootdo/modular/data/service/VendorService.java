@@ -13,6 +13,7 @@ import com.bootdo.modular.data.dao.VendorDao;
 import com.bootdo.modular.data.domain.VendorDO;
 import com.bootdo.modular.data.param.VendorQryParam;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -42,6 +43,15 @@ public class VendorService extends ServiceImpl<VendorDao, VendorDO> {
 
     public VendorDO getByNo(String no) {
         return this.getOne(Wrappers.lambdaQuery(VendorDO.class).eq(VendorDO::getNo, no));
+    }
+
+    @Transactional
+    public void add(VendorDO vendor) {
+        if (ObjectUtil.isNull(vendor.getId())) {
+            VendorDO vendorDO = this.getOne(Wrappers.<VendorDO>query().select("max(no) as no"));
+            vendor.setNo(vendorDO.getNo() + 1);
+        }
+        this.saveOrUpdate(vendor);
     }
 
 }

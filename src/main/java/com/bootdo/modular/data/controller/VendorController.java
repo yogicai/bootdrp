@@ -74,7 +74,7 @@ public class VendorController extends BaseController {
     @ApiOperation(value = "保存")
     public R save(@Validated VendorDO vendor) {
         dataValidator.validateVendor(vendor);
-        vendorService.save(vendor);
+        vendorService.add(vendor);
         return R.ok();
     }
 

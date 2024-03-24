@@ -27,7 +27,7 @@ public class ConsumerDO extends BaseEntity {
     /**
      * 编号
      */
-    @NotNull
+    @NotNull(groups = {edit.class})
     private Integer no;
     /**
      * 名称

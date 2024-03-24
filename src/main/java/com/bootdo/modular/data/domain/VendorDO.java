@@ -26,7 +26,7 @@ public class VendorDO extends BaseEntity {
     /**
      * 编号
      */
-    @NotNull
+    @NotNull(groups = {edit.class})
     private Integer no;
     /**
      * 供应商名称
