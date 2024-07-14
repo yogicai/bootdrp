@@ -599,7 +599,7 @@
         });
         //防止frame未加载完成就触发dataGrid reloadGrid失败（菜单click事件首次加载页面会向后台发起请求导致页面加载慢）
         if (!loadGrid()) {
-            setTimeout(loadGrid, 1500);
+            setTimeout(loadGrid, 1000);
         }
 
         function loadGrid() {
@@ -615,7 +615,6 @@
                         win.frameElement.onload = win.frameElement.onreadystatechange = function () {
                             win.reLoadData(formData);
                         };
-                        loadFlag = true;
                     }
                     return false;
                 }
