@@ -19,9 +19,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class CategoryQryParam extends BaseParam {
 
-    @ApiModelProperty(value = "类目名称")
-    private String name;
-
     @ApiModelProperty(value = "类目分类")
     private String type;
 

@@ -5,47 +5,54 @@
 <body class="gray-bg">
 <div class=" ">
     <div class="col-sm-12">
-        <div class="ibox">
-
-            <div class="ibox-body">
-                <div class="fixed-table-toolbar">
-                    <div data-toggle="buttons" class="columns btn-group pull-left m-r-sm">
-                        <button class="btn btn-primary" type="button" onclick="search('CUSTOMER')"><i class=""></i> 客户</button>
-                        <button class="btn btn-primary" type="button" onclick="search('VENDOR')"><i class=""></i> 供应商</button>
-                        <button class="btn btn-primary" type="button" onclick="search('PRODUCT')"><i class=""></i> 商品</button>
-                        <button class="btn btn-primary" type="button" onclick="search('PAYMENT')"><i class=""></i> 支出</button>
-                        <button class="btn btn-primary" type="button" onclick="search('INCOME')"><i class=""></i> 收入</button>
-                        <button class="btn btn-primary" type="button" onclick="search('ACCOUNT')"><i class=""></i> 帐户</button>
+        <div class="ibox-body">
+            <div class="fixed-table-toolbar">
+                <form id="search">
+                    <div class="columns pull-left col-md-2 nopadding">
+                        <input type="text" class="form-control" name="searchText" placeholder="请输入帐户编号或名称" autocomplete="off">
                     </div>
 
-                    <form id="search">
-                        <div class="columns pull-left col-md-2 nopadding">
-                            <input type="text" class="form-control" id="searchText" name="searchText" placeholder="请输入商品编号或名称" autocomplete="off">
-                        </div>
-                    </form>
-
-                    <div class="columns pull-left tool-pull-left">
-                        <button class="btn btn-success" onclick="search()">查询</button>
+                    <div class="input-daterange input-group columns pull-left" style="margin-left: 5px; width: 300px;" id="datepicker">
+                        <span class="input-group-addon tool-span-addon">日期：</span>
+                        <input type="text" class="form-control" name="start" autocomplete="off"/>
+                        <span class="input-group-addon tool-span-addon">-</span>
+                        <input type="text" class="form-control" name="end" autocomplete="off"/>
                     </div>
 
-                    <div class="columns pull-right">
-                        <button shiro:hasPermission="data:category:add" type="button" class="btn btn-primary" onclick="add(0)">
-                            <i class="fa fa-plus" aria-hidden="true"></i>添加
-                        </button>
-                        <button shiro:hasPermission="data:category:remove" type="button" class="btn btn-info" onclick="search()">
-                            <i class="fa fa-refresh" aria-hidden="true"></i>刷新
-                        </button>
+                    <div class="input-group columns pull-left tool-pull-left">
+                        <select data-placeholder="类目分类" name="type" id="type" class="form-control">
+                            <option value="">选择分类</option>
+                        </select>
                     </div>
+
+                    <div class="input-group columns pull-left tool-pull-left">
+                        <select data-placeholder="请选择" name="status" id="status" class="form-control">
+                            <option value="">选择状态</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div class="columns pull-left tool-pull-left">
+                    <button class="btn btn-success" onclick="search()">查询</button>
                 </div>
 
-                <div class="ibox-content">
-                    <div class="jqGrid_wrapper">
-                        <table id="exampleTable" data-mobile-responsive="true">
-                        </table>
-                    </div>
+                <div class="columns pull-right">
+                    <button shiro:hasPermission="data:category:add" type="button" class="btn btn-primary" onclick="add(0)">
+                        <i class="fa fa-plus" aria-hidden="true"></i>添加
+                    </button>
+                    <button shiro:hasPermission="data:category:remove" type="button" class="btn btn-info" onclick="search()">
+                        <i class="fa fa-refresh" aria-hidden="true"></i>刷新
+                    </button>
                 </div>
             </div>
 
+            <div class="ibox-content">
+                <div class="jqGrid_wrapper">
+                    <table id="exampleTable" data-mobile-responsive="true">
+                    </table>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
 </div>

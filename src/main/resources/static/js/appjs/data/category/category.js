@@ -9,6 +9,9 @@ $(function () {
     $searchForm = $('#search');
     $exampleTable = $('#exampleTable');
 
+    utils.createDateRangePicker('datepicker');
+    utils.loadEnumTypes(["CATEGORY_TYPE", "STATUS_TYPE"], ["type", "status"], [{width: "120px", setValue: [defaultType]}, {width: "120px"}]);
+
     load();
 });
 
@@ -34,7 +37,11 @@ function load() {
                 }
             },
             {field: 'orderNum', title: '排序'},
-            {field: 'status', title: '状态', align: 'center', formatter: utils.formatYN},
+            {
+                field: 'status', title: '状态', align: 'center', formatter: function (item, index) {
+                    return utils.formatYN(item.status)
+                }
+            },
             {
                 title: '操作', field: 'id', align: 'center',
                 formatter: function (item, index) {
@@ -49,9 +56,8 @@ function load() {
     });
 }
 
-function search(type) {
-    defaultType = type ? type : defaultType;
-    treeTable.load({'type': defaultType, 'name': $('#searchText').val()});
+function search() {
+    treeTable.load($searchForm.serializeObject());
 }
 
 function add(id) {
@@ -100,7 +106,7 @@ function resetPwd(id) {
 }
 
 function batchRemove() {
-    let rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
+    let rows = $exampleTable.bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
     if (rows.length === 0) {
         layer.msg("请选择要删除的数据");
         return;
