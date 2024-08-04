@@ -11,6 +11,7 @@ $(function() {
     utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100px", noneSelectedText: '店铺', multiple: true}]);
     utils.loadEnumTypes(["ORDER_CG_STATUS", "AUDIT_STATUS"], ["status", "auditStatus"], [{width: "100px", noneSelectedText: '收款状态', multiple: true}, {width: "100px", noneSelectedText: '审核状态', multiple: true}]);
     utils.loadChosenStatic(["billType"], [{width: "100px", noneSelectedText: '订单类型', multiple: true}]);
+    utils.loadCategory(["VENDOR_DATA"], ["vendorId"], [{width: "100px", noneSelectedText: '供应商', liveSearch: true, multiple: true}]);
 
     load();
 });
