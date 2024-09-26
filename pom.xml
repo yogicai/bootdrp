@@ -82,6 +82,8 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mp.version}</version>
         </dependency>
+
+        <!-- mybatis-plus-join -->
         <dependency>
             <groupId>com.github.yulichang</groupId>
             <artifactId>mybatis-plus-join-boot-starter</artifactId>

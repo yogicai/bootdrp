@@ -102,15 +102,17 @@
                         }
                     });
                 } else if ($item.attr("type") === "textarea") {
-                    obj.find("[name=" + name + "]").html(value);
+                    $item.html(value);
                 } else if ($item.parent().hasClass('bootstrap-select')) {
-                    obj.find("[name=" + name + "]").val(value).trigger("change");
+                    $item.val(value).trigger("change");
                 } else if ($item.attr("type") === "chosen" || $item.prop("type") === "select-one") {
-                    obj.find("[name=" + name + "]").val(value).trigger("chosen:updated");
+                    $item.val(value).trigger("chosen:updated");
+                } else if ($item.attr("data-type") === "datepicker") {
+                    $item.datepicker('setDate', value);
                 } else if ($item.attr("type") === "span") {
-                    obj.find("[name=" + name + "]").html(value);
+                    $item.html(value);
                 } else {
-                    obj.find("[name=" + name + "]").val(value);
+                    $item.val(value);
                 }
             });
         });
