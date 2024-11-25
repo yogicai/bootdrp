@@ -158,6 +158,7 @@ function load() {
     });
 
     $debtorId.on('change', function (e, params) {
+        initBillNo();
         clearGrid();
     });
 }
@@ -240,17 +241,17 @@ function save(add) {
     if (settleAmount === 0 && checkAmount === 0) {
         layer.msg("收款金额、核销金额不能都为0！");
     } else if (math.equal(settleAmount + discountAmount, checkAmount)) {
-        saveAjax(order);
+        saveAjax(order, add);
     } else {
         layer.confirm('收款金额' + (math.larger(settleAmount + discountAmount, checkAmount) ? '大于' : '小于') + '本次折扣后的核销金额<br/>是否仍要修改？', {
             btn: ['确定', '取消'] //按钮
         }, function () {
-            saveAjax(order);
+            saveAjax(order, add);
         });
     }
 }
 
-function saveAjax(order) {
+function saveAjax(order, add) {
     $.ajax({
         url: prefix + "/save",
         type: "post",

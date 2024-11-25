@@ -71,7 +71,7 @@ public class RPOrderEntryService extends ServiceImpl<RPOrderEntryDao, RPOrderEnt
         List<RPOrderSettleDO> orderSettleDOList = RPOrderConverter.convertOrderSettle(orderVO, orderDO, RPOrderConverter.convertAccountMap(accountDOList));
 
         //订单入库
-        rpOrderService.save(orderDO);
+        rpOrderService.saveOrUpdate(orderDO, Wrappers.lambdaUpdate(RPOrderDO.class).eq(RPOrderDO::getBillNo, orderDO.getBillNo()));
         //收款结算明细入库
         rpOrderSettleService.remove(Wrappers.lambdaQuery(RPOrderSettleDO.class).eq(RPOrderSettleDO::getBillNo, orderDO.getBillNo()));
         rpOrderSettleService.saveBatch(orderSettleDOList);
