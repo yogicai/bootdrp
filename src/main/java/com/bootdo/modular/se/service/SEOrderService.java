@@ -79,7 +79,8 @@ public class SEOrderService extends ServiceImpl<SEOrderDao, SEOrderDO> {
                 .ge(ObjectUtil.isNotEmpty(param.getStart()), SEOrderDO::getBillDate, param.getStart())
                 .le(ObjectUtil.isNotEmpty(param.getEnd()), SEOrderDO::getBillDate, param.getEnd())
                 .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(SEOrderDO::getBillNo, param.getSearchText()).or().like(SEOrderDO::getConsumerName, param.getSearchText()).or().like(SEOrderDO::getRemark, param.getSearchText()))
-                .orderByDesc(SEOrderDO::getBillDate).orderByDesc(SEOrderDO::getUpdateTime);
+                .orderBy(true, param.isAsc(), SEOrderDO::getBillDate)
+                .orderByDesc(SEOrderDO::getUpdateTime);
 
         return this.page(page, queryWrapper);
     }

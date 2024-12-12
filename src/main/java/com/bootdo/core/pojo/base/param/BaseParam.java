@@ -40,6 +40,16 @@ public class BaseParam {
     private Date end;
 
     /**
+     * 排序列（jqGrid）
+     */
+    private String sidx;
+
+    /**
+     * 升序、降序（jqGrid）：desc asc
+     */
+    private String sord;
+
+    /**
      * 时间区间查询时，结束时间转换：yyyy-MM-dd => yyyy-MM-dd 23:59:59
      */
     public Date getEnd() {
@@ -47,6 +57,13 @@ public class BaseParam {
             return DateUtil.beginOfDay(this.end).equals(this.end) ? DateUtil.endOfDay(this.end) : this.end;
         }
         return null;
+    }
+
+    /**
+     * （jqGrid）列表是否升序：默认降序
+     */
+    public boolean isAsc() {
+        return "desc".equals(this.sord);
     }
 
     /**

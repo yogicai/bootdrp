@@ -21,10 +21,17 @@ function load() {
 
     tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
-        mtype: "POST",
         datatype: "json",
         postData: postData,
-        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        height: 350,
+        autowidth: true,
+        shrinkToFit: true,
+        autoScroll: true,
+        multiselect: true,
+        rowNum: 100,
+        rowList: [20, 50, 100],
+        sortname: 'billDate',
+        sortorder: 'desc',
         colNames: ['源单编号', '业务类型', '单据类型', '单据日期', '单据金额', '已核销金额', '未核销金额', '本次核销金额', '备注'],
         colModel: [
             { name:'billNo', index:'billNo', editable:false, sorttype:"text", width:150 },
@@ -39,18 +46,12 @@ function load() {
             { name:'checkAmount', index:'checkAmount', editable:false, width:80, align:"right", sorttype:"float", hidden:true, formatter:"number" },
             { name:'remark', index:'remark', editable:false, sorttype:"text", width:90 }
         ],
-        height: 350,
-        autowidth: true,
-        shrinkToFit: true,
-        multiselect: true,
-        rowNum: 100,
-        rowList: [100],
         pager: "#pager_list",
         viewrecords: true,
         footerrow: true,
-        serializeGridData: function (postdata) {
-            return JSON.stringify(postdata);
-        },
+        // serializeGridData: function (postdata) {
+        //     return JSON.stringify(postdata);
+        // },
         onSelectRow: function (rowid, e) {
             selectTotal();
         },
