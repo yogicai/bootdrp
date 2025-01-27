@@ -34,4 +34,7 @@ public class RPOrderQryParam extends BaseParam {
     @ApiModelProperty(value = "关联订单号")
     private String srcBillNo;
 
+    @ApiModelProperty(value = "出纳订单号")
+    private String billNo;
+
 }

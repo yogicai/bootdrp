@@ -44,7 +44,7 @@ function load() {
             {name: 'debtorName', index: 'debtorName', editable: true, sorttype: "text", width: 70},
             {name: 'settleDOList', index: 'settleDOList', editable: true, width: 90, align: "center", formatter: cellValue => utils.formatListS(cellValue, 'settleName')},
             {name: 'settleDOList', index: 'settleDOList', editable: true, width: 80, align: "right", formatter: cellValue => utils.formatListS(cellValue, 'paymentAmount', 'number')},
-            {name: 'entryDOList', index: 'entryDOList', editable: true, width: 180, align: "center", formatter: cellValue => utils.formatListS(cellValue, 'srcBillNo')},
+            {name: 'entryDOList', index: 'entryDOList', editable: true, width: 180, align: "center", formatter: cellValue => utils.formatListSpan(cellValue, 'srcBillNo', 1)},
             {name: 'paymentAmount', index: 'paymentAmount', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},
             {name: 'checkAmount', index: 'checkAmount', editable: true, width: 100, align: "right", sorttype: "float", formatter: "number"},
             {name: 'discountAmount', index: 'discountAmount', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},

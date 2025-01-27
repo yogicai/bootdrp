@@ -248,6 +248,20 @@
         return html;
     };
 
+    Utils.prototype.formatListSpan = function formatListS(list, name, showCount) {
+        let html = "";
+        let title = "";
+        if (list && list.length > 0) {
+            let len = showCount || list.length;
+            html = list.slice(0, len).map(item => item[name]);
+            title = list.map(item => item[name]).join(', ');
+            if (len < list.length) {
+                html += '...'
+            }
+        }
+        return `<span title="${title}">${html}</span>`;
+    };
+
     Utils.prototype.formatListM = function formatListM(cellValue, options, rowobj) {
         let val = "";
         if (cellValue && cellValue.length > 0) {
