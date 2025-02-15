@@ -108,8 +108,8 @@ function load() {
         colModel: [
             {
                 name: 'act', width: 60, fixed: true, sortable: false, resize: false, formatter: function (cellValue, options, rowObject) {
-                    let e = `<a class="btn btn-primary btn-xs" href="#" onclick="addRow('${options.rowId}')"><i class="fa fa-plus"></i></a> `;
-                    let d = `<a class="btn btn-warning btn-xs" href="#" onclick="delRow('${options.rowId}')"><i class="fa fa-minus"></i></a> `
+                    let e = `<a class="btn btn-primary btn-xs" href="#" onclick="addRow('${options.rowId}', tableGrid1)"><i class="fa fa-plus"></i></a> `;
+                    let d = `<a class="btn btn-warning btn-xs" href="#" onclick="delRow('${options.rowId}', tableGrid1)"><i class="fa fa-minus"></i></a> `
                     return e + d;
                 }
             },
@@ -182,18 +182,19 @@ function collectTotal1() {
 }
 
 //增加行
-function addRow(rowid) {
+function addRow(rowid, tableGridTmp) {
     let rowData = {};
-    let ids = tableGrid.jqGrid('getDataIDs');
+    let ids = tableGridTmp.jqGrid('getDataIDs');
     let maxId = ids.length === 0 ? 1 : Math.max.apply(Math, ids);
-    tableGrid.jqGrid('addRowData', maxId + 1, rowData, 'after', rowid);//插入行
+    //插入行
+    tableGridTmp.jqGrid('addRowData', maxId + 1, rowData, 'after', rowid);
 }
 
 //删除行
-function delRow(rowid) {
-    let ids = tableGrid.jqGrid('getDataIDs')
+function delRow(rowid, tableGridTmp) {
+    let ids = tableGridTmp.jqGrid('getDataIDs')
     if (ids.length > 1) {
-        tableGrid.jqGrid('delRowData', rowid);
+        tableGridTmp.jqGrid('delRowData', rowid);
     } else {
         layer.msg('至少保留一个分录', {time: 1000});
     }
@@ -404,10 +405,10 @@ function initOrder(billNo) {
                 if (r.code === 0) {
                     $dataForm.setForm(r.order);
                     tableGrid.clearGridData();
-                    tableGrid.jqGrid('setGridParam', {data: r.order.settleVOList}).trigger('reloadGrid');
+                    tableGrid.jqGrid('setGridParam', {data: r.order.settleVOList, rowNum: _.max([r.order.settleVOList.length, 3])}).trigger('reloadGrid');
 
                     tableGrid1.clearGridData();
-                    tableGrid1.jqGrid('setGridParam', {data: r.order.entryVOList}).trigger('reloadGrid');
+                    tableGrid1.jqGrid('setGridParam', {data: r.order.entryVOList, rowNum: _.max([r.order.entryVOList.length, 3])}).trigger('reloadGrid');
 
                     $mask.removeClass('util-has-audit');
                     $mask.addClass(r.order && r.order.auditStatus === 'YES' ? 'util-has-audit' : '');

@@ -27,7 +27,8 @@ public enum OrderStatus implements EnumBean<OrderStatus> {
 
     public static OrderStatus fromPayment(BigDecimal paymentAmount, BigDecimal totalAmount) {
 
-        if (NumberUtil.null2Zero(paymentAmount).compareTo(BigDecimal.ZERO) == 0) {
+        if (NumberUtil.nullToZero(paymentAmount).compareTo(BigDecimal.ZERO) == 0
+                && NumberUtil.nullToZero(totalAmount).compareTo(BigDecimal.ZERO) > 0) {
             return WAITING_PAY;
         }
         if (NumberUtil.sub(totalAmount, paymentAmount).compareTo(BigDecimal.ZERO) <= 0) {

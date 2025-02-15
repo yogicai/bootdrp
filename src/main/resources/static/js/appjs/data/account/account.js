@@ -57,7 +57,7 @@ function load() {
                     { field : 'no', title : '编号' },
                     { field : 'name', title : '帐户名称' },
                     { field : 'code', title : '帐户编码' },
-                    { field : 'type', title : '帐户类型' },
+                    { field : 'type', title : '帐户类型', formatter: (value, row, index) => utils.formatCategory(value, "ACCOUNT")},
                     { field : 'startDate', title : '期初日期' },
                     { field : 'startBalance', title : '期初余额' },
                     { field : 'currentBalance', title : '当前余额' },
