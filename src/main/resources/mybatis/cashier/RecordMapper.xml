@@ -52,6 +52,7 @@
         from
             cashier_record
         <include refid="whereSql"/>
+        ORDER BY trade_Time DESC
     </select>
 
     <select id="selectSum" resultType="java.util.Map">
