@@ -13,8 +13,10 @@ import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.utils.PoiUtil;
 import com.bootdo.core.utils.ShiroUtils;
+import com.bootdo.modular.data.dao.AccountDao;
 import com.bootdo.modular.data.dao.DataShopDao;
 import com.bootdo.modular.data.dao.StockDao;
+import com.bootdo.modular.data.domain.AccountDO;
 import com.bootdo.modular.data.domain.DataShop;
 import com.bootdo.modular.data.domain.StockDO;
 import com.bootdo.modular.system.dao.DictDao;
@@ -36,6 +38,8 @@ import java.util.stream.Collectors;
 public class DictService extends ServiceImpl<DictDao, DictDO> {
     @Resource
     private StockDao stockDao;
+    @Resource
+    private AccountDao accountDao;
     @Resource
     private DataShopDao dataShopDao;
 
@@ -108,10 +112,16 @@ public class DictService extends ServiceImpl<DictDao, DictDO> {
                 .stream()
                 .map(shop -> MapUtil.<String, Object>builder().put("name", shop.getName()).put("value", shop.getNo().toString()).build())
                 .collect(Collectors.toList());
+        //结算账户
+        List<AccountDO> accountDOList = accountDao.selectList(Wrappers.lambdaQuery(AccountDO.class).eq(AccountDO::getStatus, CommonStatus.ENABLE.getValue()).orderByAsc(AccountDO::getNo));
+        List<Map<String, Object>> ListAccountMap = accountDOList.stream()
+                .map(account -> MapUtil.<String, Object>builder().put("name", account.getName()).put("value", account.getNo()).build())
+                .collect(Collectors.toList());
 
         return MapUtil.<String, List<Map<String, Object>>>builder()
                 .put("data_stock", listMap)
                 .put("data_shop", listShopMap)
+                .put("data_account", ListAccountMap)
                 .build();
     }
 }

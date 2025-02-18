@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,10 @@ public class JournalGeneralResult {
      * 经营情况
      */
     private Collection<OperateItem> operateYearList;
+    /**
+     * 年份核销金额合计
+     */
+    private SettleYear settleYear;
 
     @JsonIgnore
     @ExcelCollection(name = "账户现金流水", type = RecordDO.class)
@@ -58,6 +63,10 @@ public class JournalGeneralResult {
     @JsonIgnore
     @ExcelCollection(name = "欠款明细", type = DebtItem.class)
     private Collection<DebtItem> debtItemList;
+
+    @JsonIgnore
+    @ExcelCollection(name = "收款明细", type = SettleOrderItem.class)
+    private Collection<SettleOrderItem> settleOrderItemList;
 
 
     /**
@@ -220,6 +229,33 @@ public class JournalGeneralResult {
         private String year;
         @Excel(name = "工资金额", numFormat = "0.00", type = 10)
         private BigDecimal totalAmount;
+    }
+
+
+    /**
+     * 订单核销明细
+     */
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class SettleOrderItem {
+        @Excel(name = "单据日期", exportFormat = "yyyy-MM-dd")
+        private Date billDate;
+        @Excel(name = "订单编号")
+        private String billNo;
+        @Excel(name = "营业额", numFormat = "0.00", type = 10)
+        private BigDecimal totalAmount;
+        @Excel(name = "核销金额", numFormat = "0.00", type = 10)
+        private BigDecimal checkAmount;
+        @Excel(name = "核销折扣", numFormat = "0.00", type = 10)
+        private BigDecimal discountAmount;
+        @Excel(name = "收款金额", numFormat = "0.00", type = 10)
+        private BigDecimal settleAmount;
+        @Excel(name = "结算账户")
+        private String settleAccount;
+        @Excel(name = "结算账户名称")
+        private String settleName;
     }
 
 }

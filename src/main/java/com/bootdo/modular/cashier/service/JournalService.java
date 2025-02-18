@@ -26,6 +26,7 @@ import com.bootdo.modular.cashier.domain.RecordDO;
 import com.bootdo.modular.cashier.param.JournalGeneralParam;
 import com.bootdo.modular.cashier.result.JournalGeneralResult;
 import com.bootdo.modular.cashier.result.JournalGeneralResult.*;
+import com.bootdo.modular.cashier.result.SettleYear;
 import com.bootdo.modular.cashier.service.chart.XSSFChartService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -61,6 +62,8 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
     private SalaryDao salaryDao;
     @Resource
     private RecordService recordService;
+    @Resource
+    private SettleService settleService;
     @Resource
     private XSSFChartService xssfChartService;
 
@@ -166,11 +169,15 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
             item.setSalaryRealized(ObjectUtil.defaultIfNull(flowRecordYearMap.get(item.getYear()), AccountItem::getSalary, BigDecimal.ZERO));
         });
 
+        //年度核销金额合计
+        SettleYear settleYear = settleService.flowSettleYear(beanToMap);
+        //订单核销明细
+        List<SettleOrderItem> settleOrderItemList = settleService.generalSettleOrderItem(beanToMap);
+
         //月现金流
         List<OperateMonthItem> operateItemMonthList = journalDao.generalFlowMonth(beanToMap);
         //欠款明细
         List<DebtItem> debtItemList = journalDao.debtRecordList(beanToMap);
-
         //账户流水明细
         Map<String, List<RecordDO>> flowRecordMap = recordService.list(beanToMap).stream()
                 .collect(Collectors.groupingBy(RecordDO::getAccount, Collectors.toList()));
@@ -182,10 +189,12 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
         result.setFlowAccountStatList(flowRecordAccountMap.values());
         result.setFlowAccountYearList(flowRecordYearMap.values());
         result.setOperateYearList(operateItemList);
+        result.setSettleYear(settleYear);
         //账户现金流水、月现金流、欠款明细
         result.setFlowRecordMap(flowRecordMap);
         result.setOperateMonthList(operateItemMonthList);
         result.setDebtItemList(debtItemList);
+        result.setSettleOrderItemList(settleOrderItemList);
 
         return result;
     }
@@ -204,6 +213,7 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
                     .put("flowAccountStatList", result.getFlowAccountStatList())
                     .put("flowAccountYearList", result.getFlowAccountYearList())
                     .put("operateYearList", result.getOperateYearList())
+                    .put("settleYear", result.getSettleYear())
                     .build();
             //汇总统计
             Workbook workbook = ExcelExportUtil.exportExcel(MapUtil.of(0, statMap), new TemplateExportParams("doc/OperateStat.xlsx"));

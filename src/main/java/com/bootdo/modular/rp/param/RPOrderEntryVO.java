@@ -28,7 +28,7 @@ public class RPOrderEntryVO {
     /**
      * 源单据日期
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date srcBillDate;
     /**
      * 单据金额

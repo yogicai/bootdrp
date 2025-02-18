@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.modular.cashier.dao.SettleDao">
+
+    <!-- 年份核销金额合计 -->
+    <select id="flowSettleYear" resultType="java.util.Map">
+        SELECT
+            DATE_FORMAT(a.bill_date, '%Y')            AS year,
+            rs.settle_account                         AS settleAccount,
+            rs.settle_name                            AS settleName,
+            count(1)                                  AS totalQty,
+            sum(a.total_amount)                       AS totalAmount,
+            sum(re.check_amount)                      AS checkAmount,
+            sum(re.discount_amount)                   AS discountAmount,
+            sum(re.check_amount - re.discount_amount) AS settleAmount
+        FROM
+            se_order                  a
+            LEFT JOIN rp_order_entry  re ON a.bill_no = re.src_bill_no
+            LEFT JOIN rp_order        ro ON ro.bill_no = re.bill_no
+            LEFT JOIN rp_order_settle rs ON ro.bill_no = rs.bill_no
+        <where>
+            <if test="param.start != null and param.end != null">
+                and a.bill_date >= #{param.start} and a.bill_date <![CDATA[ <= ]]> #{param.end}
+            </if>
+            <if test="param.shopNo != null and param.shopNo.size() > 0">and a.shop_no in
+                <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            and a.audit_status = 'YES'
+            and a.total_amount - a.cost_amount > 0
+            and ro.audit_status = 'YES'
+        </where>
+        GROUP BY
+            DATE_FORMAT(a.bill_date, '%Y'), rs.settle_account
+        ORDER BY
+            year, settleAccount
+    </select>
+
+    <!-- 订单核销明细 -->
+    <select id="generalSettleOrderItem" resultType="com.bootdo.modular.cashier.result.JournalGeneralResult$SettleOrderItem">
+        SELECT
+            a.bill_date,
+            a.bill_no,
+            a.total_amount,
+            re.check_amount,
+            re.discount_amount,
+            re.check_amount - re.discount_amount as settleAmount,
+            rs.settle_account,
+            rs.settle_name
+        FROM
+            se_order                  a
+            LEFT JOIN rp_order_entry  re ON a.bill_no = re.src_bill_no
+            LEFT JOIN rp_order        ro ON ro.bill_no = re.bill_no
+            LEFT JOIN rp_order_settle rs ON ro.bill_no = rs.bill_no
+        <where>
+            <if test="param.start != null and param.end != null">
+                and a.bill_date >= #{param.start} and a.bill_date <![CDATA[ <= ]]> #{param.end}
+            </if>
+            <if test="param.shopNo != null and param.shopNo.size() > 0">and a.shop_no in
+                <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            and a.audit_status = 'YES'
+            and a.total_amount - a.cost_amount > 0
+            and ro.audit_status = 'YES'
+        </where>
+        ORDER BY
+            a.bill_date
+    </select>
+
+</mapper>
