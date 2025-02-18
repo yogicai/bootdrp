@@ -8,9 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
-import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
-import net.sf.jsqlparser.expression.operators.relational.ItemsList;
+import net.sf.jsqlparser.expression.operators.relational.ParenthesedExpressionList;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import org.springframework.stereotype.Component;
@@ -35,7 +34,7 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler {
 
         if (ObjectUtil.isNotEmpty(shopNoList)) {
             // 把集合转变为JSQLParser需要的元素列表
-            ItemsList ids = new ExpressionList(shopNoList.stream().map(LongValue::new).collect(Collectors.toList()));
+            ParenthesedExpressionList ids = new ParenthesedExpressionList<>(shopNoList.stream().map(LongValue::new).collect(Collectors.toList()));
             //in表达式的写法
             String columnName = ObjectUtil.defaultIfNull(table.getAlias(), Alias::getName, table.getName());
 
