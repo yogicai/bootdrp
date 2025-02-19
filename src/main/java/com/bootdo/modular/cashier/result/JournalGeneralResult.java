@@ -244,6 +244,10 @@ public class JournalGeneralResult {
         private Date billDate;
         @Excel(name = "订单编号")
         private String billNo;
+        @Excel(name = "收款日期", exportFormat = "yyyy-MM-dd")
+        private Date settleDate;
+        @Excel(name = "收款单号")
+        private String settleBillNo;
         @Excel(name = "营业额", numFormat = "0.00", type = 10)
         private BigDecimal totalAmount;
         @Excel(name = "核销金额", numFormat = "0.00", type = 10)

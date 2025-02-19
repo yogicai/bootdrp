@@ -42,6 +42,8 @@
             a.bill_date,
             a.bill_no,
             a.total_amount,
+            ro.bill_date                         as settleDate,
+            ro.bill_no                           as settleBillNo,
             re.check_amount,
             re.discount_amount,
             re.check_amount - re.discount_amount as settleAmount,
