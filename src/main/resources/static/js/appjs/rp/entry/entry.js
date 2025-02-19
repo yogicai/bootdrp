@@ -13,7 +13,8 @@ let initFormData = {checkId: loginUserId, shopNo: loginShopNo, billDate: new Dat
 
 let prefix = "/rp/entry";
 let prefixOrder = "/rp/order";
-let initData = [{}, {}, {}];
+let initData = [{}];
+let initData1 = [{}, {}, {}];
 
 let colNames_SK = ['', 'ID', '结算帐户', '收款金额', '备注'];
 let colNames_FK = ['', 'ID', '结算帐户', '付款金额', '备注'];
@@ -67,8 +68,8 @@ function load() {
         colModel: [
             {
                 name: 'act', width: 60, fixed: true, sortable: false, resize: false, formatter: function (cellValue, options, rowObject) {
-                    let e = '<a class="btn btn-primary btn-xs" href="#" onclick="addRow(' + options.rowId + ',tableGrid)"><i class="fa fa-plus"></i></a> ';
-                    let d = '<a class="btn btn-warning btn-xs" href="#" onclick="delRow(' + options.rowId + ',tableGrid)"><i class="fa fa-minus"></i></a> ';
+                    let e = '<a class="btn btn-primary btn-xs disabled" href="#" onclick="addRow(' + options.rowId + ',tableGrid)"><i class="fa fa-plus"></i></a> ';
+                    let d = '<a class="btn btn-warning btn-xs disabled" href="#" onclick="delRow(' + options.rowId + ',tableGrid)"><i class="fa fa-minus"></i></a> ';
                     return e + d;
                 }
             },
@@ -96,7 +97,7 @@ function load() {
 
     tableGrid1 = $tableList1.jqGrid({
         datatype: "local",
-        data: initData,
+        data: initData1,
         height: 'auto',
         shrinkToFit: false,
         autoScroll: true,
@@ -431,9 +432,9 @@ function initOrder(billNo) {
 //清空表格数据
 function clearGrid() {
     tableGrid.clearGridData();
-    tableGrid.jqGrid('setGridParam', {data: [{}, {}, {}]}).trigger('reloadGrid');
+    tableGrid.jqGrid('setGridParam', {data: initData}).trigger('reloadGrid');
     tableGrid1.clearGridData();
-    tableGrid1.jqGrid('setGridParam', {data: [{}, {}, {}]}).trigger('reloadGrid');
+    tableGrid1.jqGrid('setGridParam', {data: initData1}).trigger('reloadGrid');
 }
 
 //设置单据号隐藏域值

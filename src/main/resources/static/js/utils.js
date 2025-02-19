@@ -242,7 +242,10 @@
         let html = "";
         if (list && list.length > 0) {
             for (let i = 0; i < list.length; i++) {
-                html += (list[i][name] === "" ? (type === "number" ? "0" : " ") : list[i][name]) + (i !== list.length - 1 ? '<div class="util-line" />' : '');
+                const value = list[i][name];
+                const itemValue = _.isNil(value) ? (type === "number" ? "0.00" : " ") : value;
+                html += ((type === "number" ? Number(itemValue).toFixed(2) : itemValue));
+                html += (i !== list.length - 1) ? '<div class="util-line" />' : '';
             }
         }
         return html;
