@@ -84,4 +84,13 @@ public class PageJQ {
         this.setTotal(PageUtil.totalPage(Convert.toInt(page.getTotal()), Convert.toInt(page.getSize())));
         this.setTotalAmount(totalAmount);
     }
+
+    public <T> PageJQ(Page<T> page, Map<String, Object> extra) {
+        this.setRows(page.getRecords());
+        this.setRecords(Convert.toInt(page.getTotal()));
+        this.setPage(Convert.toInt(page.getCurrent()));
+        this.setTotal(PageUtil.totalPage(Convert.toInt(page.getTotal()), Convert.toInt(page.getSize())));
+        this.setExtra(extra);
+    }
+
 }

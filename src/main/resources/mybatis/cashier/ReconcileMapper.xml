@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bootdo.modular.cashier.dao.ReconcileDao">
+
+    <sql id="subQuerySql">
+        SELECT * FROM  (
+            SELECT
+                SUBSTR(a.bill_date, 1, 10) AS billDate,
+                sum(a.check_amount)        AS checkAmount,
+                sum(a.payment_amount)      AS paymentAmount,
+                GROUP_CONCAT(a.bill_no)    AS billNo,
+                count(a.bill_no)           AS billCount
+            FROM
+                rp_order a
+            WHERE
+                a.bill_type = 'CW_SK_ORDER' and a.bill_date BETWEEN #{param.start} and #{param.end}
+                <if test="param.shopNo != null and param.shopNo.size() > 0"> and a.shop_no in
+                    <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+                </if>
+            GROUP BY
+                a.bill_date
+        ) aa LEFT JOIN (
+            SELECT
+                SUBSTR(c.trade_time, 1, 10) AS tradeTime,
+                sum(c.pay_amount)           AS payAmount
+            FROM
+                cashier_record c
+            WHERE
+                c.pay_direct = '收入' and c.trade_time BETWEEN #{param.start} and #{param.end}
+                <if test="param.shopNo != null and param.shopNo.size() > 0"> and c.shop_no in
+                    <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+                </if>
+            GROUP BY
+                SUBSTR(c.trade_time, 1, 10)
+        ) bb ON aa.billDate = bb.tradeTime
+    </sql>
+
+    <sql id="dateFormatAndGroup">
+        <choose>
+            <when test="param.dateType !=null and param.dateType.name() == 'YEAR'">
+                SUBSTR(${dateColumn}, 1, 4)
+            </when>
+            <when test="param.dateType !=null and param.dateType.name() == 'MONTH'">
+                SUBSTR(${dateColumn}, 1, 7)
+            </when>
+            <otherwise>
+                SUBSTR(${dateColumn}, 1, 10)
+            </otherwise>
+        </choose>
+    </sql>
+
+    <select id="list" resultType="com.bootdo.modular.cashier.result.ReconcileResult$ReconcileItem">
+        SELECT
+            <include refid="dateFormatAndGroup"><property name="dateColumn" value="cc.billDate"/></include> as billDate,
+            sum(cc.checkAmount)          AS checkAmount,
+            sum(cc.paymentAmount)        AS paymentAmount,
+            sum(cc.payAmount)            AS payAmount,
+            GROUP_CONCAT(cc.billNo)      AS billNo,
+            sum(cc.billCount)            AS billCount
+        FROM (
+            <include refid="subQuerySql" />
+        ) cc
+        group by
+            <include refid="dateFormatAndGroup"><property name="dateColumn" value="cc.billDate"/></include>
+        order by
+            cc.billDate desc
+    </select>
+
+    <select id="selectSum" resultType="java.util.Map">
+        select
+            ifnull(sum(billCount), 0)       as billCountTotal,
+            ifnull(sum(checkAmount), 0)     as checkAmountTotal,
+            ifnull(sum(paymentAmount), 0)   as paymentAmountTotal,
+            ifnull(sum(payAmount), 0)       as payAmountTotal
+        from (
+            <include refid="subQuerySql" />
+        ) cc
+    </select>
+
+</mapper>
+

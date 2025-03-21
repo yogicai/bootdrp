@@ -274,6 +274,13 @@
         return val;
     };
 
+    Utils.prototype.formatSubstr = function formatSubstr(cellValue, showCount = 20) {
+        if (cellValue.length > showCount) {
+            return `<span title="${cellValue}">${cellValue.substring(0, showCount)}...</span>`;
+        }
+        return cellValue;
+    };
+
     /* ========================================================================
      * 下拉框：数据字典、类目数据、枚举
      * ======================================================================== */

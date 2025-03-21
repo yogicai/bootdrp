@@ -1,5 +1,6 @@
 package com.bootdo.core.enums;
 
+import com.bootdo.modular.cashier.enums.DateTypeEnum;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -59,6 +60,11 @@ public class EnumCollection {
      */
     public static final EnumSet<CommonStatus> STATUS_TYPE = EnumSet.of(CommonStatus.DISABLE, CommonStatus.ENABLE);
 
+    /**
+     * 日期类型
+     */
+    public static final EnumSet<DateTypeEnum> DATE_TYPE = EnumSet.of(DateTypeEnum.YEAR, DateTypeEnum.MONTH, DateTypeEnum.DAY);
+
 
     /**
      * 表格列展示用
@@ -76,6 +82,7 @@ public class EnumCollection {
         setMap.put("COST_TYPE", convertEnumList(COST_TYPE));
         setMap.put("COST_VERSION", convertEnumList(COST_VERSION));
         setMap.put("STATUS_TYPE", convertEnumList(STATUS_TYPE));
+        setMap.put("DATE_TYPE", convertEnumList(DATE_TYPE));
         return setMap;
     }
 
@@ -104,6 +111,7 @@ public class EnumCollection {
         setMap.put("COST_TYPE", convertEnumMap(COST_TYPE));
         setMap.put("COST_VERSION", convertEnumMap(COST_VERSION));
         setMap.put("STATUS_TYPE", convertEnumMap(STATUS_TYPE));
+        setMap.put("DATE_TYPE", convertEnumMap(DATE_TYPE));
         return setMap;
     }
 
