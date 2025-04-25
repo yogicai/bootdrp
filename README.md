@@ -3,7 +3,21 @@
 ## 平台简介
 
 在[BootDo](https://github.com/lcg0124/bootdo)基础上，增加了进销存管理（DRP）模块。
+
 ![](./bootdrp.png)
+
+### 效果图
+
+<table>
+    <tr>
+        <td><img src="./src/main/resources/static/img/blog/workbench.png"/></td>
+        <td><img src="./src/main/resources/static/img/blog/se-order.png"/></td>
+    </tr>
+    <tr>
+        <td><img src="./src/main/resources/static/img/blog/se-entry.png"/></td>
+        <td><img src="./src/main/resources/static/img/blog/s-recon.png"/></td>
+    </tr>
+</table>
 
 ## 内置功能
 
@@ -16,7 +30,7 @@
 7.	操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
 8.	连接池监视：监视当期系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
 9.	工作流引擎：实现业务工单流转、在线流程设计器。
-10.	进销存管理：进销存管理功能，如：采购、销售、仓库、商品、出纳、报表。
+10.	进销存管理：进销存管理功能，如：采购、销售、仓库、商品、出纳、财务、运营、报表。
 
 
 ## 技术选型
@@ -26,15 +40,15 @@
 * 核心框架：Spring Boot
 * 安全框架：Apache Shiro 
 * 模板引擎：Thymeleaf
-* 持久层框架：MyBatis
+* 持久层框架：MyBatis、MyBatis Plus
 * 数据库连接池：Alibaba Druid 
 * 缓存框架：Ehcache 、Redis
 * 日志管理：SLF4J 
-* 工具类：Apache Commons、Jackson 
+* 工具类：Apache Commons、Jackson、hutool
 
 2、前端
 
-* JS框架：jQuery
+* JS框架：jQuery、jqGrid
 * 客户端验证：JQuery Validation 
 * 富文本在线编辑：summernote
 * 数据表格：bootstrapTable
