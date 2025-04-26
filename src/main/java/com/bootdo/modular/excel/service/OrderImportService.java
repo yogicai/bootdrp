@@ -69,7 +69,7 @@ public class OrderImportService {
         boolean billDateFlag = StrUtil.startWith(filename, billDateYm) && DateUtil.formatDate(orderImportParam.getStart()).startsWith(billDateYm);
         BootServiceExceptionEnum.BILL_DATE_INVALID.assertIsTrue(billDateFlag, orderImportParam.getStart());
         //结算账户 默认取第一个
-        AccountDO accountDo = accountDao.selectOne(Wrappers.lambdaQuery(AccountDO.class).orderByAsc(AccountDO::getNo));
+        AccountDO accountDo = accountDao.selectOne(Wrappers.lambdaQuery(AccountDO.class).orderByAsc(AccountDO::getNo), false);
         //客户用户信息
         Map<String, ConsumerDO> comsumerDoMap = consumerDao.selectList(Wrappers.query()).stream()
                 .collect(Collectors.toMap(k -> joinKey(k.getNo(), k.getName()), v -> v, (o, n) -> n));
@@ -183,7 +183,7 @@ public class OrderImportService {
      */
     private ProductDO getProduct(Map<String, ProductDO> productDoMap, String productName, BigDecimal entityPrice) {
         List<ProductDO> productList = productDoMap.entrySet().stream()
-                .filter(entry -> StrUtil.contains(StrUtil.cleanBlank(entry.getKey()), productName))
+                .filter(entry -> StrUtil.contains(StrUtil.cleanBlank(entry.getKey()), StrUtil.cleanBlank(productName)))
                 .map(Map.Entry::getValue)
                 .sorted((o1, o2) -> {
                     double offset1 = Math.abs(entityPrice.subtract(o1.getSalePrice()).doubleValue());
