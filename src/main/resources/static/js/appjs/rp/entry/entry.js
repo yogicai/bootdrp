@@ -124,7 +124,7 @@ function load() {
             {name: 'srcTotalAmount', index: 'srcTotalAmount', editable: false, width: 100, align: "right"},
             {name: 'srcPaymentAmount', index: 'srcPaymentAmount', editable: false, width: 100, align: "right"},
             {name: 'srcUnPaymentAmount', index: 'srcUnPaymentAmount', editable: false, width: 100, align: "right"},
-            {name: 'checkAmount', index: 'checkAmount', editable: true, width: 100, editoptions: utils.commonEditOptions()}
+            {name: 'checkAmount', index: 'checkAmount', editable: true, width: 100, align: "right", editoptions: utils.commonEditOptions()}
         ],
         beforeSelectRow: function (rowid) {
             if (rowid !== lastSel1) {
@@ -142,9 +142,6 @@ function load() {
             collectTotal1();
         }
     });
-
-    // 设置横向滚动条
-    // $('.jqGrid_wrapper .ui-jqgrid').attr('style', 'overflow:auto');
 
     // 表格失去焦点保存Row数据
     $(document).click(function (e) {

@@ -2,7 +2,7 @@
 <html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <meta charset="utf-8">
 <head th:insert="~{include :: header}">
-</head>
+
 <body class="gray-bg">
 <div class="col-sm-12">
     <div class="ibox-body">
@@ -54,8 +54,8 @@
             <div class="columns pull-left tool-pull-left-sm">
                 <button class="btn btn-sm btn-success" onclick="search()">查询</button>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-primary" onclick="importExcel()">导入</button>
-                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button sec:authorize="hasAuthority('cashier:record:add')" type="button" class="btn btn-sm btn-primary" onclick="importExcel()">导入</button>
+                    <button sec:authorize="hasAuthority('cashier:record:view')" type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
@@ -67,15 +67,9 @@
             </div>
 
             <div class="columns pull-right">
-                <button type="button" class="btn btn-sm btn-primary" onclick="add()">
-                    <i class="fa fa-plus" aria-hidden="true"></i>添加
-                </button>
-                <button type="button" class="btn btn-sm  btn-primary" onclick="edit()">
-                    <i class="fa fa-check" aria-hidden="true"></i>修改
-                </button>
-                <button type="button" class="btn btn-sm  btn-danger" onclick="remove()">
-                    <i class="fa fa-trash" aria-hidden="true"></i>删除
-                </button>
+                <button sec:authorize="hasAuthority('cashier:record:add')" type="button" class="btn btn-sm btn-primary" onclick="add()"><i class="fa fa-plus" aria-hidden="true"></i>添加</button>
+                <button sec:authorize="hasAuthority('cashier:record:save')" type="button" class="btn btn-sm  btn-primary" onclick="edit()"><i class="fa fa-check" aria-hidden="true"></i>修改</button>
+                <button sec:authorize="hasAuthority('cashier:record:delete')" type="button" class="btn btn-sm  btn-danger" onclick="remove()"><i class="fa fa-trash" aria-hidden="true"></i>删除</button>
             </div>
         </div>
 
