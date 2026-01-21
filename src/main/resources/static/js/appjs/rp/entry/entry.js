@@ -58,6 +58,7 @@ function load() {
         data: initData,
         height: 'auto',
         rowNum: 1000,
+        autowidth: true,
         shrinkToFit: false,
         autoScroll: true,
         rownumbers: true,
@@ -99,6 +100,7 @@ function load() {
         datatype: "local",
         data: initData1,
         height: 'auto',
+        autowidth: true,
         shrinkToFit: false,
         autoScroll: true,
         rownumbers: true,
@@ -142,7 +144,7 @@ function load() {
     });
 
     // 设置横向滚动条
-    $('.jqGrid_wrapper .ui-jqgrid').attr('style', 'overflow:auto');
+    // $('.jqGrid_wrapper .ui-jqgrid').attr('style', 'overflow:auto');
 
     // 表格失去焦点保存Row数据
     $(document).click(function (e) {
