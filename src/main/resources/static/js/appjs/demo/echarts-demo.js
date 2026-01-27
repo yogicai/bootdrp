@@ -1157,4 +1157,24 @@ $(function () {
     funnelChart.setOption(funneloption);
     $(window).resize(funnelChart.resize);
 
+    // 折叠/展开ibox
+    $('.collapse-link').on('click', function() {
+        const $ibox = $(this).closest('.ibox');
+        const $button = $(this).find('i');
+        const $content = $ibox.find('.ibox-content');
+
+        $content.slideToggle(200);
+        $button.toggleClass('fa-chevron-up fa-chevron-down');
+        $ibox.toggleClass('border-bottom');
+
+        setTimeout(() => {
+            $ibox.resize();
+            $ibox.find('[id^="map-"]').resize();
+        }, 50);
+    });
+
+    // 关闭ibox
+    $('.close-link').on('click', function() {
+        $(this).closest('.ibox').remove();
+    });
 });

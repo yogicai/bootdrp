@@ -7,11 +7,11 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 	<link rel="stylesheet" href="/css/bootstrap/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css" />
-	<link rel="stylesheet" href="/css/style.css" />
 	<link rel="stylesheet" href="/css/plugins/iCheck/custom.css" />
 	<link rel="stylesheet" href="/css/plugins/cropper/cropper.css" />
 	<link rel="stylesheet" href="/css/plugins/datepicker/bootstrap-datepicker3.min.css">
 	<link rel="stylesheet" href="/css/gg-bootdo.css" />
+	<link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <div th:fragment="footer">
 	<script type="text/javascript" src="/js/jquery/jquery.min.js" ></script>
@@ -28,5 +28,5 @@
 	<script src="/js/plugins/validate/jquery.validate.extend.js"></script>
 	<script src="/js/plugins/validate/messages_zh.min.js"></script>
 	<!--其他-->
-	<script src="/js/utils.js"></script>
+	<script th:src="@{/js/utils.js}"></script>
 </div>
