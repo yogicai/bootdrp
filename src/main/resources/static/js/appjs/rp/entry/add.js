@@ -17,8 +17,6 @@ $(function() {
 });
 
 function load() {
-    $.jgrid.defaults.styleUI = 'Bootstrap';
-
     tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
         datatype: "json",
@@ -49,9 +47,6 @@ function load() {
         pager: "#pager_list",
         viewrecords: true,
         footerrow: true,
-        // serializeGridData: function (postdata) {
-        //     return JSON.stringify(postdata);
-        // },
         onSelectRow: function (rowid, e) {
             selectTotal();
         },

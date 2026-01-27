@@ -18,8 +18,6 @@ $(function() {
 });
 
 function load() {
-    $.jgrid.defaults.styleUI = 'Bootstrap';
-
     tableGrid = $tableList.jqGrid({
         url: prefix + "/listJQ",
         datatype: "json",
@@ -28,7 +26,7 @@ function load() {
         colModel: [
             { name:'rowId', index:'', hidden: true, key: true, frozen : true },
             { name:'no', index:'no', editable:false, key: false, width:70, frozen : true },
-            { name:'name', index:'name', editable:false, width:150},
+            { name:'name', index:'name', editable:false, width:150, title: true },
             { name:'costQty', index:'costQty', editable:false, width:70, align:"right", formatter:"number" },
             { name:'costPrice', index:'costPrice', editable:false, width:80, align:"right", formatter:"number" },
             { name:'purchasePrice', index:'purchasePrice', editable:false, width:80, align:"right", formatter:"number"},

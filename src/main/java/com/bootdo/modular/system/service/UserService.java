@@ -147,17 +147,17 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
                 userDO.setPassword(encodePassword(userVO.getPwdNew()));
                 this.updateById(userDO);
             } else {
-                throw new Exception("输入的旧密码有误！");
+                throw new BizServiceException("输入的旧密码有误！");
             }
         } else {
-            throw new Exception("你修改的不是你登录的账号！");
+            throw new BizServiceException("你修改的不是你登录的账号！");
         }
     }
 
     public void adminResetPwd(UserVO userVO) throws Exception {
         UserDO userDO = getUser(userVO.getUserDO().getUserId());
         if ("admin".equals(userDO.getUsername())) {
-            throw new Exception("超级管理员的账号不允许直接重置！");
+            throw new BizServiceException("超级管理员的账号不允许直接重置！");
         }
         userDO.setPassword(encodePassword(userVO.getPwdNew()));
         this.updateById(userDO);

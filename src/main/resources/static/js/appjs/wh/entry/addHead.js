@@ -17,8 +17,6 @@ $(function() {
 });
 
 function load() {
-    $.jgrid.defaults.styleUI = 'Bootstrap';
-
     tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
         datatype: "json",
@@ -27,7 +25,7 @@ function load() {
         colModel: [
             {name: 'rowId', index: '', hidden: true, key: true, frozen: true},
             {name: 'no', index: 'no', editable: false, key: false, width: 50, frozen: true},
-            {name: 'name', index: 'name', editable: false, width: 120},
+            {name: 'name', index: 'name', editable: false, width: 120, title: true},
             {name: 'type', index: 'type', editable: false, width: 60, formatter: (value, row, index) => utils.formatCategory(value, "CONSUMER")},
             {name: 'grade', index: 'grade', editable: false, width: 60, formatter: (value, row, index) => utils.formatType(value, "data_grade")},
             {name: 'phone', index: 'phone', editable: false, width: 80},

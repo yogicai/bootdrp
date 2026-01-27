@@ -12,7 +12,7 @@ let colNames = type === 'CUSTOMER' ? colNamesC : colNamesV;
 let colModelC = [
     {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 40, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
     { name:'instituteId', index:'instituteId', editable:false, align: "center", width:30 },
-    { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", width:60 },
+    { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", width:60, title: true },
     { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center", width:80 },
     { name:'totalAmount', index:'totalAmount', editable:false, sorttype:"float", align: "right", width:80, formatter:"number" },
     { name:'paymentAmount', index:'paymentAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
@@ -23,7 +23,7 @@ let colModelC = [
 let colModelV = [
     {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 40, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
     { name:'instituteId', index:'instituteId', editable:false, align: "center", width:30 },
-    { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", width:60 },
+    { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", width:60, title: true },
     { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center", width:80 },
     { name:'totalAmount', index:'totalAmount', editable:false, sorttype:"float", align: "right", width:80, formatter:"number" },
     { name:'paymentAmount', index:'paymentAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
@@ -75,8 +75,6 @@ $(function() {
 });
 
 function load() {
-    $.jgrid.defaults.styleUI = 'Bootstrap';
-
     tableGrid = $tableList.jqGrid(gridConfig);
 
     $(window).bind('resize', function () {

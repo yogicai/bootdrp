@@ -262,7 +262,7 @@
                 html += '...'
             }
         }
-        return `<span title="${title}">${html}</span>`;
+        return `<span data-toggle="tooltip" title="${title}">${html}</span>`;
     };
 
     Utils.prototype.formatListM = function formatListM(cellValue, options, rowobj) {
@@ -277,7 +277,7 @@
     Utils.prototype.formatSubstr = function formatSubstr(cellValue, showCount = 20) {
         let val = "";
         if (cellValue && cellValue.length > showCount) {
-            val = `<span title="${cellValue}">${cellValue.substring(0, showCount)}...</span>`;
+            val = `<span data-toggle="tooltip" title="${cellValue}">${cellValue.substring(0, showCount)}...</span>`;
         }
         return val;
     };
@@ -811,6 +811,11 @@
         win.utils.initSysDict("data_category,data_area,data_unit,yes_no,data_brand,data_type,data_grade,data_status,data_wh_rk,data_wh_ck,oa_notify_type");
         win.utils.initExtra();
         win.utils.initLoginUserInfo();
+    }
+
+    if ($.jgrid) {
+        $.jgrid.defaults.styleUI = 'Bootstrap';
+        $.jgrid.defaults.cmTemplate = { title: false };
     }
 
 }(window));

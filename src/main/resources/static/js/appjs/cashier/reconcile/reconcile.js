@@ -22,7 +22,6 @@ $(function() {
 
 
 function load() {
-    $.jgrid.defaults.styleUI = 'Bootstrap';
     // 表头设置
     const SK_COL_NAME_LIST = ['', '单据日期', '单据编号', '单据数量', '核销金额', '实收金额', '到账金额'];
     const FK_COL_NAME_LIST = ['', '单据日期', '单据编号', '单据数量', '核销金额', '实付金额', '出账金额'];

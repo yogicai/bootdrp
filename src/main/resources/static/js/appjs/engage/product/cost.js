@@ -35,7 +35,7 @@ function load() {
             { name:'id', index:'id', editable:false, width:50, hidden:true },
             {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 70, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
             {name: 'productNo', index: 'productNo', editable: false, width: 70},
-            { name:'productName', index:'productName', editable:false, width:160 },
+            { name:'productName', index:'productName', editable:false, width:160, title: true },
             { name:'productType', index:'productType', editable:false, width:70, formatter : function (value,row,index){ return utils.formatCategory(value, "PRODUCT") } },
             { name:'entryPrice', index:'entryPrice', editable:false, width:70, align:"right", formatter:"number" },
             { name:'costPrice', index:'costPrice', editable:false, width:70, align:"right", formatter:"number" },

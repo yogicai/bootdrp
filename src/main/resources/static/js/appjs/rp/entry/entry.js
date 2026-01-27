@@ -51,8 +51,6 @@ $(function () {
 })
 
 function load() {
-    $.jgrid.defaults.styleUI = 'Bootstrap';
-
     tableGrid = $tableList.jqGrid({
         datatype: "local",
         data: initData,

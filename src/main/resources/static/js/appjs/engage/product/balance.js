@@ -9,7 +9,7 @@ let colNames = ['店铺', '商品编号', '商品名称', '条形码', '单位',
 let colModel = [
     {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 50, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
     {name: 'entryId', index: 'entryId', editable: false, width: 50},
-    {name: 'entryName', index: 'entryName', editable: false, sorttype: "text", width: 150, frozen: true},
+    {name: 'entryName', index: 'entryName', editable: false, sorttype: "text", width: 150, title: true, frozen: true},
     {name: 'entryBarcode', index: 'entryBarcode', editable: false, sorttype: "text", width: 60},
     {name: 'entryUnit', index: 'entryUnit', editable: false, sorttype: "float", align: "center", width: 30, formatter: (value, row, index) => utils.formatType(value, "data_unit")},
     {name: 'qtyTotal', index: 'qtyTotal', editable: false, width: 70, align: "right", sorttype: "float", formatter: "number"},
@@ -57,8 +57,6 @@ $(function() {
 });
 
 function load() {
-    $.jgrid.defaults.styleUI = 'Bootstrap';
-
     tableGrid = $tableList.jqGrid(gridConfig);
 
     $(window).bind('resize', function () {

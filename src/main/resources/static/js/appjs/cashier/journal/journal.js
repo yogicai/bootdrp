@@ -120,8 +120,6 @@ $(function () {
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
     utils.loadTypes(["data_shop"], ["shopNo"], [{width: "120px", setValue: [loginShopNo]}]);
 
-    $.jgrid.defaults.styleUI = 'Bootstrap';
-
     tableGrid1 = $tableList1.jqGrid(gridConfig1);
     tableGrid1.jqGrid('setGroupHeaders', {useColSpanStyle: true, groupHeaders: groupHeaders1});
 

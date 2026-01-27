@@ -26,7 +26,7 @@ $(function() {
     load();
 });
 function load() {
-    $.jgrid.defaults.styleUI = 'Bootstrap';
+    $.jgrid.defaults.cmTemplate = { title: true };
 
     tableGrid = $tableList.jqGrid({
         url: prefix + "/list",

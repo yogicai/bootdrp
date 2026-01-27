@@ -25,8 +25,8 @@
     <!-- dropzone -->
     <link href="/css/plugins/dropzone/dropzone.css" rel="stylesheet">
 
-    <link href="/css/style.css" rel="stylesheet">
-    <link href="/css/utils.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link th:href="@{/css/utils.css}" rel="stylesheet">
 </head>
 <div th:fragment="footer">
     <!-- jquery -->
@@ -36,6 +36,7 @@
     <script src="/js/jquery/validation/localization/messages_zh.min.js"></script>
     <!-- bootstrap -->
     <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/js/bootstrap/bootstrap-tooltip-auto-init.js"></script>
     <!-- layui -->
     <script src="/js/layui/layui.js"></script>
     <!-- lodash -->
@@ -70,6 +71,5 @@
     <!-- dropzone -->
     <script src="/js/plugins/dropzone/dropzone.js"></script>
 
-    <script src="/js/content.js"></script>
-    <script src="/js/utils.js"></script>
+    <script th:src="@{/js/utils.js}"></script>
 </div>

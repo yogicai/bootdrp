@@ -11,7 +11,7 @@ let colNames = ['店铺', '商品编号', '商品名称', '单位', '均价', '�
 let colModel = [
     {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 40, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
     { name:'entryId', index:'entryId', editable:false, align: "center", width:30 },
-    { name:'entryName', index:'entryName', editable:false, sorttype:"text", align: "center", width:60 },
+    { name:'entryName', index:'entryName', editable:false, sorttype:"text", align: "center", width:60, title: true },
     { name:'entryUnit', index:'entryUnit', editable:false, sorttype:"text", align: "center", width:30 },
     { name:'entryPrice', index:'entryPrice', editable:false, sorttype:"text", align: "right", width:60, formatter:"number" },
     { name:'billCount', index:'billCount', editable:false, sorttype:"text", align: "right", width:60, formatter:"number" },
@@ -48,8 +48,6 @@ $(function() {
 });
 
 function load() {
-    $.jgrid.defaults.styleUI = 'Bootstrap';
-
     tableGrid = $tableList.jqGrid(gridConfig);
 
     $(window).bind('resize', function () {

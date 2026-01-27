@@ -17,8 +17,6 @@ $(function() {
 });
 
 function load() {
-    $.jgrid.defaults.styleUI = 'Bootstrap';
-
     tableGrid = $tableList.jqGrid({
         url: prefix + "/listJQ",
         datatype: "json",
@@ -27,11 +25,11 @@ function load() {
         colModel: [
             { name:'rowId', index:'', hidden: true, key: true, frozen : true },
             { name:'no', index:'no', editable:false, key: false, width:70, frozen : true },
-            { name:'name', index:'name', editable:false, width:150},
+            { name:'name', index:'name', editable:false, width:150, title: true},
             { name:'type', index:'type', editable:false, width:70, formatter : function (value,row,index){ return utils.formatCategory(value, "VENDOR")}},
             { name:'contacts', index:'contacts', editable:false, width:60 },
             { name:'phone', index:'phone', editable:false, width:80 },
-            { name:'address', index:'address', editable:false, width:150 },
+            { name:'address', index:'address', editable:false, width:150, title: true },
             { name:'status', index:'status', editable:false,  width:50, formatter:utils.formatYN }
         ],
         height: 350,

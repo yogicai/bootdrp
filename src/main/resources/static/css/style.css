@@ -1184,23 +1184,28 @@ button.dim:active:before {
 
 /* TOOLTIPS */
 .tooltip-inner {
-    background-color: #2F4050;
+    background-color: #333333;
+    max-width: 400px;
+    font-size: 13px;
+    white-space: normal; /* 允许文本换行 */
+    word-wrap: break-word; /* 长单词自动换行 */
+    width: auto; /* 允许根据内容自动调整宽度 */
 }
 
 .tooltip.top .tooltip-arrow {
-    border-top-color: #2F4050;
+    border-top-color: #333333;
 }
 
 .tooltip.right .tooltip-arrow {
-    border-right-color: #2F4050;
+    border-right-color: #333333;
 }
 
 .tooltip.bottom .tooltip-arrow {
-    border-bottom-color: #2F4050;
+    border-bottom-color: #333333;
 }
 
 .tooltip.left .tooltip-arrow {
-    border-left-color: #2F4050;
+    border-left-color: #333333;
 }
 
 /* EASY PIE CHART*/
