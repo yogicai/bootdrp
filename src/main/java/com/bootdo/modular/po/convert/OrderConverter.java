@@ -1,5 +1,6 @@
 package com.bootdo.modular.po.convert;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.core.consts.Constant;
 import com.bootdo.core.enums.AuditStatus;
@@ -19,7 +20,6 @@ import com.bootdo.modular.po.param.OrderVO;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.domain.RPOrderEntryDO;
 import com.bootdo.modular.rp.domain.RPOrderSettleDO;
-import com.google.common.collect.Lists;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.Map;
 public class OrderConverter {
 
     public static List<OrderEntryDO> convertOrderEntry(OrderVO orderVO, OrderDO orderDO, Map<String, StockDO> stockDOMap) {
-        List<OrderEntryDO> entryDOList = Lists.newArrayList();
+        List<OrderEntryDO> entryDOList = CollUtil.newArrayList();
         BigDecimal entryAmountTotal = BigDecimal.ZERO;
         BigDecimal qtyTotal = BigDecimal.ZERO;
         for (OrderEntryVO vo : orderVO.getEntryVOList()) {
@@ -85,7 +85,7 @@ public class OrderConverter {
     }
 
     public static List<RPOrderSettleDO> convertRPOrderSettle(RPOrderDO rpOrderDO, OrderDO orderDO, AccountDO accountDO) {
-        List<RPOrderSettleDO> rpOrderSettleDOList = Lists.newArrayList();
+        List<RPOrderSettleDO> rpOrderSettleDOList = CollUtil.newArrayList();
         RPOrderSettleDO rpOrderSettleDO = new RPOrderSettleDO();
         rpOrderSettleDO.setShopNo(rpOrderDO.getShopNo());
         rpOrderSettleDO.setBillNo(rpOrderDO.getBillNo());
@@ -98,7 +98,7 @@ public class OrderConverter {
     }
 
     public static List<RPOrderEntryDO> convertRPOrderEntry(RPOrderDO rpOrderDO, OrderDO orderDO) {
-        List<RPOrderEntryDO> rpOrderEntryDOList = Lists.newArrayList();
+        List<RPOrderEntryDO> rpOrderEntryDOList = CollUtil.newArrayList();
         RPOrderEntryDO rpOrderEntryDO = new RPOrderEntryDO();
         rpOrderEntryDO.setShopNo(rpOrderDO.getShopNo());
         rpOrderEntryDO.setBillNo(rpOrderDO.getBillNo());

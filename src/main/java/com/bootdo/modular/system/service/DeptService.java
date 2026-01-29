@@ -16,9 +16,9 @@ import com.bootdo.modular.system.dao.UserDao;
 import com.bootdo.modular.system.domain.DeptDO;
 import com.bootdo.modular.system.domain.UserDO;
 import com.bootdo.modular.system.param.SysDeptParam;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 

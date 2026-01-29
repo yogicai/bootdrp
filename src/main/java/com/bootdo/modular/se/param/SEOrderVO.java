@@ -1,12 +1,12 @@
 package com.bootdo.modular.se.param;
 
+import cn.hutool.core.collection.CollUtil;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.BillSource;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.google.common.collect.Lists;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -93,6 +93,6 @@ public class SEOrderVO {
      */
     private AuditStatus auditStatus;
 
-    private final List<SEOrderEntryVO> entryVOList = Lists.newArrayList();
+    private final List<SEOrderEntryVO> entryVOList = CollUtil.newArrayList();
 
 }

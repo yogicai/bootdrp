@@ -7,12 +7,12 @@ import com.bootdo.modular.system.domain.ContentDO;
 import com.bootdo.modular.system.param.SysBlogParam;
 import com.bootdo.modular.system.service.BlogContentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 

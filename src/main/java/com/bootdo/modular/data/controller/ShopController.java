@@ -6,11 +6,11 @@ import com.bootdo.modular.data.domain.DataShop;
 import com.bootdo.modular.data.param.ShopQryParam;
 import com.bootdo.modular.data.service.ShopService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

@@ -1,9 +1,10 @@
 package com.bootdo.config;
 
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.config.converter.DateConverter;
 import com.bootdo.config.properties.BootdoProperties;
 import com.bootdo.core.filter.xss.XssFilter;
-import com.google.common.collect.Maps;
+import jakarta.annotation.Resource;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +13,6 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import jakarta.annotation.Resource;
 import java.util.Map;
 
 @Configuration
@@ -48,7 +48,7 @@ class WebMvcConfig implements WebMvcConfigurer {
         filterRegistrationBean.setOrder(1);
         filterRegistrationBean.setEnabled(true);
         filterRegistrationBean.addUrlPatterns("/*");
-        Map<String, String> initParameters = Maps.newHashMap();
+        Map<String, String> initParameters = MapUtil.newHashMap();
         initParameters.put("excludes", "/favicon.ico,/img/*,/js/*,/css/*");
         initParameters.put("isIncludeRichText", "true");
         filterRegistrationBean.setInitParameters(initParameters);

@@ -4,11 +4,11 @@ import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.system.domain.UserOnline;
 import com.bootdo.modular.system.service.SecuritySessionService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;

@@ -1,6 +1,7 @@
 package com.bootdo.modular.data.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -27,12 +28,9 @@ import com.bootdo.modular.se.domain.SEOrderEntryDO;
 import com.bootdo.modular.wh.dao.WHOrderEntryDao;
 import com.bootdo.modular.wh.domain.WHOrderDO;
 import com.bootdo.modular.wh.domain.WHOrderEntryDO;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.EnumSet;
 import java.util.List;
@@ -82,7 +80,7 @@ public class CostAmountCalculator {
         Map<String, BigDecimal> entryAmountFee = convertAmountFeeMap(orderDO, entryDOList);
         //计算商品单价成本
         CostAmountIResult detail = new CostAmountIResult();
-        List<ProductCostDO> productCostDOList = Lists.newArrayList();
+        List<ProductCostDO> productCostDOList = CollUtil.newArrayList();
         for (OrderEntryDO entry : entryDOList) {
             /**
              * CG_ORDER     WH_RK_ORDER    +   AUDIT       1 ：库存增加
@@ -216,7 +214,7 @@ public class CostAmountCalculator {
         Map<String, ProductCostDO> costDOMap = convertProductCost(entryNoList);
         //计算商品单价成本
         CostAmountIResult detail = new CostAmountIResult();
-        List<ProductCostDO> productCostDOList = Lists.newArrayList();
+        List<ProductCostDO> productCostDOList = CollUtil.newArrayList();
         for (SEOrderEntryDO entry : entryDOList) {
             /**
              * XS_ORDER     +   AUDIT       1 ：库存增加
@@ -270,7 +268,7 @@ public class CostAmountCalculator {
         //Map<String, BigDecimal> inventoryMap = convertInventoryMap(entryNoList);
         //计算商品单价成本
         CostAmountIResult detail = new CostAmountIResult();
-        List<ProductCostDO> productCostDOList = Lists.newArrayList();
+        List<ProductCostDO> productCostDOList = CollUtil.newArrayList();
         for (WHOrderEntryDO entry : entryDOList) {
             /**
              * CG_ORDER     WH_RK_ORDER    +   AUDIT       1 ：库存增加
@@ -320,7 +318,7 @@ public class CostAmountCalculator {
         Map<String, BigDecimal> inventoryMap = convertInventoryMap(entryNoList);
 
         CostAmountIResult detail = new CostAmountIResult();
-        List<ProductCostDO> productCostDOList = Lists.newArrayList();
+        List<ProductCostDO> productCostDOList = CollUtil.newArrayList();
 
         costDOMap.forEach((k, v) -> {
             if (inventoryMap.containsKey(k) && v.getCostQty().compareTo(inventoryMap.get(k)) != 0) {
@@ -378,7 +376,7 @@ public class CostAmountCalculator {
      */
     private Map<String, BigDecimal> convertAmountFeeMap(OrderDO orderDO, List<OrderEntryDO> entryDOList) {
 
-        Map<String, BigDecimal> result = Maps.newHashMap();
+        Map<String, BigDecimal> result = MapUtil.newHashMap();
         BigDecimal purchaseFee = NumberUtils.toBigDecimal(orderDO.getPurchaseFee());
         BigDecimal totalAmountTotal = entryDOList.stream().map(OrderEntryDO::getTotalAmount).reduce(BigDecimal.ZERO, NumberUtils::add);
 
@@ -422,7 +420,10 @@ public class CostAmountCalculator {
      */
     private Map<String, BigDecimal> convertInventoryMap(List<String> entryNoList) {
         //采购、销售、其他入出库 商品
-        List<Map<String, Object>> list = whReportDao.pBalance(ImmutableMap.of("productNos", entryNoList, "status", CommonStatus.ENABLE.getValue()));
+        List<Map<String, Object>> list = whReportDao.pBalance(MapUtil.<String, Object>builder()
+                .put("productNos", entryNoList)
+                .put("status", CommonStatus.ENABLE.getValue())
+                .build());
         //商品库存
         return list.stream()
                 .collect(Collectors.groupingBy(

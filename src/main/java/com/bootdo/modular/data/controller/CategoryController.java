@@ -1,5 +1,6 @@
 package com.bootdo.modular.data.controller;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.core.consts.Constant;
 import com.bootdo.core.factory.PageFactory;
@@ -8,14 +9,13 @@ import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.data.domain.CategoryDO;
 import com.bootdo.modular.data.param.CategoryQryParam;
 import com.bootdo.modular.data.service.CategoryService;
-import com.google.common.collect.ImmutableMap;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -117,7 +117,11 @@ public class CategoryController {
     @Operation(summary = "缓存_类目树关联数据下拉框数据(商品、供应商、客户、结算帐户、用户)")
     public Map<String, List<Tree<Object>>> listTreeData(@PathVariable String types) {
         // 查询列表数据
-        return categoryService.listTreeData(ImmutableMap.of("types", StrUtil.split(types, StrUtil.COMMA), "status", 1));
+        return categoryService.listTreeData(MapUtil.<String, Object>builder()
+                .put("types", StrUtil.split(types, StrUtil.COMMA))
+                .put("status", 1)
+                .build()
+        );
     }
 
 }

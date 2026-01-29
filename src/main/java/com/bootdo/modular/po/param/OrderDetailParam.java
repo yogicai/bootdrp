@@ -1,9 +1,8 @@
 package com.bootdo.modular.po.param;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
 /**
  * 销售单

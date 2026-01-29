@@ -1,12 +1,12 @@
 package com.bootdo.modular.wh.param;
 
+import cn.hutool.core.collection.CollUtil;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.BillType;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.google.common.collect.Lists;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -77,6 +77,6 @@ public class WHOrderVO {
     /**
      * 出入库商品明细
      */
-    private final List<WHOrderEntryVO> entryVOList = Lists.newArrayList();
+    private final List<WHOrderEntryVO> entryVOList = CollUtil.newArrayList();
 
 }

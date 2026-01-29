@@ -5,10 +5,10 @@ import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.system.param.SysLogParam;
 import com.bootdo.modular.system.service.LogService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

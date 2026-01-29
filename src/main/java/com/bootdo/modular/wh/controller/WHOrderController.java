@@ -14,12 +14,12 @@ import com.bootdo.modular.wh.param.WHOrderQryParam;
 import com.bootdo.modular.wh.service.WHOrderService;
 import com.bootdo.modular.wh.validator.WHOrderValidator;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 

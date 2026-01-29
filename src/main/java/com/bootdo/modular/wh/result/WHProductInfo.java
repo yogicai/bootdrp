@@ -3,9 +3,9 @@ package com.bootdo.modular.wh.result;
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.afterturn.easypoi.excel.annotation.ExcelCollection;
 import cn.afterturn.easypoi.excel.annotation.ExcelIgnore;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -77,10 +77,10 @@ public class WHProductInfo {
      * 仓库库存明细
      */
     @ExcelCollection(name = "仓库库存明细")
-    private final List<WHStockInfo> stockInfoList = Lists.newArrayList();
+    private final List<WHStockInfo> stockInfoList = CollUtil.newArrayList();
 
     @ExcelIgnore
     @JsonIgnore
-    private final Map<String, WHStockInfo> stockInfoMap = Maps.newHashMap();
+    private final Map<String, WHStockInfo> stockInfoMap = MapUtil.newHashMap();
 
 }

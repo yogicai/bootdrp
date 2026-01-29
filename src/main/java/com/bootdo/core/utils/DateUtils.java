@@ -1,9 +1,9 @@
 package com.bootdo.core.utils;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.core.consts.Constant;
-import com.google.common.collect.Lists;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -68,7 +68,7 @@ public class DateUtils {
     public static List<String> getDaySerial(String type) {
         LocalDate begin = LocalDate.parse(getDayStartStr(type), DATE_TIME_FORMAT);
         LocalDate end = LocalDate.now().plusDays(1);
-        List<String> serialList = Lists.newArrayList();
+        List<String> serialList = CollUtil.newArrayList();
         if (Constant.Q_DAY.equals(type)) {
             while (begin.isBefore(end)) {
                 serialList.add(begin.getDayOfMonth() + "号");
@@ -91,7 +91,7 @@ public class DateUtils {
     public static List<String> getDayTimeSerial(String type) {
         LocalDate begin = LocalDate.parse(getDayStartStr(type), DATE_TIME_FORMAT);
         LocalDate end = LocalDate.now().plusDays(1);
-        List<String> serialList = Lists.newArrayList();
+        List<String> serialList = CollUtil.newArrayList();
         if (Constant.Q_DAY.equals(type)) {
             while (begin.isBefore(end)) {
                 serialList.add(begin.format(DATE_TIME_YMD_FORMAT));

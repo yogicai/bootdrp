@@ -9,12 +9,12 @@ import com.bootdo.modular.system.domain.DictDO;
 import com.bootdo.modular.system.param.SysDictParam;
 import com.bootdo.modular.system.service.DictService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 

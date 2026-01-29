@@ -13,9 +13,9 @@ import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.modular.system.dao.FileDao;
 import com.bootdo.modular.system.domain.FileDO;
 import com.bootdo.modular.system.param.SysFileParam;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 
 

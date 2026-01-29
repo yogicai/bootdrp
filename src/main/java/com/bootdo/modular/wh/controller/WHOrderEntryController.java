@@ -8,15 +8,14 @@ import com.bootdo.modular.wh.domain.WHOrderDO;
 import com.bootdo.modular.wh.param.WHOrderVO;
 import com.bootdo.modular.wh.service.WHOrderEntryService;
 import com.bootdo.modular.wh.validator.WHOrderValidator;
-import com.google.common.collect.ImmutableMap;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -54,7 +53,7 @@ public class WHOrderEntryController {
     public R save(@RequestBody @Validated WHOrderVO order) {
         whOrderValidator.validateSave(order);
         WHOrderDO orderDO = whOrderEntryService.save(order);
-        return R.ok(ImmutableMap.of("billNo", orderDO.getBillNo()));
+        return R.ok(MapUtil.of("billNo", orderDO.getBillNo()));
     }
 
     /**

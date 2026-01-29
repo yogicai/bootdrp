@@ -1,7 +1,7 @@
 package com.bootdo.modular.report.result.echart;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import lombok.Data;
 
 import java.util.List;
@@ -15,17 +15,20 @@ public class SeriesData {
     private String name;
     private String type;
     private int barGap;
-    private List<Object> data = Lists.newArrayList();
+    private List<Object> data = CollUtil.newArrayList();
     private MarkData markPoint = new MarkData();
     private MarkData markLine = new MarkData();
 
 
     @Data
     public class MarkData {
-        private List<Object> data = Lists.newArrayList();
+        private List<Object> data = CollUtil.newArrayList();
 
         public void addData(String name, String type) {
-            this.data.add(ImmutableMap.of("name", name, "type", type));
+            this.data.add(MapUtil.<String, Object>builder()
+                    .put("name", name)
+                    .put("type", type)
+                    .build());
         }
     }
 }

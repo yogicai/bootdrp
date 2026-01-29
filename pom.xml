@@ -30,8 +30,8 @@
         <druid.version>1.2.24</druid.version>
         <springdoc.version>2.3.0</springdoc.version>
         <knife4j.version>4.5.0</knife4j.version>
-        <lombok.version>1.18.30</lombok.version>
-        <easypoi.version>4.5.0</easypoi.version>
+        <lombok.version>1.18.42</lombok.version>
+        <easypoi.version>5.0.0-boot3</easypoi.version>
         <velocity.version>2.3</velocity.version>
         <hutool.version>5.8.42</hutool.version>
         <thymeleaf.extras.version>3.1.2.RELEASE</thymeleaf.extras.version>

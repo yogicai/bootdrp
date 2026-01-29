@@ -14,9 +14,9 @@ import com.bootdo.core.utils.BuildTree;
 import com.bootdo.modular.system.dao.MenuDao;
 import com.bootdo.modular.system.domain.MenuDO;
 import com.bootdo.modular.system.param.SysMenuParam;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 

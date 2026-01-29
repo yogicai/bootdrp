@@ -21,10 +21,10 @@ import com.bootdo.modular.rp.param.RPOrderSettleVO;
 import com.bootdo.modular.rp.param.RPOrderVO;
 import com.bootdo.modular.system.domain.UserDO;
 import com.bootdo.modular.system.service.UserService;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

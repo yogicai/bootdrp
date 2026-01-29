@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bootdo.modular.system.domain.UserDO;
 import com.bootdo.modular.system.service.MenuService;
 import com.bootdo.modular.system.service.UserService;
+import jakarta.annotation.Resource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import jakarta.annotation.Resource;
 import java.util.Set;
 /**
  * @author L

@@ -1,7 +1,7 @@
 package com.bootdo.modular.report.result.echart;
 
+import cn.hutool.core.collection.CollUtil;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.collect.Lists;
 import lombok.Data;
 
 import java.util.List;
@@ -17,10 +17,10 @@ public class EChartOption {
     private TitleData title = new TitleData();
     private LegendData legend = new LegendData();
     @JsonProperty(namespace = "xAxis")
-    private List<XAxisData> xAxis = Lists.newArrayList();
+    private List<XAxisData> xAxis = CollUtil.newArrayList();
     @JsonProperty(namespace = "yAxis")
-    private List<YAxisData> yAxis = Lists.newArrayList();
-    private List<SeriesData> series = Lists.newArrayList();
+    private List<YAxisData> yAxis = CollUtil.newArrayList();
+    private List<SeriesData> series = CollUtil.newArrayList();
 
     public EChartOption(int xAxisNum, int yAxisNum, int seriesNum) {
         for (int i = 0; i < xAxisNum; i++) {

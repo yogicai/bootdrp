@@ -14,13 +14,13 @@ import com.bootdo.modular.system.service.DictService;
 import com.bootdo.modular.system.service.RoleService;
 import com.bootdo.modular.system.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

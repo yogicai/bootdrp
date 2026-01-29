@@ -14,12 +14,12 @@ import com.bootdo.modular.system.domain.TaskDO;
 import com.bootdo.modular.system.param.SysTaskParam;
 import com.bootdo.modular.timer.domain.ScheduleJob;
 import com.bootdo.modular.timer.service.QuartzManager;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

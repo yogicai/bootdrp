@@ -16,9 +16,9 @@ import com.bootdo.modular.data.dao.CategoryDao;
 import com.bootdo.modular.data.domain.CategoryDO;
 import com.bootdo.modular.data.param.CategoryQryParam;
 import com.bootdo.modular.data.result.CategoryDataResult;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -107,7 +107,7 @@ public class CategoryService extends ServiceImpl<CategoryDao, CategoryDO> {
             treeNode.setText(data.getDataName());
             treeNode.setAttributes(MapUtil.of("type", data.getType() + "_DATA" + (filterScope ? ("_" + data.getShopNo()) : StrUtil.EMPTY)));
             return treeNode;
-        }).collect(Collectors.toList()));
+        }).toList());
 
         // 默认顶级菜单为０，根据数据库实际情况调整
         List<Tree<Object>> treeList = BuildTree.buildList(treeNodeList, CollUtil.newHashSet("0"));

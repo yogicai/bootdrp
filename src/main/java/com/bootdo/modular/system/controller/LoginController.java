@@ -7,11 +7,11 @@ import com.bootdo.modular.system.domain.MenuDO;
 import com.bootdo.modular.system.service.FileService;
 import com.bootdo.modular.system.service.MenuService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

@@ -8,11 +8,10 @@ import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.report.dao.ReportDao;
 import com.bootdo.modular.report.param.SReconParam;
 import com.bootdo.modular.report.param.SaleProductParam;
-import com.google.common.collect.ImmutableMap;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +41,12 @@ public class ReportService {
         } else {
             data = reportDao.sReconV(params);
         }
-        return R.ok(ImmutableMap.of("result", data, "billRegion", startStr + "_" + endStr, "start", startStr, "end", endStr));
+        return R.ok(MapUtil.<String, Object>builder()
+                .put("result", data)
+                .put("billRegion", startStr + "_" + endStr)
+                .put("start", startStr)
+                .put("end", endStr)
+                .build());
     }
 
     /**
@@ -56,6 +60,11 @@ public class ReportService {
             startDate = startDate.compareTo(MapUtil.getStr(map, "startDate")) < 0 ? startDate : MapUtil.getStr(map, "startDate");
             endDate = endDate.compareTo(MapUtil.getStr(map, "endDate")) > 0 ? endDate : MapUtil.getStr(map, "endDate");
         }
-        return R.ok(ImmutableMap.of("result", data, "billRegion", startDate + "_" + endDate, "start", startDate, "end", endDate));
+        return R.ok(MapUtil.<String, Object>builder()
+                .put("result", data)
+                .put("billRegion", startDate + "_" + endDate)
+                .put("start", startDate)
+                .put("end", endDate)
+                .build());
     }
 }

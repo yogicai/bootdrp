@@ -1,27 +1,19 @@
-var prefix = "/common/log";
-var searchForm;
+let prefix = "/common/log";
+let $searchForm;
+let $exampleTable;
+
 $(function() {
-    searchForm  = $('#search');
-	load();
+	$searchForm  = $('#search');
+	$exampleTable = $('#exampleTable');
+
+	utils.createDateRangePicker('datepicker');
     utils.loadCategory(["USER_DATA"], ["userId"], [{width:"150px"}]);
 
+	load();
 });
-$('#exampleTable').on('load-success.bs.table', function (e, data) {
-		    if (data.total && !data.rows.length) {
-		    	$('#exampleTable').bootstrapTable('selectPage').bootstrapTable('refresh');
-		    }
-		});
 
 function load() {
-    $('.input-daterange').datepicker({
-        language: "zh-CN",
-        todayBtn: "linked",
-        autoclose: true,
-        todayHighlight: true
-    });
-
-	$('#exampleTable')
-			.bootstrapTable(
+	$exampleTable.bootstrapTable(
 					{
 						method : 'get', // 服务器数据的请求方式 get or post
 						url : prefix + "/list", // 服务器数据的加载地址
@@ -46,13 +38,10 @@ function load() {
 						// "server"
 						queryParams : function(params) {
                             var param = {
-								limit : params.limit,
-								offset : params.offset,
-								name : $('#searchText').val(),
-								sort : 'gmt_create',
-								order : 'desc'
+								page: params.offset / params.limit + 1,
+								rows: params.limit
 							};
-                            return $.extend({}, param, searchForm.serializeObject());
+							return $.extend({}, param, $searchForm.serializeObject());
 						},
 						// //请求服务器数据时，你可以通过重写参数的方式添加一些额外的参数，例如 toolbar 中的参数 如果
 						// queryParamsType = 'limit' ,返回参数必须包含
@@ -60,63 +49,25 @@ function load() {
 						// pageSize, pageNumber, searchText, sortName,
 						// sortOrder.
 						// 返回false将会终止请求
-						columns : [
-								{
-									checkbox : true
-								},
-								{
-									field : 'id', // 列字段名
-									title : '序号' // 列标题
-								},
-								{
-									field : 'userId',
-									title : '用户Id'
-								},
-								{
-									field : 'username',
-									title : '用户名'
-								},
-								{
-									field : 'operation',
-									title : '操作'
-								},
-								{
-									field : 'time',
-									title : '用时'
-								},
-								{
-									field : 'method',
-									title : '方法'
-								},
-								{
-									field : 'ip',
-									title : 'IP地址'
-								},
-								{
-									field : 'gmtCreate',
-									title : '创建时间'
-								},
-								{
-									title : '操作',
-									field : 'id',
-									align : 'center',
-									formatter : function(value, row, index) {
-										var e = '<a class="btn btn-primary btn-sm" href="#" mce_href="#" title="编辑" onclick="edit(\''
-												+ row.userId
-												+ '\')"><i class="fa fa-edit"></i></a> ';
-										var d = '<a class="btn btn-warning btn-sm" href="#" title="删除"  mce_href="#" onclick="remove(\''
-												+ row.id
-												+ '\')"><i class="fa fa-remove"></i></a> ';
-										var f = '<a class="btn btn-success btn-sm" href="#" title="重置密码"  mce_href="#" onclick="resetPwd(\''
-												+ row.userId
-												+ '\')"><i class="fa fa-key"></i></a> ';
-										return d;
-									}
-								} ]
+						columns: [{ checkbox: true },
+							{ field: 'id', title: '序号' },
+							{ field: 'userId', title: '用户Id' },
+							{ field: 'username', title: '用户名' },
+							{ field: 'operation', title: '操作' },
+							{ field: 'time', title: '用时' },
+							{ field: 'method', title: '方法' },
+							{ field: 'ip', title: 'IP地址' },
+							{ field: 'gmtCreate', title: '创建时间' },
+							{ title: '操作', field: 'id', align: 'center', formatter: function (value, row, index) {
+									return utils.renderButtons([
+										{html: `<a class="btn btn-warning btn-sm" href="#" title="删除" onclick="remove('${row.id}')"><i class="fa fa-remove"></i></a> `, perm: 'sys:log:remove'}
+									], row);
+							}
+						}]
 					});
 }
 function search() {
-    $('#exampleTable').bootstrapTable('refresh', { query: searchForm.serializeObject() });
+	$exampleTable.bootstrapTable('refresh', {query: $.extend({offset: 0}, $searchForm.serializeObject())});
 }
 function remove(id) {
 	layer.confirm('确定要删除选中的记录？', {
@@ -132,7 +83,7 @@ function remove(id) {
 				index = layer.load();
 			},
 			success : function(r) {
-				if (r.code == 0) {
+				if (r.code === 0) {
 					layer.close(index);
 					layer.msg(r.msg);
                     search();
@@ -144,8 +95,8 @@ function remove(id) {
 	})
 }
 function batchRemove() {
-	var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
-	if (rows.length == 0) {
+	let rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
+	if (rows.length === 0) {
 		layer.msg("请选择要删除的数据");
 		return;
 	}
@@ -153,7 +104,7 @@ function batchRemove() {
 		btn : [ '确定', '取消' ]
 	// 按钮
 	}, function() {
-		var ids = new Array();
+		let ids = [];
 		// 遍历所有选择的行数据，取每条数据对应的ID
 		$.each(rows, function(i, row) {
 			ids[i] = row['id'];
@@ -165,7 +116,7 @@ function batchRemove() {
 			},
 			url : prefix + '/batchRemove',
 			success : function(r) {
-				if (r.code == 0) {
+				if (r.code === 0) {
 					layer.msg(r.msg);
                     search();
 				} else {

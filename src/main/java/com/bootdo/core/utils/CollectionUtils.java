@@ -2,8 +2,9 @@ package com.bootdo.core.utils;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
-import com.google.common.collect.ImmutableMap;
 
 import java.util.*;
 import java.util.function.*;
@@ -214,7 +215,7 @@ public class CollectionUtils {
         if (CollUtil.isEmpty(from)) {
             return Collections.emptyMap();
         }
-        ImmutableMap.Builder<K, T> builder = ImmutableMap.builder();
+        MapBuilder<K, T> builder = MapUtil.builder();
         from.forEach(item -> builder.put(keyFunc.apply(item), item));
         return builder.build();
     }

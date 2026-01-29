@@ -1,6 +1,7 @@
 package com.bootdo.modular.rp.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -8,7 +9,6 @@ import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.BillSource;
 import com.bootdo.core.enums.BillType;
 import com.bootdo.core.pojo.base.entity.BaseEntity;
-import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
@@ -136,12 +136,12 @@ public class RPOrderDO extends BaseEntity {
      * 订单分录
      */
     @TableField(exist = false)
-    private final List<RPOrderEntryDO> entryDOList = Lists.newArrayList();
+    private final List<RPOrderEntryDO> entryDOList = CollUtil.newArrayList();
 
     /**
      * 结算分录
      */
     @TableField(exist = false)
-    private final List<RPOrderSettleDO> settleDOList = Lists.newArrayList();
+    private final List<RPOrderSettleDO> settleDOList = CollUtil.newArrayList();
 
 }

@@ -23,12 +23,10 @@ import com.bootdo.modular.se.service.SEOrderService;
 import com.bootdo.modular.workbench.dao.WorkbenchDao;
 import com.bootdo.modular.workbench.param.PBalanceParam;
 import com.bootdo.modular.workbench.param.SEBillTotalParam;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
+import jakarta.annotation.Resource;
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +58,7 @@ public class WorkbenchService {
     /**
      * 12月份
      */
-    private final List<String> month_series = Lists.newArrayList("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月");
+    private final List<String> month_series = CollUtil.newArrayList("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月");
 
 
     public SEBillTotalResult pBalanceTotal(SEBillTotalParam param) {
@@ -161,9 +159,17 @@ public class WorkbenchService {
     public R pCashTotal(Map<String, Object> params) {
         List<Map<String, Object>> list = workbenchDao.pCashTrend(params);
         if (CollUtil.isNotEmpty(list)) {
-            return R.ok(ImmutableMap.of("profitAmountT", MapUtil.get(list.get(0), "profitAmount", BigDecimal.class, BigDecimal.ZERO), "cashFlowAmountT", MapUtil.get(list.get(0), "cashFlowAmount", BigDecimal.class, BigDecimal.ZERO)));
+            return R.ok(MapUtil.<String, Object>builder()
+                    .put("profitAmountT", MapUtil.get(list.get(0), "profitAmount", BigDecimal.class, BigDecimal.ZERO))
+                    .put("cashFlowAmountT", MapUtil.get(list.get(0), "cashFlowAmount", BigDecimal.class, BigDecimal.ZERO))
+                    .build()
+            );
         }
-        return R.ok(ImmutableMap.of("profitAmountT", 0, "cashFlowAmountT", 0));
+        return R.ok(MapUtil.<String, Object>builder()
+                .put("profitAmountT", 0)
+                .put("cashFlowAmountT", 0)
+                .build()
+        );
     }
 
     public EChartOption pCashTrend(Map<String, Object> params) {

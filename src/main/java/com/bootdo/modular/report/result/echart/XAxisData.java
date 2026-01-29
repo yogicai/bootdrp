@@ -1,6 +1,6 @@
 package com.bootdo.modular.report.result.echart;
 
-import com.google.common.collect.Lists;
+import cn.hutool.core.collection.CollUtil;
 import lombok.Data;
 
 import java.util.List;
@@ -13,6 +13,6 @@ import java.util.List;
 public class XAxisData {
 
     private String type;
-    private List<String> data = Lists.newArrayList();
+    private List<String> data = CollUtil.newArrayList();
 
 }

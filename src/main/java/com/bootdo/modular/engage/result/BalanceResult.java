@@ -1,7 +1,7 @@
 package com.bootdo.modular.engage.result;
 
+import cn.hutool.core.collection.CollUtil;
 import com.bootdo.modular.wh.result.WHProductInfo;
-import com.google.common.collect.Lists;
 import lombok.Data;
 
 import java.util.List;
@@ -20,10 +20,10 @@ public class BalanceResult {
     /**
      * 动态列名
      */
-    private final List<String> stockList = Lists.newArrayList();
+    private final List<String> stockList = CollUtil.newArrayList();
     /**
      * 商品信息
      */
-    private final List<WHProductInfo> productInfoList = Lists.newArrayList();
+    private final List<WHProductInfo> productInfoList = CollUtil.newArrayList();
 
 }

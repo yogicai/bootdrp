@@ -6,11 +6,11 @@ import com.bootdo.modular.system.domain.TaskDO;
 import com.bootdo.modular.system.param.SysTaskParam;
 import com.bootdo.modular.system.service.JobService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

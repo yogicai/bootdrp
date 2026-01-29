@@ -9,12 +9,12 @@ import com.bootdo.modular.cashier.param.RecordQryParam;
 import com.bootdo.modular.cashier.result.MultiSelect;
 import com.bootdo.modular.cashier.service.RecordService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

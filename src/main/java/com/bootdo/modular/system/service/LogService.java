@@ -34,7 +34,8 @@ public class LogService extends ServiceImpl<LogDao, LogDO> {
                 .in(ObjectUtil.isNotEmpty(param.getUserId()), LogDO::getUserId, StrUtil.split(param.getUserId(), StrUtil.COMMA))
                 .ge(ObjectUtil.isNotEmpty(param.getStart()), LogDO::getGmtCreate, param.getStart())
                 .le(ObjectUtil.isNotEmpty(param.getEnd()), LogDO::getGmtCreate, param.getEnd())
-                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(LogDO::getUsername, param.getSearchText()));
+                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(LogDO::getUsername, param.getSearchText()))
+                .orderByDesc(LogDO::getGmtCreate);
 
         return this.page(page, queryWrapper);
     }

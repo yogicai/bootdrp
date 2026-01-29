@@ -9,12 +9,12 @@ import com.bootdo.modular.rp.param.PointQryParam;
 import com.bootdo.modular.rp.service.PointEntryService;
 import com.bootdo.modular.rp.validator.RPPointValidator;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

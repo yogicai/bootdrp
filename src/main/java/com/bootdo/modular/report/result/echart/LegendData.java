@@ -1,6 +1,6 @@
 package com.bootdo.modular.report.result.echart;
 
-import com.google.common.collect.Lists;
+import cn.hutool.core.collection.CollUtil;
 import lombok.Data;
 
 import java.util.List;
@@ -12,6 +12,6 @@ import java.util.List;
 @Data
 public class LegendData {
 
-    private List<Object> data = Lists.newArrayList();
+    private List<Object> data = CollUtil.newArrayList();
 
 }

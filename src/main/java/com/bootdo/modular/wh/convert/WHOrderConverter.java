@@ -1,5 +1,6 @@
 package com.bootdo.modular.wh.convert;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.utils.NumberUtils;
@@ -12,7 +13,6 @@ import com.bootdo.modular.wh.domain.WHOrderDO;
 import com.bootdo.modular.wh.domain.WHOrderEntryDO;
 import com.bootdo.modular.wh.param.WHOrderEntryVO;
 import com.bootdo.modular.wh.param.WHOrderVO;
-import com.google.common.collect.Lists;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.Map;
 public class WHOrderConverter {
 
     public static List<WHOrderEntryDO> convertOrderEntry(WHOrderVO orderVO, WHOrderDO orderDO, Map<String, StockDO> stockDOMap, Map<String, ProductCostDO> costDOMap) {
-        List<WHOrderEntryDO> entryDOList = Lists.newArrayList();
+        List<WHOrderEntryDO> entryDOList = CollUtil.newArrayList();
         BigDecimal entryAmountTotal = BigDecimal.ZERO;
         BigDecimal qtyTotal = BigDecimal.ZERO;
         for (WHOrderEntryVO vo : orderVO.getEntryVOList()) {

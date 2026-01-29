@@ -21,7 +21,6 @@ import com.bootdo.modular.se.domain.SEOrderEntryDO;
 import com.bootdo.modular.se.param.SEOrderEntryVO;
 import com.bootdo.modular.se.param.SEOrderVO;
 import com.bootdo.modular.system.domain.UserDO;
-import com.google.common.collect.Lists;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,7 +33,7 @@ import java.util.Map;
 public class SEOrderConverter {
 
     public static List<SEOrderEntryDO> convertOrderEntry(SEOrderVO orderVO, SEOrderDO orderDO, Map<String, StockDO> stockDOMap, Map<String, ProductCostDO> costDOMap, Map<String, BigDecimal> purchaseMap) {
-        List<SEOrderEntryDO> entryDOList = Lists.newArrayList();
+        List<SEOrderEntryDO> entryDOList = CollUtil.newArrayList();
         BigDecimal entryAmountTotal = BigDecimal.ZERO;
         BigDecimal costAmountTotal = BigDecimal.ZERO;
         BigDecimal qtyTotal = BigDecimal.ZERO;

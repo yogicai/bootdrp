@@ -1,12 +1,12 @@
 package com.bootdo.modular.rp.param;
 
+import cn.hutool.core.collection.CollUtil;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.BillType;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.google.common.collect.Lists;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -68,10 +68,10 @@ public class RPOrderVO {
     /**
      * 结算金额明细
      */
-    private final List<RPOrderSettleVO> settleVOList = Lists.newArrayList();
+    private final List<RPOrderSettleVO> settleVOList = CollUtil.newArrayList();
     /**
      * 源单及核销金额明细
      */
-    private final List<RPOrderEntryVO> entryVOList = Lists.newArrayList();
+    private final List<RPOrderEntryVO> entryVOList = CollUtil.newArrayList();
 
 }

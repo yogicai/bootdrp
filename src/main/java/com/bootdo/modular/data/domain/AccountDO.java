@@ -3,11 +3,11 @@ package com.bootdo.modular.data.domain;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.bootdo.core.pojo.base.entity.BaseEntity;
 import com.bootdo.core.pojo.base.param.BaseParam.edit;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 

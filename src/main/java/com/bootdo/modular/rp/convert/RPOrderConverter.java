@@ -1,5 +1,7 @@
 package com.bootdo.modular.rp.convert;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.enums.BillSource;
@@ -13,8 +15,6 @@ import com.bootdo.modular.rp.param.RPOrderEntryVO;
 import com.bootdo.modular.rp.param.RPOrderSettleVO;
 import com.bootdo.modular.rp.param.RPOrderVO;
 import com.bootdo.modular.system.domain.UserDO;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.Map;
 public class RPOrderConverter {
 
     public static List<RPOrderSettleDO> convertOrderSettle(RPOrderVO orderVO, RPOrderDO orderDO, Map<String, AccountDO> accountDOMap) {
-        List<RPOrderSettleDO> settleDOList = Lists.newArrayList();
+        List<RPOrderSettleDO> settleDOList = CollUtil.newArrayList();
         BigDecimal paymentAmountTotal = BigDecimal.ZERO;
         for (RPOrderSettleVO vo : orderVO.getSettleVOList()) {
             RPOrderSettleDO orderSettleDO = new RPOrderSettleDO();
@@ -45,7 +45,7 @@ public class RPOrderConverter {
     }
 
     public static List<RPOrderEntryDO> convertOrderEntry(RPOrderVO orderVO, RPOrderDO orderDO) {
-        List<RPOrderEntryDO> entryDOList = Lists.newArrayList();
+        List<RPOrderEntryDO> entryDOList = CollUtil.newArrayList();
         BigDecimal checkAmountTotal = BigDecimal.ZERO;
         for (RPOrderEntryVO vo : orderVO.getEntryVOList()) {
             RPOrderEntryDO orderEntryDO = new RPOrderEntryDO();
@@ -83,7 +83,7 @@ public class RPOrderConverter {
     }
 
     public static Map<String, AccountDO> convertAccountMap(List<AccountDO> accountDOList) {
-        Map<String, AccountDO> accountDOMap = Maps.newHashMap();
+        Map<String, AccountDO> accountDOMap = MapUtil.newHashMap();
         for (AccountDO accountDO : accountDOList) {
             accountDOMap.put(accountDO.getNo().toString(), accountDO);
         }

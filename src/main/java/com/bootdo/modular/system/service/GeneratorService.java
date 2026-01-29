@@ -3,9 +3,9 @@ package com.bootdo.modular.system.service;
 import cn.hutool.core.io.IoUtil;
 import com.bootdo.core.utils.GenUtils;
 import com.bootdo.modular.system.dao.GeneratorDao;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Map;

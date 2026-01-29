@@ -23,9 +23,9 @@ import com.bootdo.modular.system.dao.DictDao;
 import com.bootdo.modular.system.domain.DictDO;
 import com.bootdo.modular.system.domain.UserDO;
 import com.bootdo.modular.system.param.SysDictParam;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -114,14 +114,14 @@ public class DictService extends ServiceImpl<DictDao, DictDO> {
                 .collect(Collectors.toList());
         //结算账户
         List<AccountDO> accountDOList = accountDao.selectList(Wrappers.lambdaQuery(AccountDO.class).eq(AccountDO::getStatus, CommonStatus.ENABLE.getValue()).orderByAsc(AccountDO::getNo));
-        List<Map<String, Object>> ListAccountMap = accountDOList.stream()
+        List<Map<String, Object>> listAccountMap = accountDOList.stream()
                 .map(account -> MapUtil.<String, Object>builder().put("name", account.getName()).put("value", account.getNo()).build())
                 .collect(Collectors.toList());
 
         return MapUtil.<String, List<Map<String, Object>>>builder()
                 .put("data_stock", listMap)
                 .put("data_shop", listShopMap)
-                .put("data_account", ListAccountMap)
+                .put("data_account", listAccountMap)
                 .build();
     }
 }

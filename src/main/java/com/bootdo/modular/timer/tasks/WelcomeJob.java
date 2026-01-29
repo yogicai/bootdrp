@@ -1,13 +1,12 @@
 package com.bootdo.modular.timer.tasks;
 
 import com.bootdo.modular.system.result.Response;
+import jakarta.annotation.Resource;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-
-import jakarta.annotation.Resource;
 
 /**
  * @author L

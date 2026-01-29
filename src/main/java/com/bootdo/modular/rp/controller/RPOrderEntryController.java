@@ -9,15 +9,14 @@ import com.bootdo.modular.rp.domain.RPOrderEntryDO;
 import com.bootdo.modular.rp.param.RPOrderVO;
 import com.bootdo.modular.rp.service.RPOrderEntryService;
 import com.bootdo.modular.rp.validator.RPOrderValidator;
-import com.google.common.collect.ImmutableMap;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -64,7 +63,7 @@ public class RPOrderEntryController {
     public R save(@RequestBody @Validated RPOrderVO order) {
         rpOrderValidator.validateSave(order);
         RPOrderDO orderDO = rpOrderEntryService.save(order);
-        return R.ok(ImmutableMap.of("billNo", orderDO.getBillNo()));
+        return R.ok(MapUtil.of("billNo", orderDO.getBillNo()));
     }
 
     @ResponseBody

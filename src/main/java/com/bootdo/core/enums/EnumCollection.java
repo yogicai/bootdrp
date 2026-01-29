@@ -1,9 +1,8 @@
 package com.bootdo.core.enums;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import com.bootdo.modular.cashier.enums.DateTypeEnum;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -70,7 +69,7 @@ public class EnumCollection {
      * 表格列展示用
      */
     public static Map<String, List<Map<String, String>>> listEnum() {
-        Map<String, List<Map<String, String>>> setMap = Maps.newHashMap();
+        Map<String, List<Map<String, String>>> setMap = MapUtil.newHashMap();
         setMap.put("BILL_TYPE", convertEnumList(BILL_TYPE));
         setMap.put("BILL_SOURCE", convertEnumList(BILL_SOURCE));
         setMap.put("ORDER_CG_STATUS", convertEnumList(ORDER_CG_STATUS));
@@ -87,10 +86,10 @@ public class EnumCollection {
     }
 
     private static List<Map<String, String>> convertEnumList(EnumSet<?> enumSet) {
-        List<Map<String, String>> list = Lists.newArrayList();
+        List<Map<String, String>> list = CollUtil.newArrayList();
         for (Enum<?> e : enumSet) {
             EnumBean<?> eb = (EnumBean<?>) e;
-            list.add(ImmutableMap.of(eb.getValue(), eb.getRemark()));
+            list.add(MapUtil.of(eb.getValue(), eb.getRemark()));
         }
         return list;
     }
@@ -99,7 +98,7 @@ public class EnumCollection {
      * 下拉列表用：[{AUDIT_STATUS : [{YES: 已审核}, {NO: 未审核}]}]
      */
     public static Map<String, List<Map<String, String>>> listEnumMap() {
-        Map<String, List<Map<String, String>>> setMap = Maps.newHashMap();
+        Map<String, List<Map<String, String>>> setMap = MapUtil.newHashMap();
         setMap.put("BILL_TYPE", convertEnumMap(BILL_TYPE));
         setMap.put("BILL_SOURCE", convertEnumMap(BILL_SOURCE));
         setMap.put("ORDER_CG_STATUS", convertEnumMap(ORDER_CG_STATUS));
@@ -116,10 +115,14 @@ public class EnumCollection {
     }
 
     private static List<Map<String, String>> convertEnumMap(EnumSet<?> enumSet) {
-        List<Map<String, String>> list = Lists.newArrayList();
+        List<Map<String, String>> list = CollUtil.newArrayList();
         for (Enum<?> e : enumSet) {
             EnumBean<?> eb = (EnumBean<?>) e;
-            list.add(ImmutableMap.of("name", eb.getRemark(), "value", eb.getValue()));
+            list.add(MapUtil.<String, String>builder()
+                    .put("name", eb.getRemark())
+                    .put("value", eb.getValue())
+                    .build()
+            );
         }
         return list;
     }

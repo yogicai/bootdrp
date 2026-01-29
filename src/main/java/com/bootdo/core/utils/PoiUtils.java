@@ -14,7 +14,6 @@ import cn.afterturn.easypoi.handler.inter.IExcelModel;
 import cn.afterturn.easypoi.util.PoiValidationUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -22,19 +21,18 @@ import com.bootdo.core.consts.OrderStatusCode;
 import com.bootdo.core.excel.ClassExcelVerifyHandler;
 import com.bootdo.core.excel.ExcelDictHandlerImpl;
 import com.bootdo.core.exception.assertion.BizServiceException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.web.multipart.MultipartFile;
-
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -60,7 +58,7 @@ public class PoiUtils {
     public static void exportExcelWithStream(String excelName, Class<?> pojoClass, Collection<?> data) {
         try {
             HttpServletResponse response = HttpServletUtil.getResponse();
-            String fileName = URLEncoder.encode(excelName, CharsetUtil.UTF_8);
+            String fileName = URLEncoder.encode(excelName, StandardCharsets.UTF_8);
             response.reset();
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
             response.setContentType("application/octet-stream;charset=UTF-8");
@@ -99,7 +97,7 @@ public class PoiUtils {
             Workbook workbook = ExcelExportUtil.exportExcel(sheetList, ExcelType.HSSF);
 
             HttpServletResponse response = HttpServletUtil.getResponse();
-            String fileName = URLEncoder.encode(excelName, CharsetUtil.UTF_8);
+            String fileName = URLEncoder.encode(excelName, StandardCharsets.UTF_8);
             response.reset();
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
             response.setContentType("application/octet-stream;charset=UTF-8");
@@ -119,7 +117,7 @@ public class PoiUtils {
      * @param pojoClass Excel 实体类
      * @param data      要导出的数据集合
      */
-    public static void exportExcelWithFile(String filePath, Class pojoClass, Collection data) {
+    public static void exportExcelWithFile(String filePath, Class<?> pojoClass, Collection<?> data) {
 
         try {
             //先创建父文件夹
@@ -159,21 +157,14 @@ public class PoiUtils {
     }
 
     /**
-     * 生成 workbook
+     * 生成 workbook - 自动识别 Excel 版本
      *
      * @param file 上传的文件
      */
     public static Workbook getWorkBook(MultipartFile file) throws IOException {
-        //这样写excel能兼容03和07
-        InputStream is = file.getInputStream();
-        Workbook hssfWorkbook = null;
-        try {
-            hssfWorkbook = new HSSFWorkbook(is);
-        } catch (Exception ex) {
-            is = file.getInputStream();
-            hssfWorkbook = new XSSFWorkbook(is);
+        try (InputStream inputStream = file.getInputStream()) {
+            return WorkbookFactory.create(inputStream);
         }
-        return hssfWorkbook;
     }
 
     public static int getSheetNum(MultipartFile file) throws IOException {

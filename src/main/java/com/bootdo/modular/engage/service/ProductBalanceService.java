@@ -18,13 +18,10 @@ import com.bootdo.modular.engage.result.BalanceTotalResult;
 import com.bootdo.modular.engage.result.EntryBalanceResult;
 import com.bootdo.modular.wh.result.WHProductInfo;
 import com.bootdo.modular.wh.result.WHStockInfo;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -45,16 +42,16 @@ public class ProductBalanceService {
     @Resource
     private CostAmountCalculator costAmountCalculator;
 
-    private final Set<String> poBillSet = Sets.newHashSet(BillType.CG_ORDER.name(), BillType.WH_RK_ORDER.name());
-    private final Set<String> seBillSet = Sets.newHashSet(BillType.TH_ORDER.name(), BillType.WH_CK_ORDER.name());
+    private final Set<String> poBillSet = CollUtil.newHashSet(BillType.CG_ORDER.name(), BillType.WH_RK_ORDER.name());
+    private final Set<String> seBillSet = CollUtil.newHashSet(BillType.TH_ORDER.name(), BillType.WH_CK_ORDER.name());
 
     
     @Transactional(rollbackFor = Exception.class)
     public BalanceResult pBalance(BalanceQryParam param) {
         Map<String, Object> params = BeanUtil.beanToMap(param);
         List<Map<String, Object>> list = productBalanceDao.pBalance(params);
-        TreeMap<String, List<Map<String, Object>>> listMap = Maps.newTreeMap();
-        TreeMap<String, String> stockMap = Maps.newTreeMap();
+        TreeMap<String, List<Map<String, Object>>> listMap = new TreeMap<>();
+        TreeMap<String, String> stockMap = new TreeMap<>();
         BalanceResult result = new BalanceResult();
 
         result.setToDate(StrUtil.blankToDefault(MapUtil.getStr(params, "toDate"), DateUtils.currentDate()));
@@ -62,7 +59,7 @@ public class ProductBalanceService {
         for (Map<String, Object> map : list) {
             String key = MapUtil.getStr(map, "no");
             if (!listMap.containsKey(key)) {
-                listMap.put(key, Lists.newArrayList());
+                listMap.put(key, CollUtil.newArrayList());
                 if (!StrUtil.isEmpty(MapUtil.getStr(map, "stock_no"))) {
                     stockMap.put(MapUtil.getStr(map, "stock_no"), MapUtil.getStr(map, "stock_name"));
                 }
@@ -70,7 +67,7 @@ public class ProductBalanceService {
             listMap.get(key).add(map);
         }
         //处理商品成本信息
-        Map<String, ProductCostDO> costDOMap = Maps.newHashMap();
+        Map<String, ProductCostDO> costDOMap = MapUtil.newHashMap();
         List<ProductCostDO> costDOList = productCostService.listLate(null);
         for (ProductCostDO costDO : costDOList) {
             costDOMap.put(costDO.getProductNo(), costDO);
@@ -155,13 +152,13 @@ public class ProductBalanceService {
         BalanceTotalResult result = new BalanceTotalResult();
         List<Map<String, Object>> list = productBalanceDao.pBalance(params);
         //处理商品成本信息
-        Map<String, ProductCostDO> costDOMap = Maps.newHashMap();
+        Map<String, ProductCostDO> costDOMap = MapUtil.newHashMap();
         List<ProductCostDO> costDOList = productCostService.listLate(null);
         for (ProductCostDO costDO : costDOList) {
             costDOMap.put(costDO.getProductNo(), costDO);
         }
         //处理每个商品的库存数量
-        Map<String, BigDecimal> productMap = Maps.newHashMap();
+        Map<String, BigDecimal> productMap = MapUtil.newHashMap();
         for (Map<String, Object> map : list) {
             String no = MapUtil.getStr(map, "no");
             productMap.put(no, NumberUtils.add(MapUtil.get(productMap, no, BigDecimal.class, BigDecimal.ZERO), defaultStockAmount(map)));

@@ -32,13 +32,13 @@ import com.bootdo.modular.system.domain.UserRoleDO;
 import com.bootdo.modular.system.param.SysUserParam;
 import com.bootdo.modular.system.result.LoginUserResult;
 import com.bootdo.modular.system.result.UserVO;
+import jakarta.annotation.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;

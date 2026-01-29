@@ -3,10 +3,10 @@ package com.bootdo.config;
 import cn.hutool.core.collection.CollUtil;
 import com.bootdo.core.security.handler.*;
 import com.bootdo.core.security.realm.BDUserDetailsService;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import jakarta.annotation.Resource;
 import jakarta.annotation.security.PermitAll;
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -99,7 +99,7 @@ public class SecurityConfig {
                                                     LoginSuccessHandlerImpl loginSuccessHandler,
                                                     LoginFailureHandlerImpl loginFailureHandler, SessionRegistry sessionRegistry) throws Exception {
         // 获得 @PermitAll 带来的 URL 列表，免登录
-        Multimap<HttpMethod, String> permitAllUrls = getPermitAllUrlsFromAnnotations();
+        MultiValuedMap<HttpMethod, String> permitAllUrls = getPermitAllUrlsFromAnnotations();
 
         //  HTTP 安全
         httpSecurity
@@ -213,9 +213,8 @@ public class SecurityConfig {
     /**
      * 从 @PermitAll 注解中获取免登录 URL
      */
-    private Multimap<HttpMethod, String> getPermitAllUrlsFromAnnotations() {
-        Multimap<HttpMethod, String> result = HashMultimap.create();
-        // 获得接口对应的 HandlerMethod 集合
+    private MultiValuedMap<HttpMethod, String> getPermitAllUrlsFromAnnotations() {
+        MultiValuedMap<HttpMethod, String> result = new HashSetValuedHashMap<>();
         RequestMappingHandlerMapping requestMappingHandlerMapping = (RequestMappingHandlerMapping)
                 applicationContext.getBean("requestMappingHandlerMapping");
         Map<RequestMappingInfo, HandlerMethod> handlerMethodMap = requestMappingHandlerMapping.getHandlerMethods();
