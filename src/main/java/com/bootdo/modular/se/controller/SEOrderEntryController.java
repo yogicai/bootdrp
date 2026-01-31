@@ -1,7 +1,7 @@
 package com.bootdo.modular.se.controller;
 
 import cn.hutool.core.map.MapUtil;
-import com.bootdo.core.annotation.Log;
+import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.po.param.OrderDetailParam;
 import com.bootdo.modular.se.domain.SEOrderDO;
@@ -36,7 +36,7 @@ public class SEOrderEntryController {
         return "se/entry/entry";
     }
 
-    @Log("销售单保存")
+    @LogRecord(value = "销售单-保存", bizId = "#_ret['billNo']")
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('se:entry:add')")

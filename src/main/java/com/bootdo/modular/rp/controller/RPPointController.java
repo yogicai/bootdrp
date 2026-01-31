@@ -1,7 +1,7 @@
 package com.bootdo.modular.rp.controller;
 
 import com.bootdo.core.annotation.DataScope;
-import com.bootdo.core.annotation.Log;
+import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.rp.domain.PointEntryDO;
@@ -61,7 +61,7 @@ public class RPPointController {
         return "rp/point/edit";
     }
 
-    @Log("积分保存、修改")
+    @LogRecord(value = "积分-保存", bizId = "#pointEntry.relateNo")
     @ResponseBody
     @RequestMapping({"/save", "/update"})
     @PreAuthorize("hasAuthority('rp:point:edit')")
@@ -71,7 +71,7 @@ public class RPPointController {
         return R.ok();
     }
 
-    @Log("积分删除")
+    @LogRecord(value = "积分-删除", bizId = "#ids")
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('rp:point:remove')")

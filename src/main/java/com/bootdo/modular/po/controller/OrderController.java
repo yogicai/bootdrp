@@ -2,7 +2,7 @@ package com.bootdo.modular.po.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.DataScope;
-import com.bootdo.core.annotation.Log;
+import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
@@ -77,7 +77,7 @@ public class OrderController extends BaseController {
     /**
      * 审核、反审核
      */
-    @Log("采购单审核、反审核")
+    @LogRecord(value = "'采购单-' + #param.auditStatus.remark1", bizId = "#param.billNos")
     @PostMapping("/audit")
     @ResponseBody
     @PreAuthorize("hasAuthority('po:order:audit')")
@@ -90,7 +90,7 @@ public class OrderController extends BaseController {
     /**
      * 删除
      */
-    @Log("采购单删除")
+    @LogRecord(value = "采购单-删除", bizId = "#billNos")
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('po:order:batchRemove')")

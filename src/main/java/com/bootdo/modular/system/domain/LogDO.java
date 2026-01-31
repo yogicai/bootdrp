@@ -14,6 +14,8 @@ import java.util.Date;
 public class LogDO {
     private Long id;
 
+    private String bizId;
+
     private Long userId;
 
     private String username;

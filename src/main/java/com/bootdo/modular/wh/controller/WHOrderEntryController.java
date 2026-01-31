@@ -1,7 +1,7 @@
 package com.bootdo.modular.wh.controller;
 
 import cn.hutool.core.map.MapUtil;
-import com.bootdo.core.annotation.Log;
+import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.po.param.OrderDetailParam;
 import com.bootdo.modular.wh.domain.WHOrderDO;
@@ -46,7 +46,7 @@ public class WHOrderEntryController {
     /**
      * 保存单据
      */
-    @Log("库存单保存")
+    @LogRecord(value = "库存单-保存", bizId = "#_ret['billNo']")
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('se:entry:add')")

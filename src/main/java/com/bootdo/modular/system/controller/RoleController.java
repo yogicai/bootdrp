@@ -1,7 +1,7 @@
 package com.bootdo.modular.system.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.bootdo.core.annotation.Log;
+import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.system.domain.RoleDO;
 import com.bootdo.modular.system.service.RoleService;
@@ -38,14 +38,14 @@ public class RoleController extends BaseController {
         return roleService.list(Wrappers.query());
     }
 
-    @Log("添加角色")
+    @LogRecord(value = "添加角色")
     @PreAuthorize("hasAuthority('sys:role:add')")
     @GetMapping("/add")
     String add() {
         return "system/role/add";
     }
 
-    @Log("编辑角色")
+    @LogRecord(value = "编辑角色")
     @PreAuthorize("hasAuthority('sys:role:edit')")
     @GetMapping("/edit/{id}")
     String edit(@PathVariable Long id, Model model) {
@@ -54,7 +54,7 @@ public class RoleController extends BaseController {
         return "system/role/edit";
     }
 
-    @Log("保存角色")
+    @LogRecord(value = "保存角色")
     @PreAuthorize("hasAuthority('sys:role:add')")
     @PostMapping("/save")
     @ResponseBody()
@@ -63,7 +63,7 @@ public class RoleController extends BaseController {
         return R.ok();
     }
 
-    @Log("更新角色")
+    @LogRecord(value = "更新角色")
     @PreAuthorize("hasAuthority('sys:role:edit')")
     @PostMapping("/update")
     @ResponseBody()
@@ -72,7 +72,7 @@ public class RoleController extends BaseController {
         return R.ok();
     }
 
-    @Log("删除角色")
+    @LogRecord(value = "删除角色")
     @PreAuthorize("hasAuthority('sys:role:remove')")
     @PostMapping("/remove")
     @ResponseBody()
@@ -82,7 +82,7 @@ public class RoleController extends BaseController {
     }
 
     @PreAuthorize("hasAuthority('sys:role:batchRemove')")
-    @Log("批量删除角色")
+    @LogRecord(value = "批量删除角色")
     @PostMapping("/batchRemove")
     @ResponseBody
     R batchRemove(@RequestParam("ids[]") List<Long> ids) {

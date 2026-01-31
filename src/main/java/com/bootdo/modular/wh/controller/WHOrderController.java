@@ -2,7 +2,7 @@ package com.bootdo.modular.wh.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.DataScope;
-import com.bootdo.core.annotation.Log;
+import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
@@ -63,7 +63,7 @@ public class WHOrderController extends BaseController {
         PoiUtils.exportExcelWithStream("WHOrderResult.xls", WHOrderDO.class, orderList);
     }
 
-    @Log("库存单审核、反审核")
+    @LogRecord(value = "'库存单-' + #param.auditStatus.remark1", bizId = "#param.billNos")
     @PostMapping("/audit")
     @ResponseBody
     @PreAuthorize("hasAuthority('wh:order:audit')")
@@ -73,7 +73,7 @@ public class WHOrderController extends BaseController {
         return R.ok();
     }
 
-    @Log("库存单删除")
+    @LogRecord(value = "库存单-删除", bizId = "#billNos")
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('wh:order:remove')")

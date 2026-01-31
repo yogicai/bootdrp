@@ -2,7 +2,7 @@ package com.bootdo.modular.rp.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.DataScope;
-import com.bootdo.core.annotation.Log;
+import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
@@ -65,7 +65,7 @@ public class RPOrderController extends BaseController {
         PoiUtils.exportExcelWithStream("RPOrderResult.xls", RPOrderDO.class, orderList);
     }
 
-    @Log("财务单审核、反审核")
+    @LogRecord(value = "'财务单-' + #param.auditStatus.remark1", bizId = "#param.billNos")
     @PostMapping("/audit")
     @ResponseBody
     @PreAuthorize("hasAuthority('rp:order:audit')")
@@ -75,7 +75,7 @@ public class RPOrderController extends BaseController {
         return R.ok();
     }
 
-    @Log("财务单删除")
+    @LogRecord(value = "财务单-删除", bizId = "#billNos")
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('rp:order:remove')")

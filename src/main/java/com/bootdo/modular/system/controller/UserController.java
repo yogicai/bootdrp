@@ -1,6 +1,6 @@
 package com.bootdo.modular.system.controller;
 
-import com.bootdo.core.annotation.Log;
+import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.pojo.node.Tree;
 import com.bootdo.core.pojo.response.PageR;
 import com.bootdo.core.pojo.response.R;
@@ -50,7 +50,7 @@ public class UserController extends BaseController {
         return userService.page(param);
     }
 
-    @Log("添加用户")
+    @LogRecord(value = "添加用户")
     @GetMapping("/add")
     @PreAuthorize("hasAuthority('sys:user:add')")
     String add(Model model) {
@@ -59,7 +59,7 @@ public class UserController extends BaseController {
         return "system/user/add";
     }
 
-    @Log("编辑用户")
+    @LogRecord(value = "编辑用户")
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasAuthority('sys:user:edit')")
     String edit(Model model, @PathVariable Long id) {
@@ -70,7 +70,7 @@ public class UserController extends BaseController {
         return "system/user/edit";
     }
 
-    @Log("保存用户")
+    @LogRecord(value = "保存用户")
     @PostMapping("/save")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:add')")
@@ -79,7 +79,7 @@ public class UserController extends BaseController {
         return R.ok();
     }
 
-    @Log("更新用户")
+    @LogRecord(value = "更新用户")
     @PostMapping("/update")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:edit')")
@@ -88,7 +88,7 @@ public class UserController extends BaseController {
         return R.ok();
     }
 
-    @Log("更新用户")
+    @LogRecord(value = "更新用户")
     @PostMapping("/updatePersonal")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:edit')")
@@ -97,7 +97,7 @@ public class UserController extends BaseController {
         return R.ok();
     }
 
-    @Log("删除用户")
+    @LogRecord(value = "删除用户")
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:remove')")
@@ -106,7 +106,7 @@ public class UserController extends BaseController {
         return R.ok();
     }
 
-    @Log("批量删除用户")
+    @LogRecord(value = "批量删除用户")
     @PostMapping("/batchRemove")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:batchRemove')")
@@ -122,7 +122,7 @@ public class UserController extends BaseController {
         return !userService.exit(username);
     }
 
-    @Log("请求更改用户密码")
+    @LogRecord(value = "请求更改用户密码")
     @GetMapping("/resetPwd/{id}")
     @PreAuthorize("hasAuthority('sys:user:resetPwd')")
     String resetPwd(@PathVariable("id") Long userId, Model model) {
@@ -132,7 +132,7 @@ public class UserController extends BaseController {
         return "system/user/reset_pwd";
     }
 
-    @Log("提交更改用户密码")
+    @LogRecord(value = "提交更改用户密码")
     @PostMapping("/resetPwd")
     @ResponseBody
     R resetPwd(UserVO userVO) throws Exception {
@@ -140,7 +140,7 @@ public class UserController extends BaseController {
         return R.ok();
     }
 
-    @Log("admin提交更改用户密码")
+    @LogRecord(value = "admin提交更改用户密码")
     @PostMapping("/adminResetPwd")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:resetPwd')")

@@ -1,6 +1,5 @@
 package com.bootdo.modular.system.controller;
 
-import com.bootdo.core.annotation.Log;
 import com.bootdo.core.pojo.node.Tree;
 import com.bootdo.modular.system.domain.FileDO;
 import com.bootdo.modular.system.domain.MenuDO;
@@ -30,7 +29,6 @@ public class LoginController extends BaseController {
         return "redirect:/blog";
     }
 
-    @Log("请求访问主页")
     @GetMapping({"/index"})
     String index(Model model) {
         List<Tree<MenuDO>> menus = menuService.listMenuTree(getUserId());

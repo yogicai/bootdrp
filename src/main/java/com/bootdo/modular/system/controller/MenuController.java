@@ -1,6 +1,6 @@
 package com.bootdo.modular.system.controller;
 
-import com.bootdo.core.annotation.Log;
+import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.pojo.node.Tree;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.system.domain.MenuDO;
@@ -39,7 +39,7 @@ public class MenuController extends BaseController {
         return menuService.list(new SysMenuParam());
     }
 
-    @Log("添加菜单")
+    @LogRecord(value = "添加菜单")
     @PreAuthorize("hasAuthority('sys:menu:add')")
     @GetMapping("/add/{pId}")
     String add(Model model, @PathVariable Long pId) {
@@ -52,7 +52,7 @@ public class MenuController extends BaseController {
         return "system/menu/add";
     }
 
-    @Log("编辑菜单")
+    @LogRecord(value = "编辑菜单")
     @PreAuthorize("hasAuthority('sys:menu:edit')")
     @GetMapping("/edit/{id}")
     String edit(Model model, @PathVariable Long id) {
@@ -68,7 +68,7 @@ public class MenuController extends BaseController {
         return "system/menu/edit";
     }
 
-    @Log("保存菜单")
+    @LogRecord(value = "保存菜单")
     @PreAuthorize("hasAuthority('sys:menu:add')")
     @PostMapping("/save")
     @ResponseBody
@@ -77,7 +77,7 @@ public class MenuController extends BaseController {
         return R.ok();
     }
 
-    @Log("更新菜单")
+    @LogRecord(value = "更新菜单")
     @PreAuthorize("hasAuthority('sys:menu:edit')")
     @PostMapping("/update")
     @ResponseBody
@@ -86,7 +86,7 @@ public class MenuController extends BaseController {
         return R.ok();
     }
 
-    @Log("删除菜单")
+    @LogRecord(value = "删除菜单")
     @PreAuthorize("hasAuthority('sys:menu:remove')")
     @PostMapping("/remove")
     @ResponseBody

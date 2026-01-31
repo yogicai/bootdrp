@@ -1,6 +1,6 @@
 package com.bootdo.modular.cashier.controller;
 
-import com.bootdo.core.annotation.Log;
+import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.cashier.domain.RecordDO;
@@ -72,7 +72,7 @@ public class RecordController {
         return R.ok(recordService.updateById(recordDO));
     }
 
-    @Log("新增日记账")
+    @LogRecord(value = "新增日记账")
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('cashier:record:record')")
@@ -80,7 +80,7 @@ public class RecordController {
         return R.ok(recordService.save(recordDO.toManualRecord()));
     }
 
-    @Log("删除日记账")
+    @LogRecord(value = "删除日记账", bizId = "#ids")
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('cashier:record:record')")
@@ -88,7 +88,7 @@ public class RecordController {
         return R.ok(recordService.removeByIds(ids));
     }
 
-    @Log("导入日记账")
+    @LogRecord(value = "导入日记账")
     @PostMapping("/importCsv")
     @ResponseBody
     @PreAuthorize("hasAuthority('cashier:record:record')")

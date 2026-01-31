@@ -43,4 +43,9 @@ public class SecurityUtils {
         return user != null ? user.getUserId() : null;
     }
 
+    public static String getUserName() {
+        UserDO user = getUser();
+        return user != null ? user.getUsername() : null;
+    }
+
 }

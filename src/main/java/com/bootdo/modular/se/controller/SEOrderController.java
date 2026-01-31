@@ -1,7 +1,7 @@
 package com.bootdo.modular.se.controller;
 
 import com.bootdo.core.annotation.DataScope;
-import com.bootdo.core.annotation.Log;
+import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
@@ -68,7 +68,7 @@ public class SEOrderController {
         PoiUtils.exportExcelWithStream("SEOrderResult.xls", SEOrderDO.class, orderList);
     }
 
-    @Log("销售单审核、反审核")
+    @LogRecord(value = "'销售单-' + #param.auditStatus.remark1", bizId = "#param.billNos")
     @PostMapping("/audit")
     @ResponseBody
     @PreAuthorize("hasAuthority('se:order:audit')")
@@ -78,7 +78,7 @@ public class SEOrderController {
         return R.ok();
     }
 
-    @Log("销售单删除")
+    @LogRecord(value = "销售单-删除", bizId = "#billNos")
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('se:order:remove')")
