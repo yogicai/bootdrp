@@ -22,8 +22,6 @@ $(function() {
 });
 
 function load() {
-    $.jgrid.defaults.cmTemplate = { title: true };
-
     tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
         datatype: "json",
@@ -38,10 +36,10 @@ function load() {
         colNames: colNames,
         colModel: [
             {name: 'billDate', index: 'billDate', editable: true, width: 80, sorttype: "date", formatter: "date", frozen: true},
-            {name: 'billNo', index: 'billNo', editable: true, sorttype: "text", width: 200, frozen: true},
+            {name: 'billNo', index: 'billNo', editable: true, sorttype: "text", width: 200, frozen: true, title:true},
             {name: 'shopNo', index: 'shopNo', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
             {name: 'billType', index: 'billType', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatEnum(cellValue, 'BILL_TYPE')},
-            {name: 'debtorName', index: 'debtorName', editable: true, sorttype: "text", width: 70},
+            {name: 'debtorName', index: 'debtorName', editable: true, sorttype: "text", width: 70, title:true},
             {name: 'settleDOList', index: 'settleDOList', editable: true, width: 90, align: "center", formatter: cellValue => utils.formatListS(cellValue, 'settleName')},
             {name: 'settleDOList', index: 'settleDOList', editable: true, width: 80, align: "right", formatter: cellValue => utils.formatListS(cellValue, 'paymentAmount', 'number')},
             {name: 'entryDOList', index: 'entryDOList', editable: true, width: 180, align: "center", title: false, formatter: cellValue => utils.formatListSpan(cellValue, 'srcBillNo', 1)},
@@ -50,7 +48,7 @@ function load() {
             {name: 'discountAmount', index: 'discountAmount', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},
             {name: 'checkName', index: 'checkName', editable: true, sorttype: "text", width: 70},
             {name: 'auditStatus', index: 'auditStatus', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatEnumS(cellValue, 'AUDIT_STATUS')},
-            {name: 'remark', index: 'remark', editable: true, sorttype: "text", width: 150},
+            {name: 'remark', index: 'remark', editable: true, sorttype: "text", width: 150, title:true},
             {name: 'createTime', index: 'createTime', editable: true, width: 140},
             {name: 'updateTime', index: 'updateTime', editable: true, width: 150}
         ],

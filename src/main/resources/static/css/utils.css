@@ -179,3 +179,16 @@ th.ui-th-ltr {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .2);
     background: rgba(0, 0, 0, 0.5);
 }
+
+/* Firefox滚动条美化 */
+/* 设置滚动条宽度为细款 */
+@-moz-document url-prefix() {
+    /* 设置滚动条宽度为细款 */
+    * {
+        scrollbar-width: thin;
+    }
+    /* 设置滚动条颜色（滑块颜色 和 轨道颜色） */
+    * {
+        scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
+    }
+}

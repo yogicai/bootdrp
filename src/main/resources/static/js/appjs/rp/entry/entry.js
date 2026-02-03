@@ -74,7 +74,7 @@ function load() {
             },
             {name: 'id', index: 'id', editable: false, hidedlg: true, hidden: true},
             {name: 'settleAccount', index: 'settleAccount', editable: true, width: 300, edittype: 'select', editoptions: utils.formatSelect("ACCOUNT_DATA"), formatter: "select"},
-            {name: 'paymentAmount', index: 'paymentAmount', editable: true, width: 200, align: "right", editoptions: utils.commonEditOptions()},
+            {name: 'paymentAmount', index: 'paymentAmount', editable: true, width: 200, align: "right", formatter: "number", editoptions: utils.commonEditOptions()},
             {name: 'remark', index: 'remark', editable: true, width: 300, editoptions: utils.commonEditOptions()}
         ],
         beforeSelectRow: function (rowid) {
@@ -119,10 +119,10 @@ function load() {
             {name: 'srcBillType', index: 'srcBillType', editable: false, width: 100, formatter: cellValue => utils.formatEnum(cellValue, 'BILL_TYPE', '')},
             {name: 'srcBillType', index: 'srcBillType', editable: false, width: 100, hidden: true},
             {name: 'srcBillDate', index: 'srcBillDate', editable: false, width: 150},
-            {name: 'srcTotalAmount', index: 'srcTotalAmount', editable: false, width: 100, align: "right"},
-            {name: 'srcPaymentAmount', index: 'srcPaymentAmount', editable: false, width: 100, align: "right"},
-            {name: 'srcUnPaymentAmount', index: 'srcUnPaymentAmount', editable: false, width: 100, align: "right"},
-            {name: 'checkAmount', index: 'checkAmount', editable: true, width: 100, align: "right", editoptions: utils.commonEditOptions()}
+            {name: 'srcTotalAmount', index: 'srcTotalAmount', editable: false, width: 100, align: "right", formatter: "number"},
+            {name: 'srcPaymentAmount', index: 'srcPaymentAmount', editable: false, width: 100, align: "right", formatter: "number"},
+            {name: 'srcUnPaymentAmount', index: 'srcUnPaymentAmount', editable: false, width: 100, align: "right", formatter: "number"},
+            {name: 'checkAmount', index: 'checkAmount', editable: true, width: 100, align: "right", formatter: "number", editoptions: utils.commonEditOptions()}
         ],
         beforeSelectRow: function (rowid) {
             if (rowid !== lastSel1) {

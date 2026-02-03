@@ -10,15 +10,13 @@ $(function() {
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
     utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100px", noneSelectedText: '店铺', multiple: true}]);
     utils.loadEnumTypes(["ORDER_CG_STATUS", "AUDIT_STATUS"], ["status", "auditStatus"], [{width: "100px", noneSelectedText: '收款状态', multiple: true}, {width: "100px", noneSelectedText: '审核状态', multiple: true}]);
-    utils.loadChosenStatic(["billType"], [{width: "100px", noneSelectedText: '订单类型', multiple: true}]);
+    utils.loadChosenStatic(["billType"], [{width: "80px", noneSelectedText: '类型', multiple: true}]);
     utils.loadCategory(["VENDOR_DATA"], ["vendorId"], [{width: "100px", noneSelectedText: '供应商', liveSearch: true, multiple: true}]);
 
     load();
 });
 
 function load() {
-    $.jgrid.defaults.cmTemplate = { title: true };
-
     tableGrid = $tableGrid.jqGrid({
         url: prefix + "/list",
         datatype: "json",
@@ -33,11 +31,11 @@ function load() {
         colNames: ['单据日期', '编号', '店铺', '类型', '类型', '供应商', '数量', '商品金额', '优惠率', '优惠金额', '采购费用', '已付金额', '优惠后商品金额', '合计金额', '状态', '审核状态', '结算帐户', '备注', '创建时间', '更新时间'],
         colModel: [
             {name: 'billDate', index: 'billDate', editable: true, width: 80, sorttype: "date", formatter: "date", frozen: true},
-            {name: 'billNo', index: 'billNo', editable: true, sorttype: "text", width: 170, frozen: true},
+            {name: 'billNo', index: 'billNo', editable: true, sorttype: "text", width: 170, frozen: true, title:true},
             {name: 'shopNo', index: 'shopNo', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
             {name: 'billType', index: 'billType', editable: true, sorttype: "text", width: 60, formatter: cellValue => utils.formatEnum(cellValue, 'BILL_TYPE')},
             {name: 'billType', index: 'billType', editable: true, sorttype: "text", width: 80, hidden: true},
-            {name: 'vendorName', index: 'vendorName', editable: true, sorttype: "text", width: 80},
+            {name: 'vendorName', index: 'vendorName', editable: true, sorttype: "text", width: 80, title:true},
             {name: 'totalQty', index: 'totalQty', editable: true, width: 60, align: "right", sorttype: "int", formatter: "number"},
             {name: 'entryAmount', index: 'entryAmount', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},
             {name: 'discountRate', index: 'discountRate', editable: true, width: 60, align: "right", sorttype: "float", formatter: "number", hidden: true},
@@ -49,7 +47,7 @@ function load() {
             {name: 'status', index: 'status', editable: true, sorttype: "text", edittype: "select", width: 70, formatter: cellValue => utils.formatEnum(cellValue, 'ORDER_CG_STATUS')},
             {name: 'auditStatus', index: 'auditStatus', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatEnumS(cellValue, 'AUDIT_STATUS')},
             {name: 'settleAccount', index: 'settleAccount', editable: true, sorttype: "text", width: 80, formatter: cellValue => utils.formatCategory(cellValue, 'ACCOUNT_DATA')},
-            {name: 'remark', index: 'remark', editable: true, sorttype: "text", width: 140},
+            {name: 'remark', index: 'remark', editable: true, sorttype: "text", width: 140, title:true},
             {name: 'createTime', index: 'createTime', editable: true, width: 140},
             {name: 'updateTime', index: 'updateTime', editable: true, width: 140}
         ],

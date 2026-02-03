@@ -26,8 +26,6 @@ $(function() {
     load();
 });
 function load() {
-    $.jgrid.defaults.cmTemplate = { title: true };
-
     tableGrid = $tableList.jqGrid({
         url: prefix + "/list",
         datatype: "json",
@@ -42,15 +40,15 @@ function load() {
         colNames: colNames,
         colModel: [
             {name: 'billDate', index: 'billDate', editable: true, width: 80, sorttype: "date", formatter: "date", frozen: true},
-            {name: 'billNo', index: 'billNo', editable: true, sorttype: "text", width: 200, frozen: true},
+            {name: 'billNo', index: 'billNo', editable: true, sorttype: "text", width: 200, frozen: true, title:true},
             {name: 'shopNo', index: 'shopNo', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
             {name: 'billType', index: 'billType', editable: true, sorttype: "text", width: 80, formatter: cellValue => utils.formatEnum(cellValue, 'BILL_TYPE')},
             {name: 'serviceType', index: 'serviceType', editable: true, sorttype: "text", width: 80, formatter: cellValue => utils.formatType(cellValue, data_type)},
-            {name: 'debtorName', index: 'debtorName', editable: true, sorttype: "text", width: 90},
+            {name: 'debtorName', index: 'debtorName', editable: true, sorttype: "text", width: 90, title:true},
             {name: 'totalQty', index: 'totalQty', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},
             {name: 'entryAmount', index: 'entryAmount', editable: true, width: 100, align: "right", sorttype: "float", formatter: "number"},
             {name: 'auditStatus', index: 'auditStatus', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatEnumS(cellValue, 'AUDIT_STATUS')},
-            {name: 'remark', index: 'remark', editable: true, sorttype: "text", width: 140},
+            {name: 'remark', index: 'remark', editable: true, sorttype: "text", width: 140, title:true},
             {name: 'createTime', index: 'createTime', editable: true, width: 140},
             {name: 'updateTime', index: 'updateTime', editable: true, width: 140}
         ],

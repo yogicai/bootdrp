@@ -83,7 +83,7 @@
                     html: $this.data('html') || true,
                     placement: $this.data('placement') || 'auto',
                     trigger: $this.data('trigger') || 'hover focus',
-                    delay: $this.data('delay') || 300
+                    delay: {show: $this.data('delay') || 600, hide: 300}
                 };
 
                 // 初始化 Tooltip
