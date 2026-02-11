@@ -44,7 +44,7 @@ public class ReportController extends BaseController {
     @PostMapping(value = "/sRecon")
     @Operation(summary = "客户、供应商应收应付款")
     @PreAuthorize("hasAuthority('report:recon:recon')")
-    public R sReconVC(@RequestBody SReconParam param) {
+    public R sRecon(@RequestBody SReconParam param) {
         return reportService.sRecon(param);
     }
 
@@ -53,7 +53,7 @@ public class ReportController extends BaseController {
     @GetMapping(value = "/sRecon/export")
     @Operation(summary = "客户、供应商应收应付款-导出")
     @PreAuthorize("hasAuthority('report:recon:recon')")
-    public void sReconVCExport(SReconParam param) {
+    public void sReconExport(SReconParam param) {
         R r = reportService.sRecon(param);
         List<SReconResult> result = JSONUtil.toList(JSONUtil.toJsonStr(r.get("result")), SReconResult.class);
         PoiUtils.exportExcelWithStream("SReconResult.xls", SReconResult.class, result);

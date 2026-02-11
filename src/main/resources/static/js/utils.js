@@ -274,7 +274,7 @@
         return val;
     };
 
-    Utils.prototype.formatSubstr = function formatSubstr(cellValue, showCount = 20) {
+    Utils.prototype.formatSubstr = function formatSubstr(cellValue, showCount = 21) {
         let val = "";
         if (cellValue && cellValue.length > 0) {
             val = `<span data-toggle="tooltip" title="${cellValue}">${cellValue.substring(0, showCount)}${cellValue.length > showCount ? '...' : ''}</span>`;

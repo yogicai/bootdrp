@@ -27,6 +27,15 @@
                     </select>
                 </div>
 
+                <div class="input-group columns pull-left tool-pull-left">
+                    <select data-placeholder="请选择" name="dimensionType" id="dimensionType" class="form-control">
+                        <option value="YEAR">年</option>
+                        <option value="MONTH">月</option>
+                        <option value="DAY">日</option>
+                        <option value="USER">用户</option>
+                    </select>
+                </div>
+
                 <div class="input-group columns pull-left tool-pull-left checkbox">
                     <label class="i-checks">
                         <input type="checkbox" name="showDebt" value="0" th:text="(${type=='CUSTOMER'} ? '欠款客户' : '欠款供应商')">

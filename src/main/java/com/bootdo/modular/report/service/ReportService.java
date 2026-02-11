@@ -37,9 +37,9 @@ public class ReportService {
 
         List<Map<String, Object>> data;
         if (InstituteType.CUSTOMER.equals(param.getType())) {
-            data = reportDao.sReconC(params);
+            data = reportDao.sReconCustomer(params);
         } else {
-            data = reportDao.sReconV(params);
+            data = reportDao.sReconVendor(params);
         }
         return R.ok(MapUtil.<String, Object>builder()
                 .put("result", data)

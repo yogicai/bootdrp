@@ -10,9 +10,9 @@ import java.util.Map;
 
 public interface ReportDao {
 
-    List<Map<String, Object>> sReconC(Map<String, Object> map);
+    List<Map<String, Object>> sReconCustomer(Map<String, Object> map);
 
-    List<Map<String, Object>> sReconV(Map<String, Object> map);
+    List<Map<String, Object>> sReconVendor(Map<String, Object> map);
 
     List<Map<String, Object>> saleProduct(Map<String, Object> map);
 

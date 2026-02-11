@@ -3,12 +3,47 @@
 
 <mapper namespace="com.bootdo.modular.report.dao.ReportDao">
 
-    <select id="sReconC" resultType="java.util.Map">
+    <sql id="dateFormatAndGroup">
+        <choose>
+            <when test="dimensionType !=null and dimensionType.name() == 'YEAR'">
+                SUBSTR(a.bill_date, 1, 4)
+            </when>
+            <when test="dimensionType !=null and dimensionType.name() == 'MONTH'">
+                SUBSTR(a.bill_date, 1, 7)
+            </when>
+            <when test="dimensionType !=null and dimensionType.name() == 'DAY'">
+                SUBSTR(a.bill_date, 1, 10)
+            </when>
+            <otherwise>
+                ${groupColumn}
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="dateFormatAndGroupColumn">
+        <choose>
+            <when test="dimensionType !=null and dimensionType.name() == 'YEAR'">
+                SUBSTR(a.bill_date, 1, 4)
+            </when>
+            <when test="dimensionType !=null and dimensionType.name() == 'MONTH'">
+                SUBSTR(a.bill_date, 1, 7)
+            </when>
+            <when test="dimensionType !=null and dimensionType.name() == 'DAY'">
+                SUBSTR(a.bill_date, 1, 10)
+            </when>
+            <otherwise>
+                CONCAT(DATE_FORMAT(MIN(a.`bill_date`), '%Y-%m-%d'), ' - ', DATE_FORMAT(MAX(a.`bill_date`), '%Y-%m-%d'))
+            </otherwise>
+        </choose>
+    </sql>
+
+    <select id="sReconCustomer" resultType="java.util.Map">
         SELECT
-            a.`shop_no`                                                                                             AS shopNo,
-            a.`consumer_id`                                                                                         AS instituteId,
-            a.`consumer_name`                                                                                       AS instituteName,
-            CONCAT(DATE_FORMAT(MIN(a.`bill_date`), '%Y-%m-%d'), ' - ', DATE_FORMAT(MAX(a.`bill_date`), '%Y-%m-%d')) AS billRegion,
+            <include refid="dateFormatAndGroupColumn"/>                                                             AS billRegion,
+            group_concat(distinct a.`shop_no`)                                                                      AS shopNo,
+            group_concat(distinct a.`consumer_id`)                                                                  AS instituteId,
+            group_concat(distinct a.`consumer_name`)                                                                AS instituteName,
+            group_concat(distinct a.`bill_no`)                                                                      AS billNo,
             SUM(a.`total_amount`)                                                                                   AS totalAmount,
             SUM(a.`payment_amount`)                                                                                 AS paymentAmount,
             SUM(a.`total_amount`) - SUM(a.`payment_amount`)                                                         AS debtAmount,
@@ -23,17 +58,23 @@
             and audit_status = 'YES'
         </trim>
         GROUP BY
-            consumer_id  <if test="showDebt != null and showDebt == 0">HAVING debtAmount > 0</if>
+            <include refid="dateFormatAndGroup">
+                <property name="groupColumn" value="consumer_id"/>
+            </include>
+            <if test="showDebt != null and showDebt == 0">HAVING debtAmount > 0</if>
         ORDER BY
-            debtAmount DESC
+            <include refid="dateFormatAndGroup">
+                <property name="groupColumn" value="debtAmount"/>
+            </include> desc
     </select>
 
-    <select id="sReconV" resultType="java.util.Map">
+    <select id="sReconVendor" resultType="java.util.Map">
         SELECT
-            a.`shop_no`                                                                                             AS shopNo,
-            a.`vendor_id`                                                                                           AS instituteId,
-            a.`vendor_name`                                                                                         AS instituteName,
-            CONCAT(DATE_FORMAT(MIN(a.`bill_date`), '%Y-%m-%d'), ' - ', DATE_FORMAT(MAX(a.`bill_date`), '%Y-%m-%d')) AS billRegion,
+            <include refid="dateFormatAndGroupColumn"/>                                                             AS billRegion,
+            group_concat(distinct a.`shop_no`)                                                                      AS shopNo,
+            group_concat(distinct a.`vendor_id`)                                                                    AS instituteId,
+            group_concat(distinct a.`vendor_name`)                                                                  AS instituteName,
+            group_concat(distinct a.`bill_no`)                                                                      AS billNo,
             SUM(a.`total_amount`)                                                                                   AS totalAmount,
             SUM(a.`payment_amount`)                                                                                 AS paymentAmount,
             SUM(a.`total_amount`) - SUM(a.`payment_amount`)                                                         AS debtAmount
@@ -46,9 +87,14 @@
             and audit_status = 'YES'
         </trim>
         GROUP BY
-            vendor_id <if test="showDebt != null and showDebt == 0">  HAVING debtAmount > 0 </if>
+            <include refid="dateFormatAndGroup">
+                <property name="groupColumn" value="vendor_id"/>
+            </include>
+            <if test="showDebt != null and showDebt == 0">HAVING debtAmount > 0</if>
         ORDER BY
-            debtAmount DESC
+            <include refid="dateFormatAndGroup">
+                <property name="groupColumn" value="debtAmount"/>
+            </include> desc
     </select>
 
     <select id="saleProduct" resultType="java.util.Map">

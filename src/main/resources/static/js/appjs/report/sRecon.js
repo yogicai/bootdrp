@@ -6,30 +6,32 @@ let $dataForm;
 let loginShopNo = utils.dataCache.loginShopInfo.no
 
 let initData = [];
-let colNamesC = ['店铺', '编号', '客户名称', '年度', '应收金额', '收款金额', '商品成本', '销售毛利', '欠款金额'];
-let colNamesV = ['店铺', '编号', '供应商名称', '年度', '应付金额', '付款金额', '', '', '欠款金额'];
+let colNamesC = ['店铺', '编号', '客户名称', '单据日期', '销售单编号', '应收金额', '收款金额', '商品成本', '销售毛利', '欠款金额'];
+let colNamesV = ['店铺', '编号', '供应商名称', '单据日期', '采购单编号', '应付金额', '付款金额', '', '', '欠款金额'];
 let colNames = type === 'CUSTOMER' ? colNamesC : colNamesV;
 let colModelC = [
-    {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 40, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
-    { name:'instituteId', index:'instituteId', editable:false, align: "center", width:30 },
-    { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", width:60, title: true },
-    { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center", width:80 },
-    { name:'totalAmount', index:'totalAmount', editable:false, sorttype:"float", align: "right", width:80, formatter:"number" },
-    { name:'paymentAmount', index:'paymentAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
-    { name:'costAmount', index:'costAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
-    { name:'profitAmount', index:'profitAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
-    { name:'debtAmount', index:'debtAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }
+    {name: 'shopNo', index: 'shopNo', editable: false, align: "center", formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
+    { name:'instituteId', index:'instituteId', editable:false, align: "center", hidden: true },
+    { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", formatter: cellValue => utils.formatSubstr(cellValue, 8) },
+    { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center" },
+    { name:'billNo', index:'billNo', editable:false, sorttype:"text", align: "center", formatter: cellValue => utils.formatSubstr(cellValue) },
+    { name:'totalAmount', index:'totalAmount', editable:false, sorttype:"float", align: "right", width:120, formatter:"number" },
+    { name:'paymentAmount', index:'paymentAmount', editable:false, width:120, align:"right", sorttype:"float", formatter:"number" },
+    { name:'costAmount', index:'costAmount', editable:false, width:120, align:"right", sorttype:"float", formatter:"number" },
+    { name:'profitAmount', index:'profitAmount', editable:false, width:120, align:"right", sorttype:"float", formatter:"number" },
+    { name:'debtAmount', index:'debtAmount', editable:false, width:120, align:"right", sorttype:"float", formatter:"number" }
 ];
 let colModelV = [
-    {name: 'shopNo', index: 'shopNo', editable: false, align: "center", width: 40, formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
-    { name:'instituteId', index:'instituteId', editable:false, align: "center", width:30 },
-    { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", width:60, title: true },
-    { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center", width:80 },
-    { name:'totalAmount', index:'totalAmount', editable:false, sorttype:"float", align: "right", width:80, formatter:"number" },
-    { name:'paymentAmount', index:'paymentAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
-    { name:'costAmount', index:'costAmount', editable:false, width:80, align:"right", sorttype:"float", hidden:true, formatter:"number" },
-    { name:'profitAmount', index:'profitAmount', editable:false, width:80, align:"right", sorttype:"float", hidden:true, formatter:"number" },
-    { name:'debtAmount', index:'debtAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }
+    {name: 'shopNo', index: 'shopNo', editable: false, align: "center", formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
+    { name:'instituteId', index:'instituteId', editable:false, align: "center", hidden: true },
+    { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", formatter: cellValue => utils.formatSubstr(cellValue) },
+    { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center" },
+    { name:'billNo', index:'billNo', editable:false, sorttype:"text", align: "center", formatter: cellValue => utils.formatSubstr(cellValue) },
+    { name:'totalAmount', index:'totalAmount', editable:false, sorttype:"float", align: "right", width:120, formatter:"number" },
+    { name:'paymentAmount', index:'paymentAmount', editable:false, width:120, align:"right", sorttype:"float", formatter:"number" },
+    { name:'costAmount', index:'costAmount', editable:false, width:120, align:"right", sorttype:"float", hidden:true, formatter:"number" },
+    { name:'profitAmount', index:'profitAmount', editable:false, width:120, align:"right", sorttype:"float", hidden:true, formatter:"number" },
+    { name:'debtAmount', index:'debtAmount', editable:false, width:120, align:"right", sorttype:"float", formatter:"number" }
 ];
 let colModel = type === 'CUSTOMER' ? colModelC : colModelV;
 
@@ -60,6 +62,8 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
+    utils.loadChosenStatic(["dimensionType"], [{width: "120px", setValue: ['USER']}]);
+
 
     if (type === 'CUSTOMER') {
         utils.loadCategory(["CUSTOMER_DATA"], ["instituteId"], [{width: "120px", liveSearch: true, setData: []}]);
