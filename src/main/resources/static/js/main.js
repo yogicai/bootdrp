@@ -381,12 +381,12 @@ function searchPBillTrend(type, shopNo) {
         data: JSON.stringify({type: type, shopNo: shopNo}),
         success : function(r) {
             if (r.code === 0) {
-                _option.xAxis[0].data = r.result.xAxis[0].data;
-                _option.yAxis[0] = r.result.yAxis[0];
-                _option.yAxis[1] = r.result.yAxis[1];
-                _option.series[0].data = r.result.series[0].data;
-                _option.series[1].data = r.result.series[1].data;
-                _option.series[2].data = r.result.series[2].data;
+                _option.xAxis[0].data = r.data.xAxis[0].data;
+                _option.yAxis[0] = r.data.yAxis[0];
+                _option.yAxis[1] = r.data.yAxis[1];
+                _option.series[0].data = r.data.series[0].data;
+                _option.series[1].data = r.data.series[1].data;
+                _option.series[2].data = r.data.series[2].data;
             }
             // 使用刚指定的配置项和数据显示图表。
             myChart.setOption(_option);
@@ -408,9 +408,9 @@ function searchPBillTrendPie(type, shopNo) {
         data: JSON.stringify({type: type, shopNo: shopNo}),
         success : function(r) {
             if (r.code === 0) {
-                _option.legend.data = r.result.legend.data;
-                _option.series[0].data = r.result.series[0].data;
-                _option.series[1].data = r.result.series[1].data;
+                _option.legend.data = r.data.legend.data;
+                _option.series[0].data = r.data.series[0].data;
+                _option.series[1].data = r.data.series[1].data;
             }
             // 使用刚指定的配置项和数据显示图表。
             myChart.setOption(_option);
@@ -432,9 +432,9 @@ function searchPCashTrend(type, shopNo) {
         data: JSON.stringify({type: type, shopNo: shopNo}),
         success : function(r) {
             if (r.code === 0) {
-                _option.xAxis[0].data = r.result.xAxis[0].data;
-                _option.yAxis[0] = r.result.yAxis[0];
-                _option.series[0].data = r.result.series[0].data;
+                _option.xAxis[0].data = r.data.xAxis[0].data;
+                _option.yAxis[0] = r.data.yAxis[0];
+                _option.series[0].data = r.data.series[0].data;
             }
             // 使用刚指定的配置项和数据显示图表。
             myChart.setOption(_option);
@@ -457,11 +457,11 @@ function searchHisPCashTrend(type, shopNo) {
         data: JSON.stringify({type: type, shopNo: shopNo}),
         success : function(r) {
             if (r.code === 0) {
-                _option.title = r.result.title;
-                _option.xAxis[0].data = r.result.xAxis[0].data;
-                _option.yAxis[0] = r.result.yAxis[0];
-                _option.series = r.result.series;
-                _option.legend = r.result.legend;
+                _option.title = r.data.title;
+                _option.xAxis[0].data = r.data.xAxis[0].data;
+                _option.yAxis[0] = r.data.yAxis[0];
+                _option.series = r.data.series;
+                _option.legend = r.data.legend;
             }
             // 使用刚指定的配置项和数据显示图表。
             myChart.setOption(_option);
@@ -509,8 +509,8 @@ function searchPBalance(shopNo) {
         data: JSON.stringify({shopNo: shopNo}),
         success : function(r) {
             if (r.code === 0) {
-                animateNUM('qtyTotalWH', r.result.qtyTotal);
-                animateNUM('totalAmountWH', r.result.totalAmount);
+                animateNUM('qtyTotalWH', r.data.qtyTotal);
+                animateNUM('totalAmountWH', r.data.totalAmount);
             }
         }
     });
@@ -524,11 +524,11 @@ function searchPSeTotal(type, shopNo) {
         data: JSON.stringify({type: type, shopNo: shopNo}),
         success : function(r) {
             if (type === 'WEEK') {
-                animateNUM('totalAmountSEW', r.result.totalAmount);
-                animateNUM('profitSEW', r.result.profit);
+                animateNUM('totalAmountSEW', r.data.totalAmount);
+                animateNUM('profitSEW', r.data.profit);
             } else {
-                animateNUM('totalAmountSEM', r.result.totalAmount);
-                animateNUM('profitSEM', r.result.profit);
+                animateNUM('totalAmountSEM', r.data.totalAmount);
+                animateNUM('profitSEM', r.data.profit);
             }
         }
     });
@@ -542,8 +542,8 @@ function searchPDebtTotal(shopNo) {
         data: JSON.stringify({shopNo: shopNo}),
         success : function(r) {
             if (r.code === 0) {
-                animateNUM('debtAmountSE', r.result.debtAmount);
-                animateNUM('debtVAmountSE', r.result.debtVAmount);
+                animateNUM('debtAmountSE', r.data.debtAmount);
+                animateNUM('debtVAmountSE', r.data.debtVAmount);
             }
         }
     });
@@ -557,8 +557,8 @@ function searchPCashTotal(shopNo) {
         data: JSON.stringify({shopNo: shopNo}),
         success : function(r) {
             if (r.code === 0) {
-                animateNUM('profitAmountT', r.profitAmountT);
-                animateNUM('cashFlowAmountT', r.cashFlowAmountT);
+                animateNUM('profitAmountT', r.data.profitAmountT);
+                animateNUM('cashFlowAmountT', r.data.cashFlowAmountT);
             }
         }
     });

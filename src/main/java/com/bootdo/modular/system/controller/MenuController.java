@@ -28,21 +28,21 @@ public class MenuController extends BaseController {
 
     @PreAuthorize("hasAuthority('sys:menu:menu')")
     @GetMapping()
-    String menu() {
+    public String menu() {
         return "system/menu/menu";
     }
 
     @PreAuthorize("hasAuthority('sys:menu:menu')")
     @RequestMapping("/list")
     @ResponseBody
-    List<MenuDO> list() {
+    public List<MenuDO> list() {
         return menuService.list(new SysMenuParam());
     }
 
     @LogRecord(value = "添加菜单")
     @PreAuthorize("hasAuthority('sys:menu:add')")
     @GetMapping("/add/{pId}")
-    String add(Model model, @PathVariable Long pId) {
+    public String add(Model model, @PathVariable Long pId) {
         model.addAttribute("pId", pId);
         if (pId == 0) {
             model.addAttribute("pName", "根目录");
@@ -55,7 +55,7 @@ public class MenuController extends BaseController {
     @LogRecord(value = "编辑菜单")
     @PreAuthorize("hasAuthority('sys:menu:edit')")
     @GetMapping("/edit/{id}")
-    String edit(Model model, @PathVariable Long id) {
+    public String edit(Model model, @PathVariable Long id) {
         MenuDO mdo = menuService.getById(id);
         Long pId = mdo.getParentId();
         model.addAttribute("pId", pId);
@@ -72,7 +72,7 @@ public class MenuController extends BaseController {
     @PreAuthorize("hasAuthority('sys:menu:add')")
     @PostMapping("/save")
     @ResponseBody
-    R save(MenuDO menu) {
+    public R<Void> save(MenuDO menu) {
         menuService.save(menu);
         return R.ok();
     }
@@ -81,7 +81,7 @@ public class MenuController extends BaseController {
     @PreAuthorize("hasAuthority('sys:menu:edit')")
     @PostMapping("/update")
     @ResponseBody
-    R update(MenuDO menu) {
+    public R<Void> update(MenuDO menu) {
         menuService.updateById(menu);
         return R.ok();
     }
@@ -90,20 +90,20 @@ public class MenuController extends BaseController {
     @PreAuthorize("hasAuthority('sys:menu:remove')")
     @PostMapping("/remove")
     @ResponseBody
-    R remove(Long id) {
+    public R<Void> remove(Long id) {
         menuService.removeById(id);
         return R.ok();
     }
 
     @GetMapping("/tree")
     @ResponseBody
-    Tree<MenuDO> tree() {
+    public Tree<MenuDO> tree() {
         return menuService.getTree();
     }
 
     @GetMapping("/tree/{roleId}")
     @ResponseBody
-    Tree<MenuDO> tree(@PathVariable Long roleId) {
+    public Tree<MenuDO> tree(@PathVariable Long roleId) {
         return menuService.getTree(roleId);
     }
 }

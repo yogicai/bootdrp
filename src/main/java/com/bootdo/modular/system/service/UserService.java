@@ -31,6 +31,7 @@ import com.bootdo.modular.system.domain.UserDO;
 import com.bootdo.modular.system.domain.UserRoleDO;
 import com.bootdo.modular.system.param.SysUserParam;
 import com.bootdo.modular.system.result.LoginUserResult;
+import com.bootdo.modular.system.result.UploadImgResult;
 import com.bootdo.modular.system.result.UserVO;
 import jakarta.annotation.Resource;
 import org.springframework.security.core.GrantedAuthority;
@@ -200,13 +201,13 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
         return BuildTree.build(trees);
     }
 
-    public Map<String, Object> updatePersonalImg(MultipartFile file, String avatarData, Long userId) {
+    public UploadImgResult updatePersonalImg(MultipartFile file, String avatarData, Long userId) {
         String fileName = file.getOriginalFilename();
         fileName = StrUtil.replace(fileName, FileUtil.mainName(fileName), IdUtil.simpleUUID());
 
         FileDO sysFile = new FileDO(FileType.getFileType(fileName), "/files/" + fileName, new Date());
         // 获取图片后缀
-        String prefix = fileName.substring((fileName.lastIndexOf(".") + 1));
+        String prefix = FileUtil.getSuffix(fileName);
         String[] str = avatarData.split(",");
         // 获取截取的 x坐标
         int x = (int) Math.floor(Double.parseDouble(str[0].split(":")[1]));
@@ -222,7 +223,7 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
             BufferedImage cutImage = ImageUtils.cutImage(file, x, y, w, h, prefix);
             BufferedImage rotateImage = ImageUtils.rotateImage(cutImage, r);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            boolean flag = ImageIO.write(rotateImage, prefix, out);
+            ImageIO.write(rotateImage, prefix, out);
             // 转换后存入数据库
             byte[] b = out.toByteArray();
 
@@ -230,16 +231,13 @@ public class UserService extends ServiceImpl<UserDao, UserDO> {
         } catch (Exception e) {
             throw new BizServiceException(R.SERVER_ERROR, "图片裁剪错误！！", e);
         }
-        Map<String, Object> result = new HashMap<>();
         if (sysFileService.save(sysFile)) {
-            UserDO userDO = new UserDO();
-            userDO.setUserId(userId);
-            userDO.setPicId(sysFile.getId());
-            if (this.updateById(userDO)) {
-                result.put("url", sysFile.getUrl());
-            }
+            this.updateById(new UserDO()
+                    .setUserId(userId)
+                    .setPicId(sysFile.getId())
+            );
         }
-        return result;
+        return new UploadImgResult().setUrl(sysFile.getUrl());
     }
 
     public LoginUserResult loginUserInfo() {

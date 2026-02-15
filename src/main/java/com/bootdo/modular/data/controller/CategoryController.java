@@ -68,7 +68,7 @@ public class CategoryController {
     @ResponseBody
     @PostMapping("/save")
     @Operation(summary = "保存")
-    public R save(CategoryDO category) {
+    public R<Void> save(CategoryDO category) {
         categoryService.save(category);
         return R.ok();
     }
@@ -76,7 +76,7 @@ public class CategoryController {
     @ResponseBody
     @PostMapping("/update")
     @Operation(summary = "修改")
-    public R update(CategoryDO category) {
+    public R<Void> update(CategoryDO category) {
         categoryService.updateById(category);
         return R.ok();
     }
@@ -84,7 +84,7 @@ public class CategoryController {
     @PostMapping("/remove")
     @ResponseBody
     @Operation(summary = "删除")
-    public R remove(Long categoryId) {
+    public R<Void> remove(Long categoryId) {
         categoryService.removeById(categoryId);
         return R.ok();
     }
@@ -92,7 +92,7 @@ public class CategoryController {
     @PostMapping("/batchRemove")
     @ResponseBody
     @Operation(summary = "批量删除")
-    public R batchRemove(@RequestParam("ids[]") List<Integer> categoryIds) {
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Integer> categoryIds) {
         categoryService.removeByIds(categoryIds);
         return R.ok();
     }

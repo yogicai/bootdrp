@@ -205,7 +205,7 @@ function save(add) {
                     initBillNo();
                     clearGrid();
                 } else if (r.code === 0) {
-                    initBillNo(r.billNo);
+                    initBillNo(r.data.billNo);
                 }
                 layer.msg(r.msg);
             }
@@ -332,15 +332,15 @@ function initOrder(billNo) {
             data: {"billNo": billNo},
             success: function (r) {
                 if (r.code === 0) {
-                    $dataForm.setForm(r.order);
+                    $dataForm.setForm(r.data);
 
                     tableGrid.clearGridData();
-                    tableGrid.jqGrid('setGridParam', {data: r.order.entryVOList}).trigger('reloadGrid');
+                    tableGrid.jqGrid('setGridParam', {data: r.data.entryVOList}).trigger('reloadGrid');
 
                     $mask.removeClass('util-has-audit');
-                    $mask.addClass(r.order && r.order.auditStatus === 'YES' ? 'util-has-audit' : '');
+                    $mask.addClass(r.data && r.data.auditStatus === 'YES' ? 'util-has-audit' : '');
 
-                    initBillNo(r.order.billNo);
+                    initBillNo(r.data.billNo);
                 } else {
                     layer.msg(r.msg);
                 }

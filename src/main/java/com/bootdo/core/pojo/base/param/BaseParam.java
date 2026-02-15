@@ -63,7 +63,7 @@ public class BaseParam {
      * （jqGrid）列表是否升序：默认降序
      */
     public boolean isAsc() {
-        return "desc".equals(this.sord);
+        return !"desc".equalsIgnoreCase(this.sord);
     }
 
     /**

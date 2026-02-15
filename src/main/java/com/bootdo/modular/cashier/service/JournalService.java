@@ -7,7 +7,6 @@ import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import cn.afterturn.easypoi.excel.export.ExcelExportService;
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
@@ -23,6 +22,7 @@ import com.bootdo.modular.cashier.dao.JournalDao;
 import com.bootdo.modular.cashier.dao.SalaryDao;
 import com.bootdo.modular.cashier.domain.RecordDO;
 import com.bootdo.modular.cashier.param.JournalGeneralParam;
+import com.bootdo.modular.cashier.result.FlowRecordItem;
 import com.bootdo.modular.cashier.result.JournalGeneralResult;
 import com.bootdo.modular.cashier.result.JournalGeneralResult.*;
 import com.bootdo.modular.cashier.result.SettleYear;
@@ -73,17 +73,17 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
 
         Map<String, Object> beanToMap = BeanUtil.beanToMap(param);
         // 账户支出流水明细
-        List<Map<String, Object>> flowRecordList = journalDao.flowRecordList(beanToMap);
+        List<FlowRecordItem> flowRecordList = journalDao.flowRecordList(beanToMap);
 
         // 按年份+账户，统计资金流水
         List<AccountItem> flowRecordBeanList = flowRecordList.stream()
-                .collect(Collectors.groupingBy(m -> CollUtil.join(CollUtil.valuesOfKeys(m, "year", "account"), StrUtil.COMMA), Collectors.toList()))
+                .collect(Collectors.groupingBy(item -> StrUtil.join(StrUtil.COMMA, item.getYear(), item.getAccount()), Collectors.toList()))
                 .entrySet()
                 .stream()
                 .map(entry -> {
                     String[] keyArr = StrUtil.splitToArray(entry.getKey(), StrUtil.COMMA);
                     AccountItem accountItem = new AccountItem(keyArr[0], keyArr[1]);
-                    entry.getValue().forEach(m -> {
+                    entry.getValue().forEach(item -> {
                         // 现金流 map转bean
                         BeanUtil.descForEach(AccountItem.class, action -> {
                             // 现金流 map转bean
@@ -91,10 +91,8 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
                             // 支出类型
                             String excelName = ObjectUtil.defaultIfNull(excel, Excel::name, null);
                             // 支出类型
-                            String costType = MapUtil.getStr(m, "costType", StrUtil.EMPTY);
-
-                            if (StrUtil.equals(costType, excelName) && action.getFieldType().equals(BigDecimal.class)) {
-                                action.setValue(accountItem, MapUtil.get(m, "payAmount", BigDecimal.class, BigDecimal.ZERO));
+                            if (StrUtil.equals(item.getCostType(), excelName) && action.getFieldType().equals(BigDecimal.class)) {
+                                action.setValue(accountItem, item.getPayAmount());
                             }
                         });
                     });

@@ -18,6 +18,7 @@ import com.bootdo.modular.system.controller.BaseController;
 import com.bootdo.modular.workbench.param.PBalanceParam;
 import com.bootdo.modular.workbench.param.PBillTrendParam;
 import com.bootdo.modular.workbench.param.SEBillTotalParam;
+import com.bootdo.modular.workbench.result.CashTotalResult;
 import com.bootdo.modular.workbench.service.WorkbenchService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -50,13 +51,12 @@ public class WorkbenchController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pBalanceTotal")
-    public R pBalanceTotal(@RequestBody PBalanceParam param) {
+    public R<BalanceTotalResult> pBalanceTotal(@RequestBody PBalanceParam param) {
         Map<String, Object> params = MapUtil.<String, Object>builder()
                 .put(StrUtil.isNotBlank(param.getShopNo()), "shopNo", CollUtil.newArrayList(param.getShopNo()))
                 .put("status", CommonStatus.ENABLE.getValue())
                 .build();
-        BalanceTotalResult result = productBalanceService.pBalanceTotal(params);
-        return R.ok().put("result", result);
+        return R.ok(productBalanceService.pBalanceTotal(params));
     }
 
     /**
@@ -64,13 +64,13 @@ public class WorkbenchController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pSeTotal")
-    public R pSeTotal(@RequestBody PBalanceParam param) {
+    public R<SEBillTotalResult> pSeTotal(@RequestBody PBalanceParam param) {
         SEBillTotalResult result = workbenchService.pBalanceTotal(SEBillTotalParam.builder()
                 .billDateStart(DateUtils.getStartStr(Constant.Q_MONTH))
                 .auditStatus(AuditStatus.YES)
                 .shopNo(param.getShopNo())
                 .build());
-        return R.ok().put("result", result);
+        return R.ok(result);
     }
 
     /**
@@ -78,9 +78,8 @@ public class WorkbenchController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pDebtTotal")
-    public R pDebtTotal(@RequestBody PBalanceParam param) {
-        SEDebtTotalResult result = workbenchService.pDebtTotal(param);
-        return R.ok().put("result", result);
+    public R<SEDebtTotalResult> pDebtTotal(@RequestBody PBalanceParam param) {
+        return R.ok(workbenchService.pDebtTotal(param));
     }
 
     /**
@@ -88,12 +87,13 @@ public class WorkbenchController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pCashTotal")
-    public R pCashTotal(@RequestBody PBalanceParam param) {
-        return workbenchService.pCashTotal(MapUtil.<String, Object>builder()
+    public R<CashTotalResult> pCashTotal(@RequestBody PBalanceParam param) {
+        return R.ok(workbenchService.pCashTotal(MapUtil.<String, Object>builder()
                 .put("audit", AuditStatus.YES.name())
                 .put("billDate", DateUtils.getYearBegin())
                 .put("shopNo", param.getShopNo())
-                .build());
+                .build())
+        );
     }
 
     /**
@@ -101,9 +101,8 @@ public class WorkbenchController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pCashTrend")
-    public R pCashTrend(@RequestBody PBillTrendParam param) {
-        EChartOption option = workbenchService.pCashTrend(BeanUtil.beanToMap(param));
-        return R.ok().put("result", option);
+    public R<EChartOption> pCashTrend(@RequestBody PBillTrendParam param) {
+        return R.ok(workbenchService.pCashTrend(BeanUtil.beanToMap(param)));
     }
 
     /**
@@ -111,9 +110,8 @@ public class WorkbenchController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pBillTrend")
-    public R pBillTrend(@RequestBody PBillTrendParam param) {
-        EChartOption option = workbenchService.pBillTrend(BeanUtil.beanToMap(param));
-        return R.ok().put("result", option);
+    public R<EChartOption> pBillTrend(@RequestBody PBillTrendParam param) {
+        return R.ok(workbenchService.pBillTrend(BeanUtil.beanToMap(param)));
     }
 
     /**
@@ -121,9 +119,8 @@ public class WorkbenchController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pBillTrendPie")
-    public R pBillTrendPie(@RequestBody PBillTrendParam param) {
-        EChartOption option = workbenchService.pBillTrendPie(BeanUtil.beanToMap(param));
-        return R.ok().put("result", option);
+    public R<EChartOption> pBillTrendPie(@RequestBody PBillTrendParam param) {
+        return R.ok(workbenchService.pBillTrendPie(BeanUtil.beanToMap(param)));
     }
 
     /**
@@ -131,9 +128,8 @@ public class WorkbenchController extends BaseController {
      */
     @ResponseBody
     @PostMapping(value = "/pHisCashTrend")
-    public R pHisCashTrend(@RequestBody PBillTrendParam param) {
-        EChartOption option = workbenchService.pHisBillTrend(BeanUtil.beanToMap(param));
-        return R.ok().put("result", option);
+    public R<EChartOption> pHisCashTrend(@RequestBody PBillTrendParam param) {
+        return R.ok(workbenchService.pHisBillTrend(BeanUtil.beanToMap(param)));
     }
 
 }

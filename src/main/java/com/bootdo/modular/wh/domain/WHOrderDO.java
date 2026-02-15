@@ -69,7 +69,7 @@ public class WHOrderDO extends BaseEntity {
     /**
      * 数量
      */
-    @Excel(name = "数量")
+    @Excel(name = "商品数量")
     private BigDecimal totalQty;
 
     /**

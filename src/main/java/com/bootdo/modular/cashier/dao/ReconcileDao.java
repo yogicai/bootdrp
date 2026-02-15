@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bootdo.modular.cashier.domain.RecordDO;
 import com.bootdo.modular.cashier.result.ReconcileResult.ReconcileItem;
+import com.bootdo.modular.cashier.result.ReconcileResult.ReconcileItemSum;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,6 +24,6 @@ public interface ReconcileDao extends BaseMapper<RPOrderDO> {
 
     List<ReconcileItem> list(@Param("param") Map<String, Object> param);
 
-    Map<String, Object> selectSum(@Param("param") Map<String, Object> map);
+    ReconcileItemSum selectSum(@Param("param") Map<String, Object> map);
 
 }

@@ -156,7 +156,7 @@ function add() {
 }
 
 function edit(id, status) {
-    if (status == '1') {
+    if (status === '1') {
         layer.alert('修改之前请先停止任务');
         return;
     }
@@ -181,7 +181,7 @@ function remove(id) {
                 'id': id
             },
             success: function (r) {
-                if (r.code == 0) {
+                if (r.code === 0) {
                     layer.msg(r.msg);
                     reLoad();
                 } else {
@@ -195,7 +195,7 @@ function remove(id) {
 function changeStatus(id, status) {
     var actCh;
     var cmd;
-    if (status == 0) {
+    if (status === 0) {
         cmd = 'start';
         actCh = "确认要开启任务吗？";
     } else {
@@ -213,7 +213,7 @@ function changeStatus(id, status) {
                 'cmd': cmd
             },
             success: function (r) {
-                if (r.code == 0) {
+                if (r.code === 0) {
                     layer.msg(r.msg);
                     reLoad();
                 } else {
@@ -226,7 +226,7 @@ function changeStatus(id, status) {
 
 function batchRemove() {
     var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
-    if (rows.length == 0) {
+    if (rows.length === 0) {
         layer.msg("请选择要删除的数据");
         return;
     }
@@ -234,7 +234,7 @@ function batchRemove() {
         btn: ['确定', '取消']
         // 按钮
     }, function () {
-        var ids = new Array();
+        var ids = [];
         // 遍历所有选择的行数据，取每条数据对应的ID
         $.each(rows, function (i, row) {
             ids[i] = row['id'];
@@ -246,7 +246,7 @@ function batchRemove() {
             },
             url: prefix + '/batchRemove',
             success: function (r) {
-                if (r.code == 0) {
+                if (r.code === 0) {
                     layer.msg(r.msg);
                     reLoad();
                 } else {

@@ -18,6 +18,7 @@ import com.bootdo.modular.data.dao.ProductDao;
 import com.bootdo.modular.data.domain.ProductDO;
 import com.bootdo.modular.engage.dao.ProductBalanceDao;
 import com.bootdo.modular.engage.domain.ProductCostDO;
+import com.bootdo.modular.engage.result.BalanceItemResult;
 import com.bootdo.modular.engage.service.ProductCostService;
 import com.bootdo.modular.po.dao.OrderEntryDao;
 import com.bootdo.modular.po.domain.OrderDO;
@@ -82,7 +83,7 @@ public class CostAmountCalculator {
         CostAmountIResult detail = new CostAmountIResult();
         List<ProductCostDO> productCostDOList = CollUtil.newArrayList();
         for (OrderEntryDO entry : entryDOList) {
-            /**
+            /*
              * CG_ORDER     WH_RK_ORDER    +   AUDIT       1 ：库存增加
              * CG_ORDER     WH_RK_ORDER    +   UNAUDIT    -1 ：库存减少
              * TH_ORDER     WH_CK_ORDER	   +   AUDIT      -1 ：库存减少
@@ -419,26 +420,25 @@ public class CostAmountCalculator {
      * 计算商品库存信息
      */
     private Map<String, BigDecimal> convertInventoryMap(List<String> entryNoList) {
-        //采购、销售、其他入出库 商品
-        List<Map<String, Object>> list = whReportDao.pBalance(MapUtil.<String, Object>builder()
+        // 采购、销售、其他入出库 商品
+        List<BalanceItemResult> list = whReportDao.pBalance(MapUtil.<String, Object>builder()
                 .put("productNos", entryNoList)
                 .put("status", CommonStatus.ENABLE.getValue())
                 .build());
-        //商品库存
+        // 商品库存
         return list.stream()
                 .collect(Collectors.groupingBy(
-                        map -> MapUtil.getStr(map, "no"),
+                        BalanceItemResult::getNo,
                         TreeMap::new,
                         Collectors.reducing(BigDecimal.ZERO, this::defaultStockAmount, BigDecimal::add))
                 );
     }
 
-    private BigDecimal defaultStockAmount(Map<String, Object> map) {
-        BillType billType = BillType.fromValue(MapUtil.getStr(map, "bill_type"));
-        if (incBillTypeSet.contains(billType)) {
-            return BigDecimal.valueOf(MapUtil.getInt(map, "total_qty"));
+    private BigDecimal defaultStockAmount(BalanceItemResult balanceItem) {
+        if (incBillTypeSet.contains(balanceItem.getBillType())) {
+            return balanceItem.getTotalQty();
         } else {
-            return BigDecimal.valueOf(MapUtil.getInt(map, "total_qty") * -1L);
+            return balanceItem.getTotalQty().negate();
         }
     }
 

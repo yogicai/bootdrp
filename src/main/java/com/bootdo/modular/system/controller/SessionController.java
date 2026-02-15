@@ -36,7 +36,7 @@ public class SessionController {
 
     @ResponseBody
     @RequestMapping("/forceLogout/{sessionId}")
-    public R forceLogout(@PathVariable String sessionId) {
+    public R<Void> forceLogout(@PathVariable String sessionId) {
         sessionService.forceLogout(sessionId);
         return R.ok();
     }

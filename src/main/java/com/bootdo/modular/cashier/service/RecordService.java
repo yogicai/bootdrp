@@ -22,6 +22,7 @@ import com.bootdo.modular.cashier.domain.RecordDO;
 import com.bootdo.modular.cashier.param.RecordImportParam;
 import com.bootdo.modular.cashier.param.RecordQryParam;
 import com.bootdo.modular.cashier.result.MultiSelect;
+import com.bootdo.modular.cashier.result.RecordSum;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,8 +58,8 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
 
     public PageJQ page(RecordQryParam param) {
         Page<RecordDO> page = recordDao.list(PageFactory.defaultPage(), BeanUtil.beanToMap(param));
-        Map<String, Object> map = recordDao.selectSum(BeanUtil.beanToMap(param));
-        return new PageJQ(page, MapUtil.getInt(map, "totalAmount", 0));
+        RecordSum sum = recordDao.selectSum(BeanUtil.beanToMap(param));
+        return new PageJQ(page, sum.getTotalAmount());
     }
 
     public List<RecordDO> list(Map<String, Object> param) {

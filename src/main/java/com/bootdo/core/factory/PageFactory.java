@@ -1,6 +1,9 @@
 package com.bootdo.core.factory;
 
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bootdo.core.utils.HttpServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,28 +31,39 @@ public class PageFactory {
     private static final String PAGE_NO_PARAM_NAME = "page";
 
     /**
+     * 排序字段
+     */
+    private static final String SORT_FIELD_PARAM_NAME = "sidx";
+
+    /**
+     * 排序方向
+     */
+    private static final String SORT_ORDER_PARAM_NAME = "sord";
+    private static final String SORT_ORDER_PARAM_ASC = "asc";
+
+    /**
      * 默认分页，在使用时PageFactory.defaultPage会自动获取pageSize和pageNo参数
      */
     public static <T> Page<T> defaultPage() {
 
-        int pageSize = 20;
-        int pageNo = 1;
-
         HttpServletRequest request = HttpServletUtil.getRequest();
 
-        //每页条数
-        String pageSizeString = request.getParameter(PAGE_SIZE_PARAM_NAME);
-        if (ObjectUtil.isNotEmpty(pageSizeString)) {
-            pageSize = Integer.parseInt(pageSizeString);
+        // 每页条数、第几页
+        int pageSize = NumberUtil.parseInt(request.getParameter(PAGE_SIZE_PARAM_NAME), 20);
+        int pageNo = NumberUtil.parseInt(request.getParameter(PAGE_NO_PARAM_NAME), 1);
+
+        // 排序字段、方向
+        String sortField = StrUtil.cleanBlank(request.getParameter(SORT_FIELD_PARAM_NAME));
+        String sortOrder = StrUtil.cleanBlank(request.getParameter(SORT_ORDER_PARAM_NAME));
+
+        Page<T> page = new Page<T>(pageNo, pageSize);
+        // 设置排序
+        if (ObjectUtil.isAllNotEmpty(sortField, sortOrder)) {
+            String dbSortField = StrUtil.toUnderlineCase(sortField);
+            page.addOrder(OrderItem.withExpression(dbSortField, SORT_ORDER_PARAM_ASC.equalsIgnoreCase(sortOrder)));
         }
 
-        //第几页
-        String pageNoString = request.getParameter(PAGE_NO_PARAM_NAME);
-        if (ObjectUtil.isNotEmpty(pageNoString)) {
-            pageNo = Integer.parseInt(pageNoString);
-        }
-
-        return new Page<>(pageNo, pageSize);
+        return page;
     }
 
     public static <T> Page<T> defalultAllPage() {

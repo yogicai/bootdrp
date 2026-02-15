@@ -41,7 +41,7 @@ public class OrderImportController {
     @ResponseBody
     @PostMapping("/import/excel")
     @PreAuthorize("hasAuthority('po:order:order')")
-    public R importExcel(@Validated OrderImportParam orderImportParam) throws Exception {
+    public R<Void> importExcel(@Validated OrderImportParam orderImportParam) throws Exception {
         //查询列表数据
         importService.importExcel(orderImportParam);
         return R.ok();

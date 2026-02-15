@@ -2,6 +2,7 @@ package com.bootdo.modular.cashier.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bootdo.modular.cashier.result.JournalGeneralResult.SettleOrderItem;
+import com.bootdo.modular.cashier.result.SettleYear.SettleYearFlow;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,7 +20,7 @@ public interface SettleDao extends BaseMapper<RPOrderDO> {
     /**
      * 年份核销金额合计
      */
-    List<Map<String, Object>> flowSettleYear(@Param("param") Map<String, Object> param);
+    List<SettleYearFlow> flowSettleYear(@Param("param") Map<String, Object> param);
 
     /**
      * 订单核销明细

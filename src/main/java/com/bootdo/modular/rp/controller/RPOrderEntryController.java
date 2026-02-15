@@ -9,6 +9,7 @@ import com.bootdo.modular.rp.domain.RPOrderEntryDO;
 import com.bootdo.modular.rp.param.RPOrderVO;
 import com.bootdo.modular.rp.service.RPOrderEntryService;
 import com.bootdo.modular.rp.validator.RPOrderValidator;
+import com.bootdo.modular.se.result.OrderSaveResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,18 +61,17 @@ public class RPOrderEntryController {
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('rp:entry:add')")
-    public R save(@RequestBody @Validated RPOrderVO order) {
+    public R<OrderSaveResult> save(@RequestBody @Validated RPOrderVO order) {
         rpOrderValidator.validateSave(order);
         RPOrderDO orderDO = rpOrderEntryService.save(order);
-        return R.ok(MapUtil.of("billNo", orderDO.getBillNo()));
+        return R.ok(new OrderSaveResult().setBillNo(orderDO.getBillNo()));
     }
 
     @ResponseBody
     @GetMapping("/get")
     @PreAuthorize("hasAuthority('rp:order:order')")
-    public R get(OrderDetailParam param) {
+    public R<RPOrderVO> get(OrderDetailParam param) {
         //查询列表数据
-        RPOrderVO orderVO = rpOrderEntryService.getOrderVO(param);
-        return R.ok().put("order", orderVO);
+        return R.ok(rpOrderEntryService.getOrderVO(param));
     }
 }

@@ -8,6 +8,7 @@ import com.bootdo.modular.po.param.OrderDetailParam;
 import com.bootdo.modular.po.param.OrderVO;
 import com.bootdo.modular.po.service.OrderEntryService;
 import com.bootdo.modular.po.validator.OrderValidator;
+import com.bootdo.modular.se.result.OrderSaveResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,10 +45,10 @@ public class OrderEntryController {
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('po:entry:add')")
-    public R save(@RequestBody @Validated OrderVO order) {
+    public R<OrderSaveResult> save(@RequestBody @Validated OrderVO order) {
         orderValidator.validateSave(order);
         OrderDO orderDO = orderEntryService.save(order);
-        return R.ok(MapUtil.of("billNo", orderDO.getBillNo()));
+        return R.ok(new OrderSaveResult().setBillNo(orderDO.getBillNo()));
     }
 
     @GetMapping("/add")
@@ -66,8 +67,7 @@ public class OrderEntryController {
     @ResponseBody
     @GetMapping("/get")
     @PreAuthorize("hasAuthority('po:order:order')")
-    public R get(@Validated OrderDetailParam param) {
-        OrderVO orderVO = orderEntryService.getOrderVO(param);
-        return R.ok().put("order", orderVO);
+    public R<OrderVO> get(@Validated OrderDetailParam param) {
+        return R.ok(orderEntryService.getOrderVO(param));
     }
 }

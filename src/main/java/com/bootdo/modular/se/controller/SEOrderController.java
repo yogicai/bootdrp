@@ -72,7 +72,7 @@ public class SEOrderController {
     @PostMapping("/audit")
     @ResponseBody
     @PreAuthorize("hasAuthority('se:order:audit')")
-    public R audit(@RequestBody @Validated OrderAuditParam param) {
+    public R<Void> audit(@RequestBody @Validated OrderAuditParam param) {
         seOrderValidator.validateAudit(param);
         seOrderService.audit(param);
         return R.ok();
@@ -82,7 +82,7 @@ public class SEOrderController {
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('se:order:remove')")
-    public R remove(@RequestParam("billNos[]") List<String> billNos) {
+    public R<Void> remove(@RequestParam("billNos[]") List<String> billNos) {
         seOrderValidator.validateRemove(billNos);
         seOrderService.batchRemove(billNos);
         return R.ok();

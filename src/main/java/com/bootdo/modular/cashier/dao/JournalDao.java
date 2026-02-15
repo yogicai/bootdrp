@@ -2,6 +2,7 @@ package com.bootdo.modular.cashier.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bootdo.modular.cashier.domain.RecordDO;
+import com.bootdo.modular.cashier.result.FlowRecordItem;
 import com.bootdo.modular.cashier.result.JournalGeneralResult.DebtItem;
 import com.bootdo.modular.cashier.result.JournalGeneralResult.OperateItem;
 import com.bootdo.modular.cashier.result.JournalGeneralResult.OperateMonthItem;
@@ -31,7 +32,7 @@ public interface JournalDao extends BaseMapper<RecordDO> {
     /**
      * 现金支出明细
      */
-    List<Map<String, Object>> flowRecordList(@Param("param") Map<String, Object> param);
+    List<FlowRecordItem> flowRecordList(@Param("param") Map<String, Object> param);
 
     /**
      * 欠款明细

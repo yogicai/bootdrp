@@ -15,9 +15,10 @@ let colModel = [
     {name: 'qtyTotal', index: 'qtyTotal', editable: false, width: 70, align: "right", sorttype: "float", formatter: "number"},
     {name: 'entryPrice', index: 'entryPrice', editable: false, width: 70, align: "right", sorttype: "float", formatter: "number"},
     {name: 'entryAmount', index: 'entryAmount', editable: false, width: 80, align: "right", sorttype: "float", formatter: "number"},
-    {name: 'inventory', index: 'inventory', editable: false, align: "right", sorttype: "float", width: 70},
+    {name: 'inventory', index: 'inventory', editable: false, width: 70, align: "right", sorttype: "float", formatter: "number"},
     {name: 'costPrice', index: 'costPrice', editable: false, width: 70, align: "right", sorttype: "float", formatter: "number"},
-    {name: 'costAmount', index: 'costAmount', editable: false, width: 80, align: "right", sorttype: "float", formatter: "number"}];
+    {name: 'costAmount', index: 'costAmount', editable: false, width: 80, align: "right", sorttype: "float", formatter: "number"}
+];
 
 let rowTemplate = { name:'totalQty', index:'totalQty', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" };
 let rowTemplateFun = function (columnName) {  return $.extend({}, rowTemplate, {name:columnName}); };
@@ -77,7 +78,7 @@ function loadGrid() {
         data: JSON.stringify($dataForm.serializeObject()),
         success: function (r) {
             if (r.code === 0) {
-                let stockList = r.result.stockList;
+                let stockList = r.data.stockList;
                 let _colNames = colNames.concat();
                 let _colModel = colModel.concat();
                 let _groupHeaders = groupHeaders.concat();
@@ -88,12 +89,12 @@ function loadGrid() {
                     _groupHeaders.push(groupHeaderFun("totalQty".concat(key), 1, val))
                     _addColModelName.push("totalQty".concat(key));
                 });
-                $.each(r.result.productInfoList, function (key, val) {
+                $.each(r.data.productInfoList, function (key, val) {
                     $.each(val.stockInfoList, function (keyS, valS) {
                         val["totalQty".concat(keyS)] = valS.totalQty;
                     });
                 });
-                let _gridConfig = $.extend({}, gridConfig, {height: window.innerHeight - 200, colNames: _colNames, colModel: _colModel, data: r.result.productInfoList});
+                let _gridConfig = $.extend({}, gridConfig, {height: window.innerHeight - 200, colNames: _colNames, colModel: _colModel, data: r.data.productInfoList});
                 $.jgrid.gridUnload('#table_list');
                 tableGrid = $('#table_list').jqGrid( _gridConfig );
                 tableGrid.trigger("reloadGrid", { fromServer: true });
@@ -101,7 +102,7 @@ function loadGrid() {
 
                 collectTotal(_addColModelName);
 
-                $('span[name=toDate]').html("库存日期: " + r.result.toDate);
+                $('span[name=toDate]').html("库存日期: " + r.data.toDate);
             } else {
                 layer.msg(r.msg);
             }

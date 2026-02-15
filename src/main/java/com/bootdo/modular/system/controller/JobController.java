@@ -26,7 +26,7 @@ public class JobController extends BaseController {
     private JobService jobService;
 
     @GetMapping()
-    String taskScheduleJob() {
+    public String taskScheduleJob() {
         return "system/job/job";
     }
 
@@ -38,12 +38,12 @@ public class JobController extends BaseController {
     }
 
     @GetMapping("/add")
-    String add() {
+    public String add() {
         return "system/job/add";
     }
 
     @GetMapping("/edit/{id}")
-    String edit(@PathVariable Long id, Model model) {
+    public String edit(@PathVariable Long id, Model model) {
         TaskDO job = jobService.getById(id);
         model.addAttribute("job", job);
         return "system/job/edit";
@@ -53,9 +53,8 @@ public class JobController extends BaseController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable Long id) {
-        TaskDO taskScheduleJob = jobService.getById(id);
-        return R.ok().put("taskScheduleJob", taskScheduleJob);
+    public R<TaskDO> info(@PathVariable Long id) {
+        return R.ok(jobService.getById(id));
     }
 
     /**
@@ -63,7 +62,7 @@ public class JobController extends BaseController {
      */
     @ResponseBody
     @PostMapping("/save")
-    public R save(TaskDO taskScheduleJob) {
+    public R<Void> save(TaskDO taskScheduleJob) {
         jobService.save(taskScheduleJob);
         return R.ok();
     }
@@ -73,7 +72,7 @@ public class JobController extends BaseController {
      */
     @ResponseBody
     @PostMapping("/update")
-    public R update(TaskDO taskDO) {
+    public R<Void> update(TaskDO taskDO) {
         jobService.updateById(taskDO);
         return R.ok();
     }
@@ -83,7 +82,7 @@ public class JobController extends BaseController {
      */
     @PostMapping("/remove")
     @ResponseBody
-    public R remove(Long id) {
+    public R<Void> remove(Long id) {
         jobService.removeTask(id);
         return R.ok();
     }
@@ -93,14 +92,14 @@ public class JobController extends BaseController {
      */
     @PostMapping("/batchRemove")
     @ResponseBody
-    public R remove(@RequestParam("ids[]") List<Integer> ids) {
+    public R<Void> remove(@RequestParam("ids[]") List<Integer> ids) {
         jobService.batchRemoveTask(ids);
         return R.ok();
     }
 
     @PostMapping(value = "/changeJobStatus")
     @ResponseBody
-    public R changeJobStatus(Long id, String cmd) {
+    public R<String> changeJobStatus(Long id, String cmd) {
         String label = "start".equals(cmd) ? "启动" : "停止";
         try {
             jobService.changeStatus(id, cmd);

@@ -4,12 +4,12 @@
 <mapper namespace="com.bootdo.modular.cashier.dao.SettleDao">
 
     <!-- 年份核销金额合计 -->
-    <select id="flowSettleYear" resultType="java.util.Map">
+    <select id="flowSettleYear" resultType="com.bootdo.modular.cashier.result.SettleYear$SettleYearFlow">
         SELECT
             DATE_FORMAT(a.bill_date, '%Y')            AS year,
             rs.settle_account                         AS settleAccount,
             rs.settle_name                            AS settleName,
-            count(1)                                  AS totalQty,
+            count(1)                                  AS billCount,
             sum(a.total_amount)                       AS totalAmount,
             sum(re.check_amount)                      AS checkAmount,
             sum(re.discount_amount)                   AS discountAmount,

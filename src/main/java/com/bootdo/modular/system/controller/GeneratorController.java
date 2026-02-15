@@ -27,18 +27,18 @@ import java.util.Map;
 @RequestMapping("/common/generator")
 @Controller
 public class GeneratorController {
-    String prefix = "system/generator";
+    private String prefix = "system/generator";
     @Resource
-    GeneratorService generatorService;
+    private GeneratorService generatorService;
 
     @GetMapping()
-    String generator() {
+    public String generator() {
         return prefix + "/list";
     }
 
     @ResponseBody
     @GetMapping("/list")
-    List<Map<String, Object>> list() {
+    public List<Map<String, Object>> list() {
         List<Map<String, Object>> list = generatorService.list();
         return list;
     }
@@ -82,7 +82,7 @@ public class GeneratorController {
 
     @ResponseBody
     @PostMapping("/update")
-    R update(@RequestParam Map<String, Object> map) {
+    public R<Void> update(@RequestParam Map<String, Object> map) {
         try {
             PropertiesConfiguration conf = new PropertiesConfiguration("generator.properties");
             conf.setProperty("author", map.get("author"));

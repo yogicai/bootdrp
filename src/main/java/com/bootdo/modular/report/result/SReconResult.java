@@ -1,9 +1,9 @@
 package com.bootdo.modular.report.result;
 
-import cn.afterturn.easypoi.excel.annotation.Excel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author yogiCai
@@ -12,31 +12,10 @@ import java.math.BigDecimal;
 @Data
 public class SReconResult {
 
-    @Excel(name = "店铺", dict = "data_shop")
-    private String shopNo;
-
-    @Excel(name = "编号")
-    private String instituteId;
-
-    @Excel(name = "客户名称")
-    private String instituteName;
-
-    @Excel(name = "年度", width = 25)
+    @Schema(name = "单据日期")
     private String billRegion;
 
-    @Excel(name = "应收金额", numFormat = "#,##0.00", isStatistics = true, width = 15)
-    private BigDecimal totalAmount;
-
-    @Excel(name = "收款金额", numFormat = "#,##0.00", isStatistics = true, width = 15)
-    private BigDecimal paymentAmount;
-
-    @Excel(name = "商品成本", numFormat = "#,##0.00", isStatistics = true, width = 15)
-    private BigDecimal costAmount;
-
-    @Excel(name = "销售毛利", numFormat = "#,##0.00", isStatistics = true, width = 15)
-    private BigDecimal profitAmount;
-
-    @Excel(name = "欠款金额", numFormat = "#,##0.00", isStatistics = true, width = 15)
-    private BigDecimal debtAmount;
+    @Schema(description = "数据明细")
+    private List<SReconItem> itemList;
 
 }

@@ -4,17 +4,19 @@ let tableGrid;
 let $tableList;
 let $dataForm;
 let loginShopNo = utils.dataCache.loginShopInfo.no
+let currentRow = {};
 
 let initData = [];
-let colNamesC = ['店铺', '编号', '客户名称', '单据日期', '销售单编号', '应收金额', '收款金额', '商品成本', '销售毛利', '欠款金额'];
-let colNamesV = ['店铺', '编号', '供应商名称', '单据日期', '采购单编号', '应付金额', '付款金额', '', '', '欠款金额'];
+let colNamesC = ['店铺', '编号', '客户名称', '单据日期', '销售单编号', '数量', '应收金额', '收款金额', '商品成本', '销售毛利', '欠款金额'];
+let colNamesV = ['店铺', '编号', '供应商名称', '单据日期', '采购单编号', '数量', '应付金额', '付款金额', '', '', '欠款金额'];
 let colNames = type === 'CUSTOMER' ? colNamesC : colNamesV;
 let colModelC = [
-    {name: 'shopNo', index: 'shopNo', editable: false, align: "center", formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
+    { name: 'shopNo', index: 'shopNo', editable: false, align: "center", formatter: cellValue => utils.formatType(cellValue, 'data_shop') },
     { name:'instituteId', index:'instituteId', editable:false, align: "center", hidden: true },
     { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", formatter: cellValue => utils.formatSubstr(cellValue, 8) },
     { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center" },
-    { name:'billNo', index:'billNo', editable:false, sorttype:"text", align: "center", formatter: cellValue => utils.formatSubstr(cellValue) },
+    { name:'billNo', index:'billNo', editable:false, sorttype:"text", align: "center", width:180, formatter: cellValue => utils.formatSubstr(cellValue) },
+    { name:'billCount', index:'billCount', editable:false, sorttype:"text", align: "center", width:80 },
     { name:'totalAmount', index:'totalAmount', editable:false, sorttype:"float", align: "right", width:120, formatter:"number" },
     { name:'paymentAmount', index:'paymentAmount', editable:false, width:120, align:"right", sorttype:"float", formatter:"number" },
     { name:'costAmount', index:'costAmount', editable:false, width:120, align:"right", sorttype:"float", formatter:"number" },
@@ -22,11 +24,12 @@ let colModelC = [
     { name:'debtAmount', index:'debtAmount', editable:false, width:120, align:"right", sorttype:"float", formatter:"number" }
 ];
 let colModelV = [
-    {name: 'shopNo', index: 'shopNo', editable: false, align: "center", formatter: cellValue => utils.formatType(cellValue, 'data_shop')},
+    { name: 'shopNo', index: 'shopNo', editable: false, align: "center", formatter: cellValue => utils.formatType(cellValue, 'data_shop') },
     { name:'instituteId', index:'instituteId', editable:false, align: "center", hidden: true },
     { name:'instituteName', index:'instituteName', editable:false, sorttype:"text", align: "center", formatter: cellValue => utils.formatSubstr(cellValue) },
     { name:'billRegion', index:'billRegion', editable:false, sorttype:"text", align: "center" },
-    { name:'billNo', index:'billNo', editable:false, sorttype:"text", align: "center", formatter: cellValue => utils.formatSubstr(cellValue) },
+    { name:'billNo', index:'billNo', editable:false, sorttype:"text", align: "center", width:180, formatter: cellValue => utils.formatSubstr(cellValue) },
+    { name:'billCount', index:'billCount', editable:false, sorttype:"text", align: "center", width:80 },
     { name:'totalAmount', index:'totalAmount', editable:false, sorttype:"float", align: "right", width:120, formatter:"number" },
     { name:'paymentAmount', index:'paymentAmount', editable:false, width:120, align:"right", sorttype:"float", formatter:"number" },
     { name:'costAmount', index:'costAmount', editable:false, width:120, align:"right", sorttype:"float", hidden:true, formatter:"number" },
@@ -47,13 +50,9 @@ let gridConfig = {
     colNames: colNames,
     colModel: colModel,
     ondblClickRow: function (rowid, iRow, iCol, e) {
-        let rowData = tableGrid.jqGrid('getRowData', rowid);
-        let postData = {
-            start: $('#start').val(), end: $('#end').val(), status: ['WAITING_PAY', 'PART_PAY']
-        };
-        postData[type === 'CUSTOMER' ? 'consumerId' : 'vendorId'] = rowData.instituteId;
-        let postUrl = type === 'CUSTOMER' ? '/se/order' : '/po/order';
-        utils.listDataGrid(postUrl, postData);
+        let rowData = tableGrid.jqGrid('getLocalRow', rowid);
+        currentRow = $.extend(rowData, { type : type})
+        searchEntryBalance(currentRow);
     }
 };
 
@@ -102,10 +101,10 @@ function loadGrid() {
             if (r.code === 0) {
                 tableGrid.trigger("reloadGrid", { fromServer: true });
                 tableGrid.jqGrid('clearGridData');
-                tableGrid.jqGrid('setGridParam', {data: r.result}).trigger('reloadGrid');
+                tableGrid.jqGrid('setGridParam', {data: r.data.itemList}).trigger('reloadGrid');
                 collectTotal();
 
-                $('span[name=toDate]').html("欠款日期: " + r.billRegion);
+                $('span[name=toDate]').html("欠款日期: " + r.data.billRegion);
             } else {
                 layer.msg(r.msg);
             }
@@ -120,12 +119,13 @@ function search() {
 //计算表格合计行数据
 function collectTotal(){
     let recordNum = tableGrid.jqGrid('getGridParam', 'records');
+    let billCountTotal=tableGrid.getCol('billCount',false,'sum');
     let totalAmountTotal=tableGrid.getCol('totalAmount',false,'sum');
     let paymentAmountTotal=tableGrid.getCol('paymentAmount',false,'sum');
     let debtAmountTotal=tableGrid.getCol('debtAmount',false,'sum');
     let costAmountTotal=tableGrid.getCol('costAmount',false,'sum');
     let profitAmountTotal=tableGrid.getCol('profitAmount',false,'sum');
-    let totalAmountObj = { instituteId: '合计:', instituteName:'数量：' + recordNum, totalAmount: totalAmountTotal, paymentAmount: paymentAmountTotal, debtAmount: debtAmountTotal, costAmount: costAmountTotal, profitAmount: profitAmountTotal };
+    let totalAmountObj = { instituteId: '合计:', instituteName:'数量：' + recordNum, billCount: billCountTotal, totalAmount: totalAmountTotal, paymentAmount: paymentAmountTotal, debtAmount: debtAmountTotal, costAmount: costAmountTotal, profitAmount: profitAmountTotal };
     // 设置表格合计项金额
     tableGrid.footerData('set', totalAmountObj);
 }
@@ -134,4 +134,19 @@ function exportExcel() {
     let queryParam = $dataForm.serialize();
     let url = prefix + "/sRecon/export?" + queryParam //下载地址
     utils.downloadAjax(url, 'SReconResult.xls')
+}
+
+function searchEntryBalance(rowData) {
+    layer.open({
+        type : 2,
+        title : '单据明细',
+        maxmin : true,
+        shadeClose : false, // 点击遮罩关闭层
+        area : [ '1300px', '650px' ],
+        content : prefix + '/sRecon/entry' // iframe的url
+    });
+}
+
+function getCurrentRow() {
+    return $.extend(currentRow || {}, {"searchObj": $dataForm.serializeObject()});
 }

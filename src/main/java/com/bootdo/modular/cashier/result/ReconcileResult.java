@@ -21,7 +21,7 @@ public class ReconcileResult {
     private String end;
 
     @Schema(description = "单据数量")
-    private BigDecimal billCount;
+    private Integer billCount;
 
     @Schema(description = "核销金额")
     private BigDecimal checkAmountTotal;
@@ -49,6 +49,18 @@ public class ReconcileResult {
         private BigDecimal paymentAmount;
         @Excel(name = "到账金额", numFormat = "#,##0.00", type = 10, width = 15)
         private BigDecimal payAmount;
+    }
+
+    @Data
+    public static class ReconcileItemSum {
+        @Excel(name = "单据数量", width = 15)
+        private Integer billCountTotal;
+        @Excel(name = "核销金额", numFormat = "#,##0.00", type = 10, width = 15)
+        private BigDecimal checkAmountTotal;
+        @Excel(name = "收款金额", numFormat = "#,##0.00", type = 10, width = 15)
+        private BigDecimal paymentAmountTotal;
+        @Excel(name = "到账金额", numFormat = "#,##0.00", type = 10, width = 15)
+        private BigDecimal payAmountTotal;
     }
 
 }

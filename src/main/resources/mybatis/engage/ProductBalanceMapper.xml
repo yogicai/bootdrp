@@ -3,7 +3,7 @@
 
 <mapper namespace="com.bootdo.modular.engage.dao.ProductBalanceDao">
 
-    <select id="pBalance" resultType="java.util.Map">
+    <select id="pBalance" resultType="com.bootdo.modular.engage.result.BalanceItemResult">
         SELECT
             aa.`shop_no`, aa.`no`, aa.`name`, aa.`unit`, aa.`type`, aa.`brand`, aa.`bar_code`, bb.bill_type, bb.stock_no, bb.stock_name, AVG(bb.entry_price) AS `entry_price`, SUM(bb.total_qty) AS `total_qty`, bb.entry_unit, SUM(bb.entry_amount) AS `entry_amount`, SUM(bb.total_amount) AS `total_amount`
         FROM (
@@ -29,43 +29,38 @@
                     wo.`audit_status`='YES'
             ) bb LEFT JOIN data_product aa ON aa.`no`=bb.entry_id
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
-            <if test="toDate != null">and bb.bill_date <![CDATA[ <= ]]> #{toDate}</if>
-            <if test="status != null and status != ''">and aa.status = #{status}</if>
-            <if test="type != null and type != ''">and aa.type = #{type}</if>
-            <if test="stock != null and stock != ''">and bb.stock_no = #{stock}</if>
-            <if test="productNo != null and productNo != ''">and aa.no = #{productNo}</if>
-            <if test="shopNo != null and shopNo.size() > 0">and aa.shop_no in
-                <foreach collection="shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            <if test="param.toDate != null">and bb.bill_date <![CDATA[ <= ]]> #{param.toDate}</if>
+            <if test="param.status != null and param.status != ''">and aa.status = #{param.status}</if>
+            <if test="param.type != null and param.type != ''">and aa.type = #{param.type}</if>
+            <if test="param.stock != null and param.stock != ''">and bb.stock_no = #{param.stock}</if>
+            <if test="param.productNo != null and param.productNo != ''">and aa.no = #{param.productNo}</if>
+            <if test="param.shopNo != null and param.shopNo.size() > 0">and aa.shop_no in
+                <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
             </if>
-            <if test="types != null and types.size() > 0">and aa.type in
-                <foreach collection="types" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            <if test="param.types != null and param.types.size() > 0">and aa.type in
+                <foreach collection="param.types" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
             </if>
-            <if test="stocks != null and stocks.size() > 0">and bb.stock_no in
-                <foreach collection="stocks" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            <if test="param.stocks != null and param.stocks.size() > 0">and bb.stock_no in
+                <foreach collection="param.stocks" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
             </if>
-            <if test="productNos != null and productNos.size() > 0">and aa.no in
-                <foreach collection="products" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+            <if test="param.productNos != null and param.productNos.size() > 0">and aa.no in
+                <foreach collection="param.productNos" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
             </if>
-            <if test="searchText != null and searchText != ''">
-                and ( aa.no like '%${searchText}%' or aa.name like '%${searchText}%')
+            <if test="param.searchText != null and param.searchText != ''">
+                and ( aa.no like '%${param.searchText}%' or aa.name like '%${param.searchText}%')
             </if>
         </trim>
         GROUP BY aa.no, bb.bill_type, bb.stock_no
-        <choose>
-            <when test="sort != null and sort.trim() != ''">order by ${sort} ${order}</when>
-            <otherwise>order by aa.id desc</otherwise>
-        </choose>
-        <if test="offset != null and limit != null">limit #{offset}, #{limit}</if>
     </select>
 
     <sql id="whereSql">
         <where>
-            <if test="billDate != null and billDate != ''"> and bill_date = #{billDate} </if>
-            <if test="billNo != null and billNo != ''"> and bill_no = #{billNo} </if>
-            <if test="entryId != null and entryId != ''"> and entry_Id = #{entryId} </if>
-            <if test="start != null and start != ''"> and bill_date >= #{start} </if>
-            <if test="end != null and end != ''"> <![CDATA[ and bill_date <= #{end} ]]> </if>
-            <if test="audit != null and audit != ''"> and audit_status = #{audit} </if>
+            <if test="param.billDate != null and param.billDate != ''"> and bill_date = #{param.billDate} </if>
+            <if test="param.billNo != null and param.billNo != ''"> and bill_no = #{param.billNo} </if>
+            <if test="param.entryId != null and param.entryId != ''"> and entry_Id = #{param.entryId} </if>
+            <if test="param.start != null"> and bill_date >= #{param.start} </if>
+            <if test="param.end != null"> <![CDATA[ and bill_date <= #{param.end} ]]> </if>
+            <if test="param.audit != null and param.audit != ''"> and audit_status = #{param.audit} </if>
         </where>
     </sql>
     <sql id="selectSql">
@@ -90,14 +85,9 @@
 
     <select id="pBalanceEntry" resultType="com.bootdo.modular.engage.result.EntryBalanceResult">
         <include refid="selectSql"/>
-        <choose>
-            <when test="sort != null and sort.trim() != ''">order by ${sort} ${order}, bill_date desc</when>
-            <otherwise>order by bill_date desc</otherwise>
-        </choose>
-        <if test="offset != null and limit != null">limit #{offset}, #{limit}</if>
     </select>
 
-    <select id="pBalanceEntryCountSum" resultType="java.util.Map">
+    <select id="pBalanceEntryCountSum" resultType="com.bootdo.modular.engage.result.EntryBalanceSumResult">
         select
             count(*) as totalCount,
             sum(if(bill_type in ('CG_ORDER', 'WH_RK_ORDER'), total_qty, 0)) as incomeQty,

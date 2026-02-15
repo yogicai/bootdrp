@@ -4,6 +4,7 @@ import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.po.param.OrderDetailParam;
+import com.bootdo.modular.se.result.OrderSaveResult;
 import com.bootdo.modular.wh.domain.WHOrderDO;
 import com.bootdo.modular.wh.param.WHOrderVO;
 import com.bootdo.modular.wh.service.WHOrderEntryService;
@@ -50,10 +51,10 @@ public class WHOrderEntryController {
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('se:entry:add')")
-    public R save(@RequestBody @Validated WHOrderVO order) {
+    public R<OrderSaveResult> save(@RequestBody @Validated WHOrderVO order) {
         whOrderValidator.validateSave(order);
         WHOrderDO orderDO = whOrderEntryService.save(order);
-        return R.ok(MapUtil.of("billNo", orderDO.getBillNo()));
+        return R.ok(new OrderSaveResult().setBillNo(orderDO.getBillNo()));
     }
 
     /**
@@ -80,9 +81,8 @@ public class WHOrderEntryController {
     @ResponseBody
     @GetMapping("/get")
     @PreAuthorize("hasAuthority('wh:order:remove')")
-    public R get(@Validated OrderDetailParam param) {
+    public R<WHOrderVO> get(@Validated OrderDetailParam param) {
         //查询列表数据
-        WHOrderVO orderVO = whOrderEntryService.getOrderVO(param);
-        return R.ok().put("order", orderVO);
+        return R.ok(whOrderEntryService.getOrderVO(param));
     }
 }

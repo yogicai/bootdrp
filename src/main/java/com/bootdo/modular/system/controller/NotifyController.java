@@ -36,7 +36,7 @@ public class NotifyController extends BaseController {
 
     @GetMapping()
     @PreAuthorize("hasAuthority('oa:notify:notify')")
-    String oaNotify() {
+    public String oaNotify() {
         return "system/notify/notify";
     }
 
@@ -50,13 +50,13 @@ public class NotifyController extends BaseController {
 
     @GetMapping("/add")
     @PreAuthorize("hasAuthority('oa:notify:add')")
-    String add() {
+    public String add() {
         return "system/notify/add";
     }
 
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasAuthority('oa:notify:edit')")
-    String edit(@PathVariable Long id, Model model) {
+    public String edit(@PathVariable Long id, Model model) {
         NotifyDO notify = notifyService.getById(id);
         model.addAttribute("notify", notify);
         return "system/notify/edit";
@@ -68,7 +68,7 @@ public class NotifyController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('oa:notify:add')")
-    public R save(NotifyDO notify) {
+    public R<Void> save(NotifyDO notify) {
         notify.setCreateBy(getUserId());
         notifyService.saveNotify(notify);
         return R.ok();
@@ -80,7 +80,7 @@ public class NotifyController extends BaseController {
     @ResponseBody
     @RequestMapping("/update")
     @PreAuthorize("hasAuthority('oa:notify:edit')")
-    public R update(NotifyDO notify) {
+    public R<Void> update(NotifyDO notify) {
         notifyService.updateById(notify);
         return R.ok();
     }
@@ -91,7 +91,7 @@ public class NotifyController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('oa:notify:remove')")
-    public R remove(Long id) {
+    public R<Void> remove(Long id) {
         notifyService.removeNotify(id);
         return R.ok();
     }
@@ -102,31 +102,31 @@ public class NotifyController extends BaseController {
     @PostMapping("/batchRemove")
     @ResponseBody
     @PreAuthorize("hasAuthority('oa:notify:batchRemove')")
-    public R remove(@RequestParam("ids[]") List<Long> ids) {
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Long> ids) {
         notifyService.batchRemoveNotify(ids);
         return R.ok();
     }
 
     @ResponseBody
     @GetMapping("/message")
-    PageR message() {
+    public PageR message() {
         return notifyService.selfList(SysNotifyParam.builder().userId(getUserId()).isRead(Constant.OA_NOTIFY_READ_NO).build());
     }
 
     @GetMapping("/selfNotify")
-    String selfNotify() {
+    public String selfNotify() {
         return "system/notify/selfNotify";
     }
 
     @ResponseBody
     @GetMapping("/selfList")
-    PageR selfList() {
+    public PageR selfList() {
         return notifyService.selfList(SysNotifyParam.builder().userId(getUserId()).build());
     }
 
     @GetMapping("/read/{id}")
     @PreAuthorize("hasAuthority('oa:notify:edit')")
-    String read(@PathVariable Long id, Model model) {
+    public String read(@PathVariable Long id, Model model) {
         NotifyDO notify = notifyService.getById(id);
         //更改阅读状态
         NotifyRecordDO notifyRecordDO = new NotifyRecordDO();

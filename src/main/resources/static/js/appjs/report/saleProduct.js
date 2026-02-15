@@ -69,10 +69,10 @@ function loadGrid() {
         success: function (r) {
             if (r.code === 0) {
                 tableGrid.jqGrid('clearGridData');
-                tableGrid.jqGrid('setGridParam', {data: r.result}).trigger('reloadGrid');
+                tableGrid.jqGrid('setGridParam', {data: r.data.itemList}).trigger('reloadGrid');
                 collectTotal();
 
-                $('span[name=toDate]').html("单据日期: " + r.billRegion);
+                $('span[name=toDate]').html("单据日期: " + r.data.billRegion);
             } else {
                 layer.msg(r.msg);
             }

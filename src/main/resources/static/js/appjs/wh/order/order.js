@@ -35,6 +35,7 @@ function load() {
         shrinkToFit: false,
         autoScroll: true,
         multiselect: true,
+        multiboxonly: true,
         rowNum: 20,
         rowList: [20, 50, 100],
         colNames: colNames,

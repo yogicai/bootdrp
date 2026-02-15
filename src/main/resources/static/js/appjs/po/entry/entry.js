@@ -259,7 +259,7 @@ function save(add) {
                     tableGrid.jqGrid('setGridParam', {data: [{}, {}, {}]}).trigger('reloadGrid');
                     layer.msg(r.msg);
                 } else if (r.code === 0) { //新增
-                    initBillNo(r.billNo);
+                    initBillNo(r.data.billNo);
                     layer.msg(r.msg);
                 } else {
                     layer.msg(r.msg);
@@ -390,12 +390,12 @@ function initOrder(billNo) {
             success: function (r) {
                 if (r.code === 0) {
                     tableGrid.clearGridData();
-                    tableGrid.jqGrid('setGridParam', {data: r.order.entryVOList}).trigger('reloadGrid');
-                    $dataForm.setForm(r.order);
+                    tableGrid.jqGrid('setGridParam', {data: r.data.entryVOList}).trigger('reloadGrid');
+                    $dataForm.setForm(r.data);
                     $mask.removeClass('util-has-audit');
-                    $mask.addClass(r.order && r.order.auditStatus === 'YES' ? 'util-has-audit' : '');
+                    $mask.addClass(r.data && r.data.auditStatus === 'YES' ? 'util-has-audit' : '');
 
-                    initBillNo(r.order.billNo);
+                    initBillNo(r.data.billNo);
                 } else {
                     layer.msg(r.msg);
                 }

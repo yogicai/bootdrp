@@ -73,7 +73,7 @@ public class ProductCostController extends BaseController {
     @ResponseBody
     @PostMapping("/adjust")
     @PreAuthorize("hasAuthority('engage:product:cost')")
-    public R update(ProductCostDO productCost) {
+    public R<Void> update(ProductCostDO productCost) {
         productCostService.adjust(productCost);
         return R.ok();
     }

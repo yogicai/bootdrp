@@ -68,7 +68,7 @@ public class RecordController {
     @ResponseBody
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('cashier:record:record')")
-    public R update(RecordDO recordDO) {
+    public R<Boolean> update(RecordDO recordDO) {
         return R.ok(recordService.updateById(recordDO));
     }
 
@@ -76,7 +76,7 @@ public class RecordController {
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('cashier:record:record')")
-    public R save(RecordDO recordDO) {
+    public R<Boolean> save(RecordDO recordDO) {
         return R.ok(recordService.save(recordDO.toManualRecord()));
     }
 
@@ -84,7 +84,7 @@ public class RecordController {
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('cashier:record:record')")
-    public R remove(@RequestParam("ids[]") List<Long> ids) {
+    public R<Boolean> remove(@RequestParam("ids[]") List<Long> ids) {
         return R.ok(recordService.removeByIds(ids));
     }
 
@@ -92,7 +92,7 @@ public class RecordController {
     @PostMapping("/importCsv")
     @ResponseBody
     @PreAuthorize("hasAuthority('cashier:record:record')")
-    public R importCsv(RecordImportParam importParam) throws Exception {
+    public R<Void> importCsv(RecordImportParam importParam) throws Exception {
         recordService.importCvs(importParam);
         return R.ok();
     }

@@ -2,71 +2,69 @@ package com.bootdo.core.pojo.response;
 
 import lombok.Data;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author L
  */
 @Data
-public class R extends HashMap<String, Object> {
-
+public class R<T> {
     public static final Integer SUCCESS = 0;
     public static final Integer ERROR = 1;
     public static final Integer SERVER_ERROR = 500;
 
+    /**
+     * 请求是否成功
+     */
+    private Boolean success;
+
+    /**
+     * 响应状态码
+     */
+    private Integer code;
+
+    /**
+     * 响应信息
+     */
+    private String msg;
+
+    /**
+     * 响应对象
+     */
+    private T data;
+
+
     public R() {
-        put("code", 0);
-        put("msg", "操作成功");
     }
 
-    public static R error() {
-        return error(1, "操作失败");
+    public R(Boolean success, Integer code, String msg, T data) {
+        this.success = success;
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
     }
 
-    public static R error(String msg) {
-        return error(500, msg);
+
+    public static <T> R<T> error() {
+        return new R<>(false, ERROR, "操作失败", null);
     }
 
-    public static R error(int code, String msg) {
-        R r = new R();
-        r.put("code", code);
-        r.put("msg", msg);
-        return r;
+    public static <T> R<T> error(String msg) {
+        return new R<>(false, SERVER_ERROR, msg, null);
     }
 
-    public static R error(String code, String msg) {
-        R r = new R();
-        r.put("code", code);
-        r.put("msg", msg);
-        return r;
+    public static <T> R<T> error(int code, String msg) {
+        return new R<>(false, code, msg, null);
     }
 
-    public static R ok(Object data) {
-        R r = new R();
-        r.put("data", data);
-        return r;
+    public static <T> R<T> ok() {
+        return new R<>(true, SUCCESS, "操作成功", null);
     }
 
-    public static R ok(String msg) {
-        R r = new R();
-        r.put("msg", msg);
-        return r;
+    public static <T> R<T> ok(T data) {
+        return new R<>(true, SUCCESS, "操作成功", data);
     }
 
-    public static R ok(Map<String, Object> map) {
-        R r = new R();
-        r.putAll(map);
-        return r;
+    public static <T> R<T> ok(String msg) {
+        return new R<>(true, SUCCESS, msg, null);
     }
 
-    public static R ok() {
-        return new R();
-    }
-
-    @Override
-    public R put(String key, Object value) {
-        super.put(key, value);
-        return this;
-    }
 }

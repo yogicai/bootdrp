@@ -25,7 +25,7 @@ public class BlogController {
     private BlogContentService blogContentService;
 
     @GetMapping()
-    String blog() {
+    public String blog() {
         return "system/blog/index/main";
     }
 
@@ -37,7 +37,7 @@ public class BlogController {
     }
 
     @GetMapping("/open/post/{cid}")
-    String post(@PathVariable Long cid, Model model) {
+    public String post(@PathVariable Long cid, Model model) {
         ContentDO bContentDO = blogContentService.getById(cid);
         model.addAttribute("bContent", bContentDO);
         model.addAttribute("gtmModified", DateUtils.format(bContentDO.getGtmModified()));
@@ -45,7 +45,7 @@ public class BlogController {
     }
 
     @GetMapping("/open/page/{categories}")
-    String about(@PathVariable String categories, Model model) {
+    public String about(@PathVariable String categories, Model model) {
         ContentDO bContentDO = blogContentService.list(SysBlogParam.builder().categories(categories).build()).get(0);
         model.addAttribute("bContent", bContentDO);
         return "system/blog/index/post";

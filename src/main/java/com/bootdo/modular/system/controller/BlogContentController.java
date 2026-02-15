@@ -32,7 +32,7 @@ public class BlogContentController extends BaseController {
 
     @GetMapping()
     @PreAuthorize("hasAuthority('blog:bContent:bContent')")
-    String bContent() {
+    public String bContent() {
         return "system/blog/bContent/bContent";
     }
 
@@ -45,13 +45,13 @@ public class BlogContentController extends BaseController {
 
     @GetMapping("/add")
     @PreAuthorize("hasAuthority('blog:bContent:add')")
-    String add() {
+    public String add() {
         return "system/blog/bContent/add";
     }
 
     @GetMapping("/edit/{cid}")
     @PreAuthorize("hasAuthority('blog:bContent:edit')")
-    String edit(@PathVariable Long cid, Model model) {
+    public String edit(@PathVariable Long cid, Model model) {
         ContentDO bContentDO = bBlogContentService.getById(cid);
         model.addAttribute("bContent", bContentDO);
         return "system/blog/bContent/edit";
@@ -63,14 +63,14 @@ public class BlogContentController extends BaseController {
     @ResponseBody
     @PreAuthorize("hasAuthority('blog:bContent:add')")
     @PostMapping("/save")
-    public R save(ContentDO bContent) {
+    public R<Long> save(ContentDO bContent) {
         bContent.setAllowComment(ObjectUtil.defaultIfNull(bContent.getAllowComment(), 0));
         bContent.setAllowFeed(ObjectUtil.defaultIfNull(bContent.getAllowFeed(), 0));
         bContent.setType(ObjectUtil.defaultIfNull(bContent.getType(), "article"));
         bContent.setGtmCreate(new Date());
         bContent.setGtmModified(new Date());
         bBlogContentService.saveOrUpdate(bContent);
-        return R.ok().put("cid", bContent.getCid());
+        return R.ok(bContent.getCid());
     }
 
     /**
@@ -79,7 +79,7 @@ public class BlogContentController extends BaseController {
     @PreAuthorize("hasAuthority('blog:bContent:edit')")
     @ResponseBody
     @RequestMapping("/update")
-    public R update(ContentDO bContent) {
+    public R<Void> update(ContentDO bContent) {
         bContent.setGtmCreate(new Date());
         bBlogContentService.updateById(bContent);
         return R.ok();
@@ -91,7 +91,7 @@ public class BlogContentController extends BaseController {
     @PreAuthorize("hasAuthority('blog:bContent:remove')")
     @PostMapping("/remove")
     @ResponseBody
-    public R remove(Long id) {
+    public R<Void> remove(Long id) {
         bBlogContentService.removeById(id);
         return R.ok();
     }
@@ -102,7 +102,7 @@ public class BlogContentController extends BaseController {
     @PreAuthorize("hasAuthority('blog:bContent:batchRemove')")
     @PostMapping("/batchRemove")
     @ResponseBody
-    public R remove(@RequestParam("ids[]") List<Integer> cids) {
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Integer> cids) {
         bBlogContentService.removeBatchByIds(cids);
         return R.ok();
     }

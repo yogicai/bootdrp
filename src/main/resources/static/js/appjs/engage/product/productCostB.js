@@ -6,8 +6,6 @@ $(function() {
 });
 
 function load() {
-    $.jgrid.defaults.styleUI = 'Bootstrap';
-
     let rowData = window.parent.getCurrentRow();
 
     tableGrid = $("#table_list").jqGrid({

@@ -69,7 +69,7 @@ public class RPOrderController extends BaseController {
     @PostMapping("/audit")
     @ResponseBody
     @PreAuthorize("hasAuthority('rp:order:audit')")
-    public R audit(@RequestBody @Validated OrderAuditParam param) {
+    public R<Void> audit(@RequestBody @Validated OrderAuditParam param) {
         rpOrderValidator.validateAudit(param);
         rpOrderService.audit(param);
         return R.ok();
@@ -79,7 +79,7 @@ public class RPOrderController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('rp:order:remove')")
-    public R remove(@RequestParam("billNos[]") List<String> billNos) {
+    public R<Void> remove(@RequestParam("billNos[]") List<String> billNos) {
         rpOrderValidator.validateRemove(billNos);
         rpOrderService.batchRemove(billNos);
         return R.ok();

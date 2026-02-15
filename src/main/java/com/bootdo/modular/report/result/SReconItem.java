@@ -1,0 +1,51 @@
+package com.bootdo.modular.report.result;
+
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.bootdo.core.enums.OrderStatus;
+import lombok.Data;
+
+import java.math.BigDecimal;
+
+/**
+ * @author yogiCai
+ * @since 2018-02-01 10:43:43
+ */
+@Data
+public class SReconItem {
+
+    @Excel(name = "单据日期", width = 25)
+    private String billRegion;
+
+    @Excel(name = "店铺", dict = "data_shop")
+    private String shopNo;
+
+    @Excel(name = "编号")
+    private String instituteId;
+
+    @Excel(name = "客户名称")
+    private String instituteName;
+
+    @Excel(name = "单据编号", width = 20)
+    private String billNo;
+
+    @Excel(name = "单据数据")
+    private Integer billCount;
+
+    private OrderStatus status;
+
+    @Excel(name = "应收金额", numFormat = "#,##0.00", isStatistics = true, width = 15)
+    private BigDecimal totalAmount;
+
+    @Excel(name = "收款金额", numFormat = "#,##0.00", isStatistics = true, width = 15)
+    private BigDecimal paymentAmount;
+
+    @Excel(name = "商品成本", numFormat = "#,##0.00", isStatistics = true, width = 15)
+    private BigDecimal costAmount;
+
+    @Excel(name = "销售毛利", numFormat = "#,##0.00", isStatistics = true, width = 15)
+    private BigDecimal profitAmount;
+
+    @Excel(name = "欠款金额", numFormat = "#,##0.00", isStatistics = true, width = 15)
+    private BigDecimal debtAmount;
+
+}

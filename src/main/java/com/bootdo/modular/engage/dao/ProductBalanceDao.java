@@ -1,6 +1,10 @@
 package com.bootdo.modular.engage.dao;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bootdo.modular.engage.result.BalanceItemResult;
 import com.bootdo.modular.engage.result.EntryBalanceResult;
+import com.bootdo.modular.engage.result.EntryBalanceSumResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -13,10 +17,10 @@ import java.util.Map;
  */
 public interface ProductBalanceDao {
 
-    List<Map<String, Object>> pBalance(Map<String, Object> map);
+    List<BalanceItemResult> pBalance(@Param("param")Map<String, Object> map);
 
-    List<EntryBalanceResult> pBalanceEntry(Map<String, Object> map);
+    Page<EntryBalanceResult> pBalanceEntry(Page<EntryBalanceResult> page, @Param("param")Map<String, Object> params);
 
-    Map<String, Object> pBalanceEntryCountSum(Map<String, Object> map);
+    EntryBalanceSumResult pBalanceEntryCountSum(@Param("param")Map<String, Object> map);
 
 }

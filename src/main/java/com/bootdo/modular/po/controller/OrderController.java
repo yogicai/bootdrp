@@ -81,7 +81,7 @@ public class OrderController extends BaseController {
     @PostMapping("/audit")
     @ResponseBody
     @PreAuthorize("hasAuthority('po:order:audit')")
-    public R audit(@RequestBody OrderAuditParam param) {
+    public R<Void> audit(@RequestBody OrderAuditParam param) {
         orderValidator.validateAudit(param);
         orderService.audit(param);
         return R.ok();
@@ -94,7 +94,7 @@ public class OrderController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('po:order:batchRemove')")
-    public R remove(@RequestParam("billNos[]") List<String> billNos) {
+    public R<Void> remove(@RequestParam("billNos[]") List<String> billNos) {
         orderValidator.validateRemove(billNos);
         orderService.batchRemove(billNos);
         return R.ok();

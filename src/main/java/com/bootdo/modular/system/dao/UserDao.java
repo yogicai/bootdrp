@@ -4,9 +4,6 @@ import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.bootdo.modular.system.domain.UserDO;
 import com.github.yulichang.base.MPJBaseMapper;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author chglee
  * @email 1992lcg@163.com
@@ -14,7 +11,5 @@ import java.util.Map;
  */
 @InterceptorIgnore
 public interface UserDao extends MPJBaseMapper<UserDO> {
-
-    List<Map> listTreeData(Map<String, Object> map);
 
 }

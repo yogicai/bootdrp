@@ -73,7 +73,7 @@ public class ProductCostService extends ServiceImpl<ProductCostDao, ProductCostD
         productCostDO1.setCostPrice(productCost.getCostPrice());
         productCostDO1.setCostDate(DateUtils.nowDate());
         productCostDO1.setCostType(CostType.MANUAL.name());
-        productCostDO1.setRemark(String.format(Constant.COST_REMARK, CostType.MANUAL.getRemark(), SecurityUtils.getUser().getUsername()));
+        productCostDO1.setRemark(String.format(Constant.COST_REMARK, CostType.MANUAL.getRemark(), SecurityUtils.getUserName()));
         return this.save(productCostDO1);
     }
 

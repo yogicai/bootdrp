@@ -67,7 +67,7 @@ public class WHOrderController extends BaseController {
     @PostMapping("/audit")
     @ResponseBody
     @PreAuthorize("hasAuthority('wh:order:audit')")
-    public R audit(@RequestBody OrderAuditParam param) {
+    public R<Void> audit(@RequestBody OrderAuditParam param) {
         whOrderValidator.validateAudit(param);
         whOrderService.audit(param);
         return R.ok();
@@ -77,7 +77,7 @@ public class WHOrderController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('wh:order:remove')")
-    public R remove(@RequestParam("billNos[]") List<String> billNos) {
+    public R<Void> remove(@RequestParam("billNos[]") List<String> billNos) {
         whOrderValidator.validateRemove(billNos);
         whOrderService.batchRemove(billNos);
         return R.ok();

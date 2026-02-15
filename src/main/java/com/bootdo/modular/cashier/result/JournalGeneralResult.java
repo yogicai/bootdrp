@@ -178,7 +178,7 @@ public class JournalGeneralResult {
         @Excel(name = "年份", dict = DataTypeEnum.CONST_CHART_CATEGORY)
         private String year;
         @Excel(name = "销售数量", numFormat = "0", type = 10, orderNum = "1")
-        private Integer totalQty;
+        private BigDecimal totalQty;
         @Excel(name = "营业额", numFormat = "0.00", type = 10, width = 12, orderNum = "2", dict = DataTypeEnum.CONST_CHART_DATA)
         private BigDecimal totalAmount;
         @Excel(name = "收款", numFormat = "0.00", type = 10, width = 12, orderNum = "3", dict = DataTypeEnum.CONST_CHART_DATA)

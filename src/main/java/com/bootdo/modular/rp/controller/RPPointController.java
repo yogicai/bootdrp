@@ -65,7 +65,7 @@ public class RPPointController {
     @ResponseBody
     @RequestMapping({"/save", "/update"})
     @PreAuthorize("hasAuthority('rp:point:edit')")
-    public R update(PointEntryDO pointEntry) {
+    public R<Void> update(PointEntryDO pointEntry) {
         rpPointValidator.validateSave(pointEntry);
         pointEntryService.addOrUpdate(pointEntry);
         return R.ok();
@@ -75,7 +75,7 @@ public class RPPointController {
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('rp:point:remove')")
-    public R remove(@RequestParam("ids[]") List<Integer> ids) {
+    public R<Void> remove(@RequestParam("ids[]") List<Integer> ids) {
         pointEntryService.removeByIds(ids);
         return R.ok();
     }

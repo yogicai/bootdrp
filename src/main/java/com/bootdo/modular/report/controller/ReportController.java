@@ -1,12 +1,15 @@
 package com.bootdo.modular.report.controller;
 
-import cn.hutool.json.JSONUtil;
 import com.bootdo.core.annotation.DataScope;
+import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.core.utils.PoiUtils;
+import com.bootdo.modular.report.param.SReconEntryParam;
 import com.bootdo.modular.report.param.SReconParam;
 import com.bootdo.modular.report.param.SaleProductParam;
 import com.bootdo.modular.report.result.SReconResult;
+import com.bootdo.modular.report.result.SReconItem;
+import com.bootdo.modular.report.result.SaleProductResult;
 import com.bootdo.modular.report.service.ReportService;
 import com.bootdo.modular.system.controller.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,9 +18,8 @@ import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 报表
@@ -44,8 +46,8 @@ public class ReportController extends BaseController {
     @PostMapping(value = "/sRecon")
     @Operation(summary = "客户、供应商应收应付款")
     @PreAuthorize("hasAuthority('report:recon:recon')")
-    public R sRecon(@RequestBody SReconParam param) {
-        return reportService.sRecon(param);
+    public R<SReconResult> sRecon(@RequestBody SReconParam param) {
+        return R.ok(reportService.sRecon(param));
     }
 
     @DataScope
@@ -54,9 +56,23 @@ public class ReportController extends BaseController {
     @Operation(summary = "客户、供应商应收应付款-导出")
     @PreAuthorize("hasAuthority('report:recon:recon')")
     public void sReconExport(SReconParam param) {
-        R r = reportService.sRecon(param);
-        List<SReconResult> result = JSONUtil.toList(JSONUtil.toJsonStr(r.get("result")), SReconResult.class);
-        PoiUtils.exportExcelWithStream("SReconResult.xls", SReconResult.class, result);
+        SReconResult result = reportService.sRecon(param);
+        PoiUtils.exportExcelWithStream("SReconResult.xls", SReconItem.class, result.getItemList());
+    }
+
+    @GetMapping("/sRecon/entry")
+    @PreAuthorize("hasAuthority('report:recon:recon')")
+    public String sReconEntry() {
+        return "report/sReconEntry";
+    }
+
+    @DataScope
+    @ResponseBody
+    @GetMapping(value = "/sRecon/entry/page")
+    @Operation(summary = "客户、供应商应收应付款-明细")
+    @PreAuthorize("hasAuthority('report:recon:recon')")
+    public PageJQ sReconEntryPage(@Validated SReconEntryParam param) {
+        return new PageJQ(reportService.sReconEntryPage(param));
     }
 
     /**
@@ -64,7 +80,7 @@ public class ReportController extends BaseController {
      */
     @GetMapping("/saleProduct")
     @PreAuthorize("hasAuthority('report:report:report')")
-    public String balance() {
+    public String saleProduct() {
         return "report/saleProduct";
     }
 
@@ -73,7 +89,7 @@ public class ReportController extends BaseController {
     @PostMapping(value = "/saleProduct")
     @Operation(summary = "销售统计报表")
     @PreAuthorize("hasAuthority('report:report:report')")
-    public R saleProduct(@RequestBody SaleProductParam param) {
-        return reportService.saleProduct(param);
+    public R<SaleProductResult> saleProduct(@RequestBody SaleProductParam param) {
+        return R.ok(reportService.saleProduct(param));
     }
 }

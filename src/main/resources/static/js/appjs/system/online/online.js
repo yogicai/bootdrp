@@ -108,7 +108,7 @@ function forceLogout(id) {
 			type : "post",
 			data : {'id' : id},
 			success : function(r) {
-				if (r.code == 0) {
+				if (r.code === 0) {
 					layer.msg(r.msg);
                     search();
 				} else {

@@ -3,27 +3,4 @@
 
 <mapper namespace="com.bootdo.modular.system.dao.UserDao">
 
-    <select id="listTreeData" resultType="java.util.HashMap">
-        SELECT
-            a.`dept_id`   AS deptId,
-            a.`parent_id` AS parentId,
-            a.`name`      AS name,
-            'USER'        AS type,
-            a.`order_num` AS orderNum,
-            b.`user_id`   AS dataId,
-            b.`userName`  AS dataName,
-            b.`status`    AS status
-        FROM
-            sys_dept           a
-            LEFT JOIN sys_user b ON a.`dept_id` = b.`dept_id`
-        <where>
-            <if test="deptId != null and deptId != ''">and a.dept_id = #{deptId}</if>
-            <if test="parentId != null and parentId != ''">and a.parent_id = #{parentId}</if>
-            <if test="name != null and name != ''">and a.name = #{name}</if>
-            <if test="status != null and status != ''">and b.status = #{status}</if>
-        </where>
-        ORDER BY
-            a.parent_id, a.order_num
-    </select>
-
 </mapper>

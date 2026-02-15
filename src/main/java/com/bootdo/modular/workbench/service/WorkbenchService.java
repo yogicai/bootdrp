@@ -1,13 +1,14 @@
 package com.bootdo.modular.workbench.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bootdo.core.consts.Constant;
 import com.bootdo.core.enums.AuditStatus;
-import com.bootdo.core.pojo.response.R;
 import com.bootdo.core.utils.DateUtils;
 import com.bootdo.core.utils.NumberUtils;
 import com.bootdo.modular.po.domain.OrderDO;
@@ -23,6 +24,7 @@ import com.bootdo.modular.se.service.SEOrderService;
 import com.bootdo.modular.workbench.dao.WorkbenchDao;
 import com.bootdo.modular.workbench.param.PBalanceParam;
 import com.bootdo.modular.workbench.param.SEBillTotalParam;
+import com.bootdo.modular.workbench.result.*;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.springframework.stereotype.Service;
@@ -91,7 +93,7 @@ public class WorkbenchService {
         EChartOption option = new EChartOption(1, 2, 3);
         String type = MapUtil.getStr(params, "type", Constant.Q_MONTH);
         params.put("billDate", DateUtils.getDayStartStr(type));
-        List<Map<String, Object>> seList = workbenchDao.pBillTrend(params);
+        List<BillTrendItem> seList = workbenchDao.pBillTrend(params);
 
         option.getXAxis().get(0).getData().addAll(DateUtils.getDaySerial(type));
 
@@ -100,16 +102,16 @@ public class WorkbenchService {
         List<String> dayTimeSerial = DateUtils.getDayTimeSerial(type);
         for (String time : dayTimeSerial) {
             boolean exists = false;
-            for (Map<String, Object> map : seList) {
-                if (StrUtil.equals(time, MapUtil.getStr(map, "otime"))) {
-                    BigDecimal count = MapUtil.get(map, "count", BigDecimal.class, BigDecimal.ZERO);
-                    BigDecimal totalAmount = MapUtil.get(map, "totalAmount", BigDecimal.class, BigDecimal.ZERO);
+            for (BillTrendItem item : seList) {
+                if (StrUtil.equals(time, item.getOTime())) {
+                    BigDecimal count = item.getCount();
+                    BigDecimal totalAmount = item.getTotalAmount();
                     billCount = billCount.compareTo(count) < 0 ? count : billCount;
                     maxYAxis = maxYAxis.compareTo(totalAmount) < 0 ? totalAmount : maxYAxis;
 
-                    option.getSeries().get(0).getData().add(MapUtil.get(map, "totalAmount", BigDecimal.class, BigDecimal.ZERO));
-                    option.getSeries().get(1).getData().add(NumberUtils.subtract(MapUtil.get(map, "totalAmount", BigDecimal.class, BigDecimal.ZERO), MapUtil.get(map, "paymentAmount", BigDecimal.class, BigDecimal.ZERO)));
-                    option.getSeries().get(2).getData().add(MapUtil.getInt(map, "count"));
+                    option.getSeries().get(0).getData().add(totalAmount);
+                    option.getSeries().get(1).getData().add(NumberUtils.subtract(totalAmount, item.getPaymentAmount()));
+                    option.getSeries().get(2).getData().add(count);
                     exists = true;
                     break;
                 }
@@ -133,18 +135,18 @@ public class WorkbenchService {
         EChartOption option = new EChartOption(0, 0, 2);
         String type = MapUtil.getStr(params, "type", Constant.Q_MONTH);
         params.put("billDate", DateUtils.getDayStartStr(type));
-        List<Map<String, Object>> seList = workbenchDao.pBillTrendPie(params);
+        List<BillTrendPieItem> seList = workbenchDao.pBillTrendPie(params);
 
         int count = 1;
         BigDecimal profitAmountOther = BigDecimal.ZERO, totalAmountOther = BigDecimal.ZERO;
-        for (Map<String, Object> map : seList) {
+        for (BillTrendPieItem item : seList) {
             if (count <= TOP_COUNT) {
-                option.getLegend().getData().add(MapUtil.getStr(map, "name"));
-                option.getSeries().get(0).getData().add(new PieData(MapUtil.getStr(map, "name"), MapUtil.get(map, "totalAmount", BigDecimal.class, BigDecimal.ZERO)));
-                option.getSeries().get(1).getData().add(new PieData(MapUtil.getStr(map, "name"), MapUtil.get(map, "profitAmount", BigDecimal.class, BigDecimal.ZERO)));
+                option.getLegend().getData().add(item.getName());
+                option.getSeries().get(0).getData().add(new PieData(item.getName(), item.getTotalAmount()));
+                option.getSeries().get(1).getData().add(new PieData(item.getName(), item.getProfitAmount()));
             } else {
-                profitAmountOther = NumberUtils.add(profitAmountOther, MapUtil.get(map, "totalAmount", BigDecimal.class, BigDecimal.ZERO));
-                totalAmountOther = NumberUtils.add(totalAmountOther, MapUtil.get(map, "profitAmount", BigDecimal.class, BigDecimal.ZERO));
+                profitAmountOther = NumberUtils.add(profitAmountOther, item.getProfitAmount());
+                totalAmountOther = NumberUtils.add(totalAmountOther, item.getTotalAmount());
             }
             count++;
         }
@@ -156,27 +158,19 @@ public class WorkbenchService {
         return option;
     }
 
-    public R pCashTotal(Map<String, Object> params) {
-        List<Map<String, Object>> list = workbenchDao.pCashTrend(params);
-        if (CollUtil.isNotEmpty(list)) {
-            return R.ok(MapUtil.<String, Object>builder()
-                    .put("profitAmountT", MapUtil.get(list.get(0), "profitAmount", BigDecimal.class, BigDecimal.ZERO))
-                    .put("cashFlowAmountT", MapUtil.get(list.get(0), "cashFlowAmount", BigDecimal.class, BigDecimal.ZERO))
-                    .build()
-            );
-        }
-        return R.ok(MapUtil.<String, Object>builder()
-                .put("profitAmountT", 0)
-                .put("cashFlowAmountT", 0)
-                .build()
-        );
+    public CashTotalResult pCashTotal(Map<String, Object> params) {
+        List<CashTrendItem> itemList = workbenchDao.pCashTrend(params);
+        return itemList.stream().findFirst().map(item -> new CashTotalResult()
+                .setProfitAmountT(item.getProfitAmount())
+                .setCashFlowAmountT(item.getCashFlowAmount())
+        ).orElseGet(CashTotalResult::new);
     }
 
     public EChartOption pCashTrend(Map<String, Object> params) {
         EChartOption option = new EChartOption(1, 2, 3);
         String type = MapUtil.getStr(params, "type", Constant.Q_MONTH);
         params.put("billDate", DateUtils.getDayStartStr(type));
-        List<Map<String, Object>> seList = workbenchDao.pCashTrend(params);
+        List<CashTrendItem> seList = workbenchDao.pCashTrend(params);
 
         option.getXAxis().get(0).getData().addAll(DateUtils.getDaySerial(type));
 
@@ -184,12 +178,12 @@ public class WorkbenchService {
         List<String> dayTimeSerial = DateUtils.getDayTimeSerial(type);
         for (String time : dayTimeSerial) {
             boolean exists = false;
-            for (Map<String, Object> map : seList) {
-                if (StrUtil.equals(time, MapUtil.getStr(map, "otime"))) {
-                    BigDecimal profitAmount = MapUtil.get(map, "profitAmount", BigDecimal.class, BigDecimal.ZERO);
+            for (CashTrendItem trendItem : seList) {
+                if (StrUtil.equals(time, trendItem.getOTime())) {
+                    BigDecimal profitAmount = trendItem.getProfitAmount();
                     maxYAxis = maxYAxis.compareTo(profitAmount) < 0 ? profitAmount : maxYAxis;
 
-                    option.getSeries().get(0).getData().add(MapUtil.get(map, "profitAmount", BigDecimal.class, BigDecimal.ZERO));
+                    option.getSeries().get(0).getData().add(profitAmount);
                     exists = true;
                     break;
                 }
@@ -208,13 +202,13 @@ public class WorkbenchService {
         //图表数据类型
         BillStatType type = BillStatType.valueOf(MapUtil.getStr(params, "type"));
         //销售单历史数据
-        List<Map<String, Object>> seList = workbenchDao.pHisPBillTrend(params);
+        List<HisPBillTrendItem> seList = workbenchDao.pHisBillTrend(params);
 
         TreeSet<String> yearSet = new TreeSet<>();
-        MultiKeyMap<String, Map<String, Object>> multiKeyMap = new MultiKeyMap<>();
-        seList.forEach(m -> {
-            multiKeyMap.put(MapUtil.getStr(m, "otime"), MapUtil.getStr(m, "time"), m);
-            yearSet.add(MapUtil.getStr(m, "otime"));
+        MultiKeyMap<String, HisPBillTrendItem> multiKeyMap = new MultiKeyMap<>();
+        seList.forEach(item -> {
+            multiKeyMap.put(item.getOTime(), item.getTime(), item);
+            yearSet.add(item.getOTime());
         });
 
         //图表数据
@@ -224,8 +218,8 @@ public class WorkbenchService {
         IntStream.rangeClosed(0, yearList.size() - 1).forEach(i -> {
             IntStream.rangeClosed(1, 12).forEach(m -> {
                 String year = yearList.get(i);
-                double value = MapUtil.getDouble(multiKeyMap.get(year, String.valueOf(m)), type.getValue(), 0.0);
-                option.getSeries().get(i).getData().add(value);
+                BigDecimal value = BeanUtil.getProperty(multiKeyMap.get(year, String.valueOf(m)), type.getValue());
+                option.getSeries().get(i).getData().add(NumberUtil.nullToZero(value));
             });
 
             option.getSeries().get(i).setType(EChartSeriesType.BAR.getValue());

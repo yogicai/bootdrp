@@ -26,6 +26,7 @@ function load() {
         shrinkToFit: false,
         autoScroll: true,
         multiselect: true,
+        multiboxonly: true,
         rowNum: 20,
         rowList: [20, 50, 100],
         colNames: ['单据日期', '编号', '店铺', '类型', '类型', '供应商', '数量', '商品金额', '优惠率', '优惠金额', '采购费用', '已付金额', '优惠后商品金额', '合计金额', '状态', '审核状态', '结算帐户', '备注', '创建时间', '更新时间'],

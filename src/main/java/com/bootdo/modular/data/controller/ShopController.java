@@ -51,20 +51,21 @@ public class ShopController {
 
     @ResponseBody
     @PostMapping("/save")
-    public R save(DataShop dataShop) {
+    public R<Void> save(DataShop dataShop) {
         shopService.add(dataShop);
         return R.ok();
     }
 
     @ResponseBody
     @PostMapping("/batchRemove")
-    public R remove(@RequestParam("ids[]") List<Long> ids) {
-        return R.ok(shopService.removeByIds(ids));
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Long> ids) {
+        shopService.removeByIds(ids);
+        return R.ok();
     }
 
     @ResponseBody
     @GetMapping("/selectManageShop")
-    public R selectPicker() {
+    public R<List<DataShop>> selectPicker() {
         return R.ok(shopService.selectManageShop());
     }
 

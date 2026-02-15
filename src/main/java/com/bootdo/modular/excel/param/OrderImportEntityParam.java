@@ -1,8 +1,6 @@
 package com.bootdo.modular.excel.param;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import cn.afterturn.easypoi.handler.inter.IExcelDataModel;
-import cn.afterturn.easypoi.handler.inter.IExcelModel;
 import com.bootdo.core.excel.param.BaseExcelParam;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +16,7 @@ import java.math.BigDecimal;
  * @since 2023-03-27 14:53
  */
 @Data
-public class OrderImportEntityParam extends BaseExcelParam implements IExcelDataModel, IExcelModel {
+public class OrderImportEntityParam extends BaseExcelParam {
 
     /**
      * 客户名称

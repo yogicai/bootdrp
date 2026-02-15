@@ -27,28 +27,28 @@ public class RoleController extends BaseController {
 
     @PreAuthorize("hasAuthority('sys:role:role')")
     @GetMapping()
-    String role() {
+    public String role() {
         return "system/role/role";
     }
 
     @PreAuthorize("hasAuthority('sys:role:role')")
     @GetMapping("/list")
     @ResponseBody()
-    List<RoleDO> list() {
+    public List<RoleDO> list() {
         return roleService.list(Wrappers.query());
     }
 
     @LogRecord(value = "添加角色")
     @PreAuthorize("hasAuthority('sys:role:add')")
     @GetMapping("/add")
-    String add() {
+    public String add() {
         return "system/role/add";
     }
 
     @LogRecord(value = "编辑角色")
     @PreAuthorize("hasAuthority('sys:role:edit')")
     @GetMapping("/edit/{id}")
-    String edit(@PathVariable Long id, Model model) {
+    public String edit(@PathVariable Long id, Model model) {
         RoleDO roleDO = roleService.getById(id);
         model.addAttribute("role", roleDO);
         return "system/role/edit";
@@ -58,7 +58,7 @@ public class RoleController extends BaseController {
     @PreAuthorize("hasAuthority('sys:role:add')")
     @PostMapping("/save")
     @ResponseBody()
-    R save(RoleDO role) {
+    public R<Void> save(RoleDO role) {
         roleService.saveRole(role);
         return R.ok();
     }
@@ -67,7 +67,7 @@ public class RoleController extends BaseController {
     @PreAuthorize("hasAuthority('sys:role:edit')")
     @PostMapping("/update")
     @ResponseBody()
-    R update(RoleDO role) {
+    public R<Void> update(RoleDO role) {
         roleService.updateRole(role);
         return R.ok();
     }
@@ -76,7 +76,7 @@ public class RoleController extends BaseController {
     @PreAuthorize("hasAuthority('sys:role:remove')")
     @PostMapping("/remove")
     @ResponseBody()
-    R remove(Long id) {
+    public R<Void> remove(Long id) {
         roleService.removeRole(id);
         return R.ok();
     }
@@ -84,8 +84,8 @@ public class RoleController extends BaseController {
     @PreAuthorize("hasAuthority('sys:role:batchRemove')")
     @LogRecord(value = "批量删除角色")
     @PostMapping("/batchRemove")
-    @ResponseBody
-    R batchRemove(@RequestParam("ids[]") List<Long> ids) {
+    @ResponseBody()
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Long> ids) {
         roleService.removeBatchRole(ids);
         return R.ok();
     }

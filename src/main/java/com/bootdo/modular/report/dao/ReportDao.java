@@ -1,5 +1,11 @@
 package com.bootdo.modular.report.dao;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bootdo.modular.report.result.SReconItem;
+import com.bootdo.modular.report.result.SaleProductItem;
+import com.github.yulichang.base.MPJBaseMapper;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Map;
 
@@ -8,12 +14,16 @@ import java.util.Map;
  * @since 2018-07-07 01:52:07
  */
 
-public interface ReportDao {
+public interface ReportDao extends MPJBaseMapper<Object> {
 
-    List<Map<String, Object>> sReconCustomer(Map<String, Object> map);
+    List<SReconItem> sReconCustomer(@Param("param")Map<String, Object> param);
 
-    List<Map<String, Object>> sReconVendor(Map<String, Object> map);
+    Page<SReconItem> sReconCustomerItem(Page<SReconItem> page, @Param("param")Map<String, Object> param);
 
-    List<Map<String, Object>> saleProduct(Map<String, Object> map);
+    List<SReconItem> sReconVendor(@Param("param")Map<String, Object> param);
+
+    Page<SReconItem> sReconVendorItem(Page<SReconItem> page, @Param("param")Map<String, Object> param);
+
+    List<SaleProductItem> saleProduct(@Param("param")Map<String, Object> param);
 
 }

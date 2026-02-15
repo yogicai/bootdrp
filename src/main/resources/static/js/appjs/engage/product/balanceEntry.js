@@ -14,9 +14,9 @@ function load() {
         postData: { "entryId": rowData['entryId'], "end": rowData['searchObj']['toDate'] },
         colNames: ['单据日期', '编号', '类型', '商品编号', '商品名称', '单位', '商品单价', '成本单价', '商品数量', '创建时间', '修改时间'],
         colModel: [
-            { name:'billDate', index:'billDate', editable:true, width:80, sorttype:"date", formatter:"date", frozen: true },
+            { name:'billDate', index:'billDate', editable:true, width:80, sortable: true, sorttype:"date", formatter:"date", frozen: true },
             { name:'billNo', index:'billNo', editable:true, sorttype:"text", width:150, frozen: true },
-            { name: 'billType', index: 'billType', editable: true, sorttype: "text", width: 60, formatter: function (cellValue) { return utils.formatEnum(cellValue, 'BILL_TYPE') }, unformat: function (cellValue) { return utils.unformatEnum(cellValue, 'BILL_TYPE') } },
+            { name: 'billType', index: 'billType', editable: true,  sortable: true, sorttype: "text", width: 60, formatter: function (cellValue) { return utils.formatEnum(cellValue, 'BILL_TYPE') }, unformat: function (cellValue) { return utils.unformatEnum(cellValue, 'BILL_TYPE') } },
             { name:'entryId', index:'entryId', editable:false, width:60 },
             { name:'entryName', index:'entryName', editable:false, width:80 },
             { name:'entryUnit', index:'entryUnit', editable:false, width:40 },
@@ -35,7 +35,8 @@ function load() {
         pager: "#pager_list",
         viewrecords: true,
         footerrow: true,
-        sortname: "billType",
+        sortname: 'billDate',
+        sortorder: 'desc',
         loadComplete: function (data) {
             collectTotal(data);
             utils.changeRowCss(tableGrid, "billType", "CG_ORDER,WH_RK_ORDER");

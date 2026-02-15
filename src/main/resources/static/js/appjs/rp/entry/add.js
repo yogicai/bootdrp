@@ -29,7 +29,7 @@ function load() {
         rowNum: 100,
         rowList: [20, 50, 100],
         sortname: 'billDate',
-        sortorder: 'desc',
+        sortorder: 'asc',
         colNames: ['源单编号', '业务类型', '单据类型', '单据日期', '单据金额', '已核销金额', '未核销金额', '本次核销金额', '备注'],
         colModel: [
             { name:'billNo', index:'billNo', editable:false, sorttype:"text", width:150 },

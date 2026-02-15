@@ -55,7 +55,7 @@
         ORDER BY trade_Time DESC
     </select>
 
-    <select id="selectSum" resultType="java.util.Map">
+    <select id="selectSum" resultType="com.bootdo.modular.cashier.result.RecordSum">
         select
             count(1)                   as totalCount,
             ifnull(sum(pay_amount), 0) as totalAmount

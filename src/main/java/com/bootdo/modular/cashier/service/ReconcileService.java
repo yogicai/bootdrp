@@ -12,6 +12,7 @@ import com.bootdo.core.utils.PoiUtils;
 import com.bootdo.modular.cashier.dao.ReconcileDao;
 import com.bootdo.modular.cashier.param.ReconcileParam;
 import com.bootdo.modular.cashier.result.ReconcileResult.ReconcileItem;
+import com.bootdo.modular.cashier.result.ReconcileResult.ReconcileItemSum;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +38,8 @@ public class ReconcileService extends ServiceImpl<ReconcileDao, RPOrderDO> {
     public PageJQ page(ReconcileParam param) {
         Map<String, Object> params = BeanUtil.beanToMap(param.fillParam());
         Page<ReconcileItem> page = reconcileDao.list(PageFactory.defaultPage(), params);
-        Map<String, Object> map = reconcileDao.selectSum(params);
-        return new PageJQ(page, map);
+        ReconcileItemSum sum = reconcileDao.selectSum(params);
+        return new PageJQ(page, BeanUtil.beanToMap(sum));
     }
 
     public void export(ReconcileParam param) {

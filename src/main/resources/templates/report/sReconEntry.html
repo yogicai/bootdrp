@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:insert="~{include :: header}"></head>
+<body class="gray-bg">
+
+<div class="ibox-content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-body jqGrid_wrapper">
+                <table id="table_list"></table>
+                <div id="pager_list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div th:insert="~{include :: footer}"></div>
+<script type="text/javascript" th:src="@{/js/appjs/report/sReconEntry.js}"></script>
+</script>
+</body>
+</html>

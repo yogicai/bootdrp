@@ -80,7 +80,7 @@ public class ProductController extends BaseController {
     @PostMapping("/save")
     @Operation(summary = "保存")
     @PreAuthorize("hasAuthority('data:product:add')")
-    public R save(@Validated ProductDO product) {
+    public R<Void> save(@Validated ProductDO product) {
         dataValidator.validateProduct(product);
         productService.add(product);
         return R.ok();
@@ -89,7 +89,7 @@ public class ProductController extends BaseController {
     @ResponseBody
     @PostMapping("/update")
     @Operation(summary = "修改")
-    public R update(@Validated(edit.class) ProductDO product) {
+    public R<Void> update(@Validated(edit.class) ProductDO product) {
         dataValidator.validateProduct(product);
         productService.updateById(product);
         return R.ok();
@@ -98,7 +98,7 @@ public class ProductController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     @Operation(summary = "删除")
-    public R remove(Integer id) {
+    public R<Void> remove(Integer id) {
         productService.removeById(id);
         return R.ok();
     }
@@ -107,7 +107,7 @@ public class ProductController extends BaseController {
     @ResponseBody
     @Operation(summary = "批量删除")
     @PreAuthorize("hasAuthority('data:product:batchRemove')")
-    public R batchRemove(@RequestParam("ids[]") List<Integer> ids) {
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Integer> ids) {
         productService.removeBatchByIds(ids);
         return R.ok();
     }

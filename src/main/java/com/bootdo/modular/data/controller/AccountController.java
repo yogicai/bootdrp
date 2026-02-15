@@ -62,7 +62,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     @Operation(summary = "保存")
-    public R save(@Validated AccountDO account) {
+    public R<Void> save(@Validated AccountDO account) {
         dataValidator.validateAccount(account);
         accountService.add(account);
         return R.ok();
@@ -71,7 +71,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     @PostMapping("/update")
     @Operation(summary = "修改")
-    public R update(@Validated(edit.class) AccountDO account) {
+    public R<Void> update(@Validated(edit.class) AccountDO account) {
         dataValidator.validateAccount(account);
         accountService.updateById(account);
         return R.ok();
@@ -81,7 +81,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     @Operation(summary = "删除")
     @PreAuthorize("hasAuthority('data:account:remove')")
-    public R remove(Integer id) {
+    public R<Void> remove(Integer id) {
         accountService.removeById(id);
         return R.ok();
     }
@@ -90,7 +90,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     @Operation(summary = "批量删除")
     @PreAuthorize("hasAuthority('data:account:remove')")
-    public R batchRemove(@RequestParam("ids[]") List<Integer> ids) {
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Integer> ids) {
         accountService.removeByIds(ids);
         return R.ok();
     }

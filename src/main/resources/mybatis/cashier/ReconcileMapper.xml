@@ -107,7 +107,7 @@
             <include refid="dateFormatAndGroup"/> desc
     </select>
 
-    <select id="selectSum" resultType="java.util.Map">
+    <select id="selectSum" resultType="com.bootdo.modular.cashier.result.ReconcileResult$ReconcileItemSum">
         select
             ifnull(sum(billCount), 0)                       as billCountTotal,
             ifnull(sum(checkAmount), 0)                     as checkAmountTotal,

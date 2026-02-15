@@ -72,7 +72,7 @@ public class ConsumerController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     @Operation(summary = "保存")
-    public R save(@Validated ConsumerDO consumer) {
+    public R<Void> save(@Validated ConsumerDO consumer) {
         dataValidator.validateConsumer(consumer);
         consumerService.add(consumer);
         return R.ok();
@@ -81,7 +81,7 @@ public class ConsumerController extends BaseController {
     @ResponseBody
     @PostMapping("/update")
     @Operation(summary = "修改")
-    public R update(@Validated(edit.class) ConsumerDO consumer) {
+    public R<Void> update(@Validated(edit.class) ConsumerDO consumer) {
         dataValidator.validateConsumer(consumer);
         consumerService.updateById(consumer);
         return R.ok();
@@ -91,7 +91,7 @@ public class ConsumerController extends BaseController {
     @ResponseBody
     @Operation(summary = "删除")
     @PreAuthorize("hasAuthority('data:consumer:remove')")
-    public R remove(Integer id) {
+    public R<Void> remove(Integer id) {
         consumerService.removeById(id);
         return R.ok();
     }
@@ -100,7 +100,7 @@ public class ConsumerController extends BaseController {
     @ResponseBody
     @Operation(summary = "批量删除")
     @PreAuthorize("hasAuthority('data:consumer:batchRemove')")
-    public R batchRemove(@RequestParam("ids[]") List<Integer> ids) {
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Integer> ids) {
         consumerService.removeBatchByIds(ids);
         return R.ok();
     }

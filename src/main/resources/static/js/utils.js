@@ -815,7 +815,7 @@
 
     if ($.jgrid) {
         $.jgrid.defaults.styleUI = 'Bootstrap';
-        $.jgrid.defaults.cmTemplate = { title: false };
+        $.jgrid.defaults.cmTemplate = { title: false, sortable: false };
     }
 
 }(window));

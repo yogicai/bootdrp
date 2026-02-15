@@ -33,7 +33,7 @@ public class DeptController extends BaseController {
 
     @GetMapping()
     @PreAuthorize("hasAuthority('system:sysDept:sysDept')")
-    String dept() {
+    public String dept() {
         return "system/dept/dept";
     }
 
@@ -47,7 +47,7 @@ public class DeptController extends BaseController {
 
     @GetMapping("/add/{pId}")
     @PreAuthorize("hasAuthority('system:sysDept:add')")
-    String add(@PathVariable Long pId, Model model) {
+    public String add(@PathVariable Long pId, Model model) {
         model.addAttribute("pId", pId);
         if (pId == 0) {
             model.addAttribute("pName", "总部门");
@@ -59,7 +59,7 @@ public class DeptController extends BaseController {
 
     @GetMapping("/edit/{deptId}")
     @PreAuthorize("hasAuthority('system:sysDept:edit')")
-    String edit(@PathVariable Long deptId, Model model) {
+    public String edit(@PathVariable Long deptId, Model model) {
         DeptDO sysDept = sysDeptService.getById(deptId);
         model.addAttribute("sysDept", sysDept);
         if (Constant.DEPT_ROOT_ID.equals(sysDept.getParentId())) {
@@ -74,7 +74,7 @@ public class DeptController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('system:sysDept:add')")
-    public R save(DeptDO sysDept) {
+    public R<Void> save(DeptDO sysDept) {
         sysDeptService.save(sysDept);
         return R.ok();
     }
@@ -82,7 +82,7 @@ public class DeptController extends BaseController {
     @ResponseBody
     @RequestMapping("/update")
     @PreAuthorize("hasAuthority('system:sysDept:edit')")
-    public R update(DeptDO sysDept) {
+    public R<Void> update(DeptDO sysDept) {
         sysDeptService.updateById(sysDept);
         return R.ok();
     }
@@ -90,9 +90,9 @@ public class DeptController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('system:sysDept:remove')")
-    public R remove(Long deptId) {
+    public R<Void> remove(Long deptId) {
         if (sysDeptService.checkDeptHasUser(deptId)) {
-            return R.error("部门包含部门或用户,不允许修改");
+            return R.error("部门包含部门或用户,不允许删除");
         }
         sysDeptService.removeById(deptId);
         return R.ok();
@@ -101,8 +101,8 @@ public class DeptController extends BaseController {
     @PostMapping("/batchRemove")
     @ResponseBody
     @PreAuthorize("hasAuthority('system:sysDept:batchRemove')")
-    public R remove(@RequestParam("ids[]") List<Integer> deptIds) {
-        sysDeptService.removeByIds(deptIds);
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Integer> deptIds) {
+        sysDeptService.removeBatchByIds(deptIds);
         return R.ok();
     }
 
@@ -113,7 +113,7 @@ public class DeptController extends BaseController {
     }
 
     @GetMapping("/treeView")
-    String treeView() {
+    public String treeView() {
         return "system/dept/deptTree";
     }
 

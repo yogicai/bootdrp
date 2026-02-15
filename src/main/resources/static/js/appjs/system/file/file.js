@@ -22,9 +22,9 @@ function sendFile(files, editor, $editable) {
         contentType: false,
         processData: false,
         dataType: 'json',
-        success: function (data) {
+        success: function (r) {
             // 插入图片到编辑器
-            $('.summernote').summernote('insertImage', data.fileName);
+            $('.summernote').summernote('insertImage', r.data);
         },
         error: function () {
             alert('上传失败');

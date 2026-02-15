@@ -3,7 +3,7 @@
 
 <mapper namespace="com.bootdo.modular.workbench.dao.WorkbenchDao">
 
-    <select id="pHisPBillTrend" resultType="java.util.Map">
+    <select id="pHisBillTrend" resultType="com.bootdo.modular.workbench.result.HisPBillTrendItem">
         SELECT
             DATE_FORMAT(so.`bill_date`, '%Y')                 AS otime,
             DATE_FORMAT(so.`bill_date`, '%c')                 AS time,
@@ -24,7 +24,7 @@
             DATE_FORMAT(so.`bill_date`, '%Y%m')
     </select>
 
-    <select id="pBillTrend" resultType="java.util.Map">
+    <select id="pBillTrend" resultType="com.bootdo.modular.workbench.result.BillTrendItem">
         SELECT
         <choose>
             <when test="type != null and type.trim == 'DAY'">DATE_FORMAT(so.`bill_date`, '%Y%m%d') AS otime, DATE_FORMAT(so.`bill_date`, '%d') AS time,</when>
@@ -46,7 +46,7 @@
         </choose>
     </select>
 
-    <select id="pBillTrendPie" resultType="java.util.Map">
+    <select id="pBillTrendPie" resultType="com.bootdo.modular.workbench.result.BillTrendPieItem">
         SELECT
             dp.`type`,
             dc.`name`,
@@ -69,7 +69,7 @@
             totalAmount DESC
     </select>
 
-    <select id="pCashTrend" resultType="java.util.Map">
+    <select id="pCashTrend" resultType="com.bootdo.modular.workbench.result.CashTrendItem">
         SELECT
         <choose>
             <when test="type != null and type.trim == 'DAY'"> DATE_FORMAT(spo.`bill_date`, '%Y%m%d') AS otime, DATE_FORMAT(spo.`bill_date`, '%d') AS time, </when>

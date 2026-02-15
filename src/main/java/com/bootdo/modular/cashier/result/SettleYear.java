@@ -71,4 +71,27 @@ public class SettleYear {
         @Excel(name = "实际收款", numFormat = "#,##0.00", type = 10)
         private BigDecimal paymentAmountSum;
     }
+
+    /**
+     * 年份核销金额合计
+     */
+    @Data
+    public static class SettleYearFlow {
+        @Excel(name = "年份")
+        private String year;
+        @Excel(name = "单据数量")
+        private Integer billCount;
+        @Excel(name = "营业额", numFormat = "0.00", type = 10)
+        private BigDecimal totalAmount;
+        @Excel(name = "核销金额", numFormat = "0.00", type = 10)
+        private BigDecimal checkAmount;
+        @Excel(name = "核销折扣", numFormat = "0.00", type = 10)
+        private BigDecimal discountAmount;
+        @Excel(name = "收款金额", numFormat = "0.00", type = 10)
+        private BigDecimal settleAmount;
+        @Excel(name = "结算账户")
+        private String settleAccount;
+        @Excel(name = "结算账户名称")
+        private String settleName;
+    }
 }

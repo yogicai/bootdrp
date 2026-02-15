@@ -59,7 +59,7 @@ public class StockController {
     @ResponseBody
     @PostMapping("/save")
     @Operation(summary = "保存")
-    public R save(StockDO stock) {
+    public R<Void> save(StockDO stock) {
         dataValidator.validateStock(stock);
         stockService.save(stock);
         return R.ok();
@@ -68,7 +68,7 @@ public class StockController {
     @ResponseBody
     @PostMapping("/update")
     @Operation(summary = "修改")
-    public R update(StockDO stock) {
+    public R<Void> update(StockDO stock) {
         dataValidator.validateStock(stock);
         stockService.updateById(stock);
         return R.ok();
@@ -78,7 +78,7 @@ public class StockController {
     @ResponseBody
     @Operation(summary = "删除")
     @PreAuthorize("hasAuthority('data:stock:remove')")
-    public R remove(Integer id) {
+    public R<Void> remove(Integer id) {
         stockService.removeById(id);
         return R.ok();
     }
@@ -87,7 +87,7 @@ public class StockController {
     @ResponseBody
     @Operation(summary = "批量删除")
     @PreAuthorize("hasAuthority('data:stock:remove')")
-    public R batchRemove(@RequestParam("ids[]") List<Integer> ids) {
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Integer> ids) {
         stockService.removeBatchByIds(ids);
         return R.ok();
     }

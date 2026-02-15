@@ -9,6 +9,7 @@ import com.bootdo.modular.system.domain.RoleDO;
 import com.bootdo.modular.system.domain.UserDO;
 import com.bootdo.modular.system.param.SysUserParam;
 import com.bootdo.modular.system.result.LoginUserResult;
+import com.bootdo.modular.system.result.UploadImgResult;
 import com.bootdo.modular.system.result.UserVO;
 import com.bootdo.modular.system.service.DictService;
 import com.bootdo.modular.system.service.RoleService;
@@ -40,20 +41,20 @@ public class UserController extends BaseController {
 
     @GetMapping("")
     @PreAuthorize("hasAuthority('sys:user:user')")
-    String user(Model model) {
+    public String user(Model model) {
         return "system/user/user";
     }
 
     @GetMapping("/list")
     @ResponseBody
-    PageR list(SysUserParam param) {
+    public PageR list(SysUserParam param) {
         return userService.page(param);
     }
 
     @LogRecord(value = "添加用户")
     @GetMapping("/add")
     @PreAuthorize("hasAuthority('sys:user:add')")
-    String add(Model model) {
+    public String add(Model model) {
         List<RoleDO> roles = roleService.list();
         model.addAttribute("roles", roles);
         return "system/user/add";
@@ -62,7 +63,7 @@ public class UserController extends BaseController {
     @LogRecord(value = "编辑用户")
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasAuthority('sys:user:edit')")
-    String edit(Model model, @PathVariable Long id) {
+    public String edit(Model model, @PathVariable Long id) {
         UserDO userDO = userService.getUser(id);
         model.addAttribute("user", userDO);
         List<RoleDO> roles = roleService.list(id);
@@ -74,7 +75,7 @@ public class UserController extends BaseController {
     @PostMapping("/save")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:add')")
-    R saveUser(UserDO user) {
+    public R<Void> saveUser(UserDO user) {
         userService.saveUser(user);
         return R.ok();
     }
@@ -83,7 +84,7 @@ public class UserController extends BaseController {
     @PostMapping("/update")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:edit')")
-    R update(UserDO user) {
+    public R<Void> update(UserDO user) {
         userService.updateUser(user);
         return R.ok();
     }
@@ -92,7 +93,7 @@ public class UserController extends BaseController {
     @PostMapping("/updatePersonal")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:edit')")
-    R updatePersonal(UserDO user) {
+    public R<Void> updatePersonal(UserDO user) {
         userService.updateById(user);
         return R.ok();
     }
@@ -101,7 +102,7 @@ public class UserController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:remove')")
-    R remove(Long id) {
+    public R<Void> remove(Long id) {
         userService.removeUser(id);
         return R.ok();
     }
@@ -110,22 +111,22 @@ public class UserController extends BaseController {
     @PostMapping("/batchRemove")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:batchRemove')")
-    R batchRemove(@RequestParam("ids[]") List<Integer> userIds) {
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Integer> userIds) {
         userService.batchRemove(userIds);
         return R.ok();
     }
 
     @PostMapping("/exit")
     @ResponseBody
-    boolean exit(@RequestParam String username) {
+    public R<Boolean> exit(@RequestParam String username) {
         // 存在，不通过，false
-        return !userService.exit(username);
+        return R.ok(!userService.exit(username));
     }
 
     @LogRecord(value = "请求更改用户密码")
     @GetMapping("/resetPwd/{id}")
     @PreAuthorize("hasAuthority('sys:user:resetPwd')")
-    String resetPwd(@PathVariable("id") Long userId, Model model) {
+    public String resetPwd(@PathVariable("id") Long userId, Model model) {
         UserDO userDO = new UserDO();
         userDO.setUserId(userId);
         model.addAttribute("user", userDO);
@@ -135,7 +136,7 @@ public class UserController extends BaseController {
     @LogRecord(value = "提交更改用户密码")
     @PostMapping("/resetPwd")
     @ResponseBody
-    R resetPwd(UserVO userVO) throws Exception {
+    public R<Void> resetPwd(UserVO userVO) throws Exception {
         userService.resetPwd(userVO, getUser());
         return R.ok();
     }
@@ -144,7 +145,7 @@ public class UserController extends BaseController {
     @PostMapping("/adminResetPwd")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:resetPwd')")
-    R adminResetPwd(UserVO userVO) throws Exception {
+    public R<Void> adminResetPwd(UserVO userVO) throws Exception {
         userService.adminResetPwd(userVO);
         return R.ok();
     }
@@ -156,12 +157,12 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/treeView")
-    String treeView() {
+    public String treeView() {
         return "system/user/userTree";
     }
 
     @GetMapping("/personal")
-    String personal(Model model) {
+    public String personal(Model model) {
         UserDO userDO = userService.getUser(getUserId());
         model.addAttribute("user", userDO);
         model.addAttribute("hobbyList", dictService.getHobbyList(userDO));
@@ -171,7 +172,7 @@ public class UserController extends BaseController {
 
     @ResponseBody
     @PostMapping("/uploadImg")
-    R uploadImg(@RequestParam("avatar_file") MultipartFile file, String avatarData) {
+    public R<UploadImgResult> uploadImg(@RequestParam("avatar_file") MultipartFile file, String avatarData) {
         return R.ok(userService.updatePersonalImg(file, avatarData, getUserId()));
     }
 

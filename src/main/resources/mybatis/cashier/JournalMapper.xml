@@ -62,7 +62,7 @@
     </select>
 
     <!-- 账户现金流水 -->
-    <select id="flowRecordList" resultType="java.util.Map">
+    <select id="flowRecordList" resultType="com.bootdo.modular.cashier.result.FlowRecordItem">
         SELECT
             DATE_FORMAT(a.trade_time, '%Y') as year,
             account,

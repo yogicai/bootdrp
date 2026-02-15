@@ -1,15 +1,17 @@
 package com.bootdo.modular.engage.controller;
 
-import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bootdo.core.enums.CommonStatus;
-import com.bootdo.core.pojo.request.QueryJQ;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.core.utils.PoiUtils;
 import com.bootdo.modular.engage.param.BalanceAdjustParam;
 import com.bootdo.modular.engage.param.BalanceQryParam;
+import com.bootdo.modular.engage.param.EntryBalanceQryParam;
 import com.bootdo.modular.engage.result.BalanceResult;
 import com.bootdo.modular.engage.result.EntryBalanceResult;
+import com.bootdo.modular.engage.result.EntryBalanceSumResult;
 import com.bootdo.modular.engage.service.ProductBalanceService;
 import com.bootdo.modular.system.controller.BaseController;
 import com.bootdo.modular.wh.result.WHProductInfo;
@@ -17,12 +19,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 入库出库单
@@ -52,10 +51,9 @@ public class ProductBalanceController extends BaseController {
     @ResponseBody
     @PostMapping(value = "/balance/list")
     @PreAuthorize("hasAuthority('engage:product:balance')")
-    public R pBalance(@RequestBody BalanceQryParam param) {
+    public R<BalanceResult> pBalance(@RequestBody BalanceQryParam param) {
         param.setStatus(CommonStatus.ENABLE.getValue());
-        BalanceResult result = productBalanceService.pBalance(param);
-        return R.ok().put("result", result);
+        return R.ok(productBalanceService.pBalance(param));
     }
 
     /**
@@ -75,7 +73,7 @@ public class ProductBalanceController extends BaseController {
      */
     @GetMapping("/balanceEntry")
     @PreAuthorize("hasAuthority('engage:product:balance')")
-    public String bBalanceEntry(@RequestParam Map<String, Object> params, Model model) {
+    public String bBalanceEntry() {
         return "engage/product/balanceEntry";
     }
 
@@ -85,14 +83,11 @@ public class ProductBalanceController extends BaseController {
     @ResponseBody
     @GetMapping(value = "/balanceEntry/list")
     @PreAuthorize("hasAuthority('engage:product:balance')")
-    public PageJQ pBalanceEntry(@RequestParam Map<String, Object> params, Model model) {
-        params.put("status", 1);
-        QueryJQ query = new QueryJQ(params);
-        List<EntryBalanceResult> productList = productBalanceService.pBalanceEntry(query);
-        Map<String, Object> map = productBalanceService.pBalanceEntryCountSum(query);
-        int total = MapUtil.getInt(map, "totalCount", 0);
-        int totalPage = (int) Math.ceil(1.0 * total / query.getLimit());
-        return new PageJQ(productList, totalPage, query.getPage(), total, map);
+    public PageJQ pBalanceEntry(EntryBalanceQryParam param) {
+        param.setStatus(CommonStatus.ENABLE.getValue());
+        Page<EntryBalanceResult> productList = productBalanceService.pBalanceEntry(param);
+        EntryBalanceSumResult sumResult = productBalanceService.pBalanceEntryCountSum(param);
+        return new PageJQ(productList, BeanUtil.beanToMap(sumResult));
     }
 
 
@@ -102,8 +97,7 @@ public class ProductBalanceController extends BaseController {
     @ResponseBody
     @GetMapping(value = "/balance/adjust")
     @PreAuthorize("hasAuthority('engage:product:balance')")
-    public R pBalance(BalanceAdjustParam balanceAdjustParam) {
-        Collection<String> result = productBalanceService.pBalanceAdjust(balanceAdjustParam);
-        return R.ok().put("result", result);
+    public R<Collection<String>> pBalance(BalanceAdjustParam balanceAdjustParam) {
+        return R.ok(productBalanceService.pBalanceAdjust(balanceAdjustParam));
     }
 }

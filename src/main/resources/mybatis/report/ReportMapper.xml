@@ -5,13 +5,13 @@
 
     <sql id="dateFormatAndGroup">
         <choose>
-            <when test="dimensionType !=null and dimensionType.name() == 'YEAR'">
+            <when test="param.dimensionType !=null and param.dimensionType.name() == 'YEAR'">
                 SUBSTR(a.bill_date, 1, 4)
             </when>
-            <when test="dimensionType !=null and dimensionType.name() == 'MONTH'">
+            <when test="param.dimensionType !=null and param.dimensionType.name() == 'MONTH'">
                 SUBSTR(a.bill_date, 1, 7)
             </when>
-            <when test="dimensionType !=null and dimensionType.name() == 'DAY'">
+            <when test="param.dimensionType !=null and param.dimensionType.name() == 'DAY'">
                 SUBSTR(a.bill_date, 1, 10)
             </when>
             <otherwise>
@@ -22,101 +22,157 @@
 
     <sql id="dateFormatAndGroupColumn">
         <choose>
-            <when test="dimensionType !=null and dimensionType.name() == 'YEAR'">
+            <when test="param.dimensionType !=null and param.dimensionType.name() == 'YEAR'">
                 SUBSTR(a.bill_date, 1, 4)
             </when>
-            <when test="dimensionType !=null and dimensionType.name() == 'MONTH'">
+            <when test="param.dimensionType !=null and param.dimensionType.name() == 'MONTH'">
                 SUBSTR(a.bill_date, 1, 7)
             </when>
-            <when test="dimensionType !=null and dimensionType.name() == 'DAY'">
+            <when test="param.dimensionType !=null and param.dimensionType.name() == 'DAY'">
                 SUBSTR(a.bill_date, 1, 10)
             </when>
             <otherwise>
-                CONCAT(DATE_FORMAT(MIN(a.`bill_date`), '%Y-%m-%d'), ' - ', DATE_FORMAT(MAX(a.`bill_date`), '%Y-%m-%d'))
+                CONCAT(DATE_FORMAT(MIN(a.`bill_date`), '%Y-%m-%d'), '_', DATE_FORMAT(MAX(a.`bill_date`), '%Y-%m-%d'))
             </otherwise>
         </choose>
     </sql>
 
-    <select id="sReconCustomer" resultType="java.util.Map">
+    <sql id="queryCondition">
+        <if test="param.instituteId != null and param.instituteId != ''">and ${instituteColumn} = #{param.instituteId}</if>
+        <if test="param.start != null">and bill_date >= #{param.start}</if>
+        <if test="param.end != null"> <![CDATA[ and bill_date <= #{param.end} ]]> </if>
+        <if test="param.shopNo != null and param.shopNo.size() > 0">and shop_no in
+            <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+        </if>
+        and audit_status = 'YES'
+    </sql>
+
+    <select id="sReconCustomer" resultType="com.bootdo.modular.report.result.SReconItem">
         SELECT
-            <include refid="dateFormatAndGroupColumn"/>                                                             AS billRegion,
-            group_concat(distinct a.`shop_no`)                                                                      AS shopNo,
-            group_concat(distinct a.`consumer_id`)                                                                  AS instituteId,
-            group_concat(distinct a.`consumer_name`)                                                                AS instituteName,
-            group_concat(distinct a.`bill_no`)                                                                      AS billNo,
-            SUM(a.`total_amount`)                                                                                   AS totalAmount,
-            SUM(a.`payment_amount`)                                                                                 AS paymentAmount,
-            SUM(a.`total_amount`) - SUM(a.`payment_amount`)                                                         AS debtAmount,
-            SUM(a.`cost_amount`)                                                                                    AS costAmount,
-            SUM(a.`total_amount`) - SUM(a.`cost_amount`)                                                            AS profitAmount
+            <include refid="dateFormatAndGroupColumn"/>                                                             AS bill_region,
+            group_concat(distinct a.`shop_no`)                                                                      AS shop_no,
+            group_concat(distinct a.`consumer_id`)                                                                  AS institute_id,
+            group_concat(distinct a.`consumer_name`)                                                                AS institute_name,
+            group_concat(distinct a.`bill_no`)                                                                      AS bill_no,
+            COUNT(0)                                                                                                AS bill_count,
+            SUM(a.`total_amount`)                                                                                   AS total_amount,
+            SUM(a.`payment_amount`)                                                                                 AS payment_amount,
+            SUM(a.`total_amount`) - SUM(a.`payment_amount`)                                                         AS debt_amount,
+            SUM(a.`cost_amount`)                                                                                    AS cost_amount,
+            SUM(a.`total_amount`) - SUM(a.`cost_amount`)                                                            AS profit_amount
         FROM
             se_order a
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
-            <if test="instituteId != null and instituteId != ''">and consumer_id = #{instituteId}</if>
-            <if test="start != null">and bill_date >= #{start}</if>
-            <if test="end != null"> <![CDATA[ and bill_date <= #{end} ]]> </if>
-            and audit_status = 'YES'
+            <include refid="queryCondition">
+                <property name="instituteColumn" value="consumer_id"/>
+            </include>
         </trim>
         GROUP BY
             <include refid="dateFormatAndGroup">
                 <property name="groupColumn" value="consumer_id"/>
             </include>
-            <if test="showDebt != null and showDebt == 0">HAVING debtAmount > 0</if>
+            <if test="param.showDebt != null and param.showDebt == 0">HAVING debt_amount > 0</if>
         ORDER BY
             <include refid="dateFormatAndGroup">
-                <property name="groupColumn" value="debtAmount"/>
+                <property name="groupColumn" value="debt_amount"/>
             </include> desc
     </select>
 
-    <select id="sReconVendor" resultType="java.util.Map">
+    <select id="sReconCustomerItem" resultType="com.bootdo.modular.report.result.SReconItem">
         SELECT
-            <include refid="dateFormatAndGroupColumn"/>                                                             AS billRegion,
-            group_concat(distinct a.`shop_no`)                                                                      AS shopNo,
-            group_concat(distinct a.`vendor_id`)                                                                    AS instituteId,
-            group_concat(distinct a.`vendor_name`)                                                                  AS instituteName,
-            group_concat(distinct a.`bill_no`)                                                                      AS billNo,
-            SUM(a.`total_amount`)                                                                                   AS totalAmount,
-            SUM(a.`payment_amount`)                                                                                 AS paymentAmount,
-            SUM(a.`total_amount`) - SUM(a.`payment_amount`)                                                         AS debtAmount
+            a.`bill_date`                                                             AS bill_region,
+            a.`shop_no`                                                               AS shop_no,
+            a.`consumer_id`                                                           AS institute_id,
+            a.`consumer_name`                                                         AS institute_name,
+            a.`bill_no`                                                               AS bill_no,
+            a.`status`                                                                AS status,
+            a.`total_amount`                                                          AS total_amount,
+            a.`payment_amount`                                                        AS payment_amount,
+            a.`total_amount` - a.`payment_amount`                                     AS debt_amount,
+            a.`cost_amount`                                                           AS cost_amount,
+            a.`total_amount` - a.`cost_amount`                                        AS profit_amount
+        FROM
+            se_order a
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <include refid="queryCondition">
+                <property name="instituteColumn" value="consumer_id"/>
+            </include>
+        </trim>
+        ORDER BY
+            bill_date desc
+    </select>
+
+    <select id="sReconVendor" resultType="com.bootdo.modular.report.result.SReconItem">
+        SELECT
+            <include refid="dateFormatAndGroupColumn"/>                                                             AS bill_region,
+            group_concat(distinct a.`shop_no`)                                                                      AS shop_no,
+            group_concat(distinct a.`vendor_id`)                                                                    AS institute_id,
+            group_concat(distinct a.`vendor_name`)                                                                  AS institute_name,
+            group_concat(distinct a.`bill_no`)                                                                      AS bill_no,
+            COUNT(0)                                                                                                AS bill_count,
+            SUM(a.`total_amount`)                                                                                   AS total_amount,
+            SUM(a.`payment_amount`)                                                                                 AS payment_amount,
+            SUM(a.`total_amount`) - SUM(a.`payment_amount`)                                                         AS debt_amount
         FROM
             po_order a
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
-            <if test="instituteId != null and instituteId != ''"> and vendor_id = #{instituteId} </if>
-            <if test="start != null"> and bill_date >= #{start} </if>
-            <if test="end != null"> <![CDATA[ and bill_date <= #{end} ]]> </if>
-            and audit_status = 'YES'
+            <include refid="queryCondition">
+                <property name="instituteColumn" value="vendor_id"/>
+            </include>
         </trim>
         GROUP BY
             <include refid="dateFormatAndGroup">
                 <property name="groupColumn" value="vendor_id"/>
             </include>
-            <if test="showDebt != null and showDebt == 0">HAVING debtAmount > 0</if>
+            <if test="param.showDebt != null and param.showDebt == 0">HAVING debt_amount > 0</if>
         ORDER BY
             <include refid="dateFormatAndGroup">
-                <property name="groupColumn" value="debtAmount"/>
+                <property name="groupColumn" value="debt_amount"/>
             </include> desc
     </select>
 
-    <select id="saleProduct" resultType="java.util.Map">
+    <select id="sReconVendorItem" resultType="com.bootdo.modular.report.result.SReconItem">
         SELECT
-            a.`shop_no`                                    as shopNo,
-            a.`entry_id`                                   as entryId,
-            a.`entry_name`                                 as entryName,
-            a.`entry_unit`                                 as entryUnit,
-            SUM(a.`total_qty`)                             AS totalQty,
-            AVG(a.`entry_price`)                           AS entryPrice,
-            SUM(a.`cost_amount`)                           AS costAmount,
-            SUM(a.`entry_amount`)                          AS entryAmount,
-            COUNT(0)                                       AS billCount,
-            (SUM(a.`entry_amount`) - SUM(a.`cost_amount`)) as billProfit,
-            DATE_FORMAT(MIN(b.`bill_date`), '%Y-%m-%d')       startDate,
-            DATE_FORMAT(MAX(b.`bill_date`), '%Y-%m-%d')       endDate
+            a.`bill_date`                                                             AS bill_region,
+            a.`shop_no`                                                               AS shop_no,
+            a.`vendor_id`                                                             AS institute_id,
+            a.`vendor_name`                                                           AS institute_name,
+            a.`bill_no`                                                               AS bill_no,
+            a.`status`                                                                AS status,
+            a.`total_amount`                                                          AS total_amount,
+            a.`payment_amount`                                                        AS payment_amount,
+            a.`total_amount` - a.`payment_amount`                                     AS debt_amount
+        FROM
+            po_order a
+        <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
+            <include refid="queryCondition">
+                <property name="instituteColumn" value="vendor_id"/>
+            </include>
+        </trim>
+        ORDER BY
+            bill_date desc
+    </select>
+
+    <select id="saleProduct" resultType="com.bootdo.modular.report.result.SaleProductItem">
+        SELECT
+            a.`shop_no`                                    as shop_no,
+            a.`entry_id`                                   as entry_id,
+            a.`entry_name`                                 as entry_name,
+            a.`entry_unit`                                 as entry_unit,
+            SUM(a.`total_qty`)                             AS total_qty,
+            AVG(a.`entry_price`)                           AS entry_price,
+            SUM(a.`cost_amount`)                           AS cost_amount,
+            SUM(a.`entry_amount`)                          AS entry_amount,
+            COUNT(0)                                       AS bill_count,
+            (SUM(a.`entry_amount`) - SUM(a.`cost_amount`)) AS bill_profit,
+            DATE_FORMAT(MIN(b.`bill_date`), '%Y-%m-%d')    AS start_date,
+            DATE_FORMAT(MAX(b.`bill_date`), '%Y-%m-%d')    AS end_date
         FROM
             `se_order_entry`     a
             LEFT JOIN `se_order` b ON a.`bill_no` = b.`bill_no`
         <trim prefix="where 0=1 or (" prefixOverrides="and|or" suffix=")">
-            <if test="start != null"> and b.bill_date >= #{start} </if>
-            <if test="end != null"> <![CDATA[ and b.bill_date <= #{end} ]]> </if>
+            <if test="param.start != null"> and b.bill_date >= #{param.start} </if>
+            <if test="param.end != null"> <![CDATA[ and b.bill_date <= #{param.end} ]]> </if>
             and b.audit_status = 'YES'
         </trim>
         GROUP BY

@@ -1,11 +1,11 @@
 package com.bootdo.modular.se.controller;
 
-import cn.hutool.core.map.MapUtil;
 import com.bootdo.core.annotation.LogRecord;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.po.param.OrderDetailParam;
 import com.bootdo.modular.se.domain.SEOrderDO;
 import com.bootdo.modular.se.param.SEOrderVO;
+import com.bootdo.modular.se.result.OrderSaveResult;
 import com.bootdo.modular.se.service.SEOrderEntryService;
 import com.bootdo.modular.se.validator.SEOrderValidator;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,10 +40,10 @@ public class SEOrderEntryController {
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('se:entry:add')")
-    public R save(@RequestBody @Validated SEOrderVO order) {
+    public R<OrderSaveResult> save(@RequestBody @Validated SEOrderVO order) {
         seOrderValidator.validateSave(order);
         SEOrderDO orderDO = seOrderEntryService.save(order);
-        return R.ok(MapUtil.of("billNo", orderDO.getBillNo()));
+        return R.ok(new OrderSaveResult().setBillNo(orderDO.getBillNo()));
     }
 
     @GetMapping("/add")
@@ -61,9 +61,8 @@ public class SEOrderEntryController {
     @ResponseBody
     @GetMapping("/get")
     @PreAuthorize("hasAuthority('se:order:order')")
-    public R get(@Validated OrderDetailParam param) {
+    public R<SEOrderVO> get(@Validated OrderDetailParam param) {
         //查询列表数据
-        SEOrderVO orderVO = seOrderEntryService.getOrderVO(param);
-        return R.ok().put("order", orderVO);
+        return R.ok(seOrderEntryService.getOrderVO(param));
     }
 }

@@ -2,9 +2,12 @@ package com.bootdo.modular.engage.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bootdo.core.enums.BillType;
+import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.utils.DateUtils;
 import com.bootdo.core.utils.NumberUtils;
 import com.bootdo.modular.data.service.CostAmountCalculator;
@@ -13,9 +16,8 @@ import com.bootdo.modular.engage.dao.ProductBalanceDao;
 import com.bootdo.modular.engage.domain.ProductCostDO;
 import com.bootdo.modular.engage.param.BalanceAdjustParam;
 import com.bootdo.modular.engage.param.BalanceQryParam;
-import com.bootdo.modular.engage.result.BalanceResult;
-import com.bootdo.modular.engage.result.BalanceTotalResult;
-import com.bootdo.modular.engage.result.EntryBalanceResult;
+import com.bootdo.modular.engage.param.EntryBalanceQryParam;
+import com.bootdo.modular.engage.result.*;
 import com.bootdo.modular.wh.result.WHProductInfo;
 import com.bootdo.modular.wh.result.WHStockInfo;
 import jakarta.annotation.Resource;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -42,51 +45,40 @@ public class ProductBalanceService {
     @Resource
     private CostAmountCalculator costAmountCalculator;
 
-    private final Set<String> poBillSet = CollUtil.newHashSet(BillType.CG_ORDER.name(), BillType.WH_RK_ORDER.name());
-    private final Set<String> seBillSet = CollUtil.newHashSet(BillType.TH_ORDER.name(), BillType.WH_CK_ORDER.name());
+    private final Set<BillType> poBillSet = CollUtil.newHashSet(BillType.CG_ORDER, BillType.WH_RK_ORDER);
+    private final Set<BillType> seBillSet = CollUtil.newHashSet(BillType.TH_ORDER, BillType.WH_CK_ORDER);
 
-    
+
     @Transactional(rollbackFor = Exception.class)
     public BalanceResult pBalance(BalanceQryParam param) {
-        Map<String, Object> params = BeanUtil.beanToMap(param);
-        List<Map<String, Object>> list = productBalanceDao.pBalance(params);
-        TreeMap<String, List<Map<String, Object>>> listMap = new TreeMap<>();
-        TreeMap<String, String> stockMap = new TreeMap<>();
-        BalanceResult result = new BalanceResult();
+        BalanceResult result = new BalanceResult()
+                .setToDate(StrUtil.blankToDefault(DateUtil.formatDate(param.getToDate()), DateUtils.currentDate()));
+        // 按商品 ID分类整理库存信息
+        List<BalanceItemResult> list = productBalanceDao.pBalance(BeanUtil.beanToMap(param));
+        TreeMap<String, List<BalanceItemResult>> listMap = list.stream()
+                .collect(Collectors.groupingBy(BalanceItemResult::getNo, TreeMap::new, Collectors.toList()));
+        // 商品仓库信息
+        TreeMap<String, String> stockMap = list.stream().filter(item -> StrUtil.isNotEmpty(item.getStockNo()))
+                .collect(Collectors.toMap(BalanceItemResult::getStockNo, BalanceItemResult::getStockName, (o, n) -> o, TreeMap::new));
+        // 处理商品成本信息
+        Map<String, ProductCostDO> costDOMap = productCostService.listLate(null).stream()
+                .collect(Collectors.toMap(ProductCostDO::getProductNo, Function.identity(), (o, n) -> o));
 
-        result.setToDate(StrUtil.blankToDefault(MapUtil.getStr(params, "toDate"), DateUtils.currentDate()));
-        //按商品 ID分类整理库存信息
-        for (Map<String, Object> map : list) {
-            String key = MapUtil.getStr(map, "no");
-            if (!listMap.containsKey(key)) {
-                listMap.put(key, CollUtil.newArrayList());
-                if (!StrUtil.isEmpty(MapUtil.getStr(map, "stock_no"))) {
-                    stockMap.put(MapUtil.getStr(map, "stock_no"), MapUtil.getStr(map, "stock_name"));
-                }
-            }
-            listMap.get(key).add(map);
-        }
-        //处理商品成本信息
-        Map<String, ProductCostDO> costDOMap = MapUtil.newHashMap();
-        List<ProductCostDO> costDOList = productCostService.listLate(null);
-        for (ProductCostDO costDO : costDOList) {
-            costDOMap.put(costDO.getProductNo(), costDO);
-        }
-        //处理商品信息及总库存信息
-        //是否查询零库存商品（0:是，其他:否）
-        boolean showSto = MapUtil.getInt(params, "showSto", 1) == 0;
-        for (Map.Entry<String, List<Map<String, Object>>> entry : listMap.entrySet()) {
+        // 是否查询零库存商品（0:是，其他:否）
+        boolean showSto = StrUtil.equals(param.getShowSto(), "0");
+        // 处理商品信息及总库存信息
+        for (Map.Entry<String, List<BalanceItemResult>> entry : listMap.entrySet()) {
             WHProductInfo productInfo = convertProductInfo(entry.getValue(), costDOMap);
-            //零库存商品
+            // 零库存商品
             if (showSto && productInfo.getInventory().compareTo(BigDecimal.ZERO) <= 0) {
                 result.getProductInfoList().add(productInfo);
             }
-            //全部商品
+            // 全部商品
             if (!showSto) {
                 result.getProductInfoList().add(productInfo);
             }
         }
-        //处理各仓库库存信息
+        // 处理各仓库库存信息
         for (WHProductInfo productInfo : result.getProductInfoList()) {
             for (Map.Entry<String, String> entry : stockMap.entrySet()) {
                 if (productInfo.getStockInfoMap().containsKey(entry.getKey())) {
@@ -100,48 +92,48 @@ public class ProductBalanceService {
         return result;
     }
 
-    private WHProductInfo convertProductInfo(List<Map<String, Object>> mapList, Map<String, ProductCostDO> costDOMap) {
+    private WHProductInfo convertProductInfo(List<BalanceItemResult> mapList, Map<String, ProductCostDO> costDOMap) {
         WHProductInfo productInfo = new WHProductInfo();
         if (CollUtil.isEmpty(mapList)) {
             return productInfo;
         }
         BigDecimal qtyTotal = BigDecimal.ZERO;
-        //历史商品数量
+        // 历史商品数量
         BigDecimal inventoryTotal = BigDecimal.ZERO;
-        //商品库存
+        // 商品库存
         BigDecimal entryAmountTotal = BigDecimal.ZERO;
-        //历史商品金额
+        // 历史商品金额
         BigDecimal totalAmountTotal = BigDecimal.ZERO;
-        //历史商品金额 + 历史费用（分录级别）
-        for (Map<String, Object> map : mapList) {
-            inventoryTotal = inventoryTotal.add(defaultStockAmount(map));
-            qtyTotal = qtyTotal.add(defaultEntryAmount(map, "total_qty"));
-            entryAmountTotal = entryAmountTotal.add(defaultEntryAmount(map, "entry_amount"));
-            totalAmountTotal = totalAmountTotal.add(defaultEntryAmount(map, "total_amount"));
+        // 历史商品金额 + 历史费用（分录级别）
+        for (BalanceItemResult item : mapList) {
+            inventoryTotal = inventoryTotal.add(defaultStockAmount(item));
+            qtyTotal = qtyTotal.add(defaultEntryAmount(item, item.getTotalQty()));
+            entryAmountTotal = entryAmountTotal.add(defaultEntryAmount(item, item.getEntryAmount()));
+            totalAmountTotal = totalAmountTotal.add(defaultEntryAmount(item, item.getTotalAmount()));
 
-            String stockNo = MapUtil.getStr(map, "stock_no");
-            String stockName = MapUtil.getStr(map, "stock_name");
+            String stockNo = item.getStockNo();
+            String stockName = item.getStockName();
             if (!productInfo.getStockInfoMap().containsKey(stockNo)) {
                 WHStockInfo stockInfo = new WHStockInfo();
                 stockInfo.setStockNo(stockNo);
                 stockInfo.setStockName(stockName);
-                stockInfo.addTotalQty(defaultStockAmount(map));
+                stockInfo.addTotalQty(defaultStockAmount(item));
                 productInfo.getStockInfoMap().put(stockNo, stockInfo);
             } else {
-                productInfo.getStockInfoMap().get(stockNo).addTotalQty(defaultStockAmount(map));
+                productInfo.getStockInfoMap().get(stockNo).addTotalQty(defaultStockAmount(item));
             }
         }
-        ProductCostDO costDO = costDOMap.get(MapUtil.getStr(mapList.get(0), "no"));
-        productInfo.setShopNo(MapUtil.getStr(mapList.get(0), "shop_no"));
-        productInfo.setEntryId(MapUtil.getStr(mapList.get(0), "no"));
-        productInfo.setEntryName(MapUtil.getStr(mapList.get(0), "name"));
-        productInfo.setEntryBarcode(MapUtil.getStr(mapList.get(0), "bar_code"));
-        productInfo.setEntryUnit(MapUtil.getStr(mapList.get(0), "unit"));
-        //累计入库（采购入库、盘点入库）商品数量、均价、金额
+        ProductCostDO costDO = costDOMap.get(mapList.get(0).getNo());
+        productInfo.setShopNo(mapList.get(0).getShopNo());
+        productInfo.setEntryId(mapList.get(0).getNo());
+        productInfo.setEntryName(mapList.get(0).getName());
+        productInfo.setEntryBarcode(mapList.get(0).getBarCode());
+        productInfo.setEntryUnit(mapList.get(0).getUnit());
+        // 累计入库（采购入库、盘点入库）商品数量、均价、金额
         productInfo.setQtyTotal(qtyTotal);
         productInfo.setEntryPrice(NumberUtils.div(entryAmountTotal, qtyTotal));
         productInfo.setEntryAmount(entryAmountTotal);
-        //实际库存数量（采购入库 + 盘点入库 - 退货出库 - 盘点出库）商品数量、均价、金额
+        // 实际库存数量（采购入库 + 盘点入库 - 退货出库 - 盘点出库）商品数量、均价、金额
         productInfo.setInventory(inventoryTotal);
         productInfo.setCostPrice(costDO != null ? costDO.getCostPrice() : BigDecimal.ZERO);
         productInfo.setCostAmount(NumberUtils.mul(productInfo.getCostPrice(), inventoryTotal));
@@ -150,20 +142,13 @@ public class ProductBalanceService {
 
     public BalanceTotalResult pBalanceTotal(Map<String, Object> params) {
         BalanceTotalResult result = new BalanceTotalResult();
-        List<Map<String, Object>> list = productBalanceDao.pBalance(params);
-        //处理商品成本信息
-        Map<String, ProductCostDO> costDOMap = MapUtil.newHashMap();
-        List<ProductCostDO> costDOList = productCostService.listLate(null);
-        for (ProductCostDO costDO : costDOList) {
-            costDOMap.put(costDO.getProductNo(), costDO);
-        }
-        //处理每个商品的库存数量
-        Map<String, BigDecimal> productMap = MapUtil.newHashMap();
-        for (Map<String, Object> map : list) {
-            String no = MapUtil.getStr(map, "no");
-            productMap.put(no, NumberUtils.add(MapUtil.get(productMap, no, BigDecimal.class, BigDecimal.ZERO), defaultStockAmount(map)));
-        }
-        //计算库存总数量、成本
+        // 处理商品成本信息
+        Map<String, ProductCostDO> costDOMap = productCostService.listLate(null).stream()
+                .collect(Collectors.toMap(ProductCostDO::getProductNo, Function.identity(), (o, n) -> o));
+        // 处理每个商品的库存数量
+        Map<String, BigDecimal> productMap = productBalanceDao.pBalance(params).stream()
+                .collect(Collectors.toMap(BalanceItemResult::getNo, this::defaultStockAmount, NumberUtil::add));
+        // 计算库存总数量、成本
         for (Map.Entry<String, BigDecimal> entry : productMap.entrySet()) {
             BigDecimal costPrice = costDOMap.get(entry.getKey()) != null ? costDOMap.get(entry.getKey()).getCostPrice() : BigDecimal.ZERO;
             result.setQtyTotal(NumberUtils.add(result.getQtyTotal(), entry.getValue()));
@@ -172,17 +157,18 @@ public class ProductBalanceService {
         return result;
     }
 
+
     /**
      * 报表-商品库存余额-商品库存变更明细
      */
     @Transactional(readOnly = true)
-    public List<EntryBalanceResult> pBalanceEntry(Map<String, Object> params) {
-        return productBalanceDao.pBalanceEntry(params);
+    public Page<EntryBalanceResult> pBalanceEntry(EntryBalanceQryParam param) {
+        return productBalanceDao.pBalanceEntry(PageFactory.defaultPage(), BeanUtil.beanToMap(param));
     }
 
     @Transactional(readOnly = true)
-    public Map<String, Object> pBalanceEntryCountSum(Map<String, Object> map) {
-        return productBalanceDao.pBalanceEntryCountSum(map);
+    public EntryBalanceSumResult pBalanceEntryCountSum(EntryBalanceQryParam param) {
+        return productBalanceDao.pBalanceEntryCountSum(BeanUtil.beanToMap(param));
     }
 
     /**
@@ -202,17 +188,15 @@ public class ProductBalanceService {
         return result.getCostMap().keySet();
     }
 
-    private BigDecimal defaultStockAmount(Map<String, Object> map) {
-        String billType = MapUtil.getStr(map, "bill_type");
-        if (poBillSet.contains(billType)) {
-            return BigDecimal.valueOf(MapUtil.getInt(map, "total_qty", 0));
+    private BigDecimal defaultStockAmount(BalanceItemResult balanceItem) {
+        if (poBillSet.contains(balanceItem.getBillType())) {
+            return balanceItem.getTotalQty();
         } else {
-            return BigDecimal.valueOf(MapUtil.getInt(map, "total_qty", 0) * -1L);
+            return balanceItem.getTotalQty().negate();
         }
     }
 
-    private BigDecimal defaultEntryAmount(Map<String, Object> map, String key) {
-        String billType = MapUtil.getStr(map, "bill_type");
-        return BigDecimal.valueOf(poBillSet.contains(billType) ? MapUtil.getInt(map, key, 0) : 0);
+    private BigDecimal defaultEntryAmount(BalanceItemResult balanceItem, BigDecimal value) {
+        return poBillSet.contains(balanceItem.getBillType()) ? value : BigDecimal.ZERO;
     }
 }

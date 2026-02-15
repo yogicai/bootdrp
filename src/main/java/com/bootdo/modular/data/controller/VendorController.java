@@ -72,7 +72,7 @@ public class VendorController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     @Operation(summary = "保存")
-    public R save(@Validated VendorDO vendor) {
+    public R<Void> save(@Validated VendorDO vendor) {
         dataValidator.validateVendor(vendor);
         vendorService.add(vendor);
         return R.ok();
@@ -81,7 +81,7 @@ public class VendorController extends BaseController {
     @ResponseBody
     @PostMapping("/update")
     @Operation(summary = "修改")
-    public R update(@Validated(edit.class) VendorDO vendor) {
+    public R<Void> update(@Validated(edit.class) VendorDO vendor) {
         dataValidator.validateVendor(vendor);
         vendorService.updateById(vendor);
         return R.ok();
@@ -91,7 +91,7 @@ public class VendorController extends BaseController {
     @ResponseBody
     @Operation(summary = "删除")
     @PreAuthorize("hasAuthority('data:vendor:remove')")
-    public R remove(Integer id) {
+    public R<Void> remove(Integer id) {
         vendorService.removeById(id);
         return R.ok();
     }
@@ -100,7 +100,7 @@ public class VendorController extends BaseController {
     @ResponseBody
     @Operation(summary = "批量删除")
     @PreAuthorize("hasAuthority('data:vendor:batchRemove')")
-    public R batchRemove(@RequestParam("ids[]") List<Integer> ids) {
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Integer> ids) {
         vendorService.removeByIds(ids);
         return R.ok();
     }

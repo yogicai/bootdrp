@@ -22,6 +22,7 @@ public class ClassExcelVerifyHandler implements IExcelVerifyHandler<Object> {
 
     private static final Set<String> MODEL_FIELD = CollUtil.newHashSet("rowNum", "errorMsg");
 
+    @Override
     public ExcelVerifyHandlerResult verifyHandler(Object obj) {
 
         ExcelVerifyHandlerResult result = new ExcelVerifyHandlerResult(false);

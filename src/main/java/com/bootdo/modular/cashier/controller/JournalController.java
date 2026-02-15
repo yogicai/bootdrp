@@ -3,6 +3,7 @@ package com.bootdo.modular.cashier.controller;
 import com.bootdo.core.annotation.DataScope;
 import com.bootdo.core.pojo.response.R;
 import com.bootdo.modular.cashier.param.JournalGeneralParam;
+import com.bootdo.modular.cashier.result.JournalGeneralResult;
 import com.bootdo.modular.cashier.service.JournalService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -37,7 +38,7 @@ public class JournalController {
     @ResponseBody
     @PostMapping("/general")
     @PreAuthorize("hasAuthority('cashier:journal:journal')")
-    public R general(@Validated JournalGeneralParam param) {
+    public R<JournalGeneralResult> general(@Validated JournalGeneralParam param) {
         return R.ok(journalService.general(param));
     }
 

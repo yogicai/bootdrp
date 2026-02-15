@@ -34,7 +34,7 @@ public class PageJQ {
     /**
      * 总合计
      */
-    private int totalAmount;
+    private Number totalAmount;
     /**
      * 总数量合计
      */
@@ -54,7 +54,7 @@ public class PageJQ {
         this.records = records;
     }
 
-    public PageJQ(List<?> list, int total, int page, int records, int totalAmount) {
+    public PageJQ(List<?> list, int total, int page, int records, Number totalAmount) {
         this.rows = list;
         this.total = total;
         this.page = page;
@@ -77,7 +77,7 @@ public class PageJQ {
         this.setTotal(PageUtil.totalPage(Convert.toInt(page.getTotal()), Convert.toInt(page.getSize())));
     }
 
-    public <T> PageJQ(Page<T> page, int totalAmount) {
+    public <T> PageJQ(Page<T> page, Number totalAmount) {
         this.setRows(page.getRecords());
         this.setRecords(Convert.toInt(page.getTotal()));
         this.setPage(Convert.toInt(page.getCurrent()));

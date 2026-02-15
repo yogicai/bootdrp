@@ -39,7 +39,7 @@ public class FileController extends BaseController {
 
     @GetMapping()
     @PreAuthorize("hasAuthority('common:sysFile:sysFile')")
-    String sysFile(Model model) {
+    public String sysFile(Model model) {
         return "system/file/file";
     }
 
@@ -52,12 +52,12 @@ public class FileController extends BaseController {
     }
 
     @GetMapping("/add")
-    String add() {
+    public String add() {
         return "common/sysFile/add";
     }
 
     @GetMapping("/edit")
-    String edit(Long id, Model model) {
+    public String edit(Long id, Model model) {
         FileDO sysFile = sysFileService.getById(id);
         model.addAttribute("sysFile", sysFile);
         return "common/sysFile/edit";
@@ -68,9 +68,8 @@ public class FileController extends BaseController {
      */
     @RequestMapping("/info/{id}")
     @PreAuthorize("hasAuthority('common:info')")
-    public R info(@PathVariable Long id) {
-        FileDO sysFile = sysFileService.getById(id);
-        return R.ok().put("sysFile", sysFile);
+    public R<FileDO> info(@PathVariable Long id) {
+        return R.ok(sysFileService.getById(id));
     }
 
     /**
@@ -79,7 +78,7 @@ public class FileController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('common:save')")
-    public R save(FileDO sysFile) {
+    public R<Void> save(FileDO sysFile) {
         sysFileService.save(sysFile);
         return R.ok();
     }
@@ -89,7 +88,7 @@ public class FileController extends BaseController {
      */
     @RequestMapping("/update")
     @PreAuthorize("hasAuthority('common:update')")
-    public R update(@RequestBody FileDO sysFile) {
+    public R<Void> update(@RequestBody FileDO sysFile) {
         sysFileService.updateById(sysFile);
         return R.ok();
     }
@@ -99,7 +98,8 @@ public class FileController extends BaseController {
      */
     @PostMapping("/remove")
     @ResponseBody
-    public R remove(Long id) {
+    @PreAuthorize("hasAuthority('common:remove')")
+    public R<Void> remove(Long id) {
         sysFileService.removeFile(id);
         return R.ok();
     }
@@ -110,14 +110,14 @@ public class FileController extends BaseController {
     @PostMapping("/batchRemove")
     @ResponseBody
     @PreAuthorize("hasAuthority('common:remove')")
-    public R remove(@RequestParam("ids[]") List<Integer> ids) {
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Integer> ids) {
         sysFileService.removeBatchByIds(ids);
         return R.ok();
     }
 
     @ResponseBody
     @PostMapping("/upload")
-    R upload(@RequestParam("file") MultipartFile file) throws Exception {
+    public R<Void> upload(@RequestParam("file") MultipartFile file) throws Exception {
         String fileName = file.getOriginalFilename();
         fileName = StrUtil.replace(fileName, FileUtil.mainName(fileName), IdUtil.simpleUUID());
 
@@ -125,7 +125,7 @@ public class FileController extends BaseController {
         FileUtil.writeBytes(file.getBytes(), FileUtil.file(bootdoProperties.getUploadPath(), fileName));
 
         sysFileService.save(sysFile);
-        return R.ok().put("fileName", sysFile.getUrl());
+        return R.ok(sysFile.getUrl());
     }
 
 

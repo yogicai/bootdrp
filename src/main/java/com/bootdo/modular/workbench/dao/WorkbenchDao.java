@@ -1,5 +1,10 @@
 package com.bootdo.modular.workbench.dao;
 
+import com.bootdo.modular.workbench.result.BillTrendItem;
+import com.bootdo.modular.workbench.result.BillTrendPieItem;
+import com.bootdo.modular.workbench.result.CashTrendItem;
+import com.bootdo.modular.workbench.result.HisPBillTrendItem;
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,11 +16,11 @@ import java.util.Map;
  */
 public interface WorkbenchDao {
 
-    List<Map<String, Object>> pHisPBillTrend(Map<String, Object> map);
+    List<HisPBillTrendItem> pHisBillTrend(Map<String, Object> map);
 
-    List<Map<String, Object>> pBillTrend(Map<String, Object> map);
+    List<BillTrendItem> pBillTrend(Map<String, Object> map);
 
-    List<Map<String, Object>> pBillTrendPie(Map<String, Object> map);
+    List<BillTrendPieItem> pBillTrendPie(Map<String, Object> map);
 
-    List<Map<String, Object>> pCashTrend(Map<String, Object> map);
+    List<CashTrendItem> pCashTrend(Map<String, Object> map);
 }

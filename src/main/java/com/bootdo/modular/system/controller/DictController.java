@@ -62,7 +62,7 @@ public class DictController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('common:sysDict:add')")
-    public R save(DictDO sysDict) {
+    public R<Void> save(DictDO sysDict) {
         sysDictService.save(sysDict);
         return R.ok();
     }
@@ -70,7 +70,7 @@ public class DictController extends BaseController {
     @ResponseBody
     @RequestMapping("/update")
     @PreAuthorize("hasAuthority('common:sysDict:edit')")
-    public R update(DictDO sysDict) {
+    public R<Void> update(DictDO sysDict) {
         sysDictService.updateById(sysDict);
         return R.ok();
     }
@@ -78,7 +78,7 @@ public class DictController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     @PreAuthorize("hasAuthority('common:sysDict:remove')")
-    public R remove(Long id) {
+    public R<Void> remove(Long id) {
         sysDictService.removeById(id);
         return R.ok();
     }
@@ -86,7 +86,7 @@ public class DictController extends BaseController {
     @PostMapping("/batchRemove")
     @ResponseBody
     @PreAuthorize("hasAuthority('common:sysDict:batchRemove')")
-    public R remove(@RequestParam("ids[]") List<Integer> ids) {
+    public R<Void> batchRemove(@RequestParam("ids[]") List<Integer> ids) {
         sysDictService.removeBatchByIds(ids);
         return R.ok();
     }
@@ -99,7 +99,7 @@ public class DictController extends BaseController {
 
     @GetMapping("/addNew")
     @PreAuthorize("hasAuthority('common:sysDict:add')")
-    String addD(Model model, String type, String description) {
+    public String addD(Model model, String type, String description) {
         model.addAttribute("type", type);
         model.addAttribute("description", description);
         return "system/dict/add";

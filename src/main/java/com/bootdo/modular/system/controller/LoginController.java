@@ -25,12 +25,12 @@ public class LoginController extends BaseController {
     private FileService fileService;
 
     @GetMapping({"/", ""})
-    String welcome(Model model) {
+    public String welcome(Model model) {
         return "redirect:/blog";
     }
 
     @GetMapping({"/index"})
-    String index(Model model) {
+    public String index(Model model) {
         List<Tree<MenuDO>> menus = menuService.listMenuTree(getUserId());
         model.addAttribute("menus", menus);
         model.addAttribute("name", getUser().getName());
@@ -49,12 +49,12 @@ public class LoginController extends BaseController {
     }
 
     @GetMapping("/login")
-    String login() {
+    public String login() {
         return "login";
     }
 
     @GetMapping("/main")
-    String workbench() {
+    public String workbench() {
         return "main";
     }
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bootdo.modular.cashier.domain.RecordDO;
+import com.bootdo.modular.cashier.result.RecordSum;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface RecordDao extends BaseMapper<RecordDO> {
 
     List<RecordDO> list(@Param("param") Map<String, Object> param);
 
-    Map<String, Object> selectSum(@Param("param") Map<String, Object> map);
+    RecordSum selectSum(@Param("param") Map<String, Object> map);
 
     List<RecordDO> multiSelect(@Param("param") Map<String, Object> map);
 }
