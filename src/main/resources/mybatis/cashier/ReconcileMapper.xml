@@ -5,6 +5,7 @@
     <sql id="subQuerySql">
         SELECT * FROM (
             SELECT
+                a.shop_no                  AS shopNo,
                 SUBSTR(a.bill_date, 1, 10) AS billDate,
                 sum(a.check_amount)        AS checkAmount,
                 sum(a.payment_amount)      AS paymentAmount,
@@ -13,15 +14,18 @@
             FROM
                 rp_order a
             WHERE
-                a.bill_date BETWEEN #{param.start} and #{param.end}
-                <if test="param.billType != null"> and a.bill_type = #{param.billType}</if>
+                a.audit_status = 'YES'
+                <if test="param.start != null">and a.bill_date >= #{param.start}</if>
+                <if test="param.end != null">and a.bill_date <![CDATA[ <= ]]> #{param.end}</if>
+                <if test="param.billType != null">and a.bill_type = #{param.billType}</if>
                 <if test="param.shopNo != null and param.shopNo.size() > 0">and a.shop_no in
                     <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
                 </if>
             GROUP BY
-                SUBSTR(a.bill_date, 1, 10)
+                SUBSTR(a.bill_date, 1, 10), a.shop_no
         ) aa LEFT JOIN (
             SELECT
+                c.shop_no,
                 SUBSTR(c.trade_time, 1, 10) AS tradeTime,
                 sum(c.pay_amount)           AS payAmount
             FROM
@@ -36,11 +40,12 @@
                     <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
                 </if>
             GROUP BY
-                SUBSTR(c.trade_time, 1, 10)
-        ) bb ON aa.billDate = bb.tradeTime UNION
+                SUBSTR(c.trade_time, 1, 10), c.shop_no
+        ) bb ON aa.billDate = bb.tradeTime and aa.shopNo = bb.shop_no UNION
 
         SELECT * FROM (
             SELECT
+                a.shop_no,
                 SUBSTR(a.bill_date, 1, 10) AS billDate,
                 sum(a.check_amount)        AS checkAmount,
                 sum(a.payment_amount)      AS paymentAmount,
@@ -49,15 +54,18 @@
         FROM
             rp_order a
         WHERE
-            a.bill_date BETWEEN #{param.start} and #{param.end}
+            a.audit_status = 'YES'
+            <if test="param.start != null">and a.bill_date >= #{param.start}</if>
+            <if test="param.end != null">and a.bill_date <![CDATA[ <= ]]> #{param.end}</if>
             <if test="param.billType != null"> and a.bill_type = #{param.billType}</if>
             <if test="param.shopNo != null and param.shopNo.size() > 0">and a.shop_no in
                 <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
             </if>
             GROUP BY
-                SUBSTR(a.bill_date, 1, 10)
+                SUBSTR(a.bill_date, 1, 10), a.shop_no
         ) aa RIGHT JOIN (
             SELECT
+                c.shop_no                   AS shopNo,
                 SUBSTR(c.trade_time, 1, 10) AS tradeTime,
                 sum(c.pay_amount)           AS payAmount
             FROM
@@ -72,8 +80,8 @@
                     <foreach collection="param.shopNo" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
                 </if>
             GROUP BY
-                SUBSTR(c.trade_time, 1, 10)
-        ) cc ON aa.billDate = cc.tradeTime
+                SUBSTR(c.trade_time, 1, 10), c.shop_no
+        ) cc ON aa.billDate = cc.tradeTime and aa.shop_no = cc.shopNo
     </sql>
 
     <sql id="dateFormatAndGroup">
@@ -96,6 +104,7 @@
             sum(kk.checkAmount)                             AS checkAmount,
             sum(kk.paymentAmount)                           AS paymentAmount,
             sum(kk.payAmount)                               AS payAmount,
+            group_concat(kk.shopNo)                         AS shopNo,
             group_concat(kk.billNo)                         AS billNo,
             sum(kk.billCount)                               AS billCount
         FROM (
@@ -112,7 +121,8 @@
             ifnull(sum(billCount), 0)                       as billCountTotal,
             ifnull(sum(checkAmount), 0)                     as checkAmountTotal,
             ifnull(sum(paymentAmount), 0)                   as paymentAmountTotal,
-            ifnull(sum(payAmount), 0)                       as payAmountTotal
+            ifnull(sum(payAmount), 0)                       as payAmountTotal,
+            group_concat(shopNo)                            as shopNo
         from (
             <include refid="subQuerySql" />
         ) kk

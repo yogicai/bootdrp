@@ -6,6 +6,7 @@ let $billType;
 let start;
 let end;
 let loginShopNo = utils.dataCache.loginShopInfo.no
+let currentRow = {};
 
 $(function() {
     $dataForm = $("#search");
@@ -53,7 +54,8 @@ function load() {
         viewrecords: true,
         footerrow: true,
         ondblClickRow: function (rowid, iRow, iCol, e) {
-            currentRow = tableGrid.jqGrid("getRowData", rowid);
+            currentRow = tableGrid.jqGrid('getRowData', rowid);
+            searchEntryBalance(currentRow);
         },
         loadComplete: function (data) {
             collectTotal(data);
@@ -148,4 +150,19 @@ function exportExcel() {
     let queryParam = $dataForm.serialize();
     let url = prefix + "/reconcile/export?" + queryParam
     utils.downloadAjax(url ,'ReconcileExport.xls')
+}
+
+function searchEntryBalance(rowData) {
+    layer.open({
+        type : 2,
+        title : '单据明细',
+        maxmin : true,
+        shadeClose : false, // 点击遮罩关闭层
+        area : [ '1300px', '650px' ],
+        content : prefix + '/reconcile/entry' // iframe的url
+    });
+}
+
+function getCurrentRow() {
+    return $.extend(currentRow || {}, {"searchObj": $dataForm.serializeObject()});
 }

@@ -6,17 +6,22 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bootdo.core.enums.AuditStatus;
 import com.bootdo.core.factory.PageFactory;
 import com.bootdo.core.pojo.response.PageJQ;
 import com.bootdo.core.utils.PoiUtils;
 import com.bootdo.modular.cashier.dao.ReconcileDao;
+import com.bootdo.modular.cashier.param.ReconcileEntryParam;
 import com.bootdo.modular.cashier.param.ReconcileParam;
 import com.bootdo.modular.cashier.result.ReconcileResult.ReconcileItem;
 import com.bootdo.modular.cashier.result.ReconcileResult.ReconcileItemSum;
 import com.bootdo.modular.rp.domain.RPOrderDO;
+import com.bootdo.modular.rp.param.RPOrderQryParam;
+import com.bootdo.modular.rp.service.RPOrderService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +38,8 @@ import java.util.Map;
 public class ReconcileService extends ServiceImpl<ReconcileDao, RPOrderDO> {
     @Resource
     private ReconcileDao reconcileDao;
+    @Resource
+    private RPOrderService rpOrderService;
 
 
     public PageJQ page(ReconcileParam param) {
@@ -48,5 +55,13 @@ public class ReconcileService extends ServiceImpl<ReconcileDao, RPOrderDO> {
         String pureEnd = DateUtil.format(param.getEnd(), DatePattern.PURE_DATE_FORMAT);
         String fileName = StrUtil.format("收款对账单_{}-{}.xlsx", pureStart, pureEnd);
         PoiUtils.exportExcelWithStream(fileName, ReconcileItem.class, orderList);
+    }
+
+    @Transactional(readOnly = true)
+    public PageJQ reconcilePage(ReconcileEntryParam param) {
+        return rpOrderService.selectJoinGroupPage(BeanUtil.copyProperties(param, RPOrderQryParam.class)
+                .setAuditStatus(AuditStatus.YES.name())
+                .setBillType(param.getBillType().name())
+        );
     }
 }

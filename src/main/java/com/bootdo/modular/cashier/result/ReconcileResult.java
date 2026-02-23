@@ -37,6 +37,8 @@ public class ReconcileResult {
 
     @Data
     public static class ReconcileItem {
+        @Excel(name = "所属店铺", width = 15, dict = "shop_no")
+        private String shopNo;
         @Excel(name = "单据日期", width = 15)
         private String billDate;
         @Excel(name = "单据编号", width = 35)
@@ -53,6 +55,8 @@ public class ReconcileResult {
 
     @Data
     public static class ReconcileItemSum {
+        @Excel(name = "所属店铺", width = 15, dict = "shop_no")
+        private String shopNo;
         @Excel(name = "单据数量", width = 15)
         private Integer billCountTotal;
         @Excel(name = "核销金额", numFormat = "#,##0.00", type = 10, width = 15)

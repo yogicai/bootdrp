@@ -1,8 +1,11 @@
 package com.bootdo.modular.cashier.controller;
 
+import com.bootdo.core.annotation.DataScope;
 import com.bootdo.core.pojo.response.PageJQ;
+import com.bootdo.modular.cashier.param.ReconcileEntryParam;
 import com.bootdo.modular.cashier.param.ReconcileParam;
 import com.bootdo.modular.cashier.service.ReconcileService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,4 +48,19 @@ public class ReconcileController {
         reconcileService.export(param);
     }
 
+
+    @GetMapping("/entry")
+    @PreAuthorize("hasAuthority('cashier:reconcile:reconcile')")
+    public String reconcileEntry() {
+        return "cashier/reconcile/reconcileEntry";
+    }
+
+    @DataScope
+    @ResponseBody
+    @GetMapping(value = "/entry/page")
+    @Operation(summary = "收款对账-明细")
+    @PreAuthorize("hasAuthority('cashier:reconcile:reconcile')")
+    public PageJQ reconcilePage(@Validated ReconcileEntryParam param) {
+        return reconcileService.reconcilePage(param);
+    }
 }

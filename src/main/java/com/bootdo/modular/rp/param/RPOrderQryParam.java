@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class RPOrderQryParam extends BaseParam {
 
-    @Schema(description = "订单类型")
+    @Schema(description = "核销人员ID")
     private String checkId;
 
     @Schema(description = "订单类型")

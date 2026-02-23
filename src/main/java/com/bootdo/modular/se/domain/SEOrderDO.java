@@ -118,9 +118,9 @@ public class SEOrderDO extends BaseEntity {
     private BigDecimal expenseFee;
 
     /**
-     * 总欠款
+     * 合计金额
      */
-    @Excel(name = "总欠款", numFormat = "#,##0.00", width = 15)
+    @Excel(name = "合计金额", numFormat = "#,##0.00", width = 15)
     private BigDecimal totalAmount;
 
     /**
