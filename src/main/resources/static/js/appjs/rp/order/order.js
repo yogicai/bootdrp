@@ -3,8 +3,8 @@ let tableGrid;
 let $dataForm;
 let $tableList;
 
-let colNames_SK = ['单据日期', '编号', '店铺', '类型', '销货单位', '结算帐户', '收款金额', '分录备注', '收款合计', '本次核销金额', '整单折扣', '收款人', '审核状态', '备注', '创建时间', '修改时间'];
-let colNames_FK = ['单据日期', '编号', '店铺', '类型', '购货单位', '结算帐户', '付款金额', '分录备注', '付款合计', '本次核销金额', '整单折扣', '付款人', '审核状态', '备注', '创建时间', '修改时间'];
+let colNames_SK = ['单据日期', '编号', '店铺', '类型', '销货单位', '结算帐户', '收款金额', '分录备注', '收款合计', '本次核销金额', '整单折扣', '收款人', '审核状态', '来源', '备注', '创建时间', '修改时间'];
+let colNames_FK = ['单据日期', '编号', '店铺', '类型', '购货单位', '结算帐户', '付款金额', '分录备注', '付款合计', '本次核销金额', '整单折扣', '付款人', '审核状态', '来源', '备注', '创建时间', '修改时间'];
 let billType = $('#billType').val();
 let colNames = billType === 'CW_SK_ORDER' ? colNames_SK : colNames_FK;
 let dataUrl = billType === 'CW_SK_ORDER' ? '/rp/entry?billType=CW_SK_ORDER' : '/rp/entry?billType=CW_FK_ORDER';
@@ -15,7 +15,7 @@ $(function() {
 
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
     utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100px", noneSelectedText: '店铺', multiple: true}]);
-    utils.loadEnumTypes(["AUDIT_STATUS"], ["auditStatus"], [{width: "100px"}]);
+    utils.loadEnumTypes(["AUDIT_STATUS", "BILL_SOURCE"], ["auditStatus", "billSource"], [{width: "100px"}, {width: "80px", noneSelectedText: '来源', multiple: true}]);
     utils.loadCategory(["USER_DATA"], ["checkId"], [{width: "100px"}]);
 
     load();
@@ -49,6 +49,7 @@ function load() {
             {name: 'discountAmount', index: 'discountAmount', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},
             {name: 'checkName', index: 'checkName', editable: true, sorttype: "text", width: 70},
             {name: 'auditStatus', index: 'auditStatus', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatEnumS(cellValue, 'AUDIT_STATUS')},
+            {name: 'billSource', index: 'billSource', editable: true, sorttype: "text", width: 60, align: "center", formatter: cellValue => utils.formatEnum(cellValue, 'BILL_SOURCE')},
             {name: 'remark', index: 'remark', editable: true, sorttype: "text", width: 150, title:true},
             {name: 'createTime', index: 'createTime', editable: true, width: 140},
             {name: 'updateTime', index: 'updateTime', editable: true, width: 150}
