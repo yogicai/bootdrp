@@ -16,7 +16,7 @@ $(function() {
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
     utils.loadTypes(["data_shop"], ["shopNo"], [{width: "120px", setValue: [loginShopNo]}]);
     utils.loadEnumTypes(["DATE_TYPE"], ["dateType"], [{width: "120px", setValue: ['DAY']}]);
-    utils.loadChosenStatic(["billType"], [{width: "120px", setValue:['CW_SK_ORDER'], noneSelectedText: '对账类型'}]);
+    utils.loadSelectStatic(["billType"], [{width: "120px", setValue:['CW_SK_ORDER'], noneSelectedText: '对账类型'}]);
 
     load();
 });

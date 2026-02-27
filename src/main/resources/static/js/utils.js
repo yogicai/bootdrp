@@ -322,7 +322,7 @@
     };
 
     //数据字典
-    Utils.prototype.loadChosenStatic = function loadChosenStatic(elementIds, options) {
+    Utils.prototype.loadSelectStatic = function loadSelectStatic(elementIds, options) {
         for (let t = 0; t < elementIds.length; t++) {
             let opts = $.extend({}, {width: "100%"}, options && options[t]);
             Utils.prototype.selectpickerLocal(elementIds[t], options && options[t], []);

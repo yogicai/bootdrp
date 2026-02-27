@@ -9,6 +9,10 @@ let shopNo = window.parent.$('#shopNo').val();
 let prefix = _.eq(billType, 'CW_SK_ORDER') ? "/se/order" : "/po/order";
 let postData = {"statusNot": ["FINISH_PAY", "ORDER_CANCEL"], "auditStatus": "YES", "consumerId": debtorId, "vendorId": debtorId, "shopNo": shopNo};
 
+let instituteName = _.eq(billType, 'CW_SK_ORDER') ? "客户" : "供应商";
+let instituteModel = _.eq(billType, 'CW_SK_ORDER') ? "consumerName" : "vendorName";
+
+
 $(function() {
     $searchText = $('#searchText');
     $tableList = $('#table_list');
@@ -30,8 +34,9 @@ function load() {
         rowList: [20, 50, 100],
         sortname: 'billDate',
         sortorder: 'asc',
-        colNames: ['源单编号', '业务类型', '单据类型', '单据日期', '单据金额', '已核销金额', '未核销金额', '本次核销金额', '备注'],
+        colNames: [instituteName, '源单编号', '业务类型', '单据类型', '单据日期', '单据金额', '已核销金额', '未核销金额', '本次核销金额', '备注'],
         colModel: [
+            { name:instituteModel, index:instituteModel, editable:false, sorttype:"text", width:70, title:true},
             { name:'billNo', index:'billNo', editable:false, sorttype:"text", width:150 },
             { name:'billType', index:'billType', editable:false, sorttype:"text", width:80, formatter:function (cellValue){return utils.formatEnum(cellValue, 'BILL_TYPE')} },
             { name:'billType', index:'billType', editable:false, sorttype:"text", width:80 },

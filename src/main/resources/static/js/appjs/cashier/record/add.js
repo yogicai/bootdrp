@@ -1,20 +1,24 @@
 $().ready(function() {
-	validateRule();
 	utils.createDateTimePicker('tradeTime');
 	utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100%"}]);
+	utils.loadSelectStatic(["type", "payDirect", "costType", "tradeType"], [{width: "100%"}, {width: "100%"}, {width: "100%"}, {width: "100%"}]);
+	validateRule();
 });
 
-$.validator.setDefaults({
-	submitHandler : function() {
-		save();
-	}
-});
+function validateRule() {
+	$("#signupForm").validate({
+		submitHandler: function () {
+			save();
+		}
+	})
+}
+
 function save() {
 	$.ajax({
 		cache : true,
 		type : "POST",
 		url : "/cashier/record/save",
-		data : $('#signupForm').serialize(),// 你的formid
+		data : $('#signupForm').serialize(),
 		async : false,
 		error : function(request) {
 			parent.layer.alert("Connection error");
@@ -32,27 +36,4 @@ function save() {
 
 		}
 	});
-
-}
-
-function validateRule() {
-	let icon = "<i class='fa fa-times-circle'></i> ";
-	$("#signupForm").validate({
-		rules: {
-			tradeTime: { required: true },
-			account: { required: true },
-			targetName: { required: true },
-			tradeGoods: { required: true },
-			payDirect: { required: true },
-			tradeType: { required: true },
-		},
-		messages: {
-			tradeTime: { required: icon + "请输入" },
-			account: { required: icon + "请输入" },
-			targetName: { required: icon + "请输入" },
-			tradeGoods: { required: icon + "请输入" },
-			payDirect: { required: icon + "请输入" },
-			tradeType: { required: icon + "请输入" },
-		}
-	})
 }

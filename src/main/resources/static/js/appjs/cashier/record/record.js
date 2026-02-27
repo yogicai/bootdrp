@@ -19,9 +19,9 @@ $(function() {
 
 function initMultiSelect() {
     utils.loadMultiSelect(
-        ["type", "account", "payDirect", "payStatus", "source", "costType"],
-        ["type", "account", "payDirect", "payStatus", "source", "costType"],
-        [{noneSelectedText: '交易渠道'}, {noneSelectedText: '交易账号'}, {noneSelectedText: '交易方向'}, {noneSelectedText: '交易状态'}, {noneSelectedText: '数据来源'}, {noneSelectedText: '资金用途'}],
+        ["type", "account", "payDirect", "payStatus", "costType", "source"],
+        ["type", "account", "payDirect", "payStatus", "costType", "source"],
+        [{noneSelectedText: '交易渠道'}, {noneSelectedText: '交易账号'}, {noneSelectedText: '交易方向'}, {noneSelectedText: '交易状态'}, {noneSelectedText: '资金用途'}, {noneSelectedText: '数据来源'}],
         prefix + '/multiSelect'
     )
 }

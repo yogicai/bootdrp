@@ -1,7 +1,7 @@
 $().ready(function () {
-    validateRule();
     utils.loadTypes(["data_brand", "data_unit", "data_stock", "data_shop"], ["brand", "unit", "stockNo", "shopNo"], [{width: "100%"}, {width: "100%"}, {width: "100%"}, {width: "100%"}]);
     utils.loadCategory(["PRODUCT"], ["type"], [{width: "100%"}]);
+    validateRule();
 });
 
 function validateRule() {

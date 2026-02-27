@@ -1,19 +1,16 @@
-let costTypeEle = $("#costType");
 $().ready(function() {
-	validateRule();
-	initData();
 	utils.createDateTimePicker('tradeTime');
 	utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100%"}]);
+	utils.loadSelectStatic(["costType"], [{width: "100%"}]);
+	validateRule();
 });
 
-$.validator.setDefaults({
-	submitHandler : function() {
-		update();
-	}
-});
-
-function initData() {
-	costTypeEle.val(costTypeEle.attr("value")).trigger("chosen:updated");
+function validateRule() {
+	$("#signupForm").validate({
+		submitHandler: function () {
+			update();
+		}
+	})
 }
 
 function update() {
@@ -21,7 +18,7 @@ function update() {
 		cache : true,
 		type : "POST",
 		url : "/cashier/record/update",
-		data : $('#signupForm').serialize(),// 你的formid
+		data : $('#signupForm').serialize(),
 		async : false,
 		error : function(request) {
 			parent.layer.alert("Connection error");
@@ -39,24 +36,4 @@ function update() {
 
 		}
 	});
-
-}
-function validateRule() {
-	let icon = "<i class='fa fa-times-circle'></i> ";
-	$("#signupForm").validate({
-		rules: {
-			tradeTime: { required: true },
-			account: { required: true },
-			targetName: { required: true },
-			payDirect: { required: true },
-			tradeType: { required: true },
-		},
-		messages: {
-			tradeTime: { required: icon + "请输入" },
-			account: { required: icon + "请输入" },
-			targetName: { required: icon + "请输入" },
-			payDirect: { required: icon + "请输入" },
-			tradeType: { required: icon + "请输入" },
-		}
-	})
 }

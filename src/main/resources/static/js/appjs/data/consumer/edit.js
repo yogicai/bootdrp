@@ -1,7 +1,7 @@
 $().ready(function() {
-	validateRule();
 	utils.loadTypes(["data_grade", "data_shop"], ["grade", "shopNo"], [{width: "100%"}, {width: "100%"}]);
 	utils.loadCategory(["CUSTOMER"], ["type"], [{width: "100%"}]);
+	validateRule();
 });
 
 function validateRule() {

@@ -31,7 +31,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">交易渠道：</label>
                             <div class="col-sm-8">
-                                <select id="type" name="type" class="form-control">
+                                <select data-placeholder="请选择" name="type" id="type" class="form-control" required>
                                     <option value="微信">微信</option>
                                     <option value="支付宝">支付宝</option>
                                     <option value="现金">现金</option>
@@ -53,7 +53,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">支付方向：</label>
                             <div class="col-sm-8">
-                                <select id="payDirect" name="payDirect" class="form-control">
+                                <select data-placeholder="请选择" name="payDirect" id="payDirect" class="form-control" required>
                                     <option value="收入">收入</option>
                                     <option value="支出">支出</option>
                                 </select>
@@ -62,7 +62,8 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">资金用途：</label>
                             <div class="col-sm-8">
-                                <select id="costType" name="costType" class="form-control">
+                                <select data-placeholder="请选择" name="costType" id="costType" class="form-control" required>
+                                    <option value="/">/</option>
                                     <option value="打款">打款</option>
                                     <option value="店内调账">店内调账</option>
                                     <option value="调货">调货</option>
@@ -75,6 +76,7 @@
                                     <option value="运营费用">运营费用</option>
                                     <option value="营销费用">营销费用</option>
                                     <option value="支付工资">支付工资</option>
+                                    <option value="分红">分红</option>
                                 </select>
                             </div>
                         </div>
@@ -87,7 +89,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">支付方式：</label>
                             <div class="col-sm-8">
-                                <select id="tradeType" name="tradeType" class="form-control">
+                                <select data-placeholder="请选择" name="tradeType" id="tradeType" class="form-control" required>
                                     <option value="零钱通">零钱通</option>
                                     <option value="余额">余额</option>
                                     <option value="花呗">花呗</option>

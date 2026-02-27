@@ -1,8 +1,8 @@
 $().ready(function() {
-	validateRule();
 	utils.createDatePicker('date_1');
 	utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100%"}]);
 	utils.loadCategory(["ACCOUNT"], ["type"], [{width: "100%"}]);
+	validateRule();
 });
 
 function validateRule() {

@@ -17,7 +17,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">日期：</label>
                             <div class="col-sm-8">
-                                <input id="tradeTime" name="tradeTime" type="datetime" class="form-control" th:value="${#dates.format(record.tradeTime, 'yyyy-MM-dd hh:mm:dd')}" autocomplete="off">
+                                <input id="tradeTime" name="tradeTime" type="datetime" class="form-control" th:value="${#dates.format(record.tradeTime, 'yyyy-MM-dd hh:mm:dd')}" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -78,7 +78,8 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">资金用途：</label>
                             <div class="col-sm-8">
-                                <select data-placeholder="选择类别" name="costType" th:value="${record.costType}" id="costType" class="form-control chosen-select" tabindex="2" style="width: 100%">
+                                <select data-placeholder="选择用途" name="costType" id="costType" th:value="${record.costType}" required>
+                                    <option value="/">/</option>
                                     <option value="打款">打款</option>
                                     <option value="店内调账">店内调账</option>
                                     <option value="调货">调货</option>
@@ -91,6 +92,7 @@
                                     <option value="运营费用">运营费用</option>
                                     <option value="营销费用">营销费用</option>
                                     <option value="支付工资">支付工资</option>
+                                    <option value="分红">分红</option>
                                 </select>
                             </div>
                         </div>

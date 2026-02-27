@@ -1,6 +1,6 @@
 $().ready(function() {
-	validateRule();
 	utils.loadEnumTypes(["CATEGORY_TYPE"], ["type"], [{width: "100%"}]);
+	validateRule();
 });
 
 function validateRule() {

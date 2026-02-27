@@ -1,14 +1,16 @@
 $().ready(function () {
-    validateRule();
     utils.loadEnumTypes(["STATUS_TYPE"], ["status"], [{width: "100%"}]);
     utils.loadCategory(["USER_DATA"], ["managerId"], [{width: "100%", liveSearch: false, multiple: true}]);
+    validateRule();
 });
 
-$.validator.setDefaults({
-    submitHandler: function () {
-        save();
-    }
-});
+function validateRule() {
+    $("#signupForm").validate({
+        submitHandler: function () {
+            save();
+        }
+    })
+}
 
 function save() {
     $.ajax({
@@ -32,21 +34,4 @@ function save() {
 
         }
     });
-
-}
-
-function validateRule() {
-    let icon = "<i class='fa fa-times-circle'></i> ";
-    $("#signupForm").validate({
-        rules: {
-            name: {
-                required: true
-            }
-        },
-        messages: {
-            name: {
-                required: icon + "请输入姓名"
-            }
-        }
-    })
 }

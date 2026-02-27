@@ -61,7 +61,7 @@ $(function() {
     $tableList = $('#table_list');
 
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
-    utils.loadChosenStatic(["dimensionType"], [{width: "120px", setValue: ['USER']}]);
+    utils.loadSelectStatic(["dimensionType"], [{width: "120px", setValue: ['USER']}]);
 
 
     if (type === 'CUSTOMER') {
