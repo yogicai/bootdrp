@@ -25,6 +25,9 @@ public class RPOrderQryParam extends BaseParam {
     @Schema(description = "订单类型")
     private String billType;
 
+    @Schema(description = "结算方式")
+    private String settleType;
+
     @Schema(description = "订单来源")
     private String billSource;
 

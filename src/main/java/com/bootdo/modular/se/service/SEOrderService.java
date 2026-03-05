@@ -1,6 +1,7 @@
 package com.bootdo.modular.se.service;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -79,7 +80,7 @@ public class SEOrderService extends ServiceImpl<SEOrderDao, SEOrderDO> {
                 .ge(ObjectUtil.isNotEmpty(param.getStart()), SEOrderDO::getBillDate, param.getStart())
                 .le(ObjectUtil.isNotEmpty(param.getEnd()), SEOrderDO::getBillDate, param.getEnd())
                 .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(SEOrderDO::getBillNo, param.getSearchText()).or().like(SEOrderDO::getConsumerName, param.getSearchText()).or().like(SEOrderDO::getRemark, param.getSearchText()))
-                .orderByDesc(SEOrderDO::getUpdateTime);
+                .orderByDesc(SEOrderDO::getBillDate, SEOrderDO::getUpdateTime);
 
         return this.page(page, queryWrapper);
     }
@@ -106,6 +107,7 @@ public class SEOrderService extends ServiceImpl<SEOrderDao, SEOrderDO> {
         costAmountCalculator.calcSEBillCost(orderDO, auditStatus);
         this.update(Wrappers.lambdaUpdate(SEOrderDO.class)
                 .set(SEOrderDO::getAuditStatus, auditStatus)
+                .set(SEOrderDO::getUpdateTime, DateUtil.date())
                 .eq(SEOrderDO::getBillNo, orderDO.getBillNo())
                 .ne(SEOrderDO::getAuditStatus, auditStatus));
     }

@@ -24,8 +24,8 @@ $(function() {
 
 function load() {
     // 表头设置
-    const SK_COL_NAME_LIST = ['', '单据日期', '单据编号', '单据数量', '核销金额', '实收金额', '到账金额'];
-    const FK_COL_NAME_LIST = ['', '单据日期', '单据编号', '单据数量', '核销金额', '实付金额', '出账金额'];
+    const SK_COL_NAME_LIST = ['', '单据日期', '单据编号', '单据数量', '核销金额', '抵扣金额', '折扣金额', '实收金额', '到账金额'];
+    const FK_COL_NAME_LIST = ['', '单据日期', '单据编号', '单据数量', '核销金额', '抵扣金额', '折扣金额', '实付金额', '出账金额'];
     const colNameList = $billType.val() === 'CW_SK_ORDER' ? SK_COL_NAME_LIST : FK_COL_NAME_LIST;
 
     tableGrid = $tableList.jqGrid({
@@ -47,6 +47,8 @@ function load() {
             { name:'billNo', index:'billNo', editable:false, sorttype:"text", align: "center", width:80, formatter: cellValue => utils.formatSubstr(cellValue, 23)},
             { name:'billCount', index:'billCount', editable:false, width:40, align:"right", sorttype:"float", formatter:"number" },
             { name:'checkAmount', index:'checkAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
+            { name:'deductAmount', index:'deductAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
+            { name:'discountAmount', index:'discountAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
             { name:'paymentAmount', index:'paymentAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" },
             { name:'payAmount', index:'payAmount', editable:false, width:80, align:"right", sorttype:"float", formatter:"number" }
         ],
@@ -87,12 +89,16 @@ function collectTotal(data){
     let billCountTotal = data['extra']['billCountTotal'];
     let checkAmountTotal = data['extra']['checkAmountTotal'];
     let paymentAmountTotal = data['extra']['paymentAmountTotal'];
+    let deductAmountTotal = data['extra']['deductAmountTotal'];
+    let discountAmountTotal = data['extra']['discountAmountTotal'];
     let payAmountTotal = data['extra']['payAmountTotal'];
     let totalAmountObj = {
         billNo: '全部汇总：',
         billCount: billCountTotal,
         checkAmount: checkAmountTotal,
         paymentAmount: paymentAmountTotal,
+        deductAmount: deductAmountTotal,
+        discountAmount: discountAmountTotal,
         payAmount: payAmountTotal
     };
     // 设置表格合计项金额

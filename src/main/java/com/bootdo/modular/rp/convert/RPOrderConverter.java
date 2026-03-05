@@ -35,6 +35,7 @@ public class RPOrderConverter {
             orderSettleDO.setBillNo(orderDO.getBillNo());
             orderSettleDO.setSettleAccount(vo.getSettleAccount());
             orderSettleDO.setSettleName(accountDOMap.get(vo.getSettleAccount()).getName());
+            orderSettleDO.setSettleType(vo.getSettleType());
             orderSettleDO.setPaymentAmount(NumberUtils.toBigDecimal(vo.getPaymentAmount()));
             orderSettleDO.setRemark(vo.getRemark());
             settleDOList.add(orderSettleDO);

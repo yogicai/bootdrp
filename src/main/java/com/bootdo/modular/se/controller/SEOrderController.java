@@ -44,14 +44,6 @@ public class SEOrderController {
 
     @DataScope
     @ResponseBody
-    @PostMapping(value = "/list")
-    @PreAuthorize("hasAuthority('se:order:order')")
-    public PageJQ listP(@RequestBody SeOrderQryParam param) {
-        return list(param);
-    }
-
-    @DataScope
-    @ResponseBody
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('se:order:order')")
     public PageJQ list(SeOrderQryParam param) {

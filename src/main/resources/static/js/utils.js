@@ -162,6 +162,13 @@
             }
             return selectVal;
         }
+        data = utils.dataCache.sysEnumMap[type];
+        if (data) {
+            for (let t = 0; t < data.length; t++) {
+                selectVal.value[data[t].value] = data[t].name;
+            }
+            return selectVal;
+        }
         data = utils.dataCache.categoryData[type];
         if (data) {
             for (let t = 0; t < data.length; t++) {

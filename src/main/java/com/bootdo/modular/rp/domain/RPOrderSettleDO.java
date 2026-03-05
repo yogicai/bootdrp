@@ -2,6 +2,7 @@ package com.bootdo.modular.rp.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.bootdo.core.pojo.base.entity.BaseEntity;
+import com.bootdo.modular.rp.enums.SettleType;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
@@ -38,6 +39,10 @@ public class RPOrderSettleDO extends BaseEntity {
      * 结算账户名称
      */
     private String settleName;
+    /**
+     * 结算类型
+     */
+    private SettleType settleType;
     /**
      * 已付金额
      */

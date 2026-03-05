@@ -47,23 +47,12 @@ public class OrderController extends BaseController {
 
     @DataScope
     @ResponseBody
-    @PostMapping(value = "/list")
-    @PreAuthorize("hasAuthority('se:order:order')")
-    public PageJQ listP(@RequestBody OrderQryParam param) {
-        return list(param);
-    }
-
-    @DataScope
-    @ResponseBody
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('po:order:order')")
     public PageJQ list(OrderQryParam param) {
         return orderService.page(param);
     }
 
-    /**
-     * 单据列表导出
-     */
     @DataScope
     @ResponseBody
     @GetMapping("/export")
@@ -74,9 +63,6 @@ public class OrderController extends BaseController {
         PoiUtils.exportExcelWithStream("POOrderResult.xls", OrderDO.class, orderList);
     }
 
-    /**
-     * 审核、反审核
-     */
     @LogRecord(value = "'采购单-' + #param.auditStatus.remark1", bizId = "#param.billNos")
     @PostMapping("/audit")
     @ResponseBody
@@ -87,9 +73,6 @@ public class OrderController extends BaseController {
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
     @LogRecord(value = "采购单-删除", bizId = "#billNos")
     @PostMapping("/remove")
     @ResponseBody

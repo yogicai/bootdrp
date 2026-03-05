@@ -3,6 +3,7 @@ package com.bootdo.core.enums;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import com.bootdo.modular.cashier.enums.DateTypeEnum;
+import com.bootdo.modular.rp.enums.SettleType;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -64,9 +65,13 @@ public class EnumCollection {
      */
     public static final EnumSet<DateTypeEnum> DATE_TYPE = EnumSet.of(DateTypeEnum.YEAR, DateTypeEnum.MONTH, DateTypeEnum.DAY);
 
+    /**
+     * 结算类型
+     */
+    public static final EnumSet<SettleType> SETTLE_TYPE = EnumSet.of(SettleType.PAYEE, SettleType.DEDUCT);
 
     /**
-     * 表格列展示用
+     * 表格列展示用：[{AUDIT_STATUS : [{YES: 已审核}, {NO: 未审核}]}]
      */
     public static Map<String, List<Map<String, String>>> listEnum() {
         Map<String, List<Map<String, String>>> setMap = MapUtil.newHashMap();
@@ -82,6 +87,7 @@ public class EnumCollection {
         setMap.put("COST_VERSION", convertEnumList(COST_VERSION));
         setMap.put("STATUS_TYPE", convertEnumList(STATUS_TYPE));
         setMap.put("DATE_TYPE", convertEnumList(DATE_TYPE));
+        setMap.put("SETTLE_TYPE", convertEnumList(SETTLE_TYPE));
         return setMap;
     }
 
@@ -95,7 +101,7 @@ public class EnumCollection {
     }
 
     /**
-     * 下拉列表用：[{AUDIT_STATUS : [{YES: 已审核}, {NO: 未审核}]}]
+     * 下拉列表用：[{AUDIT_STATUS : [{name: 已审核, value: YES}, {name: 未审核, value: NO}]}]
      */
     public static Map<String, List<Map<String, String>>> listEnumMap() {
         Map<String, List<Map<String, String>>> setMap = MapUtil.newHashMap();
@@ -111,6 +117,7 @@ public class EnumCollection {
         setMap.put("COST_VERSION", convertEnumMap(COST_VERSION));
         setMap.put("STATUS_TYPE", convertEnumMap(STATUS_TYPE));
         setMap.put("DATE_TYPE", convertEnumMap(DATE_TYPE));
+        setMap.put("SETTLE_TYPE", convertEnumMap(SETTLE_TYPE));
         return setMap;
     }
 

@@ -59,7 +59,7 @@ public class ReconcileService extends ServiceImpl<ReconcileDao, RPOrderDO> {
 
     @Transactional(readOnly = true)
     public PageJQ reconcilePage(ReconcileEntryParam param) {
-        return rpOrderService.selectJoinGroupPage(BeanUtil.copyProperties(param, RPOrderQryParam.class)
+        return rpOrderService.page(BeanUtil.copyProperties(param, RPOrderQryParam.class)
                 .setAuditStatus(AuditStatus.YES.name())
                 .setBillType(param.getBillType().name())
         );

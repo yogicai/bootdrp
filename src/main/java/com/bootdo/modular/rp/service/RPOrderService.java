@@ -1,10 +1,11 @@
 package com.bootdo.modular.rp.service;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -62,39 +63,36 @@ public class RPOrderService extends ServiceImpl<RPOrderDao, RPOrderDO> {
         return new PageJQ(this.pageList(PageFactory.defaultPage(), param));
     }
 
+    /**
+     * 按主表分组，分页查询
+     */
     public Page<RPOrderDO> pageList(Page<RPOrderDO> page, RPOrderQryParam param) {
-        LambdaQueryWrapper<RPOrderDO> queryWrapper = Wrappers.lambdaQuery(RPOrderDO.class)
+        Page<RPOrderDO> pageList = this.baseMapper.selectJoinPage(page, RPOrderDO.class, selectJoinGroupWrapper(param));
+        param.setBillNo(CollUtil.join(pageList.getRecords(), StrUtil.COMMA, RPOrderDO::getBillNo));
+        pageList.setRecords(this.selectJoinList(param));
+        return pageList;
+    }
+
+    private MPJLambdaWrapper<RPOrderDO> selectJoinGroupWrapper(RPOrderQryParam param) {
+        return JoinWrappers.lambda(RPOrderDO.class)
+                .select(RPOrderDO::getBillDate, RPOrderDO::getUpdateTime, RPOrderDO::getBillNo)
+                .leftJoin(RPOrderEntryDO.class, RPOrderEntryDO::getBillNo, RPOrderDO::getBillNo)
+                .leftJoin(RPOrderSettleDO.class, RPOrderSettleDO::getBillNo, RPOrderDO::getBillNo)
+                //明细表过滤条件
+                .in(ObjectUtil.isNotEmpty(param.getSrcBillNo()), RPOrderEntryDO::getSrcBillNo, StrUtil.split(param.getSrcBillNo(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getSettleType()), RPOrderSettleDO::getSettleType, StrUtil.split(param.getSettleType(), StrUtil.COMMA))
+                //主表过滤条件
+                .in(ObjectUtil.isNotEmpty(param.getBillNo()), RPOrderDO::getBillNo, StrUtil.split(param.getBillNo(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getBillSource()), RPOrderDO::getBillSource, StrUtil.split(param.getBillSource(), StrUtil.COMMA))
                 .in(ObjectUtil.isNotEmpty(param.getBillType()), RPOrderDO::getBillType, StrUtil.split(param.getBillType(), StrUtil.COMMA))
                 .in(ObjectUtil.isNotEmpty(param.getAuditStatus()), RPOrderDO::getAuditStatus, StrUtil.split(param.getAuditStatus(), StrUtil.COMMA))
                 .in(ObjectUtil.isNotEmpty(param.getCheckId()), RPOrderDO::getCheckId, StrUtil.split(param.getCheckId(), StrUtil.COMMA))
                 .ge(ObjectUtil.isNotEmpty(param.getStart()), RPOrderDO::getBillDate, param.getStart())
                 .le(ObjectUtil.isNotEmpty(param.getEnd()), RPOrderDO::getBillDate, param.getEnd())
-                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(RPOrderDO::getBillNo, param.getSearchText()).or().like(RPOrderDO::getRemark, param.getSearchText()))
-                .orderByDesc(RPOrderDO::getBillDate).orderByDesc(RPOrderDO::getUpdateTime);
-
-        return this.page(page, queryWrapper);
-    }
-
-    public List<RPOrderDO> list(RPOrderQryParam param) {
-        List<RPOrderDO> rpOrderDOList = this.pageList(PageFactory.defalultAllPage(), param).getRecords();
-        Set<String> billNoSet = rpOrderDOList.stream().map(RPOrderDO::getBillNo).collect(Collectors.toSet());
-
-        Map<String, List<RPOrderEntryDO>> entryListMap = rpOrderEntryDao.selectList(Wrappers.lambdaQuery(RPOrderEntryDO.class).in(RPOrderEntryDO::getBillNo, billNoSet))
-                .stream().collect(Collectors.groupingBy(RPOrderEntryDO::getBillNo, Collectors.toList()));
-
-        Map<String, List<RPOrderSettleDO>> settleListMap = rpOrderSettleDao.selectList(Wrappers.lambdaQuery(RPOrderSettleDO.class).in(RPOrderSettleDO::getBillNo, billNoSet))
-                .stream().collect(Collectors.groupingBy(RPOrderSettleDO::getBillNo, Collectors.toList()));
-
-        rpOrderDOList.forEach(rpOrderDO -> {
-            rpOrderDO.getEntryDOList().addAll(entryListMap.getOrDefault(rpOrderDO.getBillNo(), Collections.emptyList()));
-            rpOrderDO.getSettleDOList().addAll(settleListMap.getOrDefault(rpOrderDO.getBillNo(), Collections.emptyList()));
-        });
-
-        return rpOrderDOList;
-    }
-
-    public PageJQ selectJoinPage(RPOrderQryParam param) {
-        return new PageJQ(this.baseMapper.selectJoinPage(PageFactory.defaultPage(), RPOrderDO.class, selectJoinWrapper(param)));
+                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(RPOrderDO::getBillNo, param.getSearchText())
+                        .or().like(RPOrderDO::getRemark, param.getSearchText()).or().like(RPOrderEntryDO::getSrcBillNo, param.getSearchText()))
+                .groupBy(RPOrderDO::getBillNo)
+                .orderByDesc(RPOrderDO::getBillDate, RPOrderDO::getUpdateTime);
     }
 
     public List<RPOrderDO> selectJoinList(RPOrderQryParam param) {
@@ -113,6 +111,7 @@ public class RPOrderService extends ServiceImpl<RPOrderDao, RPOrderDO> {
                 .leftJoin(RPOrderSettleDO.class, RPOrderSettleDO::getBillNo, RPOrderDO::getBillNo)
                 //明细表过滤条件
                 .in(ObjectUtil.isNotEmpty(param.getSrcBillNo()), RPOrderEntryDO::getSrcBillNo, StrUtil.split(param.getSrcBillNo(), StrUtil.COMMA))
+                .in(ObjectUtil.isNotEmpty(param.getSettleType()), RPOrderSettleDO::getSettleType, StrUtil.split(param.getSettleType(), StrUtil.COMMA))
                 //主表过滤条件
                 .in(ObjectUtil.isNotEmpty(param.getBillNo()), RPOrderDO::getBillNo, StrUtil.split(param.getBillNo(), StrUtil.COMMA))
                 .in(ObjectUtil.isNotEmpty(param.getBillSource()), RPOrderDO::getBillSource, StrUtil.split(param.getBillSource(), StrUtil.COMMA))
@@ -123,37 +122,6 @@ public class RPOrderService extends ServiceImpl<RPOrderDao, RPOrderDO> {
                 .le(ObjectUtil.isNotEmpty(param.getEnd()), RPOrderDO::getBillDate, param.getEnd())
                 .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(RPOrderDO::getBillNo, param.getSearchText())
                         .or().like(RPOrderDO::getRemark, param.getSearchText()).or().like(RPOrderEntryDO::getSrcBillNo, param.getSearchText()))
-                .orderByDesc(RPOrderDO::getBillDate).orderByDesc(RPOrderDO::getUpdateTime);
-    }
-
-    /**
-     * 收付款财务单：按主表分组，分页查询
-     */
-    public PageJQ selectJoinGroupPage(RPOrderQryParam param) {
-        Page<RPOrderDO> page = this.baseMapper.selectJoinPage(PageFactory.defaultPage(), RPOrderDO.class, selectJoinGroupWrapper(param));
-        param.setBillNo(page.getRecords().stream().map(RPOrderDO::getBillNo).collect(Collectors.joining(StrUtil.COMMA)));
-        page.setRecords(this.selectJoinList(param));
-        return new PageJQ(page);
-    }
-
-    private MPJLambdaWrapper<RPOrderDO> selectJoinGroupWrapper(RPOrderQryParam param) {
-        return JoinWrappers.lambda(RPOrderDO.class)
-                .select(RPOrderDO::getBillDate, RPOrderDO::getUpdateTime, RPOrderDO::getBillNo)
-                .leftJoin(RPOrderEntryDO.class, RPOrderEntryDO::getBillNo, RPOrderDO::getBillNo)
-                .leftJoin(RPOrderSettleDO.class, RPOrderSettleDO::getBillNo, RPOrderDO::getBillNo)
-                //明细表过滤条件
-                .in(ObjectUtil.isNotEmpty(param.getSrcBillNo()), RPOrderEntryDO::getSrcBillNo, StrUtil.split(param.getSrcBillNo(), StrUtil.COMMA))
-                //主表过滤条件
-                .in(ObjectUtil.isNotEmpty(param.getBillNo()), RPOrderDO::getBillNo, StrUtil.split(param.getBillNo(), StrUtil.COMMA))
-                .in(ObjectUtil.isNotEmpty(param.getBillSource()), RPOrderDO::getBillSource, StrUtil.split(param.getBillSource(), StrUtil.COMMA))
-                .in(ObjectUtil.isNotEmpty(param.getBillType()), RPOrderDO::getBillType, StrUtil.split(param.getBillType(), StrUtil.COMMA))
-                .in(ObjectUtil.isNotEmpty(param.getAuditStatus()), RPOrderDO::getAuditStatus, StrUtil.split(param.getAuditStatus(), StrUtil.COMMA))
-                .in(ObjectUtil.isNotEmpty(param.getCheckId()), RPOrderDO::getCheckId, StrUtil.split(param.getCheckId(), StrUtil.COMMA))
-                .ge(ObjectUtil.isNotEmpty(param.getStart()), RPOrderDO::getBillDate, param.getStart())
-                .le(ObjectUtil.isNotEmpty(param.getEnd()), RPOrderDO::getBillDate, param.getEnd())
-                .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(RPOrderDO::getBillNo, param.getSearchText())
-                        .or().like(RPOrderDO::getRemark, param.getSearchText()).or().like(RPOrderEntryDO::getSrcBillNo, param.getSearchText()))
-                .groupBy(RPOrderDO::getBillNo)
                 .orderByDesc(RPOrderDO::getBillDate).orderByDesc(RPOrderDO::getUpdateTime);
     }
 
@@ -211,6 +179,7 @@ public class RPOrderService extends ServiceImpl<RPOrderDao, RPOrderDO> {
 
         this.update(Wrappers.lambdaUpdate(RPOrderDO.class)
                 .set(RPOrderDO::getAuditStatus, auditStatus)
+                .set(RPOrderDO::getUpdateTime, DateUtil.date())
                 .in(RPOrderDO::getBillNo, billNoSet)
                 .ne(RPOrderDO::getAuditStatus, auditStatus));
     }

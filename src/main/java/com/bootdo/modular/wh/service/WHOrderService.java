@@ -49,7 +49,7 @@ public class WHOrderService extends ServiceImpl<WHOrderDao, WHOrderDO> {
                 .ge(ObjectUtil.isNotEmpty(param.getStart()), WHOrderDO::getBillDate, param.getStart())
                 .le(ObjectUtil.isNotEmpty(param.getEnd()), WHOrderDO::getBillDate, param.getEnd())
                 .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(WHOrderDO::getBillNo, param.getSearchText()).or().like(WHOrderDO::getDebtorName, param.getSearchText()).or().like(WHOrderDO::getRemark, param.getSearchText()))
-                .orderByDesc(WHOrderDO::getBillDate).orderByDesc(WHOrderDO::getUpdateTime);
+                .orderByDesc(WHOrderDO::getBillDate, WHOrderDO::getUpdateTime);
 
         return this.page(page, queryWrapper);
     }

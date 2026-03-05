@@ -49,6 +49,10 @@ public class ReconcileResult {
         private BigDecimal checkAmount;
         @Excel(name = "收款金额", numFormat = "#,##0.00", type = 10, width = 15)
         private BigDecimal paymentAmount;
+        @Excel(name = "抵扣金额", numFormat = "#,##0.00", type = 10, width = 15)
+        private BigDecimal deductAmount;
+        @Excel(name = "折扣金额", numFormat = "#,##0.00", type = 10, width = 15)
+        private BigDecimal discountAmount;
         @Excel(name = "到账金额", numFormat = "#,##0.00", type = 10, width = 15)
         private BigDecimal payAmount;
     }
@@ -63,6 +67,10 @@ public class ReconcileResult {
         private BigDecimal checkAmountTotal;
         @Excel(name = "收款金额", numFormat = "#,##0.00", type = 10, width = 15)
         private BigDecimal paymentAmountTotal;
+        @Excel(name = "抵扣金额", numFormat = "#,##0.00", type = 10, width = 15)
+        private BigDecimal deductAmountTotal;
+        @Excel(name = "折扣金额", numFormat = "#,##0.00", type = 10, width = 15)
+        private BigDecimal discountAmountTotal;
         @Excel(name = "到账金额", numFormat = "#,##0.00", type = 10, width = 15)
         private BigDecimal payAmountTotal;
     }

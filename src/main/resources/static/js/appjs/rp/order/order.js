@@ -3,8 +3,8 @@ let tableGrid;
 let $dataForm;
 let $tableList;
 
-let colNames_SK = ['单据日期', '编号', '店铺', '类型', '销货单位', '结算帐户', '收款金额', '分录备注', '收款合计', '本次核销金额', '整单折扣', '收款人', '审核状态', '来源', '备注', '创建时间', '修改时间'];
-let colNames_FK = ['单据日期', '编号', '店铺', '类型', '购货单位', '结算帐户', '付款金额', '分录备注', '付款合计', '本次核销金额', '整单折扣', '付款人', '审核状态', '来源', '备注', '创建时间', '修改时间'];
+let colNames_SK = ['单据日期', '编号', '店铺', '类型', '销货单位', '结算帐户', '收款分录', '销售单', '核销金额', '整单折扣', '收款金额', '收款人', '审核状态', '来源', '备注', '创建时间', '修改时间'];
+let colNames_FK = ['单据日期', '编号', '店铺', '类型', '购货单位', '结算帐户', '收款分录', '采购单', '核销金额', '整单折扣', '付款金额', '付款人', '审核状态', '来源', '备注', '创建时间', '修改时间'];
 let billType = $('#billType').val();
 let colNames = billType === 'CW_SK_ORDER' ? colNames_SK : colNames_FK;
 let dataUrl = billType === 'CW_SK_ORDER' ? '/rp/entry?billType=CW_SK_ORDER' : '/rp/entry?billType=CW_FK_ORDER';
@@ -15,7 +15,7 @@ $(function() {
 
     utils.createDateRangePicker('datepicker', {}, utils.getYearFirstDay(), new Date());
     utils.loadTypes(["data_shop"], ["shopNo"], [{width: "100px", noneSelectedText: '店铺', multiple: true}]);
-    utils.loadEnumTypes(["AUDIT_STATUS", "BILL_SOURCE"], ["auditStatus", "billSource"], [{width: "100px"}, {width: "80px", noneSelectedText: '来源', multiple: true}]);
+    utils.loadEnumTypes(["AUDIT_STATUS", "SETTLE_TYPE", "BILL_SOURCE"], ["auditStatus", "settleType", "billSource"], [{width: "100px"}, {width: "100px"}, {width: "80px", noneSelectedText: '来源', multiple: true}]);
     utils.loadCategory(["USER_DATA"], ["checkId"], [{width: "100px"}]);
 
     load();
@@ -44,9 +44,9 @@ function load() {
             {name: 'settleDOList', index: 'settleDOList', editable: true, width: 90, align: "center", formatter: cellValue => utils.formatListS(cellValue, 'settleName')},
             {name: 'settleDOList', index: 'settleDOList', editable: true, width: 80, align: "right", formatter: cellValue => utils.formatListS(cellValue, 'paymentAmount', 'number')},
             {name: 'entryDOList', index: 'entryDOList', editable: true, width: 180, align: "center", title: false, formatter: cellValue => utils.formatListSpan(cellValue, 'srcBillNo', 1)},
-            {name: 'paymentAmount', index: 'paymentAmount', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},
             {name: 'checkAmount', index: 'checkAmount', editable: true, width: 100, align: "right", sorttype: "float", formatter: "number"},
             {name: 'discountAmount', index: 'discountAmount', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},
+            {name: 'paymentAmount', index: 'paymentAmount', editable: true, width: 80, align: "right", sorttype: "float", formatter: "number"},
             {name: 'checkName', index: 'checkName', editable: true, sorttype: "text", width: 70},
             {name: 'auditStatus', index: 'auditStatus', editable: true, sorttype: "text", width: 70, formatter: cellValue => utils.formatEnumS(cellValue, 'AUDIT_STATUS')},
             {name: 'billSource', index: 'billSource', editable: true, sorttype: "text", width: 60, align: "center", formatter: cellValue => utils.formatEnum(cellValue, 'BILL_SOURCE')},

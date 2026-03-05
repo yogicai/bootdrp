@@ -1,6 +1,5 @@
 package com.bootdo.modular.cashier.enums;
 
-import com.bootdo.core.enums.CommonStatus;
 import com.bootdo.core.enums.EnumBean;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +12,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum DateTypeEnum implements EnumBean<CommonStatus> {
+public enum DateTypeEnum implements EnumBean<DateTypeEnum> {
 
     /**
      * 年

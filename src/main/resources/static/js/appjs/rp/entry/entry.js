@@ -16,8 +16,8 @@ let prefixOrder = "/rp/order";
 let initData = [{}];
 let initData1 = [{}, {}, {}];
 
-let colNames_SK = ['', 'ID', '结算帐户', '收款金额', '备注'];
-let colNames_FK = ['', 'ID', '结算帐户', '付款金额', '备注'];
+let colNames_SK = ['', 'ID', '结算帐户', '结算方式', '收款金额', '备注'];
+let colNames_FK = ['', 'ID', '结算帐户', '结算方式', '付款金额', '备注'];
 //var参数加附加到window对象属性中
 let billType = $('#billType').val();
 let colNames = _.eq(billType, 'CW_SK_ORDER') ? colNames_SK : colNames_FK;
@@ -74,7 +74,8 @@ function load() {
             },
             {name: 'id', index: 'id', editable: false, hidedlg: true, hidden: true},
             {name: 'settleAccount', index: 'settleAccount', editable: true, width: 300, edittype: 'select', editoptions: utils.formatSelect("ACCOUNT_DATA"), formatter: "select"},
-            {name: 'paymentAmount', index: 'paymentAmount', editable: true, width: 200, align: "right", formatter: "number", editoptions: utils.commonEditOptions()},
+            {name: 'settleType', index: 'settleType', editable: true, width: 100, edittype: 'select', editoptions: utils.formatSelect("SETTLE_TYPE"), formatter: "select"},
+            {name: 'paymentAmount', index: 'paymentAmount', editable: true, width: 150, align: "right", formatter: "number", editoptions: utils.commonEditOptions()},
             {name: 'remark', index: 'remark', editable: true, width: 300, editoptions: utils.commonEditOptions()}
         ],
         beforeSelectRow: function (rowid) {

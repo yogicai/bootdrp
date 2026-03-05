@@ -1,6 +1,6 @@
 package com.bootdo.modular.rp.service;
 
-import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bootdo.core.enums.BillType;
@@ -83,45 +83,12 @@ public class RPOrderEntryService extends ServiceImpl<RPOrderEntryDao, RPOrderEnt
 
     public RPOrderVO getOrderVO(OrderDetailParam param) {
         RPOrderDO orderDO = rpOrderService.getOne(Wrappers.lambdaQuery(RPOrderDO.class).eq(RPOrderDO::getBillNo, param.getBillNo()));
-
-        if (ObjectUtil.isEmpty(orderDO)) {
-            return new RPOrderVO();
-        }
-
         List<RPOrderEntryDO> orderEntryDOList = this.list(Wrappers.lambdaQuery(RPOrderEntryDO.class).eq(RPOrderEntryDO::getBillNo, param.getBillNo()));
         List<RPOrderSettleDO> orderSettleDOList = rpOrderSettleService.list(Wrappers.lambdaQuery(RPOrderSettleDO.class).eq(RPOrderSettleDO::getBillNo, param.getBillNo()));
 
-        RPOrderVO orderVO = new RPOrderVO();
-        orderVO.setBillDate(orderDO.getBillDate());
-        orderVO.setShopNo(orderDO.getShopNo());
-        orderVO.setBillNo(orderDO.getBillNo());
-        orderVO.setBillType(orderDO.getBillType());
-        orderVO.setDebtorId(orderDO.getDebtorId());
-        orderVO.setDebtorName(orderDO.getDebtorName());
-        orderVO.setCheckId(orderDO.getCheckId());
-        orderVO.setDebtorName(orderDO.getCheckName());
-        orderVO.setDiscountAmount(orderDO.getDiscountAmount());
-        orderVO.setRemark(orderDO.getRemark());
-        orderVO.setAuditStatus(orderDO.getAuditStatus());
-        for (RPOrderEntryDO orderEntryDO : orderEntryDOList) {
-            RPOrderEntryVO entryVO = new RPOrderEntryVO();
-            entryVO.setId(orderEntryDO.getId());
-            entryVO.setSrcBillNo(orderEntryDO.getSrcBillNo());
-            entryVO.setSrcBillType(orderEntryDO.getSrcBillType());
-            entryVO.setSrcBillDate(orderEntryDO.getSrcBillDate());
-            entryVO.setSrcTotalAmount(orderEntryDO.getSrcTotalAmount());
-            entryVO.setSrcPaymentAmount(orderEntryDO.getSrcPaymentAmount());
-            entryVO.setCheckAmount(orderEntryDO.getCheckAmount());
-            orderVO.getEntryVOList().add(entryVO);
-        }
-        for (RPOrderSettleDO orderSettleDO : orderSettleDOList) {
-            RPOrderSettleVO entryVO = new RPOrderSettleVO();
-            entryVO.setId(orderSettleDO.getId());
-            entryVO.setSettleAccount(orderSettleDO.getSettleAccount());
-            entryVO.setPaymentAmount(orderSettleDO.getPaymentAmount());
-            entryVO.setRemark(orderSettleDO.getRemark());
-            orderVO.getSettleVOList().add(entryVO);
-        }
+        RPOrderVO orderVO = BeanUtil.copyProperties(orderDO, RPOrderVO.class);
+        orderVO.getEntryVOList().addAll(BeanUtil.copyToList(orderEntryDOList, RPOrderEntryVO.class));
+        orderVO.getSettleVOList().addAll(BeanUtil.copyToList(orderSettleDOList, RPOrderSettleVO.class));
         return orderVO;
     }
 

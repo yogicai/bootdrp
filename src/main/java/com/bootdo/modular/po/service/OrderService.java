@@ -1,6 +1,7 @@
 package com.bootdo.modular.po.service;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
@@ -69,7 +70,7 @@ public class OrderService extends ServiceImpl<OrderDao, OrderDO> {
                 .ge(ObjectUtil.isNotEmpty(param.getStart()), OrderDO::getBillDate, param.getStart())
                 .le(ObjectUtil.isNotEmpty(param.getEnd()), OrderDO::getBillDate, param.getEnd())
                 .and(ObjectUtil.isNotEmpty(param.getSearchText()), query -> query.like(OrderDO::getBillNo, param.getSearchText()).or().like(OrderDO::getVendorName, param.getSearchText()).or().like(OrderDO::getRemark, param.getSearchText()))
-                .orderByDesc(OrderDO::getBillDate).orderByDesc(OrderDO::getUpdateTime);
+                .orderByDesc(OrderDO::getBillDate, OrderDO::getUpdateTime);
 
         return this.page(page, queryWrapper);
     }
@@ -95,6 +96,7 @@ public class OrderService extends ServiceImpl<OrderDao, OrderDO> {
         costAmountCalculator.calcPOBillCost(orderDO, auditStatus);
         this.update(Wrappers.lambdaUpdate(OrderDO.class)
                 .set(OrderDO::getAuditStatus, auditStatus)
+                .set(OrderDO::getUpdateTime, DateUtil.date())
                 .eq(OrderDO::getBillNo, orderDO.getBillNo())
                 .ne(OrderDO::getAuditStatus, auditStatus));
     }

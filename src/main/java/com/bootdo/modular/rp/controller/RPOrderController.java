@@ -52,7 +52,7 @@ public class RPOrderController extends BaseController {
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('rp:order:order')")
     public PageJQ list(RPOrderQryParam param) {
-        return rpOrderService.selectJoinGroupPage(param);
+        return rpOrderService.page(param);
     }
 
     @DataScope

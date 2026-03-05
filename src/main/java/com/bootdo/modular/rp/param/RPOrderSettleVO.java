@@ -1,5 +1,6 @@
 package com.bootdo.modular.rp.param;
 
+import com.bootdo.modular.rp.enums.SettleType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -19,6 +20,10 @@ public class RPOrderSettleVO {
      * 商品ID
      */
     private String settleAccount;
+    /**
+     * 结算类型
+     */
+    private SettleType settleType;
     /**
      * 收款金额
      */
