@@ -20,12 +20,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <commons.collections.version>4.4</commons.collections.version>
         <commons.configuration.version>1.10</commons.configuration.version>
         <!-- DB 相关 -->
-        <mysql.version>8.0.28</mysql.version>
-        <mybatis-plus.version>3.5.15</mybatis-plus.version>
+        <mysql.version>8.0.33</mysql.version>
+        <mybatis-plus.version>3.5.16</mybatis-plus.version>
         <mybatis-plus.jion.version>1.5.4</mybatis-plus.jion.version>
         <druid.version>1.2.24</druid.version>
         <springdoc.version>2.3.0</springdoc.version>
@@ -33,7 +33,7 @@
         <lombok.version>1.18.42</lombok.version>
         <easypoi.version>5.0.0-boot3</easypoi.version>
         <velocity.version>2.3</velocity.version>
-        <hutool.version>5.8.42</hutool.version>
+        <hutool.version>5.8.44</hutool.version>
         <thymeleaf.extras.version>3.1.2.RELEASE</thymeleaf.extras.version>
         <jsoup.version>1.17.2</jsoup.version>
     </properties>
