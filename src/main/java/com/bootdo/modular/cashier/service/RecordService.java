@@ -66,6 +66,14 @@ public class RecordService extends ServiceImpl<RecordDao, RecordDO> {
         return recordDao.list(param);
     }
 
+    public List<RecordDO> list(Page<RecordDO> page, Map<String, Object> param) {
+        return recordDao.list(page, param).getRecords();
+    }
+
+    public List<String> listAccount(Map<String, Object> param) {
+        return recordDao.listAccount(param);
+    }
+
     public void export(RecordQryParam param) {
         List<RecordDO> orderList = recordDao.list(BeanUtil.beanToMap(param));
         String pureStart = DateUtil.format(param.getStart(), DatePattern.PURE_DATE_FORMAT);

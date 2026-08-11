@@ -25,5 +25,6 @@ public interface RecordDao extends BaseMapper<RecordDO> {
     RecordSum selectSum(@Param("param") Map<String, Object> map);
 
     List<RecordDO> multiSelect(@Param("param") Map<String, Object> map);
-}
 
+    List<String> listAccount(@Param("param") Map<String, Object> param);
+}

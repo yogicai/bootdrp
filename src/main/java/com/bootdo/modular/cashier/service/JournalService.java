@@ -6,6 +6,7 @@ import cn.afterturn.easypoi.excel.annotation.ExcelCollection;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import cn.afterturn.easypoi.excel.export.ExcelExportService;
+import cn.afterturn.easypoi.handler.inter.IExcelExportServer;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DatePattern;
@@ -15,6 +16,8 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bootdo.core.utils.HttpServletUtil;
 import com.bootdo.core.utils.PoiUtils.InnerExportParams;
@@ -24,9 +27,12 @@ import com.bootdo.modular.cashier.domain.RecordDO;
 import com.bootdo.modular.cashier.param.JournalGeneralParam;
 import com.bootdo.modular.cashier.result.FlowRecordItem;
 import com.bootdo.modular.cashier.result.JournalGeneralResult;
-import com.bootdo.modular.cashier.result.JournalGeneralResult.*;
-import com.bootdo.modular.cashier.result.SettleYear;
+import com.bootdo.modular.cashier.result.JournalGeneralResult.AccountItem;
+import com.bootdo.modular.cashier.result.JournalGeneralResult.OperateItem;
+import com.bootdo.modular.cashier.result.JournalGeneralResult.OperateMonthItem;
+import com.bootdo.modular.cashier.result.JournalGeneralResult.SalaryRecord;
 import com.bootdo.modular.cashier.service.chart.XSSFChartService;
+import com.bootdo.modular.cashier.service.excel.TemplateBatchExportService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -137,7 +143,7 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
         // 2017年销售额来年excel手工数据，毛利率按28.12%算
         Date billStart = Date.from(LocalDate.of(2017, 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
         if (DateUtil.compare(param.getStart(), billStart) <= 0) {
-            operateItemList.add(0, OperateItem.builder()
+            operateItemList.addFirst(OperateItem.builder()
                     .year("2017")
                     .totalAmount(NumberUtil.toBigDecimal(721009))
                     .profitAmount(NumberUtil.toBigDecimal(202747.73))
@@ -167,32 +173,17 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
             item.setSalaryRealized(ObjectUtil.defaultIfNull(flowRecordYearMap.get(item.getYear()), m -> NumberUtil.add(m.getSalary(), m.getConsume()), BigDecimal.ZERO));
         });
 
-        // 年度核销金额合计
-        SettleYear settleYear = settleService.flowSettleYear(beanToMap);
-        // 订单核销明细
-        List<SettleOrderItem> settleOrderItemList = settleService.generalSettleOrderItem(beanToMap);
-
-        // 月现金流
-        List<OperateMonthItem> operateItemMonthList = journalDao.generalFlowMonth(beanToMap);
-        // 欠款明细
-        List<DebtItem> debtItemList = journalDao.debtRecordList(beanToMap);
-        // 账户流水明细
-        Map<String, List<RecordDO>> flowRecordMap = recordService.list(beanToMap).stream()
-                .collect(Collectors.groupingBy(RecordDO::getAccount, Collectors.toList()));
-
         // 经营年份
         result.setStartYear(DateUtil.format(param.getStart(), DatePattern.NORM_YEAR_PATTERN));
         result.setEndYear(DateUtil.format(param.getEnd(), DatePattern.NORM_YEAR_PATTERN));
-        // 账户现金流合计、年份现金流合计、经营情况
+        // 账户现金流合计
         result.setFlowAccountStatList(flowRecordAccountMap.values());
+        // 年份现金流合计
         result.setFlowAccountYearList(flowRecordYearMap.values());
+        // 经营情况
         result.setOperateYearList(operateItemList);
-        result.setSettleYear(settleYear);
-        // 账户现金流水、月现金流、欠款明细
-        result.setFlowRecordMap(flowRecordMap);
-        result.setOperateMonthList(operateItemMonthList);
-        result.setDebtItemList(debtItemList);
-        result.setSettleOrderItemList(settleOrderItemList);
+        // 年度核销金额合计
+        result.setSettleYear(settleService.flowSettleYear(beanToMap));
 
         return result;
     }
@@ -205,6 +196,14 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
         try {
             JournalGeneralResult result = general(param);
 
+            Map<String, Object> beanToMap = BeanUtil.beanToMap(param);
+            // 订单核销明细
+            result.setSettleOrderItemList(settleService.generalSettleOrderItem(beanToMap));
+            // 月现金流
+            result.setOperateMonthList(journalDao.generalFlowMonth(beanToMap));
+            // 欠款明细
+            result.setDebtItemList(journalDao.debtRecordList(beanToMap));
+
             Map<String, Object> statMap = MapUtil.<String, Object>builder()
                     .put("startYear", result.getStartYear())
                     .put("endYear", result.getEndYear())
@@ -216,7 +215,20 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
             // 汇总统计
             Workbook workbook = ExcelExportUtil.exportExcel(MapUtil.of(0, statMap), new TemplateExportParams("doc/OperateStat.xlsx"));
 
-            // 账户流水明细、月现金流、客户欠款
+            // 账户流水明细
+            recordService.listAccount(beanToMap).forEach(account -> {
+                ExportParams params = new InnerExportParams();
+                params.setSheetName(StrUtil.replaceChars(account, "[]:\\*?/（） ", StrUtil.EMPTY));
+
+                TemplateBatchExportService batchServer = new TemplateBatchExportService();
+                batchServer.init(workbook, params, RecordDO.class);
+                batchServer.exportBigExcel(new AccountRecordExportServer(), MapUtil.builder(beanToMap)
+                        .put("account", account)
+                        .build()
+                );
+            });
+
+            // 月现金流、客户欠款
             BeanUtil.descForEach(JournalGeneralResult.class, action -> {
                 ExcelCollection excelCollection = action.getField().getAnnotation(ExcelCollection.class);
                 if (ObjectUtil.isNotNull(excelCollection)) {
@@ -254,6 +266,23 @@ public class JournalService extends ServiceImpl<JournalDao, RecordDO> {
             outputStream.close();
         } catch (IOException e) {
             log.error("JournalService.export error! param:{}", param, e);
+        }
+    }
+
+    private static class AccountRecordExportServer implements IExcelExportServer {
+        private final RecordService recordService;
+        private static final int PAGE_SIZE = 3000;
+
+        public AccountRecordExportServer() {
+            this.recordService = SpringUtil.getBean(RecordService.class);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public List<Object> selectListForExcelExport(Object queryParams, int pageNo) {
+            Map<String, Object> params = (Map<String, Object>) queryParams;
+            Page<RecordDO> page = new Page<>(pageNo, PAGE_SIZE);
+            return new ArrayList<>(recordService.list(page, params));
         }
     }
 

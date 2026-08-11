@@ -78,5 +78,13 @@
         <include refid="whereSql"/>
     </select>
 
-</mapper>
+    <select id="listAccount" resultType="java.lang.String">
+        select distinct
+            account
+        from
+            cashier_record
+        <include refid="whereSql"/>
+        order by account
+    </select>
 
+</mapper>
