@@ -16,6 +16,7 @@ import com.bootdo.modular.rp.domain.PointEntryDO;
 import com.bootdo.modular.rp.domain.RPOrderDO;
 import com.bootdo.modular.rp.domain.RPOrderEntryDO;
 import com.bootdo.modular.rp.domain.RPOrderSettleDO;
+import com.bootdo.modular.rp.enums.SettleType;
 import com.bootdo.modular.se.domain.SEOrderDO;
 import com.bootdo.modular.se.domain.SEOrderEntryDO;
 import com.bootdo.modular.se.param.SEOrderEntryVO;
@@ -101,8 +102,8 @@ public class SEOrderConverter {
         rpOrderSettleDO.setBillNo(rpOrderDO.getBillNo());
         rpOrderSettleDO.setSettleAccount(orderDO.getSettleAccount());
         rpOrderSettleDO.setSettleName(accountDO.getName());
+        rpOrderSettleDO.setSettleType(SettleType.PAYEE);
         rpOrderSettleDO.setPaymentAmount(orderDO.getPaymentAmount());
-        rpOrderSettleDO.setRemark("");
         return CollUtil.newArrayList(rpOrderSettleDO);
     }
 
